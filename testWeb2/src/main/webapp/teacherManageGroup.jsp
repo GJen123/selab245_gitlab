@@ -66,7 +66,7 @@
 
 				<div class="panel-body">
 					<div class="form-group">
-						<form action="webapi/user/upload" method="post"
+						<form action="webapi/group/upload" method="post"
 							enctype="multipart/form-data">
 							<h4>上傳組別名單</h4>
 							Select File to Upload:<input type="file" name="file">
