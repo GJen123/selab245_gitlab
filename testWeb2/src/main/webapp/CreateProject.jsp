@@ -31,13 +31,14 @@
 </head>
 <body>
 	<%!
-		String name, des;
+		String name, des, rm;
 	%>
 	<%
 		name = request.getParameter("Hw_Name"); 
 		des = request.getParameter("Hw_Description"); 
+		rm = request.getParameter("Hw_README");
 		
-		conn.createPrivateProject(name, des);
+		conn.createPrivateProject(name, rm);
 		response.sendRedirect("teacherManageHW.jsp");
 	%>
 </body>
