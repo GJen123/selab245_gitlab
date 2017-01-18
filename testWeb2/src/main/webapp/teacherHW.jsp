@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="BIG5"%>
-<%@ page import="conn.conn"%>
+<%@ page import="conn.conn,conn.httpConnect"%>
 <%@ page import="java.util.List" import="java.util.ArrayList"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -55,6 +55,7 @@
 	
 	<%
 		conn conn = new conn();
+		httpConnect httpConn = new httpConnect();
 		String gitlabURL = "http://140.134.26.71:20080";
 		List<GitlabUser> users = conn.getUsers();
 		List<GitlabProject> projects = new ArrayList<GitlabProject>();	
@@ -76,12 +77,12 @@
 						GitlabSession user_session = conn.getSession(gitlabURL, user.getUsername(), user.getUsername());
 						String private_token = conn.getToken(user_session);
 						String lastName = null;
-						List<String> projects_Name = conn.httpGetStudentOwnedProjectName(private_token);
-						List<String> projects_Url = conn.httpGetStudentOwnedProjectUrl(private_token);
-						List<Integer> projects_Id = conn.httpGetStudentOwnedProjectId(private_token);
+						List<String> projects_Name = httpConn.httpGetStudentOwnedProjectName(private_token);
+						List<String> projects_Url = httpConn.httpGetStudentOwnedProjectUrl(private_token);
+						List<Integer> projects_Id = httpConn.httpGetStudentOwnedProjectId(private_token);
 						for(int i=0;i<projects_Name.size();i++){
 							String project_event_url = conn.getProjectEvent(projects_Id.get(i), private_token);
-							int total_commit_count = conn.httpGetProjectEvent(project_event_url);
+							int total_commit_count = httpConn.httpGetProjectEvent(project_event_url);
 							if(lastName != user.getName()){
 								lastName = user.getName();
 								%>

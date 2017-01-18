@@ -3,7 +3,7 @@
 <%@ page
 	import="org.gitlab.api.models.*, 
 				  java.util.*"%>
-<%@ page import="conn.conn"%>
+<%@ page import="conn.conn,conn.httpConnect"%>
 <%
 	conn conn = new conn();
 	List<GitlabUser> users = new ArrayList<GitlabUser>();

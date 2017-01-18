@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="BIG5"%>
-<%@ page import="conn.conn"%>
+<%@ page import="conn.conn,conn.httpConnect"%>
 <%@ page import="java.util.List" import="java.util.ArrayList"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -58,6 +58,7 @@
 	
 	<%
 		conn conn = new conn();
+		httpConnect httpConn = new httpConnect();
 		List<GitlabUser> Users = new ArrayList<GitlabUser>();
 		Users = conn.getUsers();
 		List<GitlabProject> projects = new ArrayList<GitlabProject>();
@@ -87,7 +88,7 @@
 			    			String project_WebURL = project.getWebUrl();
 							project_WebURL = project_WebURL.replace("http://0912fe2b3e43", "http://140.134.26.71:20080");
 			    			String project_event_url = conn.getProjectEvent(project.getId(), private_token);
-							int total_commit_count = conn.httpGetProjectEvent(project_event_url);
+							int total_commit_count = httpConn.httpGetProjectEvent(project_event_url);
 				    		if(lastName != user.getName()){
 				    			lastName = user.getName();
 				    			%>
