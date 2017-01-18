@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="BIG5"%>
-<%@ page import="conn.conn,conn.httpConnect"%>
+<%@ page import="conn.conn"%>
+<%@ page import="conn.httpConnect" %>
 <%@ page import="java.util.List" import="java.util.ArrayList"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -43,6 +44,7 @@
                     <li class="active"><a href="teacherDashboard.jsp">學生Projects</a></li>
                     <li><a href="teacherHW.jsp">作業</a></li>
                     <li><a href="teacherGroup.jsp">專題</a></li>
+                    <li><a href="teacherManageStudent.jsp">學生管理</a></li>
                     <li><a href="teacherManageHW.jsp">作業管理</a></li>
                     <li><a href="#">專題管理</a></li>
                 </ul>

@@ -41,6 +41,7 @@
                     <li><a href="teacherDashboard.jsp">學生Projects</a></li>
                     <li><a href="teacherHW.jsp">作業</a></li>
                     <li class="active"><a href="teacherGroup.jsp">專題</a></li>
+                    <li><a href="teacherManageStudent.jsp">學生管理</a></li>
                     <li><a href="teacherManageHW.jsp">作業管理</a></li>
                     <li><a href="#">專題管理</a></li>
                 </ul>
