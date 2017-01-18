@@ -4,40 +4,29 @@ import org.gitlab.api.TokenType;
 import org.gitlab.api.AuthMethod;
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.models.*;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 import java.util.ArrayList;
 
 public class conn{
-	private GitlabUser gitlabUser = new GitlabUser();
-	private GitlabUser root = new GitlabUser();
-	private GitlabAPI newUser;
-	private List<GitlabUser> users = new ArrayList<GitlabUser>();
-	private List<GitlabProject> projects = new ArrayList<GitlabProject>();
-	//http://140.134.26.71:20080/api/v3/users?private_token=yUnRUT5ex1s3HU7yQ_g-
 	private String _hostUrl = "http://140.134.26.71:20080";
 	private String _apiToken = "yUnRUT5ex1s3HU7yQ_g-";
 	private TokenType tokenType = TokenType.PRIVATE_TOKEN;
 	private AuthMethod authMethod = AuthMethod.URL_PARAMETER;
-	public String private_token;
-	public GitlabSession rootSession;
-	private List<GitlabGroup> groups = new ArrayList<GitlabGroup>();
-	private List<GitlabGroupMember> groupMembers = new ArrayList<GitlabGroupMember>();
+	
+	private GitlabAPI gitlab = GitlabAPI.connect(_hostUrl, _apiToken, tokenType, authMethod);
+	
+	//http://140.134.26.71:20080/api/v3/users?private_token=yUnRUT5ex1s3HU7yQ_g-
 	
 	public conn() {
 		
 	}
+	private GitlabSession rootSession;
 	
-	private GitlabAPI gitlab = GitlabAPI.connect(_hostUrl, _apiToken, tokenType, authMethod);
 
 	public GitlabSession getRootSession(){
+		
 		try {
 			rootSession = GitlabAPI.connect(_hostUrl, "root", "iecsfcu123456");
 		} catch (IOException e) {
@@ -62,11 +51,13 @@ public class conn{
 	}
 	
 	public GitlabAPI getUserAPI(String token){
+		GitlabAPI newUser;
 		newUser = GitlabAPI.connect(_hostUrl, token, tokenType, authMethod);
 		return newUser;
 	}
 	
 	public List<GitlabProject> getProject(GitlabUser gitlabUser){
+		List<GitlabProject> projects = new ArrayList<GitlabProject>();
 		try {
 			projects = gitlab.getProjectsViaSudo(gitlabUser);
 		} catch (IOException e) {
@@ -77,6 +68,7 @@ public class conn{
 	}
 	
 	public GitlabUser getUser(){
+		GitlabUser gitlabUser = new GitlabUser();
 		try {
 			gitlabUser = gitlab.getUser();
 		}catch(IOException e) {
@@ -86,6 +78,7 @@ public class conn{
 	}
 	
 	public List<GitlabUser> getUsers(){
+		List<GitlabUser> users = new ArrayList<GitlabUser>();
 		try{
 			users = gitlab.getUsers();
 		}catch(IOException e) {
@@ -99,6 +92,7 @@ public class conn{
 	}
 	
 	public String getPrivate_token(GitlabUser user){
+		String private_token;
 		private_token = user.getPrivateToken();
 		return private_token;
 	}
@@ -108,6 +102,7 @@ public class conn{
 	}
 	
 	public GitlabUser getRoot(){
+		GitlabUser root = new GitlabUser();
 		try {
 			root = gitlab.getUser(1);
 		} catch (IOException e) {
@@ -118,6 +113,7 @@ public class conn{
 	}
 	
 	public List<GitlabGroup> getGroups(){
+		List<GitlabGroup> groups = new ArrayList<GitlabGroup>();
 		try {
 			groups = gitlab.getGroups();
 		} catch (IOException e) {
@@ -128,6 +124,7 @@ public class conn{
 	}
 	
 	public List<GitlabProject> getGroupProject(GitlabGroup group){
+		List<GitlabProject> projects = new ArrayList<GitlabProject>();
 		try {
 			projects = gitlab.getGroupProjects(group);
 		} catch (IOException e) {
@@ -138,6 +135,7 @@ public class conn{
 	}
 	
 	public List<GitlabGroupMember> getGroupMembers(GitlabGroup group){
+		List<GitlabGroupMember> groupMembers = new ArrayList<GitlabGroupMember>();
 		try {
 			groupMembers = gitlab.getGroupMembers(group);
 		} catch (IOException e) {
@@ -152,7 +150,8 @@ public class conn{
 		return groupUrl;
 	}
 	
-	/*createUserProject(Integer userId, 
+	/**
+	 * createUserProject(Integer userId, 
 	 * 					String name, 
 	 * 					String description, 
 	 * 					String defaultBranch, 
@@ -163,7 +162,8 @@ public class conn{
 	 *					Boolean snippetsEnabled, 
 	 *					Boolean publik, 
 	 *					Integer visibilityLevel, 
-	 *					String importUrl)*/
+	 *					String importUrl)
+	 */
 	public boolean createPrivateProject(String Pname, String description){
 		List<GitlabUser> users = getUsers();
 //		GitlabUser user = users.get(0);
@@ -218,6 +218,10 @@ public class conn{
 		}
 		return false;
 	}
+	
+	/**
+	 * 
+	 */
 	
 }
 
