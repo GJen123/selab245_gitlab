@@ -25,7 +25,7 @@
 
 	<%
 		if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
-			response.sendRedirect("memberEnter.jsp");
+			response.sendRedirect("index.jsp");
 		}
 	%>
 	<div class="navbar navbar-inverse navbar-fixed-top">

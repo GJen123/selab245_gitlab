@@ -45,7 +45,7 @@ public class afterEnter extends HttpServlet {
 		if(check.httpPost(username, password)!=null){
 			String json = check.httpPost(username, password);
 			if(json.equals("Unauthorized")){
-				response.sendRedirect("memberEnter.jsp");
+				response.sendRedirect("index.jsp");
 			}else{
 				System.out.println("json : "+json);
 				String access_token = check.analysisJSON(json);
@@ -67,7 +67,7 @@ public class afterEnter extends HttpServlet {
 					}
 				}else{
 					System.out.println("abc");
-					response.sendRedirect("memberEnter.jsp");
+					response.sendRedirect("index.jsp");
 				}
 			}
 		}
