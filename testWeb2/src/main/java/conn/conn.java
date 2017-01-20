@@ -237,10 +237,53 @@ public class conn{
 		return false;
 	}
 	
-	/**
-	 * 
-	 */
-	
+	 /**
+     * Creates a Group
+     *
+     * @param name The name of the group. The
+     *             name will also be used as the path
+     *             of the group.
+     * @return The GitLab Group
+     * @throws IOException on gitlab api call error
+     */
+    public GitlabGroup createGroup(String name){
+        try {
+        	return gitlab.createGroup(name);
+        }catch (IOException e) {
+        	System.out.println(e);
+        }
+        return new GitlabGroup();
+    }
+    
+    /**
+     * Add a group member.
+     *
+     * @param group       the GitlabGroup
+     * @param user        the GitlabUser
+     * @param accessLevel the GitlabAccessLevel
+     * @return the GitlabGroupMember
+     * @throws IOException on gitlab api call error
+     */
+    public boolean addMember(int groupId, int userId, int level){
+    	GitlabAccessLevel accessLevel = GitlabAccessLevel.Guest;
+    	if(level == 40){
+    		accessLevel = GitlabAccessLevel.Master;
+    	}
+    	else if(level == 30){
+    		accessLevel = GitlabAccessLevel.Developer;
+    	}
+    	else{
+    		accessLevel = GitlabAccessLevel.Guest;
+    	}
+    	
+        try {
+			gitlab.addGroupMember(groupId, userId, accessLevel);
+			return true;
+		}catch (IOException e){
+			System.out.println(e);
+		}
+		return false;
+    }
 }
 
 
