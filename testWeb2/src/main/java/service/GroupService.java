@@ -82,9 +82,10 @@ public class GroupService {
 		String groupName = "", masterName = "";
 		List<String> cons = new ArrayList<String>();
 		List<Group> groups = new ArrayList<Group>();
+		Group group = new Group();
 		
 		for(String lsData : data) {
-			Group group = new Group();
+			
 			String[] row = lsData.split(",");
 			
 			if(row[0].equals("²Õ§O")){
@@ -105,32 +106,34 @@ public class GroupService {
 			group.setMaster(masterName);
 			group.setContributor(cons);
 			
-			groups.add(group);
+//			groups.add(group);
 		}
-		createGroup(groups);
+		createGroup(group);
 	}
 	
 	public GitlabGroup newGroup(String name){
-		System.out.println(userConn.createGroup(name).getName() + ", " + userConn.createGroup(name).getId());
-		return userConn.createGroup(name);
+		GitlabGroup group = userConn.createGroup(name);
+		System.out.println(group.getName() + ", " + group.getId());
+		return group;
 	}
 	
 	public int newGroupId(GitlabGroup group){
 		return group.getId();
 	}
 	
-	public void createGroup(List<Group> groups) {
+	public void createGroup(Group group) {
 		int groupId = -1, masterId = -1, developerId = -1;;
 		
-		for (Group group : groups) {
+//		for (Group group : groups) {
 			groupId = newGroupId(newGroup(group.getGroupName()));
 			masterId = findUser(group.getMaster());
 			userConn.addMember(groupId, masterId, 40);
+			
 			for (String developName : group.getContributor()){
 				developerId = findUser(developName);
 				userConn.addMember(groupId, developerId, 30);
 			}
-		}
+//		}
 	}
 	
 	public int findUser(String userName){
