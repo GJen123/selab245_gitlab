@@ -5,6 +5,7 @@ import org.gitlab.api.AuthMethod;
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.models.*;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -166,13 +167,30 @@ public class conn{
 	 */
 	public boolean createPrivateProject(String Pname, String description){
 		List<GitlabUser> users = getUsers();
+		List<GitlabProject> projects = new ArrayList<GitlabProject>();
 //		GitlabUser user = users.get(0);
-		
+		conn conn = new conn();
+		httpConnect httpconn = new httpConnect();
 		try {
 			for (GitlabUser user: users){
 				if (user.getId() == 1) continue;
 				gitlab.createUserProject(user.getId(), Pname);
 //				gitlab.createUserProject(user.getId(), Pname, description, null, true, true, true, true, false, false, 0, null);
+				if(description!=null){
+					System.out.println("description not null");
+					projects = conn.getProject(user);
+					for(GitlabProject project : projects){
+						String name = project.getName();
+						int id = project.getId();
+						System.out.println(id);
+						String url = "http://140.134.26.71:20080/api/v3/projects/"+id+"/repository/files?private_token=yUnRUT5ex1s3HU7yQ_g-";
+						System.out.println(url);
+						if(name.equals(Pname)){
+							System.out.println("fw");
+							httpconn.httpPostReadme( url, description);
+						}
+					}
+				}
 			}
 			return true;
 		}catch (IOException e){

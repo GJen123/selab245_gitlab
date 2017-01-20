@@ -70,6 +70,9 @@
 							
 							<label for="eInputPassword">作業描述:</label>
 							<input type="text" class="form-control" name="Hw_Description">
+							
+							<label for="eInputPassword">作業README:</label>
+							<textarea rows="4" cols="50" class="form-control" name="Hw_README"></textarea>
 						</div>
 						
 						<div class="form-group">
