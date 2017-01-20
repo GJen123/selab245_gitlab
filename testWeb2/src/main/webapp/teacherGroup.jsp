@@ -1,12 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
-	pageEncoding="BIG5"%>
+	pageEncoding="utf-8"%>
 <%@ page import="conn.conn,conn.httpConnect"%>
 <%@ page import="java.util.List" import="java.util.ArrayList"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=BIG5">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet"
 		href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
@@ -38,15 +38,15 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="teacherDashboard.jsp">�ǥ�Projects</a></li>
-                    <li><a href="teacherHW.jsp">�@�~</a></li>
-                    <li class="active"><a href="teacherGroup.jsp">�M�D</a></li>
-                    <li><a href="teacherManageStudent.jsp">�ǥͺ޲z</a></li>
-                    <li><a href="teacherManageHW.jsp">�@�~�޲z</a></li>
-                    <li><a href="teacherManageGroup.jsp">�M�D�޲z</a></li>
+                    <li><a href="teacherDashboard.jsp">學生Projects</a></li>
+                    <li><a href="teacherHW.jsp">作業</a></li>
+                    <li class="active"><a href="teacherGroup.jsp">專題</a></li>
+                    <li><a href="teacherManageStudent.jsp">學生管理</a></li>
+                    <li><a href="teacherManageHW.jsp">作業管理</a></li>
+                    <li><a href="teacherManageGroup.jsp">專題管理</a></li>
                 </ul>
                     <ul class="nav navbar-nav navbar-right">
-        <li><a href="memberLogOut.jsp" id="loginLink">�n�X</a></li>
+        <li><a href="memberLogOut.jsp" id="loginLink">登出</a></li>
     </ul>
 
             </div>

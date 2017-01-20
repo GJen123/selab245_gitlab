@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
-    pageEncoding="BIG5"%>
+    pageEncoding="utf-8"%>
 <%@ page import="conn.conn"%>
 <%@ page import="conn.httpConnect" %>
 <%@ page import="java.util.List" import="java.util.ArrayList"
@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=BIG5">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet"
@@ -41,15 +41,15 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="teacherDashboard.jsp">�ǥ�Projects</a></li>
-                    <li><a href="teacherHW.jsp">�@�~</a></li>
-                    <li><a href="teacherGroup.jsp">�M�D</a></li>
-                    <li><a href="teacherManageStudent.jsp">�ǥͺ޲z</a></li>
-                    <li><a href="teacherManageHW.jsp">�@�~�޲z</a></li>
-                    <li class="active"><a href="teacherManageGroup.jsp">�M�D�޲z</a></li>
+                    <li><a href="teacherDashboard.jsp">學生Projects</a></li>
+                    <li><a href="teacherHW.jsp">作業</a></li>
+                    <li><a href="teacherGroup.jsp">專題</a></li>
+                    <li><a href="teacherManageStudent.jsp">學生管理</a></li>
+                    <li><a href="teacherManageHW.jsp">作業管理</a></li>
+                    <li class="active"><a href="teacherManageGroup.jsp">專題管理</a></li>
                 </ul>
                     <ul class="nav navbar-nav navbar-right">
-        <li><a href="memberLogOut.jsp" id="loginLink">�n�X</a></li>
+        <li><a href="memberLogOut.jsp" id="loginLink">登出</a></li>
     </ul>
 
             </div>
@@ -61,14 +61,14 @@
 		<div>
 			<div class="login-panel panel panel-default">
 				<div class="panel-heading">
-					<h3>�s�W�էO</h3>
+					<h3>新增組別</h3>
 				</div>
 
 				<div class="panel-body">
 					<div class="form-group">
 						<form action="webapi/group/upload" method="post"
 							enctype="multipart/form-data">
-							<h4>�W�ǲէO�W��</h4>
+							<h4>上傳組別名單</h4>
 							Select File to Upload:<input type="file" name="file">
 							<br> <input type="submit" value="Upload">
 						</form>

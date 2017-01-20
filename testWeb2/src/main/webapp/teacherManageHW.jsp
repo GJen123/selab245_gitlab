@@ -1,12 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
-    pageEncoding="BIG5"%>
+    pageEncoding="utf-8"%>
 <%@ page import="conn.conn,conn.httpConnect"%>
 <%@ page import="java.util.List" import="java.util.ArrayList"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=BIG5">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet"
 		href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
@@ -39,15 +39,15 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="teacherDashboard.jsp">�ǥ�Projects</a></li>
-                    <li><a href="teacherHW.jsp">�@�~</a></li>
-                    <li><a href="teacherGroup.jsp">�M�D</a></li>
-                    <li><a href="teacherManageStudent.jsp">�ǥͺ޲z</a></li>
-                    <li class="active"><a href="teacherManageHW.jsp">�@�~�޲z</a></li>
-                    <li><a href="teacherManageGroup.jsp">�M�D�޲z</a></li>
+                    <li><a href="teacherDashboard.jsp">學生Projects</a></li>
+                    <li><a href="teacherHW.jsp">作業</a></li>
+                    <li><a href="teacherGroup.jsp">專題</a></li>
+                    <li><a href="teacherManageStudent.jsp">學生管理</a></li>
+                    <li class="active"><a href="teacherManageHW.jsp">作業管理</a></li>
+                    <li><a href="teacherManageGroup.jsp">專題管理</a></li>
                 </ul>
                     <ul class="nav navbar-nav navbar-right">
-        <li><a href="memberLogOut.jsp" id="loginLink">�n�X</a></li>
+        <li><a href="memberLogOut.jsp" id="loginLink">登出</a></li>
     </ul>
 
             </div>
@@ -60,23 +60,23 @@
 			<div>
 				<div class="login-panel panel panel-default">
 					<div class="panel-heading">
-						<h3>���o�@�~</h3>
+						<h3>派發作業</h3>
 					</div>
 
 					<div class="panel-body">
 						<div class="form-group">
-							<label for="Hw_Name">�@�~�W��:</label> 
+							<label for="Hw_Name">作業名稱:</label> 
 							<input type="text" class="form-control" name="Hw_Name"> 
 							
-							<label for="eInputPassword">�@�~�y�z:</label>
+							<label for="eInputPassword">作業描述:</label>
 							<input type="text" class="form-control" name="Hw_Description">
 							
-							<label for="eInputPassword">�@�~README:</label>
+							<label for="eInputPassword">作業README:</label>
 							<textarea rows="4" cols="50" class="form-control" name="Hw_README"></textarea>
 						</div>
 						
 						<div class="form-group">
-							<button type="submit" class="btn btn-default btn-block">�e�X</button>
+							<button type="submit" class="btn btn-default btn-block">送出</button>
 						</div>
 					</div>
 				</div>
