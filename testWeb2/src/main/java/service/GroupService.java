@@ -38,8 +38,12 @@ public class GroupService {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response upload(@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail) throws URISyntaxException {
-		String filePath = "C:\\Users\\WeiHan\\workspace\\GitLabEdu\\";
-		String fileName = StringUtils.substringAfterLast(fileDetail.getFileName(), ":");
+//		String filePath = "C:\\Users\\WeiHan\\workspace\\GitLabEdu\\";
+		String filePath = "E:\\upload\\";
+//		String fileName = StringUtils.substringAfterLast(fileDetail.getFileName(), ":");
+		String fileName = fileDetail.getFileName();
+		System.out.println("fileName :" + fileName);
+		System.out.println(fileDetail.toString());
 		String uploadedFileLocation = filePath + fileName;
 		List<String> groupList = new ArrayList<String>();
 
@@ -80,7 +84,7 @@ public class GroupService {
 			e.printStackTrace();
 		}
 //		String output = "File successfully uploaded to : " + uploadedFileLocation;
-		System.out.println(StringUtils.substringAfterLast(fileDetail.getFileName(), ":"));
+		System.out.println("fileName :" + fileName);
 		java.net.URI location = new java.net.URI("../teacherManageGroup.jsp");
 		return Response.temporaryRedirect(location).build();
 	}
