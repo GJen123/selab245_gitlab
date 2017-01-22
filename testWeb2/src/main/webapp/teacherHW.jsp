@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="utf-8"%>
-<%@ page import="conn.conn,conn.httpConnect"%>
-<%@ page import="java.util.List" import="java.util.ArrayList"
+<%@ page import="conn.conn,conn.httpConnect,teacher.teacherGetUserHw"%>
+<%@ page import="java.util.List" import="java.util.ArrayList" import="java.util.*"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -17,7 +17,7 @@
 	<script
 		src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	
-	<title>Teacher Dashboard</title>
+	<title>GitlabEdu</title>
 </head>
 <body>
 	<%
@@ -34,16 +34,20 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand">Teacher Dashboard</a>
+                <a class="navbar-brand">GitlabEdu</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="teacherDashboard.jsp">學生Projects</a></li>
                     <li class="active"><a href="teacherHW.jsp">作業</a></li>
                     <li><a href="teacherGroup.jsp">專題</a></li>
-                    <li><a href="teacherManageStudent.jsp">學生管理</a></li>
-                    <li><a href="teacherManageHW.jsp">作業管理</a></li>
-                    <li><a href="teacherManageGroup.jsp">專題管理</a></li>
+                    <li class="dropdown">
+                    	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">設定 <span class="caret"></span></a>
+                    	<ul class="dropdown-menu">
+	                    	<li><a href="teacherManageStudent.jsp">學生管理</a></li>
+	                    	<li><a href="teacherManageHW.jsp">作業管理</a></li>
+	                    	<li><a href="teacherManageGroup.jsp">專題管理</a></li>
+                    	</ul>
+                    </li>
                 </ul>
                     <ul class="nav navbar-nav navbar-right">
         <li><a href="memberLogOut.jsp" id="loginLink">登出</a></li>
@@ -57,17 +61,28 @@
 	<%
 		conn conn = new conn();
 		httpConnect httpConn = new httpConnect();
+		teacherGetUserHw getUserHw = new teacherGetUserHw();
 		String gitlabURL = "http://140.134.26.71:20080";
 		List<GitlabUser> users = conn.getUsers();
 		List<GitlabProject> projects = new ArrayList<GitlabProject>();	
+		
+		
+		GitlabSession rootSession = conn.getRootSession();
+		String private_token = conn.getPrivate_token(rootSession);
+		
+		Collections.reverse(users);
 	%>
+	
 	<div class="container">
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th>學生</th>
-					<th>Projects</th>
-					<th>Commit Times</th>
+					<th>座號</th>
+					<th>姓名</th>
+					<th>OOP-HW1</th>
+					<th>OOP-HW2</th>
+					<th>OOP-HW3</th>
+					<th>OOP-HW4</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -75,39 +90,33 @@
 					for(GitlabUser user : users){
 						String userName = user.getUsername();
 			    		String personal_url = "http://140.134.26.71:20080/u/" + userName;
-						GitlabSession user_session = conn.getSession(gitlabURL, user.getUsername(), user.getUsername());
-						String private_token = conn.getToken(user_session);
-						String lastName = null;
-						List<String> projects_Name = httpConn.httpGetStudentOwnedProjectName(private_token);
-						List<String> projects_Url = httpConn.httpGetStudentOwnedProjectUrl(private_token);
-						List<Integer> projects_Id = httpConn.httpGetStudentOwnedProjectId(private_token);
-						for(int i=0;i<projects_Name.size();i++){
-							String project_event_url = conn.getProjectEvent(projects_Id.get(i), private_token);
-							int total_commit_count = httpConn.httpGetProjectEvent(project_event_url);
-							if(lastName != user.getName()){
-								lastName = user.getName();
-								%>
-									<tr>
-										<td><a href="#" onclick="window.open('<%=personal_url %>')"><%=user.getName() %></a></td>
-										<td><a href="#" onclick="window.open('<%=projects_Url.get(i) %>')"><%=projects_Name.get(i) %></a></td>
-										<td><%=total_commit_count %></td>
-									</tr>
+						projects = conn.getProject(user);
+						Collections.reverse(projects);
+						%>
+							<tr>
+								<td><%=user.getId() %></td>
+								<td><strong><a href="#" onclick="window.open('<%=personal_url %>')"><%=user.getName() %></a></strong></td>
 								<%
-							}else{
+									for(GitlabProject project : projects){
+										String project_WebURL = project.getWebUrl();
+										project_WebURL = project_WebURL.replace("http://0912fe2b3e43", "http://140.134.26.71:20080");
+										if(project.getName().substring(0,3).equals("OOP")){
+											String project_event_url = conn.getProjectEvent(project.getId(), private_token);
+											int total_commit_count = getUserHw.httpGetProjectEvent(project_event_url);
+											%>
+												<td><a href="#" onclick="window.open('<%=project_WebURL%>')"><%=total_commit_count %></a></td>
+											<%
+										}
+									}
 								%>
-									<tr>
-										<td></td>
-										<td><a href="#" onclick="window.open('<%=projects_Url.get(i) %>')"><%=projects_Name.get(i) %></a></td>
-										<td><%=total_commit_count %></td>
-									</tr>
-								
-								<%
-							}
-						}
+							</tr>
+						<%
 					}
+				
 				%>
 			</tbody>
 		</table>
 	</div>
+	
 </body>
 </html>

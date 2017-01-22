@@ -3,6 +3,7 @@ package service;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.*;
+import java.net.URISyntaxException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -16,6 +17,7 @@ import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.apache.commons.lang.StringUtils;
+import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import data.User;
 import conn.conn;
@@ -28,7 +30,7 @@ public class UserService {
 	@POST
 	@Path("upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response upload(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) {
+	public Response upload(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) throws URISyntaxException {
 		String filePath = "C:\\Users\\WeiHan\\workspace\\GitLabEdu\\";
 		String fileName = StringUtils.substringAfterLast(fileDetail.getFileName(), ":");
 		String uploadedFileLocation = filePath + fileName;
@@ -72,7 +74,8 @@ public class UserService {
 		}
 		String output = "File successfully uploaded to : " + uploadedFileLocation;
 		System.out.println(StringUtils.substringAfterLast(fileDetail.getFileName(), ":"));
-		return Response.status(200).entity(output).build();
+		java.net.URI location = new java.net.URI("../teacherManageStudent.jsp");
+		  return Response.temporaryRedirect(location).build();
 	}
 	
 	public void register(List<String> data) {
@@ -119,4 +122,7 @@ public class UserService {
 	public void NewProject(@FormParam("Hw_Name") String name, @FormParam("Hw_Name") String description) {
 		userConn.createPrivateProject(name, description);
 	}
+	public List<GitlabUser> getUsers(){
+		  return userConn.getUsers();
+		 }
 }

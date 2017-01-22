@@ -19,7 +19,7 @@
 	<script
 		src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	
-	<title>Teacher Dashboard</title>
+	<title>GitlabEdu</title>
 </head>
 <body>
 
@@ -37,16 +37,20 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand">Teacher Dashboard</a>
+                <a class="navbar-brand">GitlabEdu</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="teacherDashboard.jsp">學生Projects</a></li>
                     <li><a href="teacherHW.jsp">作業</a></li>
                     <li><a href="teacherGroup.jsp">專題</a></li>
-                    <li class="active"><a href="teacherManageStudent.jsp">學生管理</a></li>
-                    <li><a href="teacherManageHW.jsp">作業管理</a></li>
-                    <li><a href="teacherManageGroup.jsp">專題管理</a></li>
+                    <li class="dropdown">
+                    	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">設定 <span class="caret"></span></a>
+                    	<ul class="dropdown-menu">
+	                    	<li class="active"><a href="teacherManageStudent.jsp">學生管理</a></li>
+	                    	<li><a href="teacherManageHW.jsp">作業管理</a></li>
+	                    	<li><a href="teacherManageGroup.jsp">專題管理</a></li>
+                    	</ul>
+                    </li>
                 </ul>
                     <ul class="nav navbar-nav navbar-right">
         <li><a href="memberLogOut.jsp" id="loginLink">登出</a></li>

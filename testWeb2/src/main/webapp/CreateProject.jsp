@@ -35,7 +35,6 @@
 	%>
 	<%
 		name = request.getParameter("Hw_Name"); 
-		des = request.getParameter("Hw_Description"); 
 		rm = request.getParameter("Hw_README");
 		
 		conn.createPrivateProject(name, rm);

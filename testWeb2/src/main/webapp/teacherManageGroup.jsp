@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="utf-8"%>
 <%@ page import="conn.conn"%>
-<%@ page import="conn.httpConnect" %>
-<%@ page import="java.util.List" import="java.util.ArrayList"
+<%@ page import="service.UserService" %>
+<%@ page import="java.util.List" import="java.util.ArrayList" import="java.util.*"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -19,7 +19,7 @@
 	<script
 		src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	
-	<title>Teacher Dashboard</title>
+	<title>GitlabEdu</title>
 </head>
 <body>
 
@@ -37,16 +37,20 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand">Teacher Dashboard</a>
+                <a class="navbar-brand">GitlabEdu</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="teacherDashboard.jsp">學生Projects</a></li>
                     <li><a href="teacherHW.jsp">作業</a></li>
                     <li><a href="teacherGroup.jsp">專題</a></li>
-                    <li><a href="teacherManageStudent.jsp">學生管理</a></li>
-                    <li><a href="teacherManageHW.jsp">作業管理</a></li>
-                    <li class="active"><a href="teacherManageGroup.jsp">專題管理</a></li>
+                    <li class="dropdown">
+                    	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">設定 <span class="caret"></span></a>
+                    	<ul class="dropdown-menu">
+	                    	<li><a href="teacherManageStudent.jsp">學生管理</a></li>
+	                    	<li><a href="teacherManageHW.jsp">作業管理</a></li>
+	                    	<li class="active"><a href="teacherManageGroup.jsp">專題管理</a></li>
+                    	</ul>
+                    </li>
                 </ul>
                     <ul class="nav navbar-nav navbar-right">
         <li><a href="memberLogOut.jsp" id="loginLink">登出</a></li>
@@ -65,16 +69,65 @@
 				</div>
 
 				<div class="panel-body">
-					<div class="form-group">
-						<form action="webapi/group/upload" method="post"
+					<div class="col-md-2">
+						<a href="webapi/group/export" class="btn btn-default">匯出學生名單</a>
+					</div>
+
+					<div class="col-md-10">
+						<form method="post" action="webapi/group/upload"
 							enctype="multipart/form-data">
-							<h4>上傳組別名單</h4>
-							Select File to Upload:<input type="file" name="file">
-							<br> <input type="submit" value="Upload">
+							<button type="button" class="btn btn-default" data-toggle="modal"
+								data-target="#exampleModal" data-whatever="@mdo">匯入學生名單</button>
+							<div class="modal fade" id="exampleModal" tabindex="-1"
+								role="dialog" aria-labelledby="exampleModalLabel"
+								aria-hidden="true">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal">
+												<span aria-hidden="true">&times;</span> <span
+													class="sr-only">Close</span>
+											</button>
+											<h4 class="modal-title" id="exampleModalLabel">匯入學生名單</h4>
+										</div>
+
+										<div class="modal-body">
+											<div class="form-group">
+												<h4>上傳檔案</h4>
+												<input type="file" name="file" size="50" />
+											</div>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-default"
+												data-dismiss="modal">關閉</button>
+											<button type="submit" class="btn btn-primary">送出</button>
+										</div>
+									</div>
+								</div>
+							</div>
 						</form>
 					</div>
+					<div>
+					<br><br>
+					<p>id, name</p>
+						<%
+							UserService userService = new UserService();
+							List<GitlabUser> lsUsers = userService.getUsers();
+							Collections.reverse(lsUsers);
+							for (GitlabUser user : lsUsers) {
+								if (user.getId() == 1) {
+									continue;
+								}
+						%>
+							<p><%=user.getId() %>, <%=user.getName()%></p>
+						<%
+							}
+						%>
+					</div>
 				</div>
+				<!-- panel-body -->
 			</div>
+			<!-- panel -->
 		</div>
 	</div>
 
