@@ -31,7 +31,7 @@
 </head>
 <body>
 	<%!
-		String name, des, rm;
+		String name, rm;
 	%>
 	<%
 		name = request.getParameter("Hw_Name"); 

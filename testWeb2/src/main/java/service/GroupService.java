@@ -38,7 +38,6 @@ public class GroupService {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response upload(@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail) throws URISyntaxException {
-//		String filePath = "C:\\Users\\WeiHan\\workspace\\GitLabEdu\\";
 		String filePath = "E:\\upload\\";
 //		String fileName = StringUtils.substringAfterLast(fileDetail.getFileName(), ":");
 		String fileName = fileDetail.getFileName();
