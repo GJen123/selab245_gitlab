@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
+import jenkins.jenkinsApi;
+
 public class conn{
 	private String _hostUrl = "http://140.134.26.71:20080";
 	private String _apiToken = "yUnRUT5ex1s3HU7yQ_g-";
@@ -171,15 +173,20 @@ public class conn{
 //		GitlabUser user = users.get(0);
 		conn conn = new conn();
 		httpConnect httpconn = new httpConnect();
+		jenkinsApi jenkins = new jenkinsApi();
 		try {
 			for (GitlabUser user: users){
 				if (user.getId() == 1) continue;
 				gitlab.createUserProject(user.getId(), Pname);
+				String jobName = user.getName()+"_"+Pname;
+				String jobXml = "http://140.134.26.71:20080/"+user.getUsername()+"/"+Pname;
+				jenkins.createJob(jobName, jobXml);
 //				gitlab.createUserProject(user.getId(), Pname, description, null, true, true, true, true, false, false, 0, null);
 				if(description!=null){
 					System.out.println("description not null");
 					projects = conn.getProject(user);
 					for(GitlabProject project : projects){
+						
 						String name = project.getName();
 						int id = project.getId();
 						System.out.println(id);
