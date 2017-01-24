@@ -159,6 +159,16 @@ public class GroupService {
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	public Response exportStudentList() throws Exception {
 		String filepath = "../download/StudentList.csv";
+		String tempDir = System.getProperty("java.io.tmpdir");
+		
+		String uploadDir = tempDir + "/uploads";
+		
+		File fUploadDir = new File(uploadDir);
+		if(!fUploadDir.exists())
+		{
+			fUploadDir.mkdirs();
+		}
+		
 		File file = new File(filepath);
 		FileWriter writer = new FileWriter(filepath);
 		StringBuilder build = new StringBuilder();
