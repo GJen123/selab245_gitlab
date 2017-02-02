@@ -93,6 +93,7 @@
 															for(GitlabProject project : projects){
 																String projectUrl = project.getWebUrl();
 																projectUrl = projectUrl.replace("http://0912fe2b3e43", "http://140.134.26.71:20080");
+																projectUrl += "/commits/master";
 																%>
 																	<tr>
 																		<td><a href="#" onclick="window.open('<%=projectUrl %>')"><%=project.getName() %></a></td>

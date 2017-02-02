@@ -100,6 +100,7 @@
 									for(GitlabProject project : projects){
 										String project_WebURL = project.getWebUrl();
 										project_WebURL = project_WebURL.replace("http://0912fe2b3e43", "http://140.134.26.71:20080");
+										project_WebURL += "/commits/master"; 
 										if(project.getName().substring(0,3).equals("OOP")){
 											String project_event_url = conn.getProjectEvent(project.getId(), private_token);
 											int total_commit_count = getUserHw.httpGetProjectEvent(project_event_url);
