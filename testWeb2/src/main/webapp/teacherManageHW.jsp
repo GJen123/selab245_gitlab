@@ -16,6 +16,12 @@
 	<!-- Latest compiled JavaScript -->
 	<script
 		src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		
+	<script src="./rich_text_js/nicEdit.js"></script>
+	
+	<script type="text/javascript">
+		bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
+	</script>
 	
 	<title>GitlabEdu</title>
 	
@@ -70,8 +76,10 @@
 					<div class="panel-body">
 						<div class="form-group">
 							<label for="Hw_Name">作業名稱:</label>
-							<input type="text" class="form-control" name="Hw_Name"> 
-							
+							<ul class="list-inline">
+								<li>OOP -</li>
+								<li><input type="text" class="form-control" name="Hw_Name" placeholder="ex. HW1"> </li>
+							</ul> 
 							<label for="eInputPassword">作業README:</label>
 							<textarea rows="4" cols="50" class="form-control" name="Hw_README"></textarea>
 						</div>
