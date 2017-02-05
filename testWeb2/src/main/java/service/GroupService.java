@@ -38,13 +38,19 @@ public class GroupService {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response upload(@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail) throws URISyntaxException {
-		String filePath = "E:\\upload\\";
-//		String fileName = StringUtils.substringAfterLast(fileDetail.getFileName(), ":");
+		String tempDir = System.getProperty("java.io.tmpdir");
+
+		String uploadDir = tempDir + "uploads/";
+
+		File fUploadDir = new File(uploadDir);
+		if (!fUploadDir.exists()) {
+			fUploadDir.mkdirs();
+		}
 		String fileName = fileDetail.getFileName();
 		System.out.println("fileName :" + fileName);
-		System.out.println(fileDetail.toString());
-		String uploadedFileLocation = filePath + fileName;
+		String uploadedFileLocation = uploadDir + fileName;
 		List<String> groupList = new ArrayList<String>();
+		System.out.println("File successfully uploaded to : " + uploadedFileLocation);
 
 		try {
 			FileOutputStream out = new FileOutputStream(new File(uploadedFileLocation));
@@ -82,7 +88,6 @@ public class GroupService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		String output = "File successfully uploaded to : " + uploadedFileLocation;
 		System.out.println("fileName :" + fileName);
 		java.net.URI location = new java.net.URI("../teacherManageGroup.jsp");
 		return Response.temporaryRedirect(location).build();
@@ -159,53 +164,46 @@ public class GroupService {
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	public Response exportStudentList() throws Exception {
 		String filepath = "../download/StudentList.csv";
-		String tempDir = System.getProperty("java.io.tmpdir");
-		
-		String uploadDir = tempDir + "/uploads";
-		
-		File fUploadDir = new File(uploadDir);
-		if(!fUploadDir.exists())
-		{
-			fUploadDir.mkdirs();
-		}
-		
+
 		File file = new File(filepath);
 		FileWriter writer = new FileWriter(filepath);
 		StringBuilder build = new StringBuilder();
-		
+
 		String[] csvTitle = { "Team", "Gitlab_Id", "Student_Id", "name", "TeamLeader" };
-		
+
 		List<GitlabUser> lsUsers = userService.getUsers();
 		Collections.reverse(lsUsers);
 
-		//insert title into file
+		// insert title into file
 		for (int i = 0; i < csvTitle.length; i++) {
 			build.append(csvTitle[i]);
-			if (i == csvTitle.length)break;
+			if (i == csvTitle.length)
+				break;
 			build.append(",");
 		}
 		build.append("\n");
-		
-		//insert user's id and name into file
-		for(GitlabUser user : lsUsers){
-			if(user.getId() == 1) continue;
-			build.append("");  //Team
+
+		// insert user's id and name into file
+		for (GitlabUser user : lsUsers) {
+			if (user.getId() == 1)
+				continue;
+			build.append(""); // Team
 			build.append(",");
-			build.append(user.getId());  //id
+			build.append(user.getId()); // id
 			build.append(",");
-			build.append(user.getUsername());  //userName
+			build.append(user.getUsername()); // userName
 			build.append(",");
-			build.append(user.getName());  //name
+			build.append(user.getName()); // name
 			build.append(",");
-			build.append("");  //TeamLeader
+			build.append(""); // TeamLeader
 			build.append("\n");
 		}
-		
-		//write the file
-		System.out.println("content:\n"+build.toString());
+
+		// write the file
+		System.out.println("content:\n" + build.toString());
 		writer.write(build.toString());
 		writer.close();
-		
+
 		ResponseBuilder response = Response.ok((Object) file);
 		response.header("Content-Disposition", "attachment;filename=StudentList.csv");
 		return response.build();
