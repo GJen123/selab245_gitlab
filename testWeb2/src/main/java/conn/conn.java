@@ -179,7 +179,7 @@ public class conn{
 				if (user.getId() == 1) continue;
 				gitlab.createUserProject(user.getId(), Pname);
 				String jobName = user.getName()+"_"+Pname;
-				String jobXml = "http://140.134.26.71:20080/"+user.getUsername()+"/"+Pname;
+				String jobXml = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/createItem?name="+jobName;
 				jenkins.createJob(jobName, jobXml);
 //				gitlab.createUserProject(user.getId(), Pname, description, null, true, true, true, true, false, false, 0, null);
 				if(description!=null){

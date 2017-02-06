@@ -1,8 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="utf-8"%>
-<%@ page import="conn.conn,conn.httpConnect,teacher.teacherGetUserHw"%>
+<%@ page import="conn.conn,conn.httpConnect,teacher.teacherGetUserHw,jenkins.jenkinsApi,jenkins.jenkinsApi2"%>
 <%@ page import="java.util.List" import="java.util.ArrayList" import="java.util.*"
-	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
+	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"
+	import="com.offbytwo.jenkins.model.JobWithDetails"
+	import="com.offbytwo.jenkins.JenkinsServer"
+	import="com.offbytwo.jenkins.client.JenkinsHttpClient"
+	%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -71,6 +75,9 @@
 		String private_token = conn.getPrivate_token(rootSession);
 		
 		Collections.reverse(users);
+		
+		jenkinsApi jenkins = new jenkinsApi();
+		jenkinsApi2 j2 = new jenkinsApi2();
 	%>
 	
 	<div class="container">
@@ -101,11 +108,34 @@
 										String project_WebURL = project.getWebUrl();
 										project_WebURL = project_WebURL.replace("http://0912fe2b3e43", "http://140.134.26.71:20080");
 										project_WebURL += "/commits/master"; 
+										
+										JobWithDetails job = jenkins.getJob("moe-sp");
+										boolean jobStatus = job.hasLastBuildRun();
+										
+										//System.out.println("aaa : "+jobStatus);
+										String url = "http://140.134.26.71:28080/api/json";
+										ArrayList<HashMap<String,String>> jobJson = j2.getJobJson(url,"moe-sp");
+										System.out.println("bbb : "+jobJson);
+										String color=null;
+										int i=0;
+										for (HashMap<String, String> map : jobJson){
+											for(String key : map.keySet()){
+												if(key.equals("moe-sp")){
+													color = jobJson.get(i).get(key);
+													break;
+												}
+												i++;
+											}
+											if(color!=null){
+												break;
+											}
+										}
+										
 										if(project.getName().substring(0,3).equals("OOP")){
 											String project_event_url = conn.getProjectEvent(project.getId(), private_token);
 											int total_commit_count = getUserHw.httpGetProjectEvent(project_event_url);
 											%>
-												<td><a href="#" onclick="window.open('<%=project_WebURL%>')"><%=total_commit_count %></a></td>
+												<td><a href="#" onclick="window.open('<%=project_WebURL%>')"><%=total_commit_count %>, status = <%=color %></a></td>
 											<%
 										}
 									}
