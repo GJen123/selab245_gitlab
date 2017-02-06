@@ -82,11 +82,26 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.3.4</version>
 		</dependency>
-
+		
+		<!-- jenkins -->
 		<dependency>
 			<groupId>com.offbytwo.jenkins</groupId>
 			<artifactId>jenkins-client</artifactId>
 			<version>0.3.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>1.5</version>
+		</dependency>
+		<!-- jenkins -->
+		
+		<!-- moji 抄襲比對 -->
+		<dependency>
+			<groupId>it.zielke</groupId>
+			<artifactId>moji</artifactId>
+			<version>1.0.2</version>
 		</dependency>
 
 
