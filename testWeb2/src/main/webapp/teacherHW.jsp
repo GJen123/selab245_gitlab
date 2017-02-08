@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="utf-8"%>
-<%@ page import="conn.conn,conn.httpConnect,teacher.teacherGetUserHw,jenkins.jenkinsApi,jenkins.jenkinsApi2"%>
+<%@ page import="conn.conn,conn.httpConnect,teacher.teacherGetUserHw,jenkins.jenkinsApi"%>
 <%@ page import="java.util.List" import="java.util.ArrayList" import="java.util.*"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"
 	import="com.offbytwo.jenkins.model.JobWithDetails"
@@ -77,7 +77,6 @@
 		Collections.reverse(users);
 		
 		jenkinsApi jenkins = new jenkinsApi();
-		jenkinsApi2 j2 = new jenkinsApi2();
 	%>
 	
 	<div class="container">
@@ -108,24 +107,12 @@
 										String project_WebURL = project.getWebUrl();
 										project_WebURL = project_WebURL.replace("http://0912fe2b3e43", "http://140.134.26.71:20080");
 										project_WebURL += "/commits/master"; 
-
-										//System.out.println("aaa : "+jobStatus);
+										
+										//---Jenkins---
 										String url = "http://140.134.26.71:38080/api/json";
-										ArrayList<HashMap<String,String>> jobJson = j2.getJobJson("GJen","zxcv1234" , url, project.getName());
-										String color=null;
-										int i=0;
-										for (HashMap<String, String> map : jobJson){
-											for(String key : map.keySet()){
-												if(key.equals(userName+"_"+project.getName())){
-													color = jobJson.get(i).get(key);
-													break;
-												}
-												i++;
-											}
-											if(color!=null){
-												break;
-											}
-										}
+										ArrayList<HashMap<String,String>> jobJson = jenkins.getJobJson("GJen","zxcv1234" , url, project.getName());
+										String color = jenkins.getJobColor(jobJson, userName, project.getName());
+										//-------------
 										
 										if(project.getName().substring(0,3).equals("OOP")){
 											String project_event_url = conn.getProjectEvent(project.getId(), private_token);

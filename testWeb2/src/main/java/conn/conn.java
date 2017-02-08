@@ -173,17 +173,14 @@ public class conn{
 //		GitlabUser user = users.get(0);
 		conn conn = new conn();
 		httpConnect httpconn = new httpConnect();
-		jenkinsApi jenkins = new jenkinsApi();
 		try {
 			for (GitlabUser user: users){
 				if (user.getId() == 1) continue;
 				gitlab.createUserProject(user.getId(), Pname);
-				String jobName = user.getUsername()+"_"+Pname;
-				String strUrl = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/createItem?name="+jobName;
-				String proUrl = "http://140.134.26.71:20080/" + user.getUsername() + "/" + Pname + ".git";
-				jenkins.postCreateJob("GJen", "zxcv1234", strUrl, jobName, proUrl);
+				
 //				gitlab.createUserProject(user.getId(), Pname, description, null, true, true, true, true, false, false, 0, null);
-				if(description!=null){
+				//---¥[readMe---
+				if(description.equals("")){
 					System.out.println("description not null");
 					projects = conn.getProject(user);
 					for(GitlabProject project : projects){
@@ -196,6 +193,7 @@ public class conn{
 						}
 					}
 				}
+				//------------
 			}
 			return true;
 		}catch (IOException e){
