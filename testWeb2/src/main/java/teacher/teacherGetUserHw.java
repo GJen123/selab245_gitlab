@@ -50,7 +50,7 @@ public class teacherGetUserHw{
             }
         }
         catch (Exception e) {
-            System.out.println(e.toString());
+            
         }
         finally {
             if (conn != null) {

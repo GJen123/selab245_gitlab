@@ -178,9 +178,10 @@ public class conn{
 			for (GitlabUser user: users){
 				if (user.getId() == 1) continue;
 				gitlab.createUserProject(user.getId(), Pname);
-				String jobName = user.getName()+"_"+Pname;
-				String jobXml = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/createItem?name="+jobName;
-				jenkins.createJob(jobName, jobXml);
+				String jobName = user.getUsername()+"_"+Pname;
+				String strUrl = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/createItem?name="+jobName;
+				String proUrl = "http://140.134.26.71:20080/" + user.getUsername() + "/" + Pname + ".git";
+				jenkins.postCreateJob("GJen", "zxcv1234", strUrl, jobName, proUrl);
 //				gitlab.createUserProject(user.getId(), Pname, description, null, true, true, true, true, false, false, 0, null);
 				if(description!=null){
 					System.out.println("description not null");
@@ -189,11 +190,8 @@ public class conn{
 						
 						String name = project.getName();
 						int id = project.getId();
-						System.out.println(id);
 						String url = "http://140.134.26.71:20080/api/v3/projects/"+id+"/repository/files?private_token=yUnRUT5ex1s3HU7yQ_g-";
-						System.out.println(url);
 						if(name.equals(Pname)){
-							System.out.println("fw");
 							httpconn.httpPostReadme( url, description);
 						}
 					}

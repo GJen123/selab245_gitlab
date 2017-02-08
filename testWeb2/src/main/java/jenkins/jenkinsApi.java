@@ -1,7 +1,13 @@
 package jenkins;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -9,6 +15,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -16,95 +32,54 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.client.JenkinsHttpClient;
 import com.offbytwo.jenkins.model.Build;
 import com.offbytwo.jenkins.model.JobWithDetails;
 
+import sun.misc.BASE64Encoder;
+
 public class jenkinsApi{
 	
-	URL url;
-	URI uri;
-	JenkinsServer jenkins;
-	JenkinsHttpClient client;
-	public jenkinsApi(){
-		try {
-			url = new URL("http://140.134.26.71:28080");
-			uri = url.toURI();
-			System.out.println("uri : "+uri.toString());
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		client = new JenkinsHttpClient( uri, "admin", "iecsfcu123456");
-		jenkins = new JenkinsServer(client);
-//		System.out.println("-----------jenkins---------\n");
-//		System.out.println(jenkins);
-//		try {
-//			System.out.println(jenkins.getJob("test2").getName());
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		System.out.println("\n-------------------------\n");
-	}
-	
-	public void createJob(String jobName, String jobXml){
-		try {
-			jenkins.createJob(jobName, jobXml);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public JobWithDetails getJob(String jobName){
-		JobWithDetails job = null;
-		try {
-			job = jenkins.getJob(jobName);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return job;
-	}
-	
-	public String getJobXml(String jobName){
-		String jobXml=null;
-		try {
-			jobXml = jenkins.getJobXml(jobName);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return jobXml;
-	}
-	
-	public void postCreateJob(String jobName){
+	//  用httppost create jenkins job
+	public void postCreateJob(String username, String password, String strUrl, String jobName, String proUrl){
 		HttpClient client = new DefaultHttpClient();
+		String jenkinsUrl = "http://140.134.26.71:38080";
+		String JenkinsCrumb = getCrumb(username, password, jenkinsUrl);
 		String url = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/createItem?name="+jobName;
         try {
             HttpPost post = new HttpPost(url);
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-            //params.add((NameValuePair) new BasicNameValuePair("file_path",file_path));
             
+            post.addHeader("Content-Type", "application/xml");
+            post.addHeader("Jenkins-Crumb", JenkinsCrumb);
+//            post.addHeader("Jenkins-Crumb", "e390d46093102dac6c0ec903b77af0a0");
             
-            UrlEncodedFormEntity ent = null;
-            ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
-            post.setEntity(ent);
-
+            String filePath = this.getClass().getResource("config.xml").getFile();
+            modifyXmlFileUrl(filePath, proUrl);
+            
+            StringBuilder sb = getConfig();
+            StringEntity se = new StringEntity(sb.toString(), ContentType.create("text/xml", Consts.UTF_8));
+            se.setChunked(true);
+            
+            post.setEntity(se);
+            
             HttpResponse responsePOST = client.execute(post);
             HttpEntity resEntity = responsePOST.getEntity();
 
             if(resEntity != null){
-                System.out.println("Success");
+            	String result = resEntity.toString();
+                System.out.println(result);
             }else{
 
             }
@@ -113,6 +88,112 @@ public class jenkinsApi{
         } catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
+	
+	//  用httpget 抓jenkins的crumb值
+	public String getCrumb(String username, String password, String strUrl){
+		String JenkinsCrumb=null;
+		HttpURLConnection conn = null;
+		
+        try {
+            if (Thread.interrupted()) {
+                throw new InterruptedException();
+            }
+            // 建立連線
+            strUrl += "/crumbIssuer/api/json";
+            URL url = new URL(strUrl);
+            conn = (HttpURLConnection) url.openConnection();
+            String input = username + ":" + password;
+            BASE64Encoder enc = new BASE64Encoder();
+        	String encoding = enc.encode(input.getBytes());
+            conn.setRequestProperty("Authorization", "Basic " + encoding);
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("GET");
+            conn.connect();
+            if (Thread.interrupted()) {
+                throw new InterruptedException();
+            }
+            // 讀取資料
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    conn.getInputStream(), "UTF-8"));
+            String jsonString = reader.readLine();
+            reader.close();
+            
+            JSONObject jsonObj = new JSONObject(jsonString);
+            JenkinsCrumb = jsonObj.getString("crumb");
+        }
+        catch (Exception e) {
+            System.out.println("abc : "+e);
+        }
+        finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+		return JenkinsCrumb;
+	}
+	
+	public StringBuilder getConfig(){
+		FileInputStream fis;
+		StringBuilder sb = new StringBuilder();
+		String strConfig=null;
+		try {
+			String filePath = this.getClass().getResource("config.xml").getFile();
+			fis = new FileInputStream(filePath);
+			InputStreamReader reader= new InputStreamReader(fis, "UTF8");
+	        BufferedReader buf = new BufferedReader(reader);
+	        while ((strConfig = buf.readLine()) != null) {
+	        	sb.append(strConfig);
+	        	sb.append("\n");
+	            }
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+        return sb;
+	}
+	
+	public void modifyXmlFileUrl(String filePath, String url){
+		try {
+            String filepath = filePath;
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory
+                    .newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse(filepath);
+
+            Node ndUrl = doc.getElementsByTagName("url").item(0);
+            ndUrl.setTextContent(url);
+            
+            // write the content into xml file
+            TransformerFactory transformerFactory = TransformerFactory
+                    .newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(new File(filepath));
+            transformer.transform(source, result);
+
+            System.out.println("Done");
+
+        } catch (ParserConfigurationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (TransformerException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SAXException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 	}

@@ -36,7 +36,7 @@
 	<%
 		name = request.getParameter("Hw_Name"); 
 		rm = request.getParameter("Hw_README");
-		
+		name = "OOP-"+name;
 		conn.createPrivateProject(name, rm);
 		response.sendRedirect("teacherManageHW.jsp");
 	%>

@@ -108,19 +108,15 @@
 										String project_WebURL = project.getWebUrl();
 										project_WebURL = project_WebURL.replace("http://0912fe2b3e43", "http://140.134.26.71:20080");
 										project_WebURL += "/commits/master"; 
-										
-										JobWithDetails job = jenkins.getJob("moe-sp");
-										boolean jobStatus = job.hasLastBuildRun();
-										
+
 										//System.out.println("aaa : "+jobStatus);
-										String url = "http://140.134.26.71:28080/api/json";
-										ArrayList<HashMap<String,String>> jobJson = j2.getJobJson(url,"moe-sp");
-										System.out.println("bbb : "+jobJson);
+										String url = "http://140.134.26.71:38080/api/json";
+										ArrayList<HashMap<String,String>> jobJson = j2.getJobJson("GJen","zxcv1234" , url, project.getName());
 										String color=null;
 										int i=0;
 										for (HashMap<String, String> map : jobJson){
 											for(String key : map.keySet()){
-												if(key.equals("moe-sp")){
+												if(key.equals(userName+"_"+project.getName())){
 													color = jobJson.get(i).get(key);
 													break;
 												}
