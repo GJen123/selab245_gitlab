@@ -167,7 +167,7 @@ public class conn{
 	 *					Integer visibilityLevel, 
 	 *					String importUrl)
 	 */
-	public boolean createPrivateProject(String Pname, String description){
+	public boolean createPrivateProject(String Pname, String readme, String importUrl){
 		List<GitlabUser> users = getUsers();
 		List<GitlabProject> projects = new ArrayList<GitlabProject>();
 //		GitlabUser user = users.get(0);
@@ -178,10 +178,9 @@ public class conn{
 				if (user.getId() == 1) continue;
 				gitlab.createUserProject(user.getId(), Pname);
 				
-//				gitlab.createUserProject(user.getId(), Pname, description, null, true, true, true, true, false, false, 0, null);
 				//---¥[readMe---
-				if(description.equals("")){
-					System.out.println("description not null");
+				if(readme.equals("")){
+					System.out.println("readme not null");
 					projects = conn.getProject(user);
 					for(GitlabProject project : projects){
 						
@@ -189,7 +188,7 @@ public class conn{
 						int id = project.getId();
 						String url = "http://140.134.26.71:20080/api/v3/projects/"+id+"/repository/files?private_token=yUnRUT5ex1s3HU7yQ_g-";
 						if(name.equals(Pname)){
-							httpconn.httpPostReadme( url, description);
+							httpconn.httpPostReadme( url, readme);
 						}
 					}
 				}

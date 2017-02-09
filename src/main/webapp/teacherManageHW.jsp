@@ -66,7 +66,7 @@
 	<br><br><br>
 	
 	<div class="container">
-		<form class="form-signin" method="post" action="CreateProject.jsp">
+		<form class="form-signin" method="post" action="webapi/project/create">
 			<div>
 				<div class="login-panel panel panel-default">
 					<div class="panel-heading">
@@ -80,8 +80,10 @@
 								<li>OOP -</li>
 								<li><input type="text" class="form-control" name="Hw_Name" placeholder="ex. HW1"> </li>
 							</ul> 
-							<label for="eInputPassword">作業README:</label>
-							<textarea rows="4" cols="50" class="form-control" name="Hw_README"></textarea>
+							<label for="Hw_README">README.md:</label>
+							<textarea rows="4" cols="50" class="form-control" name="readme"></textarea>
+							<label for="importUrl">importUrl:</label>
+							<input type="text" name="importUrl" class="form-control">
 						</div>
 						
 						<div class="form-group">

@@ -115,13 +115,6 @@ public class UserService {
 		}
 	}
 	
-	@POST
-	@Path("createProject")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Produces(MediaType.APPLICATION_JSON)
-	public void NewProject(@FormParam("Hw_Name") String name, @FormParam("Hw_Name") String description) {
-		userConn.createPrivateProject(name, description);
-	}
 	public List<GitlabUser> getUsers(){
 		  return userConn.getUsers();
 		 }
