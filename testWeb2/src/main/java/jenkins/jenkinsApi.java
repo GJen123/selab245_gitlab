@@ -297,7 +297,7 @@ public class jenkinsApi{
 			jobName = user.getUsername()+"_"+Pname;
 			HttpClient client = new DefaultHttpClient();
 			
-			String url = "http://140.134.26.71:38080/job/"+jobName+"/build";
+			String url = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/job/"+jobName+"/build";
 	        try {
 	            HttpPost post = new HttpPost(url);
 	            
