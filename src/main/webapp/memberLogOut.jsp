@@ -10,7 +10,7 @@
 	<%
 		session.setAttribute("username", null);
 
-		response.sendRedirect("memberEnter.jsp");
+		response.sendRedirect("index.jsp");
 	%>
 </body>
 </html>
