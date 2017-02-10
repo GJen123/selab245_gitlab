@@ -67,4 +67,54 @@ public class httpConnect {
             e.printStackTrace();
         }
 	}
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+	
+	//如果沒有importUrl
+	public void httpPostQuickStart(String url){
+		String filePath = "C:\\Program Files\\Gitlab_workspace";
+		File file = new File(filePath);
+	}
+	
+	public void httpPostQuickStartPomXml(String url, String content){
+		String file_path = "pom.xml";
+		String branch_name = "master";
+		String author_email = "admin@example.com";
+		String author_name = "root";
+		String commit_message = "pom.xml";
+		HttpClient client = new DefaultHttpClient();
+        try {
+            HttpPost post = new HttpPost(url);
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add((NameValuePair) new BasicNameValuePair("file_path",file_path));
+            params.add((NameValuePair) new BasicNameValuePair("branch_name",branch_name));
+            params.add((NameValuePair) new BasicNameValuePair("author_email",author_email));
+            params.add((NameValuePair) new BasicNameValuePair("author_name",author_name));
+            params.add((NameValuePair) new BasicNameValuePair("content",content));
+            params.add((NameValuePair) new BasicNameValuePair("commit_message",commit_message));
+            
+            UrlEncodedFormEntity ent = null;
+            ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
+            post.setEntity(ent);
+
+            HttpResponse responsePOST = client.execute(post);
+            HttpEntity resEntity = responsePOST.getEntity();
+
+            if(resEntity != null){
+                System.out.println("Success");
+            }else{
+
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
+>>>>>>> 0d1ad3fbf63d6251e4e5da2341b2681f69e2b43b
+>>>>>>> 9afa958bde45828ae8e76ba22141c7c7b6bd41e1
 }
