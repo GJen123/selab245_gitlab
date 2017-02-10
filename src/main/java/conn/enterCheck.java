@@ -48,7 +48,6 @@ public class enterCheck{
 				    while ((response = br.readLine()) != null) {  
 				        sb.append(response + "\n");  
 				        result = sb.toString();
-				        System.out.println("sb : "+sb.toString());
 				    }
 				    br.close(); 
 				} else {
@@ -68,7 +67,6 @@ public class enterCheck{
 		String access_token = null;
 		if(!str.equals("")){
 			JSONObject json = new JSONObject(str);
-			System.out.println("json : " + json);
 			if(json.has("access_token")){
 				access_token = json.getString("access_token");
 			}else{
