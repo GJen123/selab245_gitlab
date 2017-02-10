@@ -176,10 +176,16 @@ public class conn{
 		try {
 			for (GitlabUser user: users){
 				if (user.getId() == 1) continue;
-				gitlab.createUserProject(user.getId(), Pname);
+				if(!importUrl.equals("")){
+					System.out.println("importUrl not null");
+					gitlab.createUserProject(user.getId(), Pname, null, null, null, null, null, null, null, null, null, importUrl);
+				}else{
+					gitlab.createUserProject(user.getId(), Pname);
+				}
+				
 				
 				//---¥[readMe---
-				if(readme.equals("")){
+				if(!readme.equals("")){
 					System.out.println("readme not null");
 					projects = conn.getProject(user);
 					for(GitlabProject project : projects){
@@ -193,6 +199,7 @@ public class conn{
 					}
 				}
 				//------------
+				
 			}
 			return true;
 		}catch (IOException e){
