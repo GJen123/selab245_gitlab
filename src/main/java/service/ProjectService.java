@@ -26,7 +26,6 @@ public class ProjectService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response NewProject(@FormParam("Hw_Name") String name, @FormParam("readme") String readme, @FormParam("importUrl") String importUrl) throws URISyntaxException {
 		name = "OOP-"+name;
-		System.out.println("readme : " + readme);
 		userConn.createPrivateProject(name, readme, importUrl);
 		
 		//---jenkins create job---

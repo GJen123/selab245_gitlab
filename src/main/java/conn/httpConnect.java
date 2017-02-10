@@ -2,6 +2,7 @@ package conn;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -67,4 +68,47 @@ public class httpConnect {
         }
 	}
 	
+	//如果沒有importUrl
+	public void httpPostQuickStart(String url){
+		String filePath = "C:\\Program Files\\Gitlab_workspace";
+		File file = new File(filePath);
+	}
+	
+	public void httpPostQuickStartPomXml(String url, String content){
+		String file_path = "pom.xml";
+		String branch_name = "master";
+		String author_email = "admin@example.com";
+		String author_name = "root";
+		String commit_message = "pom.xml";
+		HttpClient client = new DefaultHttpClient();
+        try {
+            HttpPost post = new HttpPost(url);
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add((NameValuePair) new BasicNameValuePair("file_path",file_path));
+            params.add((NameValuePair) new BasicNameValuePair("branch_name",branch_name));
+            params.add((NameValuePair) new BasicNameValuePair("author_email",author_email));
+            params.add((NameValuePair) new BasicNameValuePair("author_name",author_name));
+            params.add((NameValuePair) new BasicNameValuePair("content",content));
+            params.add((NameValuePair) new BasicNameValuePair("commit_message",commit_message));
+            
+            UrlEncodedFormEntity ent = null;
+            ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
+            post.setEntity(ent);
+
+            HttpResponse responsePOST = client.execute(post);
+            HttpEntity resEntity = responsePOST.getEntity();
+
+            if(resEntity != null){
+                System.out.println("Success");
+            }else{
+
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
 }

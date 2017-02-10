@@ -180,7 +180,9 @@ public class conn{
 					System.out.println("importUrl not null");
 					gitlab.createUserProject(user.getId(), Pname, null, null, null, null, null, null, null, null, null, importUrl);
 				}else{
-					gitlab.createUserProject(user.getId(), Pname);
+					System.out.println("importUrl is null");
+					String mvnQuickStartUrl = "http://140.134.26.71:20080/root/MvnQuickStart.git";
+					gitlab.createUserProject(user.getId(), Pname, null, null, null, null, null, null, null, null, null, mvnQuickStartUrl);
 				}
 				
 				
