@@ -167,7 +167,7 @@ public class conn{
 	 *					Integer visibilityLevel, 
 	 *					String importUrl)
 	 */
-	public boolean createPrivateProject(String Pname, String readme, String importUrl){
+	public boolean createPrivateProject(String Pname, String importUrl){
 		List<GitlabUser> users = getUsers();
 		List<GitlabProject> projects = new ArrayList<GitlabProject>();
 //		GitlabUser user = users.get(0);
@@ -176,6 +176,7 @@ public class conn{
 		try {
 			for (GitlabUser user: users){
 				if (user.getId() == 1) continue;
+//				gitlab.createUserProject(user.getId(), Pname, null, null, null, null, null, null, null, null, null, null);
 				if(!importUrl.equals("")){
 					System.out.println("importUrl not null");
 					gitlab.createUserProject(user.getId(), Pname, null, null, null, null, null, null, null, null, null, importUrl);
@@ -184,22 +185,20 @@ public class conn{
 					String mvnQuickStartUrl = "http://140.134.26.71:20080/root/MvnQuickStart.git";
 					gitlab.createUserProject(user.getId(), Pname, null, null, null, null, null, null, null, null, null, mvnQuickStartUrl);
 				}
-				
-				
 				//---¥[readMe---
-				if(!readme.equals("")){
-					System.out.println("readme not null");
-					projects = conn.getProject(user);
-					for(GitlabProject project : projects){
-						
-						String name = project.getName();
-						int id = project.getId();
-						String url = "http://140.134.26.71:20080/api/v3/projects/"+id+"/repository/files?private_token=yUnRUT5ex1s3HU7yQ_g-";
-						if(name.equals(Pname)){
-							httpconn.httpPostReadme( url, readme);
-						}
-					}
-				}
+//				if(!readme.equals("")){
+//					System.out.println("readme not null");
+//					projects = conn.getProject(user);
+//					for(GitlabProject project : projects){
+//						
+//						String name = project.getName();
+//						int id = project.getId();
+//						String url = "http://140.134.26.71:20080/api/v3/projects/"+id+"/repository/files?private_token=yUnRUT5ex1s3HU7yQ_g-";
+//						if(name.equals(Pname)){
+//							httpconn.httpPostReadme( url, readme);
+//						}
+//					}
+//				}
 				//------------
 				
 			}

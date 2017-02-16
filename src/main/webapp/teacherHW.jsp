@@ -112,13 +112,20 @@
 										String url = "http://140.134.26.71:38080/api/json";
 										ArrayList<HashMap<String,String>> jobJson = jenkins.getJobJson("GJen","zxcv1234" , url, project.getName());
 										String color = jenkins.getJobColor(jobJson, userName, project.getName());
+										String colorPic = null;
+										if(color!=null){
+											colorPic = jenkins.getColorPic(color);
+										}else{
+											colorPic = "jenkins_pic/jenkins_gray.PNG";
+										}
 										//-------------
 										
 										if(project.getName().substring(0,3).equals("OOP")){
 											String project_event_url = conn.getProjectEvent(project.getId(), private_token);
 											int total_commit_count = getUserHw.httpGetProjectEvent(project_event_url);
 											%>
-												<td><a href="#" onclick="window.open('<%=project_WebURL%>')"><%=total_commit_count %>, status = <%=color %></a></td>
+												<td><a href="#" onclick="window.open('<%=project_WebURL%>')"><%=total_commit_count %></a>
+												<img src="<%=colorPic %>" width="36" height="31"></td>
 											<%
 										}
 									}

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -328,6 +329,18 @@ public class jenkinsApi{
 	            e.printStackTrace();
 	        }
 		}
+	}
+	
+	public String getColorPic(String color){
+		String colorPic = null;
+		if(color.equals("blue")){
+			colorPic = "jenkins_pic/jenkins_blue.PNG";
+		}else if(color.equals("red")){
+			colorPic = "jenkins_pic/jenkins_red.PNG";
+		}else{
+			colorPic = "jenkins_pic/jenkins_gray.PNG";
+		}
+		return colorPic;
 	}
 	
 }

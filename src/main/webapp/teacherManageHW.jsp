@@ -66,7 +66,7 @@
 	<br><br><br>
 	
 	<div class="container">
-		<form class="form-signin" method="post" action="webapi/project/create">
+		<form class="form-signin" method="post" action="webapi/project/create" enctype="multipart/mixed">
 			<div>
 				<div class="login-panel panel panel-default">
 					<div class="panel-heading">
@@ -75,15 +75,23 @@
 
 					<div class="panel-body">
 						<div class="form-group">
+							<a href="MvnQuickStart.zip"  class="btn btn-default">下載Maven基本專案</a>
+							
+							<br>
 							<label for="Hw_Name">作業名稱:</label>
 							<ul class="list-inline">
 								<li>OOP -</li>
 								<li><input type="text" class="form-control" name="Hw_Name" placeholder="ex. HW1"> </li>
 							</ul> 
-							<label for="Hw_README">README.md:</label>
-							<textarea rows="4" cols="50" class="form-control" name="readme"></textarea>
+							
 							<label for="importUrl">importUrl:</label>
 							<input type="text" name="importUrl" class="form-control">
+							
+							<!-- 上傳  -->
+							<label for="file">Maven專案(限zip檔):</label>
+							<input type="file" accept=".zip" name="file" size="50" />
+							<!-- ------------- -->
+							
 						</div>
 						
 						<div class="form-group">
@@ -93,6 +101,7 @@
 				</div>
 			</div>
 		</form>
+		
 	</div>
 	
 </body>

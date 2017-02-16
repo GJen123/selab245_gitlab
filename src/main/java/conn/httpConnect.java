@@ -67,4 +67,39 @@ public class httpConnect {
             e.printStackTrace();
         }
 	}
+	
+	public void httpPostSrc(String file_path,String url, String src){
+		//String file_path = "src";
+		String branch_name = "master";
+		String encoding = "test";
+		String commit_message = "src";
+		HttpClient client = new DefaultHttpClient();
+        try {
+            HttpPost post = new HttpPost(url);
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add((NameValuePair) new BasicNameValuePair("file_path",file_path));
+            params.add((NameValuePair) new BasicNameValuePair("branch_name",branch_name));
+            params.add((NameValuePair) new BasicNameValuePair("content",src));
+            params.add((NameValuePair) new BasicNameValuePair("commit_message",commit_message));
+            
+            UrlEncodedFormEntity ent = null;
+            ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
+            post.setEntity(ent);
+
+            HttpResponse responsePOST = client.execute(post);
+            HttpEntity resEntity = responsePOST.getEntity();
+
+            if(resEntity != null){
+                System.out.println("Success");
+            }else{
+
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
 }
