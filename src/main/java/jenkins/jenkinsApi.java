@@ -56,6 +56,16 @@ import sun.misc.BASE64Encoder;
 
 public class jenkinsApi{
 	
+	public void createRootJob(String Pname, String jenkinsCrumb){
+		conn conn = new conn();
+		//---Create Jenkins Job---
+		String jobName = "root_"+Pname;
+		String strUrl = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/createItem?name="+jobName;
+		String proUrl = "http://140.134.26.71:20080/root/" + Pname + ".git";
+		postCreateJob("GJen", "zxcv1234", strUrl, jobName, proUrl, jenkinsCrumb);
+		//------------------------
+	}
+	
 	public void createJenkinsJob(String Pname, String jenkinsCrumb){
 		conn conn = new conn();
 		List<GitlabUser> users = conn.getUsers();

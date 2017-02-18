@@ -1,18 +1,20 @@
 package UnZipped;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import conn.httpConnect;
+
 public class UnZip{
-	
-    private static final String INPUT_ZIP_FILE = "C:\\MyFile.zip";
-    private static final String OUTPUT_FOLDER = "C:\\outputzip";
+	httpConnect httpConn = new httpConnect();
     private static final String tempDir = System.getProperty("java.io.tmpdir");
 
     /**
@@ -26,8 +28,9 @@ public class UnZip{
      * @param destDirectory
      * @throws IOException
      */
-    public void unzip(String zipFilePath) throws IOException {
-    	String destDirectory =  tempDir + "GitEdu/uploads/";
+    public void unzip(String zipFilePath, Integer projectId, String folderName) throws IOException {
+    	String destDirectory =  tempDir + "uploads\\";
+    	System.out.println("destDirectory : " + destDirectory);
         File destDir = new File(destDirectory);
         if (!destDir.exists()) {
             destDir.mkdir();
@@ -40,6 +43,20 @@ public class UnZip{
             if (!entry.isDirectory()) {
                 // if the entry is a file, extracts it
                 extractFile(zipIn, filePath);
+                String fileContent = readFile(filePath);
+                
+                //folderLength = 選擇的.zip檔案名稱
+                int folderLength = folderName.length();
+                //計算folderName的大小
+                int index = entry.getName().indexOf(folderName);
+                //fileName = 取得folderName.zip後面的所有String , -3是因為.zip
+                String fileName = entry.getName().substring(index+folderLength-3);
+                
+                //---httpPost to Gitlab---
+                String url = "http://140.134.26.71:20080/api/v3/projects/"+projectId+"/repository/files?private_token=yUnRUT5ex1s3HU7yQ_g-";
+                httpConn.httpPostFile(fileName, url, fileContent);
+                //------------------------
+                
             } else {
                 // if the entry is a directory, make the directory
                 File dir = new File(filePath);
@@ -64,5 +81,22 @@ public class UnZip{
             bos.write(bytesIn, 0, read);
         }
         bos.close();
+    }
+    
+    private String readFile(String fileName) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
+        try {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                sb.append("\n");
+                line = br.readLine();
+            }
+            return sb.toString();
+        } finally {
+            br.close();
+        }
     }
 }

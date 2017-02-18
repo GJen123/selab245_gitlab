@@ -19,7 +19,7 @@
 	<script
 		src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	
-	<title>GitlabEdu</title>
+	<title>ProgEdu</title>
 </head>
 <body>
 
@@ -37,11 +37,11 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand">GitlabEdu</a>
+                <a class="navbar-brand">ProgEdu</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="teacherHW.jsp">作業</a></li>
+                    <li><a href="teacherHW.jsp">儀表板</a></li>
                     <li><a href="teacherGroup.jsp">專題</a></li>
                     <li class="dropdown">
                     	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">設定 <span class="caret"></span></a>

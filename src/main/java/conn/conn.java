@@ -169,38 +169,10 @@ public class conn{
 	 */
 	public boolean createPrivateProject(String Pname, String importUrl){
 		List<GitlabUser> users = getUsers();
-		List<GitlabProject> projects = new ArrayList<GitlabProject>();
-//		GitlabUser user = users.get(0);
-		conn conn = new conn();
-		httpConnect httpconn = new httpConnect();
 		try {
 			for (GitlabUser user: users){
 				if (user.getId() == 1) continue;
-//				gitlab.createUserProject(user.getId(), Pname, null, null, null, null, null, null, null, null, null, null);
-				if(!importUrl.equals("")){
-					System.out.println("importUrl not null");
-					gitlab.createUserProject(user.getId(), Pname, null, null, null, null, null, null, null, null, null, importUrl);
-				}else{
-					System.out.println("importUrl is null");
-					String mvnQuickStartUrl = "http://140.134.26.71:20080/root/MvnQuickStart.git";
-					gitlab.createUserProject(user.getId(), Pname, null, null, null, null, null, null, null, null, null, mvnQuickStartUrl);
-				}
-				//---¥[readMe---
-//				if(!readme.equals("")){
-//					System.out.println("readme not null");
-//					projects = conn.getProject(user);
-//					for(GitlabProject project : projects){
-//						
-//						String name = project.getName();
-//						int id = project.getId();
-//						String url = "http://140.134.26.71:20080/api/v3/projects/"+id+"/repository/files?private_token=yUnRUT5ex1s3HU7yQ_g-";
-//						if(name.equals(Pname)){
-//							httpconn.httpPostReadme( url, readme);
-//						}
-//					}
-//				}
-				//------------
-				
+				gitlab.createUserProject(user.getId(), Pname, null, null, null, null, null, null, null, null, null, importUrl);			
 			}
 			return true;
 		}catch (IOException e){
@@ -294,6 +266,17 @@ public class conn{
 		}
 		return false;
     }
+    
+    public boolean createRootProject(String Pname){
+		try {
+			gitlab.createUserProject(1, Pname, null, null, null, null, null, null, null, null, null, null);
+			return true;
+		}catch (IOException e){
+			System.out.println(e);
+		}
+		return false;
+	}
+    
 }
 
 

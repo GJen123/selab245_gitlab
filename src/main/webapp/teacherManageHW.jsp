@@ -23,7 +23,7 @@
 		bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
 	</script>
 	
-	<title>GitlabEdu</title>
+	<title>ProgEdu</title>
 	
 </head>
 <body>
@@ -41,11 +41,11 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand">GitlabEdu</a>
+                <a class="navbar-brand">ProgEdu</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="teacherHW.jsp">作業</a></li>
+                    <li><a href="teacherHW.jsp">儀表板</a></li>
                     <li><a href="teacherGroup.jsp">專題</a></li>
                     <li class="dropdown">
                     	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">設定 <span class="caret"></span></a>
@@ -66,7 +66,7 @@
 	<br><br><br>
 	
 	<div class="container">
-		<form class="form-signin" method="post" action="webapi/project/create" enctype="multipart/mixed">
+		<form class="form-signin" method="post" action="webapi/project/create" enctype="multipart/form-data">
 			<div>
 				<div class="login-panel panel panel-default">
 					<div class="panel-heading">
@@ -78,24 +78,27 @@
 							<a href="MvnQuickStart.zip"  class="btn btn-default">下載Maven基本專案</a>
 							
 							<br>
-							<label for="Hw_Name">作業名稱:</label>
-							<ul class="list-inline">
-								<li>OOP -</li>
-								<li><input type="text" class="form-control" name="Hw_Name" placeholder="ex. HW1"> </li>
-							</ul> 
-							
-							<label for="importUrl">importUrl:</label>
-							<input type="text" name="importUrl" class="form-control">
-							
+							<div class ="col-md-4">
+								<label for="Hw_Name">作業名稱:</label>
+								<input type="text" class="form-control" name="Hw_Name" placeholder="ex. OOP-HW1"/>
+							</div>
+							<br>
+							<br>
+							<br>
+							<br>
 							<!-- 上傳  -->
-							<label for="file">Maven專案(限zip檔):</label>
-							<input type="file" accept=".zip" name="file" size="50" />
+							<div class ="col-md-4">
+								<label for="file">Maven專案(限zip檔):</label>
+								<input type="file" accept=".zip" name="file" size="50" width="48"/>
+							</div>
+							<br>
+							<br>
 							<!-- ------------- -->
 							
 						</div>
 						
 						<div class="form-group">
-							<button type="submit" class="btn btn-default btn-block">送出</button>
+							<button type="submit" class="btn btn-default">送出</button>
 						</div>
 					</div>
 				</div>

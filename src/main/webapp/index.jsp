@@ -19,7 +19,7 @@
 	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
 
-<title>GitlabEdu Login</title>
+<title>ProgEdu Login</title>
 </head>
 <body>
 

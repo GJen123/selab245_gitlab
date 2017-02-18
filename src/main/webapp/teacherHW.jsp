@@ -21,7 +21,7 @@
 	<script
 		src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	
-	<title>GitlabEdu</title>
+	<title>ProgEdu</title>
 </head>
 <body>
 	<%
@@ -38,11 +38,11 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand">GitlabEdu</a>
+                <a class="navbar-brand">ProgEdu</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="teacherHW.jsp">作業</a></li>
+                    <li class="active"><a href="teacherHW.jsp">儀表板</a></li>
                     <li><a href="teacherGroup.jsp">專題</a></li>
                     <li class="dropdown">
                     	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">設定 <span class="caret"></span></a>
@@ -70,6 +70,7 @@
 		List<GitlabUser> users = conn.getUsers();
 		List<GitlabProject> projects = new ArrayList<GitlabProject>();	
 		
+		GitlabUser root = conn.getRoot();
 		
 		GitlabSession rootSession = conn.getRootSession();
 		String private_token = conn.getPrivate_token(rootSession);
@@ -85,10 +86,17 @@
 				<tr>
 					<th>座號</th>
 					<th>姓名</th>
-					<th>OOP-HW1</th>
-					<th>OOP-HW2</th>
-					<th>OOP-HW3</th>
-					<th>OOP-HW4</th>
+					<%
+						List<GitlabProject> rootProjects = conn.getProject(root);
+						Collections.reverse(rootProjects);
+						for(GitlabProject project : rootProjects){
+							if(project.getName().substring(0,3).equals("OOP")){
+								%>
+									<th><%=project.getName() %></th>
+								<%
+							}
+						}
+					%>
 				</tr>
 			</thead>
 			<tbody>

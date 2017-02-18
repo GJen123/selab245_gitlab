@@ -68,18 +68,19 @@ public class httpConnect {
         }
 	}
 	
-	public void httpPostSrc(String file_path,String url, String src){
+	public void httpPostFile(String file_path,String url, String fileContent){
 		//String file_path = "src";
 		String branch_name = "master";
 		String encoding = "test";
-		String commit_message = "src";
+		String commit_message = "HW";
 		HttpClient client = new DefaultHttpClient();
         try {
             HttpPost post = new HttpPost(url);
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add((NameValuePair) new BasicNameValuePair("file_path",file_path));
             params.add((NameValuePair) new BasicNameValuePair("branch_name",branch_name));
-            params.add((NameValuePair) new BasicNameValuePair("content",src));
+            params.add((NameValuePair) new BasicNameValuePair("encoding",encoding));
+            params.add((NameValuePair) new BasicNameValuePair("content",fileContent));
             params.add((NameValuePair) new BasicNameValuePair("commit_message",commit_message));
             
             UrlEncodedFormEntity ent = null;
@@ -90,7 +91,8 @@ public class httpConnect {
             HttpEntity resEntity = responsePOST.getEntity();
 
             if(resEntity != null){
-                System.out.println("Success");
+            	String result = resEntity.toString();
+                System.out.println("Success : " + result);
             }else{
 
             }
