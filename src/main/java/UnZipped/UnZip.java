@@ -30,7 +30,6 @@ public class UnZip{
      */
     public void unzip(String zipFilePath, Integer projectId, String folderName) throws IOException {
     	String destDirectory =  tempDir + "uploads\\";
-    	System.out.println("destDirectory : " + destDirectory);
         File destDir = new File(destDirectory);
         if (!destDir.exists()) {
             destDir.mkdir();

@@ -23,6 +23,17 @@
 		bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
 	</script>
 	
+	<script type="text/javascript">
+		function handleClick(cb, divId){
+			var o=document.getElementById(divId);
+			if(cb.checked){
+				o.style.display='';
+			}else{
+				o.style.display='none';
+			}
+		}
+	</script>
+	
 	<title>ProgEdu</title>
 	
 </head>
@@ -74,31 +85,38 @@
 					</div>
 
 					<div class="panel-body">
-						<div class="form-group">
-							<a href="MvnQuickStart.zip"  class="btn btn-default">下載Maven基本專案</a>
-							
-							<br>
-							<div class ="col-md-4">
+						<div class="col-md-4">
+							<div class="form-group">
 								<label for="Hw_Name">作業名稱:</label>
-								<input type="text" class="form-control" name="Hw_Name" placeholder="ex. OOP-HW1"/>
-							</div>
-							<br>
-							<br>
-							<br>
-							<br>
-							<!-- 上傳  -->
-							<div class ="col-md-4">
-								<label for="file">Maven專案(限zip檔):</label>
-								<input type="file" accept=".zip" name="file" size="50" width="48"/>
-							</div>
-							<br>
-							<br>
-							<!-- ------------- -->
+								<input id="Hw_Name" type="text" class="form-control" name="Hw_Name" required="required" placeholder="ex. OOP-HW1"/>
+							</div>				
 							
-						</div>
-						
-						<div class="form-group">
-							<button type="submit" class="btn btn-default">送出</button>
+							<!-- ------------------------checkbox display------------------------------- -->
+							<div class="form-group">
+								<label for="checkbox">
+									<input type="checkbox" id="checkbox" onclick='handleClick(this, "example")'>是否有範例程式
+								</label>
+							</div>
+							<div style="display:none" id="example">
+								<div class = "form-group">
+									<a href="MvnQuickStart.zip" class="btn btn-default" id="download">下載Maven基本專案</a>
+								</div>
+								<div class = "form-group">
+									<label for="file">Maven專案(限zip檔):</label>
+									<input type="file" accept=".zip" name="file" size="50" width="48"/>
+								</div>
+							</div>
+							<!-- ------------------------------------------------------- -->
+					
+							
+							<div class="form-group">
+								<label for="Hw_README">作業README:</label>
+								<textarea rows="4" cols="50" class="form-control" name="Hw_README" id="Hw_README"></textarea>
+							</div>
+							
+							<div class="form-group">
+								<button type="submit" class="btn btn-default">送出</button>
+							</div>
 						</div>
 					</div>
 				</div>

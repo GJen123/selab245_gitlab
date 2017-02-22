@@ -1,6 +1,8 @@
 package service;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -34,6 +36,7 @@ import com.liferay.portal.util.PortalUtil;
 
 import UnZipped.UnZip;
 import conn.conn;
+import conn.httpConnect;
 import jenkins.jenkinsApi;
 
 @Path("project/")
@@ -43,6 +46,8 @@ public class ProjectService {
 	jenkinsApi jenkins = new jenkinsApi();
 	UnZip unzip = new UnZip();
 	GitlabUser root = userConn.getRoot();
+	httpConnect httpConn = new httpConnect();
+	private static final String tempDir = System.getProperty("java.io.tmpdir");
 	
 	@POST
 	@Path("create")
@@ -50,6 +55,7 @@ public class ProjectService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response NewProject(
 			@FormDataParam("Hw_Name") String name, 
+			@FormDataParam("Hw_README") String readMe, 
 			@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail) throws URISyntaxException {
 		
@@ -57,30 +63,46 @@ public class ProjectService {
 		userConn.createRootProject(name);
 		Integer projectId = getNewProId(name);
 		String projectUrl = getNewProUrl(name);
-		//--------------------
 		
-		//取得所選擇的.zip檔案名稱
-		String folderName = fileDetail.getFileName();
-		//將檔案存到C://User/AppData/Temp/uploads/
-		String filePath = storeFileToTemp(fileDetail.getFileName(), uploadedInputStream);
+		//如果有選擇範例程式
+		if(!fileDetail.getFileName().isEmpty()){
+			//取得所選擇的.zip檔案名稱
+			String folderName = fileDetail.getFileName();
+			//將檔案存到C://User/AppData/Temp/uploads/
+			String filePath = storeFileToTemp(fileDetail.getFileName(), uploadedInputStream);
 
-		try {
-			//unzip file
-			unzip.unzip(filePath, projectId, folderName);
-		} catch (IOException e) {
-			e.printStackTrace();
+			try {
+				//unzip file
+				unzip.unzip(filePath, projectId, folderName);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else{   //沒有選擇範例程式
+			String filePath = this.getClass().getResource("MvnQuickStart.zip").getFile();
+			String folderName = "MvnQuickStart.zip";
+			try {
+				//unzip file
+				unzip.unzip(filePath, projectId, folderName);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if(!readMe.equals("<br>")){
+			String readmeUrl = "http://140.134.26.71:20080/api/v3/projects/"+projectId+"/repository/files?private_token=yUnRUT5ex1s3HU7yQ_g-";
+			httpConn.httpPostReadme(readmeUrl, readMe);
 		}
 		
 		//create 每個學生的project
 		System.out.println("projectUrl : " + projectUrl);
-		userConn.createPrivateProject(name, projectUrl);
+		//userConn.createPrivateProject(name, projectUrl);
 		
 		//---jenkins create job---
 		String jenkinsUrl = "http://140.134.26.71:38080";
-		String jenkinsCrumb = jenkins.getCrumb("GJen", "zxcv1234", jenkinsUrl);
-		jenkins.createRootJob(name, jenkinsCrumb);
-		jenkins.createJenkinsJob(name, jenkinsCrumb);
-		jenkins.buildJob(name, jenkinsCrumb);
+//		String jenkinsCrumb = jenkins.getCrumb("GJen", "zxcv1234", jenkinsUrl);
+//		jenkins.createRootJob(name, jenkinsCrumb);
+//		jenkins.createJenkinsJob(name, jenkinsCrumb);
+//		jenkins.buildJob(name, jenkinsCrumb);
 		//-----------------------
 		
 		java.net.URI location = new java.net.URI("../teacherManageHW.jsp");
@@ -166,5 +188,4 @@ public class ProjectService {
 		}
 		return url;
 	}
-	
 }
