@@ -99,10 +99,10 @@
 							</div>
 							<div style="display:none" id="example">
 								<div class = "form-group">
-									<a href="MvnQuickStart.zip" class="btn btn-default" id="download">下載Maven基本專案</a>
+									<a href="MvnQuickStart.zip" class="btn btn-default" id="download">下載Maven樣板</a>
 								</div>
 								<div class = "form-group">
-									<label for="file">Maven專案(限zip檔):</label>
+									<label for="file">上傳程式範例(限zip檔):</label>
 									<input type="file" accept=".zip" name="file" size="50" width="48"/>
 								</div>
 							</div>
@@ -110,7 +110,7 @@
 					
 							
 							<div class="form-group">
-								<label for="Hw_README">作業README:</label>
+								<label for="Hw_README">作業描述:</label>
 								<textarea rows="4" cols="50" class="form-control" name="Hw_README" id="Hw_README"></textarea>
 							</div>
 							
