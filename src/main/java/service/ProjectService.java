@@ -95,14 +95,14 @@ public class ProjectService {
 		
 		//create 每個學生的project
 		System.out.println("projectUrl : " + projectUrl);
-		//userConn.createPrivateProject(name, projectUrl);
+		userConn.createPrivateProject(name, projectUrl);
 		
 		//---jenkins create job---
 		String jenkinsUrl = "http://140.134.26.71:38080";
-//		String jenkinsCrumb = jenkins.getCrumb("GJen", "zxcv1234", jenkinsUrl);
-//		jenkins.createRootJob(name, jenkinsCrumb);
-//		jenkins.createJenkinsJob(name, jenkinsCrumb);
-//		jenkins.buildJob(name, jenkinsCrumb);
+		String jenkinsCrumb = jenkins.getCrumb("GJen", "zxcv1234", jenkinsUrl);
+		jenkins.createRootJob(name, jenkinsCrumb);
+		jenkins.createJenkinsJob(name, jenkinsCrumb);
+		jenkins.buildJob(name, jenkinsCrumb);
 		//-----------------------
 		
 		java.net.URI location = new java.net.URI("../teacherManageHW.jsp");

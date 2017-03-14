@@ -30,10 +30,22 @@ public class UserService {
 	@POST
 	@Path("upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response upload(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) throws URISyntaxException {
-		String filePath = "C:\\Users\\WeiHan\\workspace\\GitLabEdu\\";
-		String fileName = StringUtils.substringAfterLast(fileDetail.getFileName(), ":");
-		String uploadedFileLocation = filePath + fileName;
+	public Response upload(
+			@FormDataParam("file") InputStream uploadedInputStream, 
+			@FormDataParam("file") FormDataContentDisposition fileDetail) throws URISyntaxException {
+		String tempDir = System.getProperty("java.io.tmpdir");
+
+		String uploadDir = tempDir + "uploads\\";
+
+		File fUploadDir = new File(uploadDir);
+		if (!fUploadDir.exists()) {
+			fUploadDir.mkdirs();
+		}
+		String fileName = fileDetail.getFileName();
+		String uploadedFileLocation = uploadDir + fileName;
+		System.out.println("uploadDir : " + uploadDir);
+		System.out.println("fileName : " + fileName);
+		System.out.println("uploadedFileLocation : " + uploadedFileLocation);
 		List<String> studentList = new ArrayList<String>();
 
 		try {
