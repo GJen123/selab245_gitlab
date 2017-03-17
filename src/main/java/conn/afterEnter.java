@@ -41,13 +41,13 @@ public class afterEnter extends HttpServlet {
 		conn conn = new conn();
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
+		String language = request.getParameter("language");
 		enterCheck check = new enterCheck();
 		if(check.httpPost(username, password)!=null){
 			String json = check.httpPost(username, password);
 			if(json.equals("Unauthorized")){
 				response.sendRedirect("index.jsp");
 			}else{
-				System.out.println("json : "+json);
 				String access_token = check.analysisJSON(json);
 				if(access_token!=null){
 					HttpSession session = request.getSession();
@@ -56,6 +56,8 @@ public class afterEnter extends HttpServlet {
 						session.setAttribute("username", username);
 						session.setAttribute("password", password);
 						session.setAttribute("private_token", null);
+						session.setAttribute("language", language);
+						session.setAttribute("page", "teacherHW");
 					}
 					else {
 						GitlabSession s = conn.getSession(gitlabURL, username, password);
@@ -63,10 +65,11 @@ public class afterEnter extends HttpServlet {
 						session.setAttribute("username", username);
 						session.setAttribute("password", password);
 						session.setAttribute("private_token", private_token);
+						session.setAttribute("language", language);
+						session.setAttribute("page", "teacherHW");
 						response.sendRedirect("studentEnter.jsp");
 					}
 				}else{
-					System.out.println("abc");
 					response.sendRedirect("index.jsp");
 				}
 			}

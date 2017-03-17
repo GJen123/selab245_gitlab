@@ -1,43 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- This web.xml file is not required when using Servlet 3.0 container,
      see implementation details http://jersey.java.net/nonav/documentation/latest/jax-rs.html -->
-
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
-	<display-name>Archetype Created Web Application</display-name>
-	<servlet>
-		<servlet-name>Jersey Web Application</servlet-name>
-		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-		<init-param>
-			<param-name>jersey.config.server.provider.packages</param-name>
-			<param-value>service</param-value>
-		</init-param>
-		<init-param>
-			<param-name>jersey.config.server.provider.classnames</param-name>
-			<param-value>org.glassfish.jersey.filter.LoggingFilter;
+  <display-name>Archetype Created Web Application</display-name>
+  <servlet>
+    <servlet-name>Jersey Web Application</servlet-name>
+    <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+    <init-param>
+      <param-name>jersey.config.server.provider.packages</param-name>
+      <param-value>service</param-value>
+    </init-param>
+    <init-param>
+      <param-name>jersey.config.server.provider.classnames</param-name>
+      <param-value>org.glassfish.jersey.filter.LoggingFilter;
 				org.glassfish.jersey.media.multipart.MultiPartFeature</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	
-	<servlet-mapping>
-		<servlet-name>Jersey Web Application</servlet-name>
-		<url-pattern>/webapi/*</url-pattern>
-	</servlet-mapping>
-	
-	<welcome-file-list>
-		<welcome-file>index.jsp</welcome-file>
-	</welcome-file-list>
-	
-	<servlet>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Jersey Web Application</servlet-name>
+    <url-pattern>/webapi/*</url-pattern>
+  </servlet-mapping>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  <servlet>
     <description></description>
     <display-name>afterEnter</display-name>
     <servlet-name>afterEnter</servlet-name>
     <servlet-class>conn.afterEnter</servlet-class>
-  	</servlet>
-  	
-  	<servlet-mapping>
+  </servlet>
+  <servlet-mapping>
     <servlet-name>afterEnter</servlet-name>
     <url-pattern>/afterEnter</url-pattern>
   </servlet-mapping>
-  
+  <servlet>
+    <description></description>
+    <display-name>chooseLanguage</display-name>
+    <servlet-name>chooseLanguage</servlet-name>
+    <servlet-class>conn.chooseLanguage</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>chooseLanguage</servlet-name>
+    <url-pattern>/chooseLanguage</url-pattern>
+  </servlet-mapping>
 </web-app>

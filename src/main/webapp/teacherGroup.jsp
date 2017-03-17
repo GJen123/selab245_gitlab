@@ -1,8 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="utf-8"%>
-<%@ page import="conn.conn,conn.httpConnect"%>
+<%@ page import="conn.conn,conn.httpConnect,conn.Language"%>
 <%@ page import="java.util.List" import="java.util.ArrayList"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
+	
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -24,7 +26,17 @@
 		if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
 			response.sendRedirect("index.jsp");
 		}
+		Language language = new Language();
+		session.putValue("page", "teacherGroup");
+		String lan = session.getAttribute("language").toString();
+		String basename = language.getBaseName(lan);
+		System.out.println("lan : " + lan);
+		System.out.println("basename : " + basename);
 	%>
+	
+	<!-- 設定語言 -->
+	<fmt:setBundle basename = "<%=basename %>"/>
+	
 	<div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -38,21 +50,29 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="teacherHW.jsp">儀表板</a></li>
-                    <li class="active"><a href="teacherGroup.jsp">專題</a></li>
+                    <li><a href="teacherHW.jsp"><fmt:message key="top_navbar_dashboard"/></a></li>
+                    <li class="active"><a href="teacherGroup.jsp"><fmt:message key="top_navbar_groupProject"/></a></li>
                     <li class="dropdown">
-                    	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">設定 <span class="caret"></span></a>
+                    	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    		<fmt:message key="top_navbar_manage"/> <span class="caret"></span></a>
                     	<ul class="dropdown-menu">
-	                    	<li><a href="teacherManageStudent.jsp">學生管理</a></li>
-	                    	<li><a href="teacherManageHW.jsp">作業管理</a></li>
-	                    	<li><a href="teacherManageGroup.jsp">專題管理</a></li>
+	                    	<li><a href="teacherManageStudent.jsp"><fmt:message key="top_navbar_manageStudent"/></a></li>
+	                    	<li><a href="teacherManageHW.jsp"><fmt:message key="top_navbar_manageHW"/></a></li>
+	                    	<li><a href="teacherManageGroup.jsp"><fmt:message key="top_navbar_manageGroup"/></a></li>
                     	</ul>
                     </li>
                 </ul>
-                    <ul class="nav navbar-nav navbar-right">
-        <li><a href="memberLogOut.jsp" id="loginLink">登出</a></li>
-    </ul>
-
+                <ul class="nav navbar-nav navbar-right">
+                	<li class="dropdown">
+                    	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    		<fmt:message key="top_navbar_language"/> <span class="caret"></span></a>
+                    	<ul class="dropdown-menu" >
+	                    	<li id="English" value="English"><a href="chooseLanguage?language=English"><fmt:message key="top_navbar_lanEnglish"/></a></li>
+	                    	<li id="Chinese" value="Chinese"><a href="chooseLanguage?language=Chinese"><fmt:message key="top_navbar_lanChinese"/></a></li>
+                    	</ul>
+                    </li>
+        			<li><a href="memberLogOut.jsp" id="loginLink"><fmt:message key="top_navbar_signOut"/></a></li>
+    			</ul>
             </div>
         </div>
     </div>
@@ -67,9 +87,9 @@
 				<table class="table table-condensed">
 					<thead>
 						<tr>
-					      <th>組別</th>
-					      <th>專題</th>
-					      <th>學生</th>
+					      <th><fmt:message key="teacherGroup_th_group"/></th>
+					      <th><fmt:message key="teacherGroup_th_project"/></th>
+					      <th><fmt:message key="teacherGroup_th_student"/></th>
 					    </tr>
 					</thead>
 					<tbody>

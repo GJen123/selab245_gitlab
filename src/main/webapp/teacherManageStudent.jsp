@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="utf-8"%>
-<%@ page import="conn.conn"%>
+<%@ page import="conn.conn,conn.Language"%>
 <%@ page import="conn.httpConnect" %>
 <%@ page import="java.util.List" import="java.util.ArrayList"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -22,12 +23,21 @@
 	<title>ProgEdu</title>
 </head>
 <body>
-
 	<%
 		if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
 			response.sendRedirect("index.jsp");
 		}
+		Language language = new Language();
+		session.putValue("page", "teacherManageStudent");
+		String lan = session.getAttribute("language").toString();
+		String basename = language.getBaseName(lan);
+		System.out.println("lan : " + lan);
+		System.out.println("basename : " + basename);
 	%>
+	
+	<!-- 設定語言 -->
+	<fmt:setBundle basename = "<%=basename %>"/>
+	
 	<div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -41,21 +51,29 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="teacherHW.jsp">儀表板</a></li>
-                    <li><a href="teacherGroup.jsp">專題</a></li>
+                    <li><a href="teacherHW.jsp"><fmt:message key="top_navbar_dashboard"/></a></li>
+                    <li><a href="teacherGroup.jsp"><fmt:message key="top_navbar_groupProject"/></a></li>
                     <li class="dropdown">
-                    	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">設定 <span class="caret"></span></a>
+                    	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    		<fmt:message key="top_navbar_manage"/> <span class="caret"></span></a>
                     	<ul class="dropdown-menu">
-	                    	<li class="active"><a href="teacherManageStudent.jsp">學生管理</a></li>
-	                    	<li><a href="teacherManageHW.jsp">作業管理</a></li>
-	                    	<li><a href="teacherManageGroup.jsp">專題管理</a></li>
+	                    	<li class="active"><a href="teacherManageStudent.jsp"><fmt:message key="top_navbar_manageStudent"/></a></li>
+	                    	<li><a href="teacherManageHW.jsp"><fmt:message key="top_navbar_manageHW"/></a></li>
+	                    	<li><a href="teacherManageGroup.jsp"><fmt:message key="top_navbar_manageGroup"/></a></li>
                     	</ul>
                     </li>
                 </ul>
-                    <ul class="nav navbar-nav navbar-right">
-        <li><a href="memberLogOut.jsp" id="loginLink">登出</a></li>
-    </ul>
-
+                <ul class="nav navbar-nav navbar-right">
+                	<li class="dropdown">
+                    	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    		<fmt:message key="top_navbar_language"/> <span class="caret"></span></a>
+                    	<ul class="dropdown-menu" >
+	                    	<li id="English" value="English"><a href="chooseLanguage?language=English"><fmt:message key="top_navbar_lanEnglish"/></a></li>
+	                    	<li id="Chinese" value="Chinese"><a href="chooseLanguage?language=Chinese"><fmt:message key="top_navbar_lanChinese"/></a></li>
+                    	</ul>
+                    </li>
+        			<li><a href="memberLogOut.jsp" id="loginLink"><fmt:message key="top_navbar_signOut"/></a></li>
+    			</ul>
             </div>
         </div>
     </div>
@@ -65,14 +83,14 @@
 		<div>
 			<div class="login-panel panel panel-default">
 				<div class="panel-heading">
-					<h3>新增所有學生</h3>
+					<h3><fmt:message key="teacherManageStudent_h3_newAllStudent"/></h3>
 				</div>
 
 				<div class="panel-body">
 					<div class="form-group">
 						<form action="webapi/user/upload" method="post"
 							enctype="multipart/form-data">
-							<h4>上傳學生名單</h4>
+							<h4><fmt:message key="teacherManageStudent_h4_uploadStudent"/></h4>
 							Select File to Upload:<input type="file" name="file">
 							<br> <input type="submit" value="Upload">
 						</form>
