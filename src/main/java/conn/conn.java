@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import jenkins.jenkinsApi;
 
 public class conn{
-	private String _hostUrl = "http://140.134.26.71:20080";
-	private String _apiToken = "yUnRUT5ex1s3HU7yQ_g-";
+//	private String _hostUrl = "http://140.134.26.71:20080";
+	private String _hostUrl = "http://140.134.26.71:5487";
+//	private String _apiToken = "yUnRUT5ex1s3HU7yQ_g-";  //20080
+	private String _apiToken = "bd5-zKUiUPc4eH9FCHvB";  //5487
 	private TokenType tokenType = TokenType.PRIVATE_TOKEN;
 	private AuthMethod authMethod = AuthMethod.URL_PARAMETER;
 	
@@ -70,6 +72,17 @@ public class conn{
 		return projects;
 	}
 	
+	public List<GitlabProject> getAllProjects(){
+		List<GitlabProject> projects = new ArrayList<GitlabProject>();
+		try {
+			projects = gitlab.getAllProjects();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return projects;
+	}
+	
 	public GitlabUser getUser(){
 		GitlabUser gitlabUser = new GitlabUser();
 		try {
@@ -91,7 +104,8 @@ public class conn{
 	}
 	
 	public String getProjectEvent(int projectId, String private_token){
-		return "http://140.134.26.71:20080/api/v3/projects/"+projectId+"/events?private_token="+private_token;
+//		return "http://140.134.26.71:20080/api/v3/projects/"+projectId+"/events?private_token="+private_token;
+		return _hostUrl + "/api/v3/projects/"+projectId+"/events?private_token="+private_token;
 	}
 	
 	public String getPrivate_token(GitlabUser user){
@@ -276,6 +290,19 @@ public class conn{
 		}
 		return false;
 	}
+    
+    public int getAllCommits(int projectId){
+    	int count = 0;
+    	try{
+    		List<GitlabCommit> lsCommits = gitlab.getAllCommits(projectId);
+    		for(GitlabCommit commit : lsCommits){
+    			if(!commit.getId().isEmpty()) count++;
+    		}
+    	}catch(IOException e){
+    		System.out.println(e);
+    	}
+    	return count;
+    }
     
 }
 
