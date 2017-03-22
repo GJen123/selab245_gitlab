@@ -29,9 +29,6 @@
 		if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
 			response.sendRedirect("index.jsp");
 		}
-		if(session.getAttribute("language") == null || session.getAttribute("language").toString().equals("")){
-			response.sendRedirect("index.jsp");
-		}
 		Language language = new Language();
 		session.putValue("page", "HW");
 		String lan = session.getAttribute("language").toString();
@@ -82,10 +79,6 @@
             </div>
         </div>
     </div>
-    
-    <script>
-    	
-    </script>
     
 	<br><br><br>
 	
@@ -145,6 +138,7 @@
 										<%
 											continue;
 										}
+										
 										String project_WebURL = project.getWebUrl();
 										project_WebURL = project_WebURL.replace("http://19f52d3770e6", "http://140.134.26.71:5487");
 										project_WebURL += "/commits/master"; 
@@ -164,9 +158,14 @@
 										if(project.getName().substring(0,3).equalsIgnoreCase("oop")){
 											String project_event_url = conn.getProjectEvent(project.getId(), private_token);
 											int total_commit_count = getUserHw.httpGetProjectEvent(project_event_url);
-											//int count = conn.getAllCommits(project.getId());
+											int count = 0;
+											boolean projectExist = true;
+											
+											
+											count =	conn.getAllCommits(project.getId());
+											
 											%>
-												<td><a href="#" onclick="window.open('<%=project_WebURL%>')"><%=project_event_url %></a>
+												<td><a href="#" onclick="window.open('<%=project_WebURL%>')"><%=count %></a>
 											<%
 										}
 									}
@@ -178,6 +177,7 @@
 				%>
 			</tbody>
 		</table>
+		<img class="img-responsive" alt="commit record" src="./img/commit.jpg">
 	</div>
 	
 </body>

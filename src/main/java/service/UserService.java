@@ -25,7 +25,7 @@ import conn.conn;
 @Path("user/")
 public class UserService {
 	
-	conn userConn = new conn();
+	conn userConn = conn.getInstance();
 
 	@POST
 	@Path("upload")

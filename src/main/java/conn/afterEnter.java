@@ -14,6 +14,8 @@ import org.gitlab.api.models.GitlabSession;
  */
 public class afterEnter extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	private conn Conn = conn.getInstance();
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -38,7 +40,6 @@ public class afterEnter extends HttpServlet {
 		// TODO Auto-generated method stub
 		
 		String gitlabURL = "http://140.134.26.71:20080";
-		conn conn = new conn();
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		String language = request.getParameter("language");
@@ -60,7 +61,7 @@ public class afterEnter extends HttpServlet {
 						session.setAttribute("page", "teacherHW");
 					}
 					else {
-						GitlabSession s = conn.getSession(gitlabURL, username, password);
+						GitlabSession s = Conn.getSession(gitlabURL, username, password);
 						String private_token = s.getPrivateToken();
 						session.setAttribute("username", username);
 						session.setAttribute("password", password);

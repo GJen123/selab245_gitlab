@@ -30,7 +30,7 @@ import service.UserService;
 @Path("group/")
 public class GroupService {
 
-	conn userConn = new conn();
+	conn userConn = conn.getInstance();
 	UserService userService = new UserService();
 
 	@POST

@@ -42,7 +42,7 @@ import jenkins.jenkinsApi;
 @Path("project/")
 public class ProjectService {
 	
-	conn userConn = new conn();
+	conn userConn = conn.getInstance();
 	jenkinsApi jenkins = new jenkinsApi();
 	UnZip unzip = new UnZip();
 	GitlabUser root = userConn.getRoot();

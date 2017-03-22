@@ -56,8 +56,10 @@ import sun.misc.BASE64Encoder;
 
 public class jenkinsApi{
 	
+	private conn Conn = conn.getInstance();
+	
 	public void createRootJob(String Pname, String jenkinsCrumb){
-		conn conn = new conn();
+		
 		//---Create Jenkins Job---
 		String jobName = "root_"+Pname;
 		String strUrl = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/createItem?name="+jobName;
@@ -67,8 +69,7 @@ public class jenkinsApi{
 	}
 	
 	public void createJenkinsJob(String Pname, String jenkinsCrumb){
-		conn conn = new conn();
-		List<GitlabUser> users = conn.getUsers();
+		List<GitlabUser> users = Conn.getUsers();
 		for(GitlabUser user : users){
 			if (user.getId() == 1) continue;
 			//---Create Jenkins Job---
@@ -302,8 +303,7 @@ public class jenkinsApi{
 	public void buildJob(String Pname, String jenkinsCrumb){
 		
 		String jobName = null;
-		conn conn = new conn();
-		List<GitlabUser> users = conn.getUsers();
+		List<GitlabUser> users = Conn.getUsers();
 		for(GitlabUser user : users){
 			jobName = user.getUsername()+"_"+Pname;
 			HttpClient client = new DefaultHttpClient();
