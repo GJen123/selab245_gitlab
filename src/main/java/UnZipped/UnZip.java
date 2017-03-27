@@ -11,11 +11,18 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import conn.httpConnect;
+import conn.HttpConnect;
+import data.GitlabData;
 
 public class UnZip{
-	httpConnect httpConn = new httpConnect();
+	HttpConnect httpConn = new HttpConnect();
     private static final String tempDir = System.getProperty("java.io.tmpdir");
+    
+    GitlabData data = new GitlabData();
+    
+    private String hostUrl = data.getHostUrl();
+    
+    private String token = data.getApiToken();
 
     /**
      * Size of the buffer to read/write data
@@ -52,7 +59,7 @@ public class UnZip{
                 String fileName = entry.getName().substring(index+folderLength-3);
                 
                 //---httpPost to Gitlab---
-                String url = "http://140.134.26.71:20080/api/v3/projects/"+projectId+"/repository/files?private_token=yUnRUT5ex1s3HU7yQ_g-";
+                String url = hostUrl + "/api/v3/projects/"+projectId+"/repository/files?private_token=" + token;
                 httpConn.httpPostFile(fileName, url, fileContent);
                 //------------------------
                 

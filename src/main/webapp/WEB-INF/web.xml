@@ -26,22 +26,22 @@
   </welcome-file-list>
   <servlet>
     <description></description>
-    <display-name>afterEnter</display-name>
-    <servlet-name>afterEnter</servlet-name>
-    <servlet-class>conn.afterEnter</servlet-class>
+    <display-name>AfterEnter</display-name>
+    <servlet-name>AfterEnter</servlet-name>
+    <servlet-class>conn.AfterEnter</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>afterEnter</servlet-name>
-    <url-pattern>/afterEnter</url-pattern>
+    <servlet-name>AfterEnter</servlet-name>
+    <url-pattern>/AfterEnter</url-pattern>
   </servlet-mapping>
   <servlet>
     <description></description>
-    <display-name>chooseLanguage</display-name>
-    <servlet-name>chooseLanguage</servlet-name>
-    <servlet-class>conn.chooseLanguage</servlet-class>
+    <display-name>ChooseLanguage</display-name>
+    <servlet-name>ChooseLanguage</servlet-name>
+    <servlet-class>conn.ChooseLanguage</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>chooseLanguage</servlet-name>
-    <url-pattern>/chooseLanguage</url-pattern>
+    <servlet-name>ChooseLanguage</servlet-name>
+    <url-pattern>/ChooseLanguage</url-pattern>
   </servlet-mapping>
 </web-app>

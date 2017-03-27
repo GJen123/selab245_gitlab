@@ -10,7 +10,13 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import data.GitlabData;
+
 public class teacherGetUserHw{
+	
+	GitlabData data = new GitlabData();
+	
+	private String hostUrl = data.getHostUrl();
 	
 	public int httpGetProjectEvent(String strUrl){
 		HttpURLConnection conn = null;
@@ -68,7 +74,7 @@ public class teacherGetUserHw{
                 throw new InterruptedException();
             }
             // 建立連線
-            String strurl = "http://140.134.26.71:20080/api/v3/projects/owned?private_token="+private_token;
+            String strurl = hostUrl + "/api/v3/projects/owned?private_token="+private_token;
             URL url = new URL(strurl);
             conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000);
@@ -111,7 +117,7 @@ public class teacherGetUserHw{
                 throw new InterruptedException();
             }
             // 建立連線
-            String strurl = "http://140.134.26.71:20080/api/v3/projects/owned?private_token="+private_token;
+            String strurl = hostUrl + "/api/v3/projects/owned?private_token="+private_token;
             URL url = new URL(strurl);
             conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000);
@@ -155,7 +161,7 @@ public class teacherGetUserHw{
                 throw new InterruptedException();
             }
             // 建立連線
-            String strurl = "http://140.134.26.71:20080/api/v3/projects/owned?private_token="+private_token;
+            String strurl = hostUrl + "/api/v3/projects/owned?private_token="+private_token;
             URL url = new URL(strurl);
             conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000);

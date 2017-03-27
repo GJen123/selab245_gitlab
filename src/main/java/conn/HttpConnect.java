@@ -29,7 +29,7 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class httpConnect {
+public class HttpConnect {
 	
 	public void httpPostReadme(String url, String content){
 		String file_path = "README.md";

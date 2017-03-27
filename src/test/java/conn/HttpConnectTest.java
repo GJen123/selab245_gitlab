@@ -5,7 +5,7 @@ import org.junit.Test;
 public class HttpConnectTest{
 	@Test
 	public void testHttpPostSrc(){
-		httpConnect httpConn = new httpConnect();
+		HttpConnect httpConn = new HttpConnect();
 		String file_path = "";
 		String url = "";
 		String fileContent = "";

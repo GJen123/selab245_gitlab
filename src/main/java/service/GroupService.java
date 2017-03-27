@@ -24,13 +24,13 @@ import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 import data.Group;
-import conn.conn;
+import conn.Conn;
 import service.UserService;
 
 @Path("group/")
 public class GroupService {
 
-	conn userConn = conn.getInstance();
+	Conn userConn = Conn.getInstance();
 	UserService userService = new UserService();
 
 	@POST

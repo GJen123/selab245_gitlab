@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="BIG5"%>
-<%@ page import="conn.conn,conn.studentConn,conn.httpConnect"%>
+<%@ page import="conn.Conn,conn.StudentConn,conn.HttpConnect"%>
 <%@ page import="java.util.List" import="java.util.ArrayList"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -50,7 +50,7 @@
 
 	<%
 		String private_token = session.getAttribute("private_token").toString();
-		studentConn sConn = new studentConn(private_token); 
+		StudentConn sConn = new StudentConn(private_token); 
 		GitlabUser user = sConn.getUser();
 		String Username = sConn.getUserName();
 		List<GitlabProject> project = new ArrayList<GitlabProject>();

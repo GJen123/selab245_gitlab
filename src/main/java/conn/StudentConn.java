@@ -10,18 +10,22 @@ import org.gitlab.api.TokenType;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
 
-public class studentConn{
+import data.GitlabData;
+
+public class StudentConn{
+	
+	GitlabData data = new GitlabData();
 	
 	String private_token;
 	private GitlabUser gitlabUser = new GitlabUser();
-	private String _hostUrl = "http://140.134.26.71:20080";
-	private String _apiToken = "yUnRUT5ex1s3HU7yQ_g-";
+	private String _hostUrl = data.getHostUrl();
+	private String _apiToken = data.getApiToken();
 	private TokenType tokenType = TokenType.PRIVATE_TOKEN;
 	private AuthMethod authMethod = AuthMethod.URL_PARAMETER;
 	private GitlabAPI gitlab;
 	private List<GitlabProject> project = new ArrayList<GitlabProject>();
 	
-	public studentConn (String private_token){
+	public StudentConn (String private_token){
 		this.private_token = private_token;
 		gitlab = GitlabAPI.connect(_hostUrl, private_token, tokenType, authMethod);
 		

@@ -10,7 +10,7 @@ public class JenkinsApiTest {
 	@Test
 	public void TestGetCrumb() {
 		
-		jenkinsApi ja = new jenkinsApi();
+		JenkinsApi ja = new JenkinsApi();
 		String crumb = ja.getCrumb("GJen", "zxcv1234", "http://140.134.26.71:38080");
 		System.out.println(crumb);
 		

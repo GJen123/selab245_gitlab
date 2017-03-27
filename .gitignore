@@ -1,4 +1,7 @@
-GitLabStudent.csv
 /target/
 
 pom.properties
+
+src/main/java/data/GitlabData.java
+
+src/main/java/data/JenkinsData.java

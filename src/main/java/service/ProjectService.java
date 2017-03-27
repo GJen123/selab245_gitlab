@@ -35,18 +35,18 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.util.PortalUtil;
 
 import UnZipped.UnZip;
-import conn.conn;
-import conn.httpConnect;
-import jenkins.jenkinsApi;
+import conn.Conn;
+import conn.HttpConnect;
+import jenkins.JenkinsApi;
 
 @Path("project/")
 public class ProjectService {
 	
-	conn userConn = conn.getInstance();
-	jenkinsApi jenkins = new jenkinsApi();
+	Conn userConn = Conn.getInstance();
+	JenkinsApi jenkins = new JenkinsApi();
 	UnZip unzip = new UnZip();
 	GitlabUser root = userConn.getRoot();
-	httpConnect httpConn = new httpConnect();
+	HttpConnect httpConn = new HttpConnect();
 	private static final String tempDir = System.getProperty("java.io.tmpdir");
 	
 	@POST

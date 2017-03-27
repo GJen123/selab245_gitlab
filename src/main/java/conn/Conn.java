@@ -8,19 +8,15 @@ import org.gitlab.api.AuthMethod;
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.GitlabAPIException;
 import org.gitlab.api.TokenType;
-import org.gitlab.api.models.GitlabAccessLevel;
-import org.gitlab.api.models.GitlabCommit;
-import org.gitlab.api.models.GitlabGroup;
-import org.gitlab.api.models.GitlabGroupMember;
-import org.gitlab.api.models.GitlabProject;
-import org.gitlab.api.models.GitlabSession;
-import org.gitlab.api.models.GitlabUser;
+import org.gitlab.api.models.*;
 
-public class conn {
-	// private String _hostUrl = "http://140.134.26.71:20080";
-	private String _hostUrl = "http://140.134.26.71:5487";
-	// private String _apiToken = "yUnRUT5ex1s3HU7yQ_g-"; //20080
-	private String _apiToken = "bd5-zKUiUPc4eH9FCHvB"; // 5487
+import data.GitlabData;
+
+public class Conn {
+	GitlabData data = new GitlabData();
+	
+	private String _hostUrl = data.getHostUrl();
+	private String _apiToken = data.getApiToken();
 	private TokenType tokenType = TokenType.PRIVATE_TOKEN;
 	private AuthMethod authMethod = AuthMethod.URL_PARAMETER;
 
@@ -28,13 +24,13 @@ public class conn {
 
 	// http://140.134.26.71:20080/api/v3/users?private_token=yUnRUT5ex1s3HU7yQ_g-
 
-	private static conn conn = new conn();
+	private static Conn conn = new Conn();
 
-	public static conn getInstance() {
+	public static Conn getInstance() {
 	   return conn;
 	}
 	
-	private conn() {
+	private Conn() {
 
 	}
 
@@ -43,7 +39,7 @@ public class conn {
 	public GitlabSession getRootSession() {
 
 		try {
-			rootSession = GitlabAPI.connect(_hostUrl, "root", "iecsfcu123456");
+			rootSession = GitlabAPI.connect(_hostUrl, data.getUserName(), data.getPassWord());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -174,7 +170,7 @@ public class conn {
 	}
 
 	public String getGroupUrl(GitlabGroup group) {
-		String groupUrl = "http://140.134.26.71:20080/groups/" + group.getName();
+		String groupUrl = _hostUrl + "/groups/" + group.getName();
 		return groupUrl;
 	}
 
@@ -320,10 +316,6 @@ public class conn {
 		List<GitlabCommit> lsCommits = new ArrayList<GitlabCommit>();
 		try {
 			lsCommits = gitlab.getAllCommits(projectId);
-		} 
-		catch(IOException e)
-		{
-			System.out.println("---------------------error--------------------------1");
 		}
 		catch (Exception e) {
 			System.out.println("---------------------error--------------------------2");

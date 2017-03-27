@@ -9,7 +9,7 @@ import java.net.URL;
 
 import org.json.JSONObject;
 
-public class enterCheck{
+public class EnterCheck{
 	public String httpPost(String username, String password){
 		String result = null;
 		String response = null; 

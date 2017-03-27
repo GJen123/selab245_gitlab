@@ -20,12 +20,12 @@ import org.apache.commons.lang.StringUtils;
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import data.User;
-import conn.conn;
+import conn.Conn;
 
 @Path("user/")
 public class UserService {
 	
-	conn userConn = conn.getInstance();
+	Conn userConn = Conn.getInstance();
 
 	@POST
 	@Path("upload")

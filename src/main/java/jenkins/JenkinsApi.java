@@ -51,12 +51,12 @@ import com.offbytwo.jenkins.client.JenkinsHttpClient;
 import com.offbytwo.jenkins.model.Build;
 import com.offbytwo.jenkins.model.JobWithDetails;
 
-import conn.conn;
+import conn.Conn;
 import sun.misc.BASE64Encoder;
 
-public class jenkinsApi{
+public class JenkinsApi{
 	
-	private conn Conn = conn.getInstance();
+	private Conn conn = Conn.getInstance();
 	
 	public void createRootJob(String Pname, String jenkinsCrumb){
 		
@@ -69,7 +69,7 @@ public class jenkinsApi{
 	}
 	
 	public void createJenkinsJob(String Pname, String jenkinsCrumb){
-		List<GitlabUser> users = Conn.getUsers();
+		List<GitlabUser> users = conn.getUsers();
 		for(GitlabUser user : users){
 			if (user.getId() == 1) continue;
 			//---Create Jenkins Job---
@@ -303,7 +303,7 @@ public class jenkinsApi{
 	public void buildJob(String Pname, String jenkinsCrumb){
 		
 		String jobName = null;
-		List<GitlabUser> users = Conn.getUsers();
+		List<GitlabUser> users = conn.getUsers();
 		for(GitlabUser user : users){
 			jobName = user.getUsername()+"_"+Pname;
 			HttpClient client = new DefaultHttpClient();

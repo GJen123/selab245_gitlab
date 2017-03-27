@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="utf-8"%>
-<%@ page import="conn.conn,conn.httpConnect,teacher.teacherGetUserHw,jenkins.jenkinsApi,conn.Language"%>
+<%@ page import="conn.Conn,conn.HttpConnect,teacher.teacherGetUserHw,jenkins.JenkinsApi,conn.Language"%>
 <%@ page import="java.util.List" import="java.util.ArrayList" import="java.util.*"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"
 	import="com.offbytwo.jenkins.model.JobWithDetails"
@@ -70,8 +70,8 @@
                     	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                     		<fmt:message key="top_navbar_language"/> <span class="caret"></span></a>
                     	<ul class="dropdown-menu" >
-	                    	<li id="English" value="English"><a href="chooseLanguage?language=English"><fmt:message key="top_navbar_lanEnglish"/></a></li>
-	                    	<li id="Chinese" value="Chinese"><a href="chooseLanguage?language=Chinese"><fmt:message key="top_navbar_lanChinese"/></a></li>
+	                    	<li id="English" value="English"><a href="ChooseLanguage?language=English"><fmt:message key="top_navbar_lanEnglish"/></a></li>
+	                    	<li id="Chinese" value="Chinese"><a href="ChooseLanguage?language=Chinese"><fmt:message key="top_navbar_lanChinese"/></a></li>
                     	</ul>
                     </li>
         			<li><a href="memberLogOut.jsp" id="loginLink"><fmt:message key="top_navbar_signOut"/></a></li>
@@ -83,8 +83,8 @@
 	<br><br><br>
 	
 	<%
-		conn conn = new conn();
-		httpConnect httpConn = new httpConnect();
+		Conn conn = Conn.getInstance();
+		HttpConnect httpConn = new HttpConnect();
 		teacherGetUserHw getUserHw = new teacherGetUserHw();
 		String gitlabURL = "http://140.134.26.71:5487";
 		List<GitlabUser> users = conn.getUsers();
@@ -97,7 +97,7 @@
 		
 		Collections.reverse(users);
 		
-		jenkinsApi jenkins = new jenkinsApi();
+		JenkinsApi jenkins = new JenkinsApi();
 	%>
 	
 	<div class="container">

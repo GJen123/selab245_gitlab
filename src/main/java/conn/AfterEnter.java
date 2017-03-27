@@ -10,17 +10,17 @@ import javax.servlet.http.HttpSession;
 import org.gitlab.api.models.GitlabSession;
 
 /**
- * Servlet implementation class afterEnter
+ * Servlet implementation class AfterEnter
  */
-public class afterEnter extends HttpServlet {
+public class AfterEnter extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	private conn Conn = conn.getInstance();
+	private Conn conn = Conn.getInstance();
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public afterEnter() {
+    public AfterEnter() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -43,7 +43,7 @@ public class afterEnter extends HttpServlet {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		String language = request.getParameter("language");
-		enterCheck check = new enterCheck();
+		EnterCheck check = new EnterCheck();
 		if(check.httpPost(username, password)!=null){
 			String json = check.httpPost(username, password);
 			if(json.equals("Unauthorized")){
@@ -61,7 +61,7 @@ public class afterEnter extends HttpServlet {
 						session.setAttribute("page", "teacherHW");
 					}
 					else {
-						GitlabSession s = Conn.getSession(gitlabURL, username, password);
+						GitlabSession s = conn.getSession(gitlabURL, username, password);
 						String private_token = s.getPrivateToken();
 						session.setAttribute("username", username);
 						session.setAttribute("password", password);

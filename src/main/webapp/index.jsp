@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="utf-8"%>
-<%@ page import="conn.conn,conn.httpConnect"%>
+<%@ page import="conn.Conn,conn.HttpConnect"%>
 <%@ page import="java.util.List" import="java.util.ArrayList"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -29,7 +29,7 @@
 	
 	<div class="container" style="width:300px;height:60px">
         
-		<form class="form-signin" method="post" action="afterEnter">
+		<form class="form-signin" method="post" action="AfterEnter">
 		
 			<h2 class="form-signin-heading"><fmt:message key="index_h2_plzSignIn"/></h2>
 			<input type="hidden" name="grant_type" value="password">

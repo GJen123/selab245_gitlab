@@ -12,13 +12,13 @@ import javax.servlet.http.HttpSession;
 /**
  * Servlet implementation class chooseLanguage
  */
-public class chooseLanguage extends HttpServlet {
+public class ChooseLanguage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public chooseLanguage() {
+    public ChooseLanguage() {
         super();
         // TODO Auto-generated constructor stub
     }
