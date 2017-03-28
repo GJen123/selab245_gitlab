@@ -29,7 +29,11 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import data.GitlabData;
+import sun.misc.BASE64Encoder;
+
 public class HttpConnect {
+	GitlabData data = new GitlabData();
 	
 	public void httpPostReadme(String url, String content){
 		String file_path = "README.md";
@@ -138,5 +142,44 @@ public class HttpConnect {
         } catch (IOException e) {
             e.printStackTrace();
         }
+	}
+	
+	public int httpGetCommitCount(int projectId){
+		String strUrl = data.getUrl() + "/api/v3/projects/"+ projectId +"/repository/commits?private_token=" + data.getApiToken();
+		HttpURLConnection conn = null;
+		int count = 0;
+		
+        try {
+            if (Thread.interrupted()) {
+                throw new InterruptedException();
+            }
+            // 建立連線
+            URL url = new URL(strUrl);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("GET");
+            conn.connect();
+            if (Thread.interrupted()) {
+                throw new InterruptedException();
+            }
+            // 讀取資料
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    conn.getInputStream(), "UTF-8"));
+            String jsonString = reader.readLine();
+            reader.close();
+            
+            JSONArray jsonArray = new JSONArray(jsonString);
+            count = jsonArray.length();
+        }
+        catch (Exception e) {
+            System.out.println(e);
+        }
+        finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+        return count;
 	}
 }

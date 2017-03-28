@@ -9,11 +9,15 @@ import javax.servlet.http.HttpSession;
 
 import org.gitlab.api.models.GitlabSession;
 
+import data.GitlabData;
+
 /**
  * Servlet implementation class AfterEnter
  */
 public class AfterEnter extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	GitlabData data = new GitlabData();
 	
 	private Conn conn = Conn.getInstance();
        
@@ -39,7 +43,7 @@ public class AfterEnter extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		String gitlabURL = "http://140.134.26.71:20080";
+		String gitlabURL = data.getHostUrl();
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		String language = request.getParameter("language");

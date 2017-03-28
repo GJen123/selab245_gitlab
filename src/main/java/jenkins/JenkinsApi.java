@@ -52,19 +52,25 @@ import com.offbytwo.jenkins.model.Build;
 import com.offbytwo.jenkins.model.JobWithDetails;
 
 import conn.Conn;
+import data.GitlabData;
+import data.JenkinsData;
 import sun.misc.BASE64Encoder;
 
 public class JenkinsApi{
 	
 	private Conn conn = Conn.getInstance();
 	
+	GitlabData data = new GitlabData();
+	
+	JenkinsData jenkinsData = new JenkinsData();
+	
 	public void createRootJob(String Pname, String jenkinsCrumb){
 		
 		//---Create Jenkins Job---
 		String jobName = "root_"+Pname;
-		String strUrl = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/createItem?name="+jobName;
-		String proUrl = "http://140.134.26.71:20080/root/" + Pname + ".git";
-		postCreateJob("GJen", "zxcv1234", strUrl, jobName, proUrl, jenkinsCrumb);
+		String strUrl = jenkinsData.getHostUrl() + "/createItem?name="+jobName;
+		String proUrl = data.getHostUrl() + "/root/" + Pname + ".git";
+		postCreateJob(jenkinsData.getUserName(), jenkinsData.getPassWord(), strUrl, jobName, proUrl, jenkinsCrumb);
 		//------------------------
 	}
 	
@@ -74,9 +80,9 @@ public class JenkinsApi{
 			if (user.getId() == 1) continue;
 			//---Create Jenkins Job---
 			String jobName = user.getUsername()+"_"+Pname;
-			String strUrl = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/createItem?name="+jobName;
-			String proUrl = "http://140.134.26.71:20080/" + user.getUsername() + "/" + Pname + ".git";
-			postCreateJob("GJen", "zxcv1234", strUrl, jobName, proUrl, jenkinsCrumb);
+			String strUrl = jenkinsData.getHostUrl() + "/createItem?name="+jobName;
+			String proUrl = data.getHostUrl() + "/" + user.getUsername() + "/" + Pname + ".git";
+			postCreateJob(jenkinsData.getUserName(), jenkinsData.getPassWord(), strUrl, jobName, proUrl, jenkinsCrumb);
 			//------------------------
 		}
 	}
@@ -85,7 +91,7 @@ public class JenkinsApi{
 	public void postCreateJob(String username, String password, String strUrl, String jobName, String proUrl, String jenkinsCrumb){
 		HttpClient client = new DefaultHttpClient();
 		
-		String url = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/createItem?name="+jobName;
+		String url = jenkinsData.getHostUrl() + "/createItem?name="+jobName;
         try {
             HttpPost post = new HttpPost(url);
             
@@ -308,7 +314,7 @@ public class JenkinsApi{
 			jobName = user.getUsername()+"_"+Pname;
 			HttpClient client = new DefaultHttpClient();
 			
-			String url = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/job/"+jobName+"/build";
+			String url = jenkinsData.getHostUrl() + "/job/"+jobName+"/build";
 	        try {
 	            HttpPost post = new HttpPost(url);
 	            
@@ -316,7 +322,7 @@ public class JenkinsApi{
 	            post.addHeader("Jenkins-Crumb", jenkinsCrumb);
 	            
 	            List<NameValuePair> params = new ArrayList<NameValuePair>();
-	            params.add((NameValuePair) new BasicNameValuePair("token","02031fefb728e700973b6f3e5023a64c"));
+	            params.add((NameValuePair) new BasicNameValuePair("token",jenkinsData.getApiToken()));
 	            
 	            UrlEncodedFormEntity ent = null;
 	            ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);

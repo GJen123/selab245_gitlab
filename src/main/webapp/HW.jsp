@@ -31,8 +31,15 @@
 		}
 		Language language = new Language();
 		session.putValue("page", "HW");
-		String lan = session.getAttribute("language").toString();
-		String basename = language.getBaseName(lan);
+		String lan = null;
+		String basename = null;
+		if(session.getAttribute("language") == null || session.getAttribute("language").toString().equals("")){
+			lan = "English";
+			basename = language.getBaseName(lan);
+		}else{
+			lan = session.getAttribute("language").toString();
+			basename = language.getBaseName(lan);
+		}
 		System.out.println("lan : " + lan);
 		System.out.println("basename : " + basename);
 	%>
@@ -161,8 +168,10 @@
 											int count = 0;
 											boolean projectExist = true;
 											
-											
-											count =	conn.getAllCommits(project.getId());
+											System.out.println("User : " + user.getName());
+											System.out.println("projectId : " + project.getId());
+											//count =	conn.getAllCommits(project.getId());
+											count = httpConn.httpGetCommitCount(project.getId());
 											
 											%>
 												<td><a href="#" onclick="window.open('<%=project_WebURL%>')"><%=count %></a>

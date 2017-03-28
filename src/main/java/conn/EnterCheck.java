@@ -9,12 +9,16 @@ import java.net.URL;
 
 import org.json.JSONObject;
 
+import data.GitlabData;
+
 public class EnterCheck{
+	GitlabData data = new GitlabData();
+	
 	public String httpPost(String username, String password){
 		String result = null;
 		String response = null; 
 		StringBuilder sb = new StringBuilder();
-		String url="http://140.134.26.71:20080/oauth/token";
+		String url = data.getHostUrl() + "/oauth/token";
 		try {
 			URL object=new URL(url);
 	

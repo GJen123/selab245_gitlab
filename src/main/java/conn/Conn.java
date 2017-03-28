@@ -315,17 +315,23 @@ public class Conn {
 		int count = 0;
 		List<GitlabCommit> lsCommits = new ArrayList<GitlabCommit>();
 		try {
-			lsCommits = gitlab.getAllCommits(projectId);
+			if(!gitlab.getAllCommits(projectId).isEmpty()){
+				System.out.println("not empty");
+				lsCommits = gitlab.getAllCommits(projectId);
+				for(GitlabCommit commit : lsCommits){
+					System.out.println("abc : " + commit.getAuthorName());
+				}
+			}else{
+				System.out.println("empty");
+			}
 		}
 		catch (Exception e) {
-			System.out.println("---------------------error--------------------------2");
-			/*e.printStackTrace();
-			count = -1;*/
+			e.printStackTrace();
 		}
-		for (GitlabCommit commit : lsCommits) {
-			if (!commit.getId().isEmpty())
-				count++;
-		}
+//		for (GitlabCommit commit : lsCommits) {
+//			if (!commit.getId().isEmpty())
+//				count++;
+//		}
 		
 		return count;
 	}

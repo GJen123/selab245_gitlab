@@ -37,11 +37,15 @@ import com.liferay.portal.util.PortalUtil;
 import UnZipped.UnZip;
 import conn.Conn;
 import conn.HttpConnect;
+import data.GitlabData;
+import data.JenkinsData;
 import jenkins.JenkinsApi;
 
 @Path("project/")
 public class ProjectService {
 	
+	GitlabData data = new GitlabData();
+	JenkinsData jenkinsData = new JenkinsData();
 	Conn userConn = Conn.getInstance();
 	JenkinsApi jenkins = new JenkinsApi();
 	UnZip unzip = new UnZip();
@@ -89,7 +93,7 @@ public class ProjectService {
 		}
 		
 		if(!readMe.equals("<br>")){
-			String readmeUrl = "http://140.134.26.71:20080/api/v3/projects/"+projectId+"/repository/files?private_token=yUnRUT5ex1s3HU7yQ_g-";
+			String readmeUrl = data.getHostUrl() + "/api/v3/projects/"+projectId+"/repository/files?private_token=" + data.getApiToken();
 			httpConn.httpPostReadme(readmeUrl, readMe);
 		}
 		
@@ -98,8 +102,8 @@ public class ProjectService {
 		userConn.createPrivateProject(name, projectUrl);
 		
 		//---jenkins create job---
-		String jenkinsUrl = "http://140.134.26.71:38080";
-		String jenkinsCrumb = jenkins.getCrumb("GJen", "zxcv1234", jenkinsUrl);
+		String jenkinsUrl = "http://" + jenkinsData.getUrl();
+		String jenkinsCrumb = jenkins.getCrumb(jenkinsData.getUserName(), jenkinsData.getPassWord(), jenkinsUrl);
 		jenkins.createRootJob(name, jenkinsCrumb);
 		jenkins.createJenkinsJob(name, jenkinsCrumb);
 		jenkins.buildJob(name, jenkinsCrumb);
