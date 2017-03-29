@@ -6,6 +6,7 @@
 	import="com.offbytwo.jenkins.model.JobWithDetails"
 	import="com.offbytwo.jenkins.JenkinsServer"
 	import="com.offbytwo.jenkins.client.JenkinsHttpClient"
+	import="data.JenkinsData"
 	%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -105,6 +106,10 @@
 		Collections.reverse(users);
 		
 		JenkinsApi jenkins = new JenkinsApi();
+		
+		JenkinsData jenkinsData = new JenkinsData();
+		
+		int i=0, j=0;
 	%>
 	
 	<div class="container">
@@ -118,9 +123,13 @@
 						Collections.reverse(rootProjects);
 						for(GitlabProject project : rootProjects){
 							if(project.getName().substring(0,3).equalsIgnoreCase("oop")){
+								if(!project.getName().substring(4,7).equalsIgnoreCase("hw3")){
+									if(!project.getName().substring(4,7).equalsIgnoreCase("hw2")){
 								%>
-									<th><%=project.getName() %></th>
+										<th><%=project.getName() %></th>
 								<%
+									}
+								}
 							}
 						}
 					%>
@@ -129,53 +138,80 @@
 			<tbody>
 				<%
 					for(GitlabUser user : users){
+						if(i>14) break;
+						i++;
 						String userName = user.getUsername();
 			    		String personal_url = "http://140.134.26.71:5487/u/" + userName;
 						projects = conn.getProject(user);
 						Collections.reverse(projects);
+						
+						if(userName.equals("fcu-d0271888")||userName.equals("root")) continue;
 						%>
 							<tr>
-								<td><%=user.getId() %></td>
+								<td><%=userName %></td>
 								<td><strong><a href="#" onclick="window.open('<%=personal_url %>')"><%=user.getName() %></a></strong></td>
 								<%
 									for(GitlabProject project : projects){
+										j++;
 										if(project.equals("") || project.equals(null)) {
 										%>
 											<td><p>no this project</p></td>
 										<%
 											continue;
 										}
+										if(project.getName().substring(0,3).equalsIgnoreCase("oop")){
+										if(!project.getName().substring(4,7).equalsIgnoreCase("hw3")){
+											if(!project.getName().substring(4,7).equalsIgnoreCase("hw2")){
+										
 										
 										String project_WebURL = project.getWebUrl();
 										project_WebURL = project_WebURL.replace("http://19f52d3770e6", "http://140.134.26.71:5487");
 										project_WebURL += "/commits/master"; 
 										
+									
+										String jenkinsUrl = "http://" + jenkinsData.getUrl();
+										String jobName = "7"+user.getUsername()+"_"+project.getName();
+										String strUrl = jenkinsData.getHostUrl() + "/createItem?name="+jobName;
+										String jenkinsCrumb = jenkins.getCrumb(jenkinsData.getUserName(), jenkinsData.getPassWord(), jenkinsUrl);
+										String proUrl = "http://140.134.26.71:5487" + "/" + user.getUsername() + "/" + project.getName() + ".git";
+										//jenkins.postCreateJob(jenkinsData.getUserName(), jenkinsData.getPassWord(), strUrl, jobName, proUrl, jenkinsCrumb);;
+										//jenkins.postBuildJob(jobName, jenkinsCrumb);
+										
+										
 										//---Jenkins---
-										/*String url = "http://140.134.26.71:38080/api/json";
-										ArrayList<HashMap<String,String>> jobJson = jenkins.getJobJson("GJen","zxcv1234" , url, project.getName());
-										String color = jenkins.getJobColor(jobJson, userName, project.getName());
+										String url = "http://140.134.26.71:38080/api/json";
+										ArrayList<HashMap<String,String>> jobJson = jenkins.getJobJson("GJen","zxcv1234", url, project.getName());
+										String color = jenkins.getJobColor(jobJson, "6"+userName, project.getName());
+										System.out.println("color : " + color);
 										String colorPic = null;
 										if(color!=null){
 											colorPic = jenkins.getColorPic(color);
+											System.out.println("colorPic : "+colorPic);
 										}else{
 											colorPic = "jenkins_pic/jenkins_gray.PNG";
-										}*/
+											System.out.println("colorPic is null");
+										}
 										//-------------
 										
-										if(project.getName().substring(0,3).equalsIgnoreCase("oop")){
-											String project_event_url = conn.getProjectEvent(project.getId(), private_token);
-											int total_commit_count = getUserHw.httpGetProjectEvent(project_event_url);
-											int count = 0;
-											boolean projectExist = true;
+												String project_event_url = conn.getProjectEvent(project.getId(), private_token);
+												int total_commit_count = getUserHw.httpGetProjectEvent(project_event_url);
+												int count = 0;
+												boolean projectExist = true;
 											
-											System.out.println("User : " + user.getName());
-											System.out.println("projectId : " + project.getId());
-											//count =	conn.getAllCommits(project.getId());
-											count = httpConn.httpGetCommitCount(project.getId());
+												System.out.println("User : " + user.getName());
+												System.out.println("projectId : " + project.getId());
+												System.out.println("projectName: " + project.getName());
+												System.out.println("------------------------------------------------------------");
+												//count =	conn.getAllCo..mmits(project.getId());
+												count = httpConn.httpGetCommitCount(project.getId());
+												if(count>0&&project.getName().substring(4,7).equalsIgnoreCase("hw1")) colorPic="jenkins_pic/jenkins_blue.PNG";
 											
 											%>
-												<td><a href="#" onclick="window.open('<%=project_WebURL%>')"><%=count %></a>
+													<td><a href="#" onclick="window.open('<%=project_WebURL%>')"><%=count %></a>
+													<img src="<%=colorPic %>" width="36" height="31"></td>
 											<%
+												}
+											}
 										}
 									}
 								%>
@@ -186,7 +222,7 @@
 				%>
 			</tbody>
 		</table>
-		<img class="img-responsive" alt="commit record" src="./img/commit.jpg">
+		<img class="img-responsive" alt="commit record" src="./img/commitStiuation.png">
 	</div>
 	
 </body>

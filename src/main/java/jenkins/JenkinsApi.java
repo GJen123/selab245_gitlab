@@ -114,7 +114,7 @@ public class JenkinsApi{
 
             if(resEntity != null){
             	String result = resEntity.toString();
-                System.out.println(result);
+                System.out.println("result: " + result);
             }else{
 
             }
@@ -312,39 +312,43 @@ public class JenkinsApi{
 		List<GitlabUser> users = conn.getUsers();
 		for(GitlabUser user : users){
 			jobName = user.getUsername()+"_"+Pname;
-			HttpClient client = new DefaultHttpClient();
-			
-			String url = jenkinsData.getHostUrl() + "/job/"+jobName+"/build";
-	        try {
-	            HttpPost post = new HttpPost(url);
-	            
-	            post.addHeader("Content-Type", "application/xml");
-	            post.addHeader("Jenkins-Crumb", jenkinsCrumb);
-	            
-	            List<NameValuePair> params = new ArrayList<NameValuePair>();
-	            params.add((NameValuePair) new BasicNameValuePair("token",jenkinsData.getApiToken()));
-	            
-	            UrlEncodedFormEntity ent = null;
-	            ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
-	            post.setEntity(ent);
-	            
-	            HttpResponse responsePOST = client.execute(post);
-	            HttpEntity resEntity = responsePOST.getEntity();
-
-	            if(resEntity != null){
-	            	String result = resEntity.toString();
-	                System.out.println(jobName+" : abc : "+result);
-	            }else{
-
-	            }
-	        } catch (UnsupportedEncodingException e) {
-	            e.printStackTrace();
-	        } catch (ClientProtocolException e) {
-	            e.printStackTrace();
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
+			postBuildJob(jobName, jenkinsCrumb);
 		}
+	}
+	
+	public void postBuildJob(String jobName, String jenkinsCrumb){
+		HttpClient client = new DefaultHttpClient();
+		
+		String url = jenkinsData.getHostUrl() + "/job/"+jobName+"/build";
+        try {
+            HttpPost post = new HttpPost(url);
+            
+            post.addHeader("Content-Type", "application/xml");
+            post.addHeader("Jenkins-Crumb", jenkinsCrumb);
+            
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add((NameValuePair) new BasicNameValuePair("token",jenkinsData.getApiToken()));
+            
+            UrlEncodedFormEntity ent = null;
+            ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
+            post.setEntity(ent);
+            
+            HttpResponse responsePOST = client.execute(post);
+            HttpEntity resEntity = responsePOST.getEntity();
+
+            if(resEntity != null){
+            	String result = resEntity.toString();
+                System.out.println(jobName+" : abc : "+result);
+            }else{
+
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 	}
 	
 	public String getColorPic(String color){
