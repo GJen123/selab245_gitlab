@@ -44,7 +44,7 @@ import jenkins.JenkinsApi;
 @Path("project/")
 public class ProjectService {
 	
-	GitlabData data = new GitlabData();
+	GitlabData gitData = new GitlabData();
 	JenkinsData jenkinsData = new JenkinsData();
 	Conn userConn = Conn.getInstance();
 	JenkinsApi jenkins = new JenkinsApi();
@@ -93,7 +93,7 @@ public class ProjectService {
 		}
 		
 		if(!readMe.equals("<br>")){
-			String readmeUrl = data.getHostUrl() + "/api/v3/projects/"+projectId+"/repository/files?private_token=" + data.getApiToken();
+			String readmeUrl = gitData.getHostUrl() + "/api/v3/projects/"+projectId+"/repository/files?private_token=" + gitData.getApiToken();
 			httpConn.httpPostReadme(readmeUrl, readMe);
 		}
 		

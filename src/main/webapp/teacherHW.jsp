@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="utf-8"%>
-<%@ page import="conn.Conn,conn.HttpConnect,teacher.teacherGetUserHw,jenkins.JenkinsApi,conn.Language"%>
+<%@ page import="conn.Conn,conn.HttpConnect,teacher.teacherGetUserHw,jenkins.JenkinsApi,conn.Language,data.GitlabData,data.JenkinsData,data.CourseData"%>
 <%@ page import="java.util.List" import="java.util.ArrayList" import="java.util.*"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"
 	import="com.offbytwo.jenkins.model.JobWithDetails"
@@ -31,8 +31,15 @@
 		}
 		Language language = new Language();
 		session.putValue("page", "teacherHW");
-		String lan = session.getAttribute("language").toString();
-		String basename = language.getBaseName(lan);
+		String lan = null;
+		String basename = null;
+		if(session.getAttribute("language") == null || session.getAttribute("language").toString().equals("")){
+			lan = "English";
+			basename = language.getBaseName(lan);
+		}else{
+			lan = session.getAttribute("language").toString();
+			basename = language.getBaseName(lan);
+		}
 		System.out.println("lan : " + lan);
 		System.out.println("basename : " + basename);
 	%>
@@ -88,9 +95,13 @@
 	
 	<%
 		Conn conn = Conn.getInstance();
+	
+		GitlabData gitData = new GitlabData();
+		JenkinsData jenkinsData = new JenkinsData();
+		CourseData courseData = new CourseData();
+		
 		HttpConnect httpConn = new HttpConnect();
 		teacherGetUserHw getUserHw = new teacherGetUserHw();
-		String gitlabURL = "http://140.134.26.71:20080";
 		List<GitlabUser> users = conn.getUsers();
 		List<GitlabProject> projects = new ArrayList<GitlabProject>();	
 		
@@ -114,7 +125,7 @@
 						List<GitlabProject> rootProjects = conn.getProject(root);
 						Collections.reverse(rootProjects);
 						for(GitlabProject project : rootProjects){
-							if(project.getName().substring(0,3).equals("OOP")){
+							if(project.getName().substring(0,courseData.getCourseName().length()).equals(courseData.getCourseName())){
 								%>
 									<th><%=project.getName() %></th>
 								<%
@@ -125,9 +136,15 @@
 			</thead>
 			<tbody>
 				<%
+					int num = 0;
 					for(GitlabUser user : users){
+						if(num<5){
+							num++;
+						}else{
+							break;
+						}
 						String userName = user.getUsername();
-			    		String personal_url = "http://140.134.26.71:20080/u/" + userName;
+			    		String personal_url = gitData.getHostUrl() + "/u/" + userName;
 						projects = conn.getProject(user);
 						Collections.reverse(projects);
 						%>
@@ -137,12 +154,13 @@
 								<%
 									for(GitlabProject project : projects){
 										String project_WebURL = project.getWebUrl();
-										project_WebURL = project_WebURL.replace("http://0912fe2b3e43", "http://140.134.26.71:20080");
+										String oldStr = project_WebURL.substring(0, 19);
+										project_WebURL = project_WebURL.replace(oldStr, gitData.getHostUrl());
 										project_WebURL += "/commits/master"; 
 										
 										//---Jenkins---
-										String url = "http://140.134.26.71:38080/api/json";
-										ArrayList<HashMap<String,String>> jobJson = jenkins.getJobJson("GJen","zxcv1234" , url, project.getName());
+										String url = "http://" + jenkinsData.getUrl() + "/api/json";
+										ArrayList<HashMap<String,String>> jobJson = jenkins.getJobJson(jenkinsData.getUserName() ,jenkinsData.getPassWord() , url, project.getName());
 										String color = jenkins.getJobColor(jobJson, userName, project.getName());
 										String colorPic = null;
 										if(color!=null){
@@ -152,11 +170,13 @@
 										}
 										//-------------
 										
-										if(project.getName().substring(0,3).equals("OOP")){
-											String project_event_url = conn.getProjectEvent(project.getId(), private_token);
-											int total_commit_count = getUserHw.httpGetProjectEvent(project_event_url);
+										int count = 0;
+										if(project.getName().substring(0,courseData.getCourseName().length()).equals(courseData.getCourseName())){
+											//String project_event_url = conn.getProjectEvent(project.getId(), private_token);
+											//int total_commit_count = getUserHw.httpGetProjectEvent(project_event_url);
+											count = httpConn.httpGetCommitCount(project.getId());
 											%>
-												<td><a href="#" onclick="window.open('<%=project_WebURL%>')"><%=total_commit_count %></a>
+												<td><a href="#" onclick="window.open('<%=project_WebURL%>')"><%=count %></a>
 												<img src="<%=colorPic %>" width="36" height="31"></td>
 											<%
 										}

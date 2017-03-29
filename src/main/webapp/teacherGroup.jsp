@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="utf-8"%>
-<%@ page import="conn.Conn,conn.HttpConnect,conn.Language"%>
+<%@ page import="conn.Conn,conn.HttpConnect,conn.Language,data.GitlabData"%>
 <%@ page import="java.util.List" import="java.util.ArrayList"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
 	
@@ -28,8 +28,15 @@
 		}
 		Language language = new Language();
 		session.putValue("page", "teacherGroup");
-		String lan = session.getAttribute("language").toString();
-		String basename = language.getBaseName(lan);
+		String lan = null;
+		String basename = null;
+		if(session.getAttribute("language") == null || session.getAttribute("language").toString().equals("")){
+			lan = "English";
+			basename = language.getBaseName(lan);
+		}else{
+			lan = session.getAttribute("language").toString();
+			basename = language.getBaseName(lan);
+		}
 		System.out.println("lan : " + lan);
 		System.out.println("basename : " + basename);
 	%>
@@ -80,6 +87,7 @@
 	
 	<%
 		Conn conn = Conn.getInstance();
+		GitlabData gitData = new GitlabData();
 		List<GitlabGroup> groups = conn.getGroups();
 		
 		%>
@@ -112,7 +120,8 @@
 														<%
 															for(GitlabProject project : projects){
 																String projectUrl = project.getWebUrl();
-																projectUrl = projectUrl.replace("http://0912fe2b3e43", "http://140.134.26.71:20080");
+																String oldStr = projectUrl.substring(0, 19);
+																projectUrl = projectUrl.replace(oldStr, gitData.getHostUrl());
 																projectUrl += "/commits/master";
 																%>
 																	<tr>
@@ -129,7 +138,7 @@
 														<%
 															for(GitlabGroupMember member : groupMembers){
 																String memberUsername = member.getUsername();
-																String memberUrl = "http://140.134.26.71:20080/u/" + memberUsername;
+																String memberUrl = gitData.getHostUrl() + "/u/" + memberUsername;
 																%>
 																	<tr>
 																		<td><a href="#" onclick="window.open('<%=memberUrl %>')"><%=member.getName() %></a></td>

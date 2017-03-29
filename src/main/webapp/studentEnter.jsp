@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="BIG5"%>
-<%@ page import="conn.Conn,conn.StudentConn,conn.HttpConnect"%>
+<%@ page import="conn.Conn,conn.StudentConn,conn.HttpConnect,data.GitlabData"%>
 <%@ page import="java.util.List" import="java.util.ArrayList"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -49,6 +49,7 @@
 	<br><br><br>
 
 	<%
+		GitlabData gitData = new GitlabData();
 		String private_token = session.getAttribute("private_token").toString();
 		StudentConn sConn = new StudentConn(private_token); 
 		GitlabUser user = sConn.getUser();
@@ -62,7 +63,8 @@
 		<%
 			for(GitlabProject pro : project){
 				String proURL = pro.getWebUrl();
-				proURL = proURL.replace("http://0912fe2b3e43", "http://140.134.26.71:20080");
+				String oldStr = proURL.substring(0, 19);
+				proURL = proURL.replace(oldStr, gitData.getHostUrl());
 				%>
 				<p><a href="#" onclick="window.open('<%=proURL%>')"><%=pro.getName() %></a></p>
 				<p><%=proURL %></p>

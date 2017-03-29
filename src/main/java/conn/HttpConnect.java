@@ -33,7 +33,7 @@ import data.GitlabData;
 import sun.misc.BASE64Encoder;
 
 public class HttpConnect {
-	GitlabData data = new GitlabData();
+	GitlabData gitData = new GitlabData();
 	
 	public void httpPostReadme(String url, String content){
 		String file_path = "README.md";
@@ -145,7 +145,7 @@ public class HttpConnect {
 	}
 	
 	public int httpGetCommitCount(int projectId){
-		String strUrl = data.getUrl() + "/api/v3/projects/"+ projectId +"/repository/commits?private_token=" + data.getApiToken();
+		String strUrl = gitData.getUrl() + "/api/v3/projects/"+ projectId +"/repository/commits?private_token=" + gitData.getApiToken();
 		HttpURLConnection conn = null;
 		int count = 0;
 		

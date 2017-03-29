@@ -14,9 +14,9 @@ import data.GitlabData;
 
 public class teacherGetUserHw{
 	
-	GitlabData data = new GitlabData();
+	GitlabData gitData = new GitlabData();
 	
-	private String hostUrl = data.getHostUrl();
+	private String hostUrl = gitData.getHostUrl();
 	
 	public int httpGetProjectEvent(String strUrl){
 		HttpURLConnection conn = null;

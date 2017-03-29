@@ -60,7 +60,7 @@ public class JenkinsApi{
 	
 	private Conn conn = Conn.getInstance();
 	
-	GitlabData data = new GitlabData();
+	GitlabData gitData = new GitlabData();
 	
 	JenkinsData jenkinsData = new JenkinsData();
 	
@@ -69,7 +69,7 @@ public class JenkinsApi{
 		//---Create Jenkins Job---
 		String jobName = "root_"+Pname;
 		String strUrl = jenkinsData.getHostUrl() + "/createItem?name="+jobName;
-		String proUrl = data.getHostUrl() + "/root/" + Pname + ".git";
+		String proUrl = gitData.getHostUrl() + "/root/" + Pname + ".git";
 		postCreateJob(jenkinsData.getUserName(), jenkinsData.getPassWord(), strUrl, jobName, proUrl, jenkinsCrumb);
 		//------------------------
 	}
@@ -81,7 +81,7 @@ public class JenkinsApi{
 			//---Create Jenkins Job---
 			String jobName = user.getUsername()+"_"+Pname;
 			String strUrl = jenkinsData.getHostUrl() + "/createItem?name="+jobName;
-			String proUrl = data.getHostUrl() + "/" + user.getUsername() + "/" + Pname + ".git";
+			String proUrl = gitData.getHostUrl() + "/" + user.getUsername() + "/" + Pname + ".git";
 			postCreateJob(jenkinsData.getUserName(), jenkinsData.getPassWord(), strUrl, jobName, proUrl, jenkinsCrumb);
 			//------------------------
 		}

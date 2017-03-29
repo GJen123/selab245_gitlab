@@ -18,11 +18,11 @@ public class UnZip{
 	HttpConnect httpConn = new HttpConnect();
     private static final String tempDir = System.getProperty("java.io.tmpdir");
     
-    GitlabData data = new GitlabData();
+    GitlabData gitData = new GitlabData();
     
-    private String hostUrl = data.getHostUrl();
+    private String hostUrl = gitData.getHostUrl();
     
-    private String token = data.getApiToken();
+    private String token = gitData.getApiToken();
 
     /**
      * Size of the buffer to read/write data

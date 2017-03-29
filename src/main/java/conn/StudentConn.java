@@ -14,12 +14,12 @@ import data.GitlabData;
 
 public class StudentConn{
 	
-	GitlabData data = new GitlabData();
+	GitlabData gitData = new GitlabData();
 	
 	String private_token;
 	private GitlabUser gitlabUser = new GitlabUser();
-	private String _hostUrl = data.getHostUrl();
-	private String _apiToken = data.getApiToken();
+	private String _hostUrl = gitData.getHostUrl();
+	private String _apiToken = gitData.getApiToken();
 	private TokenType tokenType = TokenType.PRIVATE_TOKEN;
 	private AuthMethod authMethod = AuthMethod.URL_PARAMETER;
 	private GitlabAPI gitlab;

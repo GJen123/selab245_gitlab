@@ -13,10 +13,10 @@ import org.gitlab.api.models.*;
 import data.GitlabData;
 
 public class Conn {
-	GitlabData data = new GitlabData();
+	GitlabData gitData = new GitlabData();
 	
-	private String _hostUrl = data.getHostUrl();
-	private String _apiToken = data.getApiToken();
+	private String _hostUrl = gitData.getHostUrl();
+	private String _apiToken = gitData.getApiToken();
 	private TokenType tokenType = TokenType.PRIVATE_TOKEN;
 	private AuthMethod authMethod = AuthMethod.URL_PARAMETER;
 
@@ -39,7 +39,7 @@ public class Conn {
 	public GitlabSession getRootSession() {
 
 		try {
-			rootSession = GitlabAPI.connect(_hostUrl, data.getUserName(), data.getPassWord());
+			rootSession = GitlabAPI.connect(_hostUrl, gitData.getUserName(), gitData.getPassWord());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

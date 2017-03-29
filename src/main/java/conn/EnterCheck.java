@@ -12,13 +12,13 @@ import org.json.JSONObject;
 import data.GitlabData;
 
 public class EnterCheck{
-	GitlabData data = new GitlabData();
+	GitlabData gitData = new GitlabData();
 	
 	public String httpPost(String username, String password){
 		String result = null;
 		String response = null; 
 		StringBuilder sb = new StringBuilder();
-		String url = data.getHostUrl() + "/oauth/token";
+		String url = gitData.getHostUrl() + "/oauth/token";
 		try {
 			URL object=new URL(url);
 	

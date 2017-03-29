@@ -17,7 +17,7 @@ import data.GitlabData;
 public class AfterEnter extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	GitlabData data = new GitlabData();
+	GitlabData gitData = new GitlabData();
 	
 	private Conn conn = Conn.getInstance();
        
@@ -43,7 +43,7 @@ public class AfterEnter extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		String gitlabURL = data.getHostUrl();
+		String gitlabURL = gitData.getHostUrl();
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		String language = request.getParameter("language");
