@@ -2,9 +2,54 @@
     pageEncoding="utf-8"%>
 <%@ page import="conn.Conn,conn.Language"%>
 <%@ page import="conn.HttpConnect" %>
-<%@ page import="java.util.List" import="java.util.ArrayList"
-	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="org.gitlab.api.GitlabAPI" %>
+<%@ page import="org.gitlab.api.models.*" %>
+<%@ page import="java.util.Locale" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+<%
+	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+		response.sendRedirect("index.jsp");
+	}
+	
+	//抓當地語言
+	Locale locale = request.getLocale();
+	String country = locale.getCountry();
+	String localLan = locale.getLanguage();
+	
+	String finalLan = localLan;
+	String reqLan = request.getParameter("lang");
+	String sesLan = null;
+	
+	if(reqLan == null || reqLan.trim().equals("")) { 
+		// 如果request裡沒有值
+		System.out.println("no request");
+		if(session.getAttribute("language") == null || session.getAttribute("language").toString().equals("")){
+			// 如果session裡沒有值
+			System.out.println("no session");
+			finalLan = localLan;
+		}else{
+			// session裡有值
+			System.out.println("has session");
+			sesLan = session.getAttribute("language").toString();
+			finalLan = sesLan;
+		}
+	} else{
+		// request裡有值  優先考慮request裡的值
+		System.out.println("has request");
+		session.putValue("language", reqLan);
+		finalLan = reqLan;
+	}
+	
+	Language language = new Language();
+	session.putValue("page", "teacherManageStudent");
+	String basename = language.getBaseName(finalLan);
+	System.out.println("finalLan : " + finalLan);
+	System.out.println("basename : " + basename);
+%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -23,25 +68,6 @@
 	<title>ProgEdu</title>
 </head>
 <body>
-	<%
-		if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
-			response.sendRedirect("index.jsp");
-		}
-		Language language = new Language();
-		session.putValue("page", "teacherManageStudent");
-		String lan = null;
-		String basename = null;
-		if(session.getAttribute("language") == null || session.getAttribute("language").toString().equals("")){
-			lan = "English";
-			basename = language.getBaseName(lan);
-		}else{
-			lan = session.getAttribute("language").toString();
-			basename = language.getBaseName(lan);
-		}
-		System.out.println("lan : " + lan);
-		System.out.println("basename : " + basename);
-	%>
-	
 	<!-- 設定語言 -->
 	<fmt:setBundle basename = "<%=basename %>"/>
 	
@@ -75,8 +101,8 @@
                     	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                     		<fmt:message key="top_navbar_language"/> <span class="caret"></span></a>
                     	<ul class="dropdown-menu" >
-	                    	<li id="English" value="English"><a href="ChooseLanguage?language=English"><fmt:message key="top_navbar_lanEnglish"/></a></li>
-	                    	<li id="Chinese" value="Chinese"><a href="ChooseLanguage?language=Chinese"><fmt:message key="top_navbar_lanChinese"/></a></li>
+	                    	<li id="English" value="en"><a href="ChooseLanguage?language=en"><fmt:message key="top_navbar_lanEnglish"/></a></li>
+	                    	<li id="Chinese" value="zh"><a href="ChooseLanguage?language=zh"><fmt:message key="top_navbar_lanChinese"/></a></li>
                     	</ul>
                     </li>
         			<li><a href="memberLogOut.jsp" id="loginLink"><fmt:message key="top_navbar_signOut"/></a></li>

@@ -1,9 +1,52 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="utf-8"%>
-<%@ page import="conn.Conn,conn.HttpConnect"%>
-<%@ page import="java.util.List" import="java.util.ArrayList"
-	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
+<%@ page import="conn.Conn,conn.HttpConnect,conn.Language"%>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Locale" %>
+<%@ page import="org.gitlab.api.models.*" %>
+<%@ page import="org.gitlab.api.GitlabAPI" %>
+<%@ page import="java.util.ArrayList" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
+
+<%
+	//抓當地語言
+	Locale locale = request.getLocale();
+	String country = locale.getCountry();
+	String localLan = locale.getLanguage();
+	
+	String finalLan = localLan;
+	String reqLan = request.getParameter("lang");
+	String sesLan = null;
+	
+	if(reqLan == null || reqLan.trim().equals("")) { 
+		// 如果request裡沒有值
+		System.out.println("no request");
+		if(session.getAttribute("language") == null || session.getAttribute("language").toString().equals("")){
+			// 如果session裡沒有值
+			System.out.println("no session");
+			finalLan = localLan;
+		}else{
+			// session裡有值
+			System.out.println("has session");
+			sesLan = session.getAttribute("language").toString();
+			finalLan = sesLan;
+		}
+    } else{
+    	// request裡有值  優先考慮request裡的值
+    	System.out.println("has request");
+    	finalLan = reqLan;
+    }
+	
+	Language language = new Language();
+	String basename = language.getBaseName(finalLan);
+	System.out.println("finalLan : " + finalLan);
+	System.out.println("basename : " + basename);
+%>
+
+<c:url value="index.jsp" var="displayLan">
+<c:param name="Language" value="tw" />
+</c:url>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -25,7 +68,7 @@
 </head>
 <body>
 	<!-- 設定語言 -->
-	<fmt:setBundle basename = "form_en"/>
+	<fmt:setBundle basename = "<%=basename %>"/>
 	
 	<div class="container" style="width:300px;height:60px">
         
@@ -48,12 +91,7 @@
 					<input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
 				</div>
 			</div>
-			
-			  <label for="selLanguage"><fmt:message key="label_chooseLanguage"/></label>
-		      <select class="form-control" id="selLanguage" name="language">
-		      	<option value="English"><fmt:message key="li_english"/></option>
-		        <option value="Chinese"><fmt:message key="li_chinese"/></option>
-		      </select>
+			<input type="hidden" name="language" value="<%=finalLan%>">
 			<br>
 				
 			<button class="btn btn-lg btn-primary btn-block" type="submit"><fmt:message key = "index_btn_signIn"/></button>

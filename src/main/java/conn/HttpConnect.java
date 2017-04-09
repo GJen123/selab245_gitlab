@@ -27,10 +27,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import data.GitlabData;
-import sun.misc.BASE64Encoder;
 
 public class HttpConnect {
 	GitlabData gitData = new GitlabData();
@@ -173,7 +171,7 @@ public class HttpConnect {
             count = jsonArray.length();
         }
         catch (Exception e) {
-            System.out.println(e);
+            
         }
         finally {
             if (conn != null) {

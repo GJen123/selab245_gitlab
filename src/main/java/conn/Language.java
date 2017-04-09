@@ -2,8 +2,8 @@ package conn;
 
 public class Language{
 	
-	private static final String Chinese = "Chinese";
-	private static final String English = "English";
+	private static final String Chinese = "zh";
+	private static final String English = "en";
 	
 	private static final String form_tw = "form_tw";
 	private static final String form_en = "form_en";
