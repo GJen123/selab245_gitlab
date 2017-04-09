@@ -150,11 +150,15 @@
 					<%
 						List<GitlabProject> rootProjects = conn.getProject(root);
 						Collections.reverse(rootProjects);
+						List<String> pNames = new ArrayList<String>();
 						for(GitlabProject project : rootProjects){
 							if(project.getName().substring(0,courseData.getCourseName().length()).equals(courseData.getCourseName())){
 								%>
 									<th><%=project.getName() %></th>
 								<%
+								if(project.getName().equalsIgnoreCase("oop-hw6")) pNames.add("OOP-HW5");
+								pNames.add(project.getName());
+								System.out.println(project.getName());
 							}
 						}
 					%>
@@ -162,22 +166,18 @@
 			</thead>
 			<tbody>
 				<%
-					int num = 0;
 					for(GitlabUser user : users){
-						if(num<5){
-							num++;
-						}else{
-							break;
-						}
+						if(user.getId() == 1) continue;
 						String userName = user.getUsername();
 			    		String personal_url = gitData.getHostUrl() + "/u/" + userName;
 						projects = conn.getProject(user);
 						Collections.reverse(projects);
 						%>
 							<tr>
-								<td><%=user.getId() %></td>
+								<td><%=user.getUsername() %></td>
 								<td><strong><a href="#" onclick="window.open('<%=personal_url %>')"><%=user.getName() %></a></strong></td>
 								<%
+									int i=0;
 									for(GitlabProject project : projects){
 										String project_WebURL = project.getWebUrl();
 										String oldStr = project_WebURL.substring(0, 19);
@@ -197,9 +197,23 @@
 										//-------------
 										
 										int count = 0;
+										
 										if(project.getName().substring(0,courseData.getCourseName().length()).equals(courseData.getCourseName())){
 											//String project_event_url = conn.getProjectEvent(project.getId(), private_token);
 											//int total_commit_count = getUserHw.httpGetProjectEvent(project_event_url);
+											if(!project.getName().equals(pNames.get(i))){
+												int a = Integer.parseInt(project.getName().substring(project.getName().length()-1, project.getName().length()));
+												int b = Integer.parseInt(pNames.get(i).substring(pNames.get(i).length()-1, pNames.get(i).length()));
+												System.out.println(a + ", " + b);
+												for(int n=0; n<(a-b); n++){
+												%>
+													<td><p>No project</p></td>
+												<%
+												}
+												System.out.println(project.getName());
+												System.out.println(pNames.get(i));
+											}
+											i++;
 											count = httpConn.httpGetCommitCount(project.getId());
 											%>
 												<td><a href="#" onclick="window.open('<%=project_WebURL%>')"><%=count %></a>

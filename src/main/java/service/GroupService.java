@@ -93,35 +93,102 @@ public class GroupService {
 		return Response.temporaryRedirect(location).build();
 	}
 
+//	public void newGroup(List<String> data) {
+//		String groupName = "", masterName = "";
+//		List<String> cons = new ArrayList<String>();
+//		List<Group> groups = new ArrayList<Group>();
+//		List<String> teamNames = new ArrayList<String>();
+//		Group group = new Group();
+//		int i=0;
+//		boolean isCreateGroup = false;
+//		
+//		for(String s : data){
+//			String[] row = s.split(",");
+//			if(row[0].equals("Team")) continue;
+//			teamNames.add(row[0]);
+//		}
+//		
+//		for (String lsData : data) {
+//			String[] row = lsData.split(",");
+//
+//			if(row[0].equals("Team")) continue;
+//			if(teamNames.get(i+1).isEmpty()) isCreateGroup = true;
+//			if(!row[0].isEmpty()) {  //Team
+//				groupName = row[0];
+//				if(!row[1].isEmpty()) masterName = row[3]; //teamLeader
+//				else cons.add(row[3]);
+//			}
+//			else{
+//				if(!row[1].isEmpty()) masterName = row[3]; //teamLeader
+//				else cons.add(row[3]);
+//			}
+//			if(isCreateGroup == false){
+//				group.setGroupName(groupName);
+//				group.setMaster(masterName);
+//				group.setContributor(cons);
+//
+//				groups.add(group);
+//			}
+//		}
+//		for(Group g : groups){
+//			System.out.println(g.getGroupName());
+//			System.out.println(g.getMaster());
+//			for(String c : g.getContributor()){
+//				System.out.println(c);
+//			}
+//		}
+//	}
+	
 	public void newGroup(List<String> data) {
 		String groupName = "", masterName = "";
 		List<String> cons = new ArrayList<String>();
-		// List<Group> groups = new ArrayList<Group>();
+		List<Group> groups = new ArrayList<Group>();
 		Group group = new Group();
-
+		
+		int number = 0;
+		int flag = 0;
+		
 		for (String lsData : data) {
-
+			number++;
 			String[] row = lsData.split(",");
 
-			if (row[0].equals("組別")) {
-				System.out.println("組別: " + row[1]);
-				groupName = row[1];
-			} else if (row[0].equals("組長")) {
-				System.out.println("組長: " + row[1] + row[2]);
-				masterName = row[1];
-			} else {
-				System.out.println("組員: " + row[1] + row[2]);
-				String con = row[1];
-				cons.add(con);
+			if(row[0].equals("Team")) continue;
+			if(!row[0].isEmpty()) {  //Team
+				if(flag==1){
+					group.setGroupName(groupName);
+					group.setMaster(masterName);
+					group.setContributor(cons);
+
+					groups.add(group);
+					
+					flag=0;
+				}
+				group = new Group();
+				cons = new ArrayList<String>();
+				groupName = row[0];
+				if(!row[1].isEmpty()) masterName = row[3]; //teamLeader
+				else cons.add(row[3]);
 			}
-
-			group.setGroupName(groupName);
-			group.setMaster(masterName);
-			group.setContributor(cons);
-
-			// groups.add(group);
+			else{
+				flag=1;
+				if(!row[1].isEmpty()) masterName = row[3]; //teamLeader
+				else cons.add(row[3]);
+			}
+			if(number == data.size()) {
+				System.out.println("data final");
+				group.setGroupName(groupName);
+				group.setMaster(masterName);
+				group.setContributor(cons);
+				groups.add(group);
+			}
 		}
-		createGroup(group);
+		for(Group g : groups){
+			System.out.println("Group name: " + g.getGroupName());
+			System.out.println("Group master: " + g.getMaster());
+			for(String c : g.getContributor()){
+				System.out.println("Group member: " + c);
+			}
+		}
 	}
 
 	public GitlabGroup newGroup(String name) {
@@ -163,13 +230,23 @@ public class GroupService {
 	@Path("export")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	public Response exportStudentList() throws Exception {
-		String filepath = "../download/StudentList.csv";
+		
+		String tempDir = System.getProperty("java.io.tmpdir");
+
+		String downloadDir = tempDir + "downloads/";
+
+		File fUploadDir = new File(downloadDir);
+		if (!fUploadDir.exists()) {
+			fUploadDir.mkdirs();
+		}
+		
+		String filepath = downloadDir + "StdentList.csv";
 
 		File file = new File(filepath);
 		FileWriter writer = new FileWriter(filepath);
 		StringBuilder build = new StringBuilder();
 
-		String[] csvTitle = { "Team", "Gitlab_Id", "Student_Id", "name", "TeamLeader" };
+		String[] csvTitle = { "Team", "TeamLeader", "Student_Id", "name"};
 
 		List<GitlabUser> lsUsers = userService.getUsers();
 		Collections.reverse(lsUsers);
@@ -189,13 +266,11 @@ public class GroupService {
 				continue;
 			build.append(""); // Team
 			build.append(",");
-			build.append(user.getId()); // id
+			build.append(""); // TeamLeader
 			build.append(",");
 			build.append(user.getUsername()); // userName
 			build.append(",");
 			build.append(user.getName()); // name
-			build.append(",");
-			build.append(""); // TeamLeader
 			build.append("\n");
 		}
 
