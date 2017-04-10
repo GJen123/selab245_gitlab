@@ -64,17 +64,17 @@ public class JenkinsApi{
 	
 	JenkinsData jenkinsData = new JenkinsData();
 	
-	public void createRootJob(String Pname, String jenkinsCrumb){
+	public void createRootJob(String Pname, String jenkinsCrumb, String fileType){
 		
 		//---Create Jenkins Job---
 		String jobName = "root_"+Pname;
 		String strUrl = jenkinsData.getHostUrl() + "/createItem?name="+jobName;
 		String proUrl = gitData.getHostUrl() + "/root/" + Pname + ".git";
-		postCreateJob(jenkinsData.getUserName(), jenkinsData.getPassWord(), strUrl, jobName, proUrl, jenkinsCrumb);
+		postCreateJob(jenkinsData.getUserName(), jenkinsData.getPassWord(), strUrl, jobName, proUrl, jenkinsCrumb, fileType);
 		//------------------------
 	}
 	
-	public void createJenkinsJob(String Pname, String jenkinsCrumb){
+	public void createJenkinsJob(String Pname, String jenkinsCrumb, String fileType){
 		List<GitlabUser> users = conn.getUsers();
 		for(GitlabUser user : users){
 			if (user.getId() == 1) continue;
@@ -82,13 +82,13 @@ public class JenkinsApi{
 			String jobName = user.getUsername()+"_"+Pname;
 			String strUrl = jenkinsData.getHostUrl() + "/createItem?name="+jobName;
 			String proUrl = gitData.getHostUrl() + "/" + user.getUsername() + "/" + Pname + ".git";
-			postCreateJob(jenkinsData.getUserName(), jenkinsData.getPassWord(), strUrl, jobName, proUrl, jenkinsCrumb);
+			postCreateJob(jenkinsData.getUserName(), jenkinsData.getPassWord(), strUrl, jobName, proUrl, jenkinsCrumb, fileType);
 			//------------------------
 		}
 	}
 	
 	//  用httppost create jenkins job
-	public void postCreateJob(String username, String password, String strUrl, String jobName, String proUrl, String jenkinsCrumb){
+	public void postCreateJob(String username, String password, String strUrl, String jobName, String proUrl, String jenkinsCrumb, String fileType){
 		HttpClient client = new DefaultHttpClient();
 		
 		String url = jenkinsData.getHostUrl() + "/createItem?name="+jobName;
@@ -98,9 +98,16 @@ public class JenkinsApi{
             post.addHeader("Content-Type", "application/xml");
             post.addHeader("Jenkins-Crumb", jenkinsCrumb);
 //            post.addHeader("Jenkins-Crumb", "e390d46093102dac6c0ec903b77af0a0");
-            
+            String filePath = null;
             //變更config.xml裡的url
-            String filePath = this.getClass().getResource("config.xml").getFile();
+            if(fileType.equals("Maven")){
+            	filePath = this.getClass().getResource("config_maven.xml").getFile();
+            }else if(fileType.equals("Javac")){
+            	filePath = this.getClass().getResource("config_javac.xml").getFile();
+            }else{
+            	filePath = this.getClass().getResource("config_maven.xml").getFile();
+            }
+            
             modifyXmlFileUrl(filePath, proUrl);
             
             //讀config.xml

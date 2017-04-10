@@ -60,6 +60,7 @@ public class ProjectService {
 	public Response NewProject(
 			@FormDataParam("Hw_Name") String name, 
 			@FormDataParam("Hw_README") String readMe, 
+			@FormDataParam("fileRadio") String fileType, 
 			@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail) throws URISyntaxException {
 		
@@ -104,8 +105,8 @@ public class ProjectService {
 		//---jenkins create job---
 		String jenkinsUrl = "http://" + jenkinsData.getUrl();
 		String jenkinsCrumb = jenkins.getCrumb(jenkinsData.getUserName(), jenkinsData.getPassWord(), jenkinsUrl);
-		jenkins.createRootJob(name, jenkinsCrumb);
-		jenkins.createJenkinsJob(name, jenkinsCrumb);
+		jenkins.createRootJob(name, jenkinsCrumb, fileType);
+		jenkins.createJenkinsJob(name, jenkinsCrumb, fileType);
 		jenkins.buildJob(name, jenkinsCrumb);
 		//-----------------------
 		

@@ -105,10 +105,18 @@ public class HttpConnect {
         }
 	}
 	
+	/* httpPostFile
+	 * @param file_path = 檔案路徑
+	 * @param branch_name = The name of branch.
+	 * @param encoding = 'text' or 'base64'. Text is default.
+	 * @param content = 檔案內容
+	 * @commit_message = commit訊息
+	 * */
+	
 	public void httpPostFile(String file_path,String url, String fileContent){
 		//String file_path = "src";
 		String branch_name = "master";
-		String encoding = "test";
+		String encoding = "text";
 		String commit_message = "HW";
 		HttpClient client = new DefaultHttpClient();
         try {
