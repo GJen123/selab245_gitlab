@@ -111,7 +111,7 @@ public class JenkinsApi{
             modifyXmlFileUrl(filePath, proUrl);
             
             //讀config.xml
-            StringBuilder sb = getConfig();
+            StringBuilder sb = getConfig(filePath);
             StringEntity se = new StringEntity(sb.toString(), ContentType.create("text/xml", Consts.UTF_8));
             se.setChunked(true);
             post.setEntity(se);
@@ -179,12 +179,12 @@ public class JenkinsApi{
 	}
 	
 	//抓config.xml 並讀出來變成stringbuilder
-	public StringBuilder getConfig(){
+	public StringBuilder getConfig(String typeFilePath){
 		FileInputStream fis;
 		StringBuilder sb = new StringBuilder();
 		String strConfig=null;
 		try {
-			String filePath = this.getClass().getResource("config.xml").getFile();
+			String filePath = this.getClass().getResource(typeFilePath).getFile();
 			fis = new FileInputStream(filePath);
 			InputStreamReader reader= new InputStreamReader(fis, "UTF8");
 	        BufferedReader buf = new BufferedReader(reader);

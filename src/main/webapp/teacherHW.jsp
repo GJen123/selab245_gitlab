@@ -17,6 +17,7 @@
 		response.sendRedirect("index.jsp");
 	}
 	session.putValue("page", "teacherHW");
+	String pages = "teacherHW.jsp";
 %>
 
 <%@ include file="language.jsp"%>
@@ -74,15 +75,11 @@
 					<%
 						List<GitlabProject> rootProjects = conn.getProject(root);
 						Collections.reverse(rootProjects);
-						List<String> pNames = new ArrayList<String>();
 						for(GitlabProject project : rootProjects){
 							if(project.getName().substring(0,courseData.getCourseName().length()).equals(courseData.getCourseName())){
 								%>
 									<th><%=project.getName() %></th>
 								<%
-								if(project.getName().equalsIgnoreCase("oop-hw6")) pNames.add("OOP-HW5");
-								pNames.add(project.getName());
-								System.out.println(project.getName());
 							}
 						}
 					%>
@@ -125,19 +122,6 @@
 										if(project.getName().substring(0,courseData.getCourseName().length()).equals(courseData.getCourseName())){
 											//String project_event_url = conn.getProjectEvent(project.getId(), private_token);
 											//int total_commit_count = getUserHw.httpGetProjectEvent(project_event_url);
-											if(!project.getName().equals(pNames.get(i))){
-												int a = Integer.parseInt(project.getName().substring(project.getName().length()-1, project.getName().length()));
-												int b = Integer.parseInt(pNames.get(i).substring(pNames.get(i).length()-1, pNames.get(i).length()));
-												System.out.println(a + ", " + b);
-												for(int n=0; n<(a-b); n++){
-												%>
-													<td><p>No project</p></td>
-												<%
-												}
-												System.out.println(project.getName());
-												System.out.println(pNames.get(i));
-											}
-											i++;
 											count = httpConn.httpGetCommitCount(project.getId());
 											%>
 												<td><a href="#" onclick="window.open('<%=project_WebURL%>')"><%=count %></a>
