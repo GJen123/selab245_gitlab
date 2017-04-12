@@ -92,52 +92,6 @@ public class GroupService {
 		java.net.URI location = new java.net.URI("../teacherManageGroup.jsp");
 		return Response.temporaryRedirect(location).build();
 	}
-
-//	public void newGroup(List<String> data) {
-//		String groupName = "", masterName = "";
-//		List<String> cons = new ArrayList<String>();
-//		List<Group> groups = new ArrayList<Group>();
-//		List<String> teamNames = new ArrayList<String>();
-//		Group group = new Group();
-//		int i=0;
-//		boolean isCreateGroup = false;
-//		
-//		for(String s : data){
-//			String[] row = s.split(",");
-//			if(row[0].equals("Team")) continue;
-//			teamNames.add(row[0]);
-//		}
-//		
-//		for (String lsData : data) {
-//			String[] row = lsData.split(",");
-//
-//			if(row[0].equals("Team")) continue;
-//			if(teamNames.get(i+1).isEmpty()) isCreateGroup = true;
-//			if(!row[0].isEmpty()) {  //Team
-//				groupName = row[0];
-//				if(!row[1].isEmpty()) masterName = row[3]; //teamLeader
-//				else cons.add(row[3]);
-//			}
-//			else{
-//				if(!row[1].isEmpty()) masterName = row[3]; //teamLeader
-//				else cons.add(row[3]);
-//			}
-//			if(isCreateGroup == false){
-//				group.setGroupName(groupName);
-//				group.setMaster(masterName);
-//				group.setContributor(cons);
-//
-//				groups.add(group);
-//			}
-//		}
-//		for(Group g : groups){
-//			System.out.println(g.getGroupName());
-//			System.out.println(g.getMaster());
-//			for(String c : g.getContributor()){
-//				System.out.println(c);
-//			}
-//		}
-//	}
 	
 	public void newGroup(List<String> data) {
 		String groupName = "", masterName = "";

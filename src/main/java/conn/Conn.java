@@ -11,6 +11,7 @@ import org.gitlab.api.TokenType;
 import org.gitlab.api.models.*;
 
 import data.GitlabData;
+import db.UserDBManager;
 
 public class Conn {
 	GitlabData gitData = new GitlabData();
@@ -21,6 +22,8 @@ public class Conn {
 	private AuthMethod authMethod = AuthMethod.URL_PARAMETER;
 
 	private GitlabAPI gitlab = GitlabAPI.connect(_hostUrl, _apiToken, tokenType, authMethod);
+	
+	private static UserDBManager dbManager = UserDBManager.getInstance();
 
 	// http://140.134.26.71:20080/api/v3/users?private_token=yUnRUT5ex1s3HU7yQ_g-
 
@@ -186,8 +189,7 @@ public class Conn {
 			for (GitlabUser user : users) {
 				if (user.getId() == 1)
 					continue;
-				gitlab.createUserProject(user.getId(), Pname, null, null, null, null, null, null, null, null, null,
-						importUrl);
+				gitlab.createUserProject(user.getId(), Pname, null, null, null, null, null, null, null, null, null, importUrl);
 			}
 			return true;
 		} catch (IOException e) {
@@ -241,7 +243,9 @@ public class Conn {
 	 */
 	public boolean createUser(String email, String password, String userName, String fullName) {
 		try {
-			gitlab.createUser(email, password, userName, fullName, "", "", "", "", 10, "", "", "", false, true, null);
+			GitlabUser user = new GitlabUser();
+			user = gitlab.createUser(email, password, userName, fullName, "", "", "", "", 10, "", "", "", false, true, null);
+			dbManager.addUser(user);
 			return true;
 		} catch (IOException e) {
 			System.out.println(e);

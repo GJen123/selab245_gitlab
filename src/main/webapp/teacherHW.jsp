@@ -10,6 +10,8 @@
 <%@ page import="java.util.*" %>
 <%@ page import="java.util.ArrayList"  %>
 <%@ page import="java.util.Locale" %>
+<%@ page import="db.UserDBManager" %>
+<%@ page import="data.User" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%
@@ -46,14 +48,16 @@
 	
 	<%
 		Conn conn = Conn.getInstance();
-	
+
+		UserDBManager db = UserDBManager.getInstance();
+		
 		GitlabData gitData = new GitlabData();
 		JenkinsData jenkinsData = new JenkinsData();
 		CourseData courseData = new CourseData();
 		
 		HttpConnect httpConn = new HttpConnect();
 		teacherGetUserHw getUserHw = new teacherGetUserHw();
-		List<GitlabUser> users = conn.getUsers();
+		List<User> users = db.listAllUsers();
 		List<GitlabProject> projects = new ArrayList<GitlabProject>();	
 		
 		GitlabUser root = conn.getRoot();
@@ -64,6 +68,7 @@
 		Collections.reverse(users);
 		
 		JenkinsApi jenkins = new JenkinsApi();
+		
 	%>
 	
 	<div class="container">
@@ -87,15 +92,14 @@
 			</thead>
 			<tbody>
 				<%
-					for(GitlabUser user : users){
-						if(user.getId() == 1) continue;
-						String userName = user.getUsername();
+					for(User user : users){
+						String userName = user.getID();
 			    		String personal_url = gitData.getHostUrl() + "/u/" + userName;
-						projects = conn.getProject(user);
+						//projects = conn.getProject(user);
 						Collections.reverse(projects);
 						%>
 							<tr>
-								<td><%=user.getUsername() %></td>
+								<td><%=user.getUserName() %></td>
 								<td><strong><a href="#" onclick="window.open('<%=personal_url %>')"><%=user.getName() %></a></strong></td>
 								<%
 									int i=0;

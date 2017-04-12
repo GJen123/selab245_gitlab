@@ -19,6 +19,8 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.apache.commons.lang.StringUtils;
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+
+import data.CourseData;
 import data.User;
 import conn.Conn;
 
@@ -26,6 +28,8 @@ import conn.Conn;
 public class UserService {
 	
 	Conn userConn = Conn.getInstance();
+	
+	CourseData course = new CourseData();
 
 	@POST
 	@Path("upload")
@@ -86,7 +90,7 @@ public class UserService {
 		}
 		String output = "File successfully uploaded to : " + uploadedFileLocation;
 		System.out.println(StringUtils.substringAfterLast(fileDetail.getFileName(), ":"));
-		java.net.URI location = new java.net.URI("../teacherManageStudent.jsp");
+		java.net.URI location = new java.net.URI("../teacherHW.jsp");
 		  return Response.temporaryRedirect(location).build();
 	}
 	
@@ -94,11 +98,16 @@ public class UserService {
 		List<User> lsStudent = new ArrayList<User>();
 		for(String lsData : data) {
 			String[] row = lsData.split(",");
-			String email = row[0] + "@fcu.edu.tw";
 			String password = row[0];
 			String userName = row[0];
 			String fullName = row[1];
 			String ID = row[0];
+			String email = "";
+			
+			if(row[0].equalsIgnoreCase("studentid")) continue;
+			
+			if(row.length>=3) email = row[2];
+			else email = row[0] + course.getSchoolEmail();
 			
 			User student = new User();
 			student.setID(ID);

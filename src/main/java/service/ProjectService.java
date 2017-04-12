@@ -39,18 +39,22 @@ import conn.Conn;
 import conn.HttpConnect;
 import data.GitlabData;
 import data.JenkinsData;
+import data.Project;
+import db.ProjectDBManager;
 import jenkins.JenkinsApi;
 
 @Path("project/")
 public class ProjectService {
 	
-	GitlabData gitData = new GitlabData();
-	JenkinsData jenkinsData = new JenkinsData();
-	Conn userConn = Conn.getInstance();
-	JenkinsApi jenkins = new JenkinsApi();
-	UnZip unzip = new UnZip();
-	GitlabUser root = userConn.getRoot();
-	HttpConnect httpConn = new HttpConnect();
+	private GitlabData gitData = new GitlabData();
+	private JenkinsData jenkinsData = new JenkinsData();
+	private Conn userConn = Conn.getInstance();
+	private JenkinsApi jenkins = new JenkinsApi();
+	private UnZip unzip = new UnZip();
+	private GitlabUser root = userConn.getRoot();
+	private HttpConnect httpConn = new HttpConnect();
+	private ProjectDBManager dbManager = ProjectDBManager.getInstance();
+	
 	private static final String tempDir = System.getProperty("java.io.tmpdir");
 	
 	@POST
@@ -64,6 +68,8 @@ public class ProjectService {
 			@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail) throws URISyntaxException {
 		
+		boolean hasTemplate = false;
+		
 		//先create root project
 		userConn.createRootProject(name);
 		Integer projectId = getNewProId(name);
@@ -71,6 +77,8 @@ public class ProjectService {
 		
 		//如果有選擇範例程式
 		if(!fileDetail.getFileName().isEmpty()){
+			hasTemplate = true;
+			
 			//取得所選擇的.zip檔案名稱
 			String folderName = fileDetail.getFileName();
 			//將檔案存到C://User/AppData/Temp/uploads/
@@ -110,8 +118,21 @@ public class ProjectService {
 		jenkins.buildJob(name, jenkinsCrumb);
 		//-----------------------
 		
-		java.net.URI location = new java.net.URI("../teacherManageHW.jsp");
+		addProject(name, readMe, fileType, hasTemplate);
+		
+		java.net.URI location = new java.net.URI("../teacherHW.jsp");
 		  return Response.temporaryRedirect(location).build();
+	}
+	
+	public void addProject(String name, String description, String type, boolean hasTemplate){
+		Project project = new Project();
+		
+		project.setName(name);
+		project.setDescription(description);
+		project.setType(type);
+		project.setHasTemplate(hasTemplate);
+		
+		dbManager.addProject(project);
 	}
 	
 	private String storeFileToTemp(String fileName, InputStream uploadedInputStream){

@@ -6,13 +6,14 @@ import java.io.Serializable;
 public class User implements Serializable {
 
 	private String ID; //學號
+	
+	private String gitLabId;
 
 	private String userName; //登入用(英文) 學號
 	
 	private String name; //網頁顯示(中文)
 	
 	private String email; //學號@fcu.edu.tw
-	
 	
 	private String password; //學號
 
@@ -37,6 +38,14 @@ public class User implements Serializable {
 //	public void setPhone(String phone) {
 //		this.phone = phone;
 //	}
+
+	public String getGitLabId() {
+		return gitLabId;
+	}
+
+	public void setGitLabId(String gitLabId) {
+		this.gitLabId = gitLabId;
+	}
 
 	public String getUserName() {
 		return userName;
