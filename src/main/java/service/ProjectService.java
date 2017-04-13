@@ -74,32 +74,25 @@ public class ProjectService {
 		userConn.createRootProject(name);
 		Integer projectId = getNewProId(name);
 		String projectUrl = getNewProUrl(name);
+		String filePath = null;
+		String folderName = null;
+		StringBuilder sb = new StringBuilder();
 		
 		//如果有選擇範例程式
 		if(!fileDetail.getFileName().isEmpty()){
 			hasTemplate = true;
 			
 			//取得所選擇的.zip檔案名稱
-			String folderName = fileDetail.getFileName();
+			folderName = fileDetail.getFileName();
 			//將檔案存到C://User/AppData/Temp/uploads/
-			String filePath = storeFileToTemp(fileDetail.getFileName(), uploadedInputStream);
-
-			try {
-				//unzip file
-				unzip.unzip(filePath, projectId, folderName);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			filePath = storeFileToTemp(fileDetail.getFileName(), uploadedInputStream);
 		}else{   //沒有選擇範例程式
-			String filePath = this.getClass().getResource("MvnQuickStart.zip").getFile();
-			String folderName = "MvnQuickStart.zip";
-			try {
-				//unzip file
-				unzip.unzip(filePath, projectId, folderName);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			filePath = this.getClass().getResource("MvnQuickStart.zip").getFile();
+			folderName = "MvnQuickStart.zip";
 		}
+		unzipFile(filePath, projectId, folderName);
+		// config_javac.xml 裡需要的command line
+		sb = unzip.getStringBuilder();
 		
 		if(!readMe.equals("<br>")){
 			String readmeUrl = gitData.getHostUrl() + "/api/v3/projects/"+projectId+"/repository/files?private_token=" + gitData.getApiToken();
@@ -113,8 +106,8 @@ public class ProjectService {
 		//---jenkins create job---
 		String jenkinsUrl = "http://" + jenkinsData.getUrl();
 		String jenkinsCrumb = jenkins.getCrumb(jenkinsData.getUserName(), jenkinsData.getPassWord(), jenkinsUrl);
-		jenkins.createRootJob(name, jenkinsCrumb, fileType);
-		jenkins.createJenkinsJob(name, jenkinsCrumb, fileType);
+		jenkins.createRootJob(name, jenkinsCrumb, fileType, sb);
+		jenkins.createJenkinsJob(name, jenkinsCrumb, fileType, sb);
 		jenkins.buildJob(name, jenkinsCrumb);
 		//-----------------------
 		
@@ -122,6 +115,15 @@ public class ProjectService {
 		
 		java.net.URI location = new java.net.URI("../teacherHW.jsp");
 		  return Response.temporaryRedirect(location).build();
+	}
+	
+	public void unzipFile(String filePath, int projectId, String folderName){
+		try {
+			//unzip file
+			unzip.unzip(filePath, projectId, folderName);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void addProject(String name, String description, String type, boolean hasTemplate){

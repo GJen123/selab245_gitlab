@@ -64,17 +64,17 @@ public class JenkinsApi{
 	
 	JenkinsData jenkinsData = new JenkinsData();
 	
-	public void createRootJob(String Pname, String jenkinsCrumb, String fileType){
+	public void createRootJob(String Pname, String jenkinsCrumb, String fileType, StringBuilder sb){
 		
 		//---Create Jenkins Job---
 		String jobName = "root_"+Pname;
 		String strUrl = jenkinsData.getHostUrl() + "/createItem?name="+jobName;
 		String proUrl = gitData.getHostUrl() + "/root/" + Pname + ".git";
-		postCreateJob(jenkinsData.getUserName(), jenkinsData.getPassWord(), strUrl, jobName, proUrl, jenkinsCrumb, fileType);
+		postCreateJob(jenkinsData.getUserName(), jenkinsData.getPassWord(), strUrl, jobName, proUrl, jenkinsCrumb, fileType, sb);
 		//------------------------
 	}
 	
-	public void createJenkinsJob(String Pname, String jenkinsCrumb, String fileType){
+	public void createJenkinsJob(String Pname, String jenkinsCrumb, String fileType, StringBuilder sb){
 		List<GitlabUser> users = conn.getUsers();
 		for(GitlabUser user : users){
 			if (user.getId() == 1) continue;
@@ -82,13 +82,13 @@ public class JenkinsApi{
 			String jobName = user.getUsername()+"_"+Pname;
 			String strUrl = jenkinsData.getHostUrl() + "/createItem?name="+jobName;
 			String proUrl = gitData.getHostUrl() + "/" + user.getUsername() + "/" + Pname + ".git";
-			postCreateJob(jenkinsData.getUserName(), jenkinsData.getPassWord(), strUrl, jobName, proUrl, jenkinsCrumb, fileType);
+			postCreateJob(jenkinsData.getUserName(), jenkinsData.getPassWord(), strUrl, jobName, proUrl, jenkinsCrumb, fileType, sb);
 			//------------------------
 		}
 	}
 	
 //  用httppost create jenkins job
-	public void postCreateJob(String username, String password, String strUrl, String jobName, String proUrl, String jenkinsCrumb, String fileType){
+	public void postCreateJob(String username, String password, String strUrl, String jobName, String proUrl, String jenkinsCrumb, String fileType, StringBuilder sb){
 		HttpClient client = new DefaultHttpClient();
 		
 		String url = jenkinsData.getHostUrl() + "/createItem?name="+jobName;
@@ -112,13 +112,15 @@ public class JenkinsApi{
             	filePath = this.getClass().getResource("config_maven.xml").getFile();
             }
             
-            
             modifyXmlFileUrl(filePath, proUrl);
+            if(fileType.equals("Javac")){
+            	modifyXmlFileCommand(filePath, sb);
+            }
             
             //讀config.xml
             
-            StringBuilder sb = getConfig(filePath);
-            StringEntity se = new StringEntity(sb.toString(), ContentType.create("text/xml", Consts.UTF_8));
+            StringBuilder sbConfig = getConfig(filePath);
+            StringEntity se = new StringEntity(sbConfig.toString(), ContentType.create("text/xml", Consts.UTF_8));
             se.setChunked(true);
             post.setEntity(se);
             
@@ -247,6 +249,43 @@ public class JenkinsApi{
             e.printStackTrace();
         }
 	}
+	
+	//變更config.xml file裡的Url [jenkins]
+		public void modifyXmlFileCommand(String filePath, StringBuilder sb){
+			try {
+	            String filepath = filePath;
+	            DocumentBuilderFactory docFactory = DocumentBuilderFactory
+	                    .newInstance();
+	            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+	            Document doc = docBuilder.parse(filepath);
+
+	            Node ndUrl = doc.getElementsByTagName("command").item(0);
+	            ndUrl.setTextContent(sb.toString());
+	            
+	            // write the content into xml file
+	            TransformerFactory transformerFactory = TransformerFactory
+	                    .newInstance();
+	            Transformer transformer = transformerFactory.newTransformer();
+	            DOMSource source = new DOMSource(doc);
+	            StreamResult result = new StreamResult(new File(filepath));
+	            transformer.transform(source, result);
+
+	            System.out.println("Done");
+
+	        } catch (ParserConfigurationException e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        } catch (TransformerException e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        } catch (SAXException e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        } catch (IOException e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        }
+		}
 	
 	//取得jenkins job的狀態顏色
 	public ArrayList<HashMap<String,String>> getJobJson(String username, String password, String strUrl, String jobName){

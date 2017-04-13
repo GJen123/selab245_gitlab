@@ -23,6 +23,8 @@ public class UnZip{
     private String hostUrl = gitData.getHostUrl();
     
     private String token = gitData.getApiToken();
+    
+    StringBuilder sb = new StringBuilder();
 
     /**
      * Size of the buffer to read/write data
@@ -36,6 +38,10 @@ public class UnZip{
      * @throws IOException
      */
     public void unzip(String zipFilePath, Integer projectId, String folderName) throws IOException {
+    	System.out.println("folderName : " + folderName);
+    	System.out.println("zipFilePath : " + zipFilePath);
+    	
+    	
     	String destDirectory =  tempDir + "uploads\\";
         File destDir = new File(destDirectory);
         if (!destDir.exists()) {
@@ -46,17 +52,32 @@ public class UnZip{
         // iterates over entries in the zip file
         while (entry != null) {
             String filePath = destDirectory + File.separator + entry.getName();
+            System.out.println("filePath : " + filePath);
+            
             if (!entry.isDirectory()) {
+            	System.out.println("!entry.isDirectory()");
                 // if the entry is a file, extracts it
                 extractFile(zipIn, filePath);
+                String entryName = entry.getName();
+                System.out.println("entryName : "+entryName);
+                
                 String fileContent = readFile(filePath);
                 
-                //folderLength = 選擇的.zip檔案名稱
-                int folderLength = folderName.length();
-                //計算folderName的大小
-                int index = entry.getName().indexOf(folderName);
-                //fileName = 取得folderName.zip後面的所有String , -3是因為.zip
-                String fileName = entry.getName().substring(index+folderLength-3);
+             // 因為.java 所以-5
+                String last = entryName.substring(entryName.length()-5, entryName.length());
+                System.out.println("last : " + last);
+                String fileName = null;
+                for(int i=0;i<entryName.length()-3;i++){
+              	  if(entryName.substring(i,i+3).equals("src")){
+              		  fileName = entryName.substring(i);
+              		  System.out.println("fileName : " + fileName);
+              		  if(last.equals(".java")){
+                      	  sb.append("javac "+fileName+"\n");
+                      	  setStringBuilder(sb);
+                        }
+              	  }
+                }
+                System.out.println("\n--------sb---------\n"+sb.toString()+"\n--------sb---------\n");
                 
                 //---httpPost to Gitlab---
                 String url = hostUrl + "/api/v3/projects/"+projectId+"/repository/files?private_token=" + token;
@@ -104,5 +125,13 @@ public class UnZip{
         } finally {
             br.close();
         }
+    }
+    
+    public void setStringBuilder(StringBuilder sb){
+    	this.sb = sb;
+    }
+    
+    public StringBuilder getStringBuilder(){
+    	return sb;
     }
 }

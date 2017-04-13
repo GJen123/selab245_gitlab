@@ -16,11 +16,10 @@ public class UnzipTest {
 	@Test
 	public void testExtractFile(){
 		UnZip unzip = new UnZip();
-		String zipFilePath = "C:\\Users\\GJen\\Desktop\\test\\JavacQuickStart.zip";
-		String filePath = "C:\\Users\\GJen\\Desktop\\test\\JavacQuickStartABCDE";
+		String zipFilePath = "C:\\Users\\GJen\\Desktop\\test\\MvnQuickStart.zip";
 		
 		try {
-			unzip.unzip(zipFilePath, 0, "JavacQuickStart.zip");
+			unzip.unzip(zipFilePath, 0, "MvnQuickStart.zip");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
