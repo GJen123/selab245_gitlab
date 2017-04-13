@@ -11,10 +11,6 @@ public class JenkinsApiTest {
 	public void TestGetCrumb() {
 		
 		JenkinsApi ja = new JenkinsApi();
-		String crumb = ja.getCrumb("GJen", "zxcv1234", "http://140.134.26.71:38080");
-		System.out.println(crumb);
-		
-		//Assert.assertEquals("e390d46093102dac6c0ec903b77af0a0", crumb);
 		
 	}
 

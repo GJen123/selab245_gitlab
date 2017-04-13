@@ -87,7 +87,7 @@ public class JenkinsApi{
 		}
 	}
 	
-	//  ¥Îhttppost create jenkins job
+//  ¥Îhttppost create jenkins job
 	public void postCreateJob(String username, String password, String strUrl, String jobName, String proUrl, String jenkinsCrumb, String fileType){
 		HttpClient client = new DefaultHttpClient();
 		
@@ -111,7 +111,15 @@ public class JenkinsApi{
             modifyXmlFileUrl(filePath, proUrl);
             
             //Åªconfig.xml
-            StringBuilder sb = getConfig(filePath);
+            String typeFilePath = null;
+            if(fileType.equals("Maven")){
+            	typeFilePath = "config_maven.xml";
+            }else if(fileType.equals("Javac")){
+            	typeFilePath = "config_javac.xml";
+            }else{
+            	typeFilePath = "config_maven.xml";
+            }
+            StringBuilder sb = getConfig(typeFilePath);
             StringEntity se = new StringEntity(sb.toString(), ContentType.create("text/xml", Consts.UTF_8));
             se.setChunked(true);
             post.setEntity(se);
