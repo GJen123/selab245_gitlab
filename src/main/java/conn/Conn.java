@@ -11,6 +11,7 @@ import org.gitlab.api.TokenType;
 import org.gitlab.api.models.*;
 
 import data.GitlabData;
+import data.User;
 import db.UserDBManager;
 
 public class Conn {
@@ -70,10 +71,25 @@ public class Conn {
 		return newUser;
 	}
 
-	public List<GitlabProject> getProject(GitlabUser gitlabUser) {
+	public List<GitlabProject> getProject(User user) {
+		GitlabUser gitlabUser = new GitlabUser();
+		gitlabUser.setId(user.getGitLabId());
+		
 		List<GitlabProject> projects = new ArrayList<GitlabProject>();
 		try {
 			projects = gitlab.getProjectsViaSudo(gitlabUser);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return projects;
+	}
+	
+	public List<GitlabProject> getProject(GitlabUser user) {
+		
+		List<GitlabProject> projects = new ArrayList<GitlabProject>();
+		try {
+			projects = gitlab.getProjectsViaSudo(user);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

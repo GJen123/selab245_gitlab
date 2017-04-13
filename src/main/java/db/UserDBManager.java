@@ -72,7 +72,7 @@ public class UserDBManager {
 			stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				String gitLabId = rs.getString("gitLabId");
+				int gitLabId = rs.getInt("gitLabId");
 				String stuId = rs.getString("stuId");
 				String name = rs.getString("name");
 				String password = rs.getString("password");

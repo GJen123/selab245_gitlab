@@ -100,26 +100,24 @@ public class JenkinsApi{
 //            post.addHeader("Jenkins-Crumb", "e390d46093102dac6c0ec903b77af0a0");
             String filePath = null;
             //變更config.xml裡的url
-            if(fileType.equals("Maven")){
-            	filePath = this.getClass().getResource("config_maven.xml").getFile();
-            }else if(fileType.equals("Javac")){
-            	filePath = this.getClass().getResource("config_javac.xml").getFile();
+            if(fileType != null){
+            	if(fileType.equals("Maven")){
+                	filePath = this.getClass().getResource("config_maven.xml").getFile();
+                }else if(fileType.equals("Javac")){
+                	filePath = this.getClass().getResource("config_javac.xml").getFile();
+                }else{
+                	filePath = this.getClass().getResource("config_maven.xml").getFile();
+                }
             }else{
             	filePath = this.getClass().getResource("config_maven.xml").getFile();
             }
+            
             
             modifyXmlFileUrl(filePath, proUrl);
             
             //讀config.xml
-            String typeFilePath = null;
-            if(fileType.equals("Maven")){
-            	typeFilePath = "config_maven.xml";
-            }else if(fileType.equals("Javac")){
-            	typeFilePath = "config_javac.xml";
-            }else{
-            	typeFilePath = "config_maven.xml";
-            }
-            StringBuilder sb = getConfig(typeFilePath);
+            
+            StringBuilder sb = getConfig(filePath);
             StringEntity se = new StringEntity(sb.toString(), ContentType.create("text/xml", Consts.UTF_8));
             se.setChunked(true);
             post.setEntity(se);
@@ -187,12 +185,12 @@ public class JenkinsApi{
 	}
 	
 	//抓config.xml 並讀出來變成stringbuilder
-	public StringBuilder getConfig(String typeFilePath){
+	public StringBuilder getConfig(String filePath){
 		FileInputStream fis;
 		StringBuilder sb = new StringBuilder();
 		String strConfig=null;
 		try {
-			String filePath = this.getClass().getResource(typeFilePath).getFile();
+			
 			fis = new FileInputStream(filePath);
 			InputStreamReader reader= new InputStreamReader(fis, "UTF8");
 	        BufferedReader buf = new BufferedReader(reader);

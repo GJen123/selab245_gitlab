@@ -10,8 +10,8 @@
 <%@ page import="java.util.*" %>
 <%@ page import="java.util.ArrayList"  %>
 <%@ page import="java.util.Locale" %>
-<%@ page import="db.UserDBManager" %>
-<%@ page import="data.User" %>
+<%@ page import="db.UserDBManager, db.ProjectDBManager" %>
+<%@ page import="data.User, data.Project" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%
@@ -50,6 +50,7 @@
 		Conn conn = Conn.getInstance();
 
 		UserDBManager db = UserDBManager.getInstance();
+		ProjectDBManager Pdb = ProjectDBManager.getInstance();
 		
 		GitlabData gitData = new GitlabData();
 		JenkinsData jenkinsData = new JenkinsData();
@@ -65,8 +66,6 @@
 		GitlabSession rootSession = conn.getRootSession();
 		String private_token = conn.getPrivate_token(rootSession);
 		
-		Collections.reverse(users);
-		
 		JenkinsApi jenkins = new JenkinsApi();
 		
 	%>
@@ -78,14 +77,11 @@
 					<th><fmt:message key="teacherHW_th_studentId"/></th>
 					<th><fmt:message key="teacherHW_th_studentName"/></th>
 					<%
-						List<GitlabProject> rootProjects = conn.getProject(root);
-						Collections.reverse(rootProjects);
-						for(GitlabProject project : rootProjects){
-							if(project.getName().substring(0,courseData.getCourseName().length()).equals(courseData.getCourseName())){
-								%>
-									<th><%=project.getName() %></th>
-								<%
-							}
+						List<Project> Projects = Pdb.listAllProjects();
+						for(Project project : Projects){
+							%>
+								<th><%=project.getName() %></th>
+							<%
 						}
 					%>
 				</tr>
@@ -93,14 +89,14 @@
 			<tbody>
 				<%
 					for(User user : users){
-						String userName = user.getID();
+						String userName = user.getUserName();
 			    		String personal_url = gitData.getHostUrl() + "/u/" + userName;
-						//projects = conn.getProject(user);
+						projects = conn.getProject(user);
 						Collections.reverse(projects);
 						%>
 							<tr>
 								<td><%=user.getUserName() %></td>
-								<td><strong><a href="#" onclick="window.open('<%=personal_url %>')"><%=user.getName() %></a></strong></td>
+								<td><strong><a href="<%=personal_url %>" onclick="window.open('<%=personal_url %>')"><%=user.getName() %></a></strong></td>
 								<%
 									int i=0;
 									for(GitlabProject project : projects){

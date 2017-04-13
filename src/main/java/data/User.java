@@ -7,7 +7,7 @@ public class User implements Serializable {
 
 	private String ID; //學號
 	
-	private String gitLabId;
+	private int gitLabId;
 
 	private String userName; //登入用(英文) 學號
 	
@@ -39,11 +39,11 @@ public class User implements Serializable {
 //		this.phone = phone;
 //	}
 
-	public String getGitLabId() {
+	public int getGitLabId() {
 		return gitLabId;
 	}
 
-	public void setGitLabId(String gitLabId) {
+	public void setGitLabId(int gitLabId) {
 		this.gitLabId = gitLabId;
 	}
 

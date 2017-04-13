@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import data.Project;
 
@@ -40,7 +42,7 @@ public class ProjectDBManager {
 			
 			stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
-			System.out.println("List All Students");
+			System.out.println("List All Projects");
 			while(rs.next()){
 				System.out.println("Name: " + rs.getString("name") + ", Description: " + rs.getString("description") + 
 						", HasTemplate: " + rs.getBoolean("hasTemplate") + ", Type: " + rs.getString("type"));
@@ -54,5 +56,35 @@ public class ProjectDBManager {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public List<Project> listAllProjects() {
+		List<Project> lsProjects = new ArrayList<Project>();
+
+		Connection conn = database.getConnection();
+		String sql = "SELECT * FROM Assignment";
+		Statement stmt = null;
+
+		try {
+			stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				String name = rs.getString("name");
+				String description = rs.getString("description");
+				boolean hasTemplate = rs.getBoolean("hasTemplate");
+				String type = rs.getString("type");
+				
+				Project project = new Project();
+				project.setName(name);
+				project.setDescription(description);
+				project.setHasTemplate(hasTemplate);
+				project.setType(type);
+				
+				lsProjects.add(project);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lsProjects;
 	}
 }
