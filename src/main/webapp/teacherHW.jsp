@@ -12,7 +12,6 @@
 <%@ page import="java.util.Locale" %>
 <%@ page import="db.UserDBManager, db.ProjectDBManager" %>
 <%@ page import="data.User, data.Project" %>
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
@@ -41,8 +40,6 @@
 	<title>ProgEdu</title>
 </head>
 <body>
-	<!-- 設定語言 -->
-	<fmt:setBundle basename = "<%=basename %>"/>
 	
 	<%@ include file="header.jsp" %>
 	
@@ -106,9 +103,10 @@
 										project_WebURL += "/commits/master"; 
 										
 										//---Jenkins---
-										String url = "http://" + jenkinsData.getUrl() + "/api/json";
-										ArrayList<HashMap<String,String>> jobJson = jenkins.getJobJson(jenkinsData.getUserName() ,jenkinsData.getPassWord() , url, project.getName());
-										String color = jenkins.getJobColor(jobJson, userName, project.getName());
+										String jobName = user.getUserName() + "_" + project.getName();
+										String jobUrl = "http://" + jenkinsData.getUrl() + "/job/" + jobName + "/api/json";
+										String color = jenkins.getJobJsonColor(jenkinsData.getUserName() ,jenkinsData.getPassWord(), jobUrl);
+										
 										String colorPic = null;
 										if(color!=null){
 											colorPic = jenkins.getColorPic(color);

@@ -2,6 +2,7 @@
     pageEncoding="BIG5"%>
 <%@ page import="conn.Language" %>
 <%@ page import="java.util.Locale" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%
 	//*****
 	// ***選擇語言
@@ -29,3 +30,5 @@
 	Language language = new Language();
 	String basename = language.getBaseName(finalLan);
 %>
+<!-- 設定語言 -->
+<fmt:setBundle basename = "<%=basename %>"/>

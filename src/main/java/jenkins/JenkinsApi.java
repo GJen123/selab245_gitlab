@@ -340,6 +340,49 @@ public class JenkinsApi{
 		return data;
 	}
 	
+	public String getJobJsonColor(String username, String password, String jobUrl){
+		String color = null;
+		HttpURLConnection conn = null;
+        try {
+            if (Thread.interrupted()) {
+                throw new InterruptedException();
+            }
+            // 建立連線
+            
+            URL url = new URL(jobUrl);
+            conn = (HttpURLConnection) url.openConnection();
+            String input = username + ":" + password;
+        	String encoding = new sun.misc.BASE64Encoder().encode(input.getBytes());
+            conn.setRequestProperty("Authorization", "Basic " + encoding);
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("GET");
+            conn.connect();
+            if (Thread.interrupted()) {
+                throw new InterruptedException();
+            }
+            // 讀取資料
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    conn.getInputStream(), "UTF-8"));
+            String jsonString1 = reader.readLine();
+            reader.close();
+            
+            JSONObject j1 = new JSONObject(jsonString1);
+            
+            color = j1.getString("color");
+            
+        }
+        catch (Exception e) {
+        	
+        }
+        finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+		return color;
+	}
+	
 	public String getJobColor(ArrayList<HashMap<String,String>> jobJson, String userName, String proName){
 		String color = null;
 		int i=0;
