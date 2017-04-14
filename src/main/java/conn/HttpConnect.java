@@ -31,6 +31,13 @@ import org.json.JSONArray;
 import data.GitlabData;
 
 public class HttpConnect {
+	
+	private static HttpConnect httpConn = new HttpConnect();
+	
+	public static HttpConnect getInstance() {
+		   return httpConn;
+	}
+	
 	GitlabData gitData = new GitlabData();
 	
 	public void httpPostReadme(String url, String content){
@@ -150,42 +157,35 @@ public class HttpConnect {
         }
 	}
 	
-	public int httpGetCommitCount(int projectId){
-		String strUrl = gitData.getUrl() + "/api/v3/projects/"+ projectId +"/repository/commits?private_token=" + gitData.getApiToken();
-		HttpURLConnection conn = null;
-		int count = 0;
+	public void httpPostForkProject(int projectId, int forkedId){
+		String url = gitData.getHostUrl() + "/projects/" + projectId + "/fork/" + forkedId + "?private_token=" + gitData.getApiToken();
 		
+		HttpClient client = new DefaultHttpClient();
         try {
-            if (Thread.interrupted()) {
-                throw new InterruptedException();
-            }
-            // 建立連線
-            URL url = new URL(strUrl);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000);
-            conn.setConnectTimeout(15000);
-            conn.setRequestMethod("GET");
-            conn.connect();
-            if (Thread.interrupted()) {
-                throw new InterruptedException();
-            }
-            // 讀取資料
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    conn.getInputStream(), "UTF-8"));
-            String jsonString = reader.readLine();
-            reader.close();
+            HttpPost post = new HttpPost(url);
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add((NameValuePair) new BasicNameValuePair("id",String.valueOf(projectId)));
+            params.add((NameValuePair) new BasicNameValuePair("forked_from_id",String.valueOf(forkedId)));
             
-            JSONArray jsonArray = new JSONArray(jsonString);
-            count = jsonArray.length();
-        }
-        catch (Exception e) {
-            
-        }
-        finally {
-            if (conn != null) {
-                conn.disconnect();
+            UrlEncodedFormEntity ent = null;
+            ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
+            post.setEntity(ent);
+
+            HttpResponse responsePOST = client.execute(post);
+            HttpEntity resEntity = responsePOST.getEntity();
+
+            if(resEntity != null){
+            	String result = resEntity.toString();
+                System.out.println("Success : " + result);
+            }else{
+
             }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return count;
 	}
 }

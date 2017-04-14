@@ -120,7 +120,7 @@
 										if(project.getName().substring(0,courseData.getCourseName().length()).equals(courseData.getCourseName())){
 											//String project_event_url = conn.getProjectEvent(project.getId(), private_token);
 											//int total_commit_count = getUserHw.httpGetProjectEvent(project_event_url);
-											count = httpConn.httpGetCommitCount(project.getId());
+											count = conn.getAllCommits(project.getId());
 											%>
 												<td><a href="#" onclick="window.open('<%=project_WebURL%>')"><%=count %></a>
 												<img src="<%=colorPic %>" width="36" height="31"></td>

@@ -100,8 +100,8 @@ public class ProjectService {
 		}
 		
 		//create 每個學生的project
-		System.out.println("projectUrl : " + projectUrl);
-		userConn.createPrivateProject(name, projectUrl);
+		System.out.println("projectId : " + projectId);
+		userConn.createPrivateProject(name, projectId);
 		
 		//---jenkins create job---
 		String jenkinsUrl = "http://" + jenkinsData.getUrl();

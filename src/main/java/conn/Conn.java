@@ -25,6 +25,8 @@ public class Conn {
 	private GitlabAPI gitlab = GitlabAPI.connect(_hostUrl, _apiToken, tokenType, authMethod);
 	
 	private static UserDBManager dbManager = UserDBManager.getInstance();
+	
+	HttpConnect httpConn = HttpConnect.getInstance();
 
 	// http://140.134.26.71:20080/api/v3/users?private_token=yUnRUT5ex1s3HU7yQ_g-
 
@@ -199,13 +201,14 @@ public class Conn {
 	 * mergeRequestsEnabled, Boolean wikiEnabled, Boolean snippetsEnabled,
 	 * Boolean publik, Integer visibilityLevel, String importUrl)
 	 */
-	public boolean createPrivateProject(String Pname, String importUrl) {
+	public boolean createPrivateProject(String Pname, int forkedId) {
 		List<GitlabUser> users = getUsers();
 		try {
 			for (GitlabUser user : users) {
 				if (user.getId() == 1)
 					continue;
-				gitlab.createUserProject(user.getId(), Pname, null, null, null, null, null, null, null, null, null, importUrl);
+				GitlabProject project = gitlab.createUserProject(user.getId(), Pname, null, null, null, null, null, null, null, null, null, null);
+				httpConn.httpPostForkProject(project.getId(), forkedId);
 			}
 			return true;
 		} catch (IOException e) {
@@ -336,24 +339,22 @@ public class Conn {
 		List<GitlabCommit> lsCommits = new ArrayList<GitlabCommit>();
 		try {
 			if(!gitlab.getAllCommits(projectId).isEmpty()){
-				System.out.println("not empty");
 				lsCommits = gitlab.getAllCommits(projectId);
-				for(GitlabCommit commit : lsCommits){
-					System.out.println("abc : " + commit.getAuthorName());
-				}
+				count = lsCommits.size();
 			}else{
-				System.out.println("empty");
+				count = 0;
 			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-//		for (GitlabCommit commit : lsCommits) {
-//			if (!commit.getId().isEmpty())
-//				count++;
-//		}
-		
 		return count;
+	}
+	
+	public String getReplaceUrl(String oldUrl){
+		String oldStr = oldUrl.substring(0, 19);
+		oldUrl = oldUrl.replace(oldStr, _hostUrl);
+		return oldUrl;
 	}
 
 }

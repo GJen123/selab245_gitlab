@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="BIG5"%>
-<%@ page import="conn.Conn,data.GitlabData,data.JenkinsData,data.CourseData" %>
+<%@ page import="conn.Conn,conn.HttpConnect,data.GitlabData,data.JenkinsData,data.CourseData,jenkins.JenkinsApi" %>
 <%@ page import="db.UserDBManager, db.ProjectDBManager" %>
 <%@ page import="data.User, data.Project" %>   
 <%@ page import="java.util.List" %> 
@@ -9,9 +9,9 @@
 <%@ page import="java.util.*" %>
     
 <%
-	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
-		response.sendRedirect("index.jsp");
-	}
+	//if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+	//	response.sendRedirect("index.jsp");
+	//}
 	session.putValue("page", "teacherHW");
 	String pages = "teacherHW.jsp";
 %>
@@ -39,6 +39,7 @@
 	
 	<%
 		Conn conn = Conn.getInstance();
+		HttpConnect httpConn = HttpConnect.getInstance();
 	
 		UserDBManager db = UserDBManager.getInstance();
 		ProjectDBManager Pdb = ProjectDBManager.getInstance();
@@ -56,6 +57,8 @@
 		GitlabData gitData = new GitlabData();
 		JenkinsData jenkinsData = new JenkinsData();
 		CourseData courseData = new CourseData();
+		
+		JenkinsApi jenkins = new JenkinsApi();
 	%>
 	
 	<div class="container">
@@ -81,22 +84,49 @@
 						%>
 							<tr>
 								<td><%=user.getUserName() %></td>
-								<td><strong><a href="<%=personal_url %>" onclick="window.open('<%=personal_url %>')"><%=user.getName() %></a></strong></td>
+								<td><strong><a href="#" onclick="window.open('<%=personal_url %>')"><%=user.getName() %></a></strong></td>
 								<%
 									gitProjects = conn.getProject(user);
 									Collections.reverse(gitProjects);
 									for(Project dbProject : dbProjects){
 										String proName = null;
+										String proUrl = null;
+										int commit_count = 0;
+										String colorPic = null;
 										for(GitlabProject gitProject : gitProjects){
 											if(dbProject.getName().equals(gitProject.getName())){
 												proName = dbProject.getName();
+												proUrl = gitProject.getWebUrl();
+												proUrl = conn.getReplaceUrl(proUrl);
+												proUrl += "/commits/master"; 
+												commit_count = conn.getAllCommits(gitProject.getId());
+												//---Jenkins---
+												String jobName = user.getUserName() + "_" + gitProject.getName();
+												String jobUrl = "http://" + jenkinsData.getUrl() + "/job/" + jobName + "/api/json";
+												String color = jenkins.getJobJsonColor(jenkinsData.getUserName() ,jenkinsData.getPassWord(), jobUrl);
+												
+												if(color!=null){
+													colorPic = jenkins.getColorPic(color);
+												}else{
+													colorPic = "jenkins_pic/jenkins_gray.PNG";
+												}
+												//-------------
+												break;
 											}else{
 												proName = "N/A";
 											}
 										}
-										%>
-											<td><%=proName %></td>
-										<%
+										
+										if("N/A".equals(proName)){
+											%>
+												<td><%=proName %></td>
+											<%
+										}else{
+											%>
+												<td><a href="#" onclick="window.open('<%=proUrl %>')"><%=commit_count %></a>
+												<img src="<%=colorPic %>" width="36" height="31"></td>
+											<%
+										}
 									}
 								%>
 							</tr>
