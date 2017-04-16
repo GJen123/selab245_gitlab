@@ -41,6 +41,7 @@ import data.GitlabData;
 import data.JenkinsData;
 import data.Project;
 import db.ProjectDBManager;
+import db.UserDBManager;
 import jenkins.JenkinsApi;
 
 @Path("project/")
@@ -54,6 +55,8 @@ public class ProjectService {
 	private GitlabUser root = userConn.getRoot();
 	private HttpConnect httpConn = new HttpConnect();
 	private ProjectDBManager dbManager = ProjectDBManager.getInstance();
+	private UserDBManager UserDB = UserDBManager.getInstance();
+	private List<GitlabUser> users = userConn.getUsers();
 	
 	private static final String tempDir = System.getProperty("java.io.tmpdir");
 	
@@ -101,7 +104,8 @@ public class ProjectService {
 		
 		//create 每個學生的project
 		System.out.println("projectId : " + projectId);
-		userConn.createPrivateProject(name, projectId);
+		forkProjectFromRoot(projectId);
+		//userConn.createPrivateProject(name, projectId);
 		
 		//---jenkins create job---
 		String jenkinsUrl = "http://" + jenkinsData.getUrl();
@@ -215,5 +219,13 @@ public class ProjectService {
 			}
 		}
 		return url;
+	}
+	
+	private void forkProjectFromRoot(int forkedIdFromRoot){
+		for(GitlabUser user : users){
+			String userName = user.getUsername();
+			String userPrivateToken = UserDB.getUser(userName).getPrivateToken();
+			httpConn.httpPostForkProject(userPrivateToken, forkedIdFromRoot);
+		}
 	}
 }

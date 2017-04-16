@@ -160,20 +160,12 @@ public class HttpConnect {
         }
 	}
 	
-	public void httpPostForkProject(String userName, int forkedId){
-		String token = UserDB.getUser(userName).getPrivateToken();
-		String url = gitData.getHostUrl() + "/api/v3/projects/fork/" + forkedId + "?private_token=" + token;
+	public void httpPostForkProject(String userPrivateToken, int forkedIdFromRoot){
+		String url = gitData.getHostUrl() + "/api/v3/projects/fork/" + forkedIdFromRoot + "?private_token=" + userPrivateToken;
 		
 		HttpClient client = new DefaultHttpClient();
         try {
             HttpPost post = new HttpPost(url);
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-//            params.add((NameValuePair) new BasicNameValuePair("id",String.valueOf(projectId)));
-            params.add((NameValuePair) new BasicNameValuePair("forked_from_id",String.valueOf(forkedId)));
-            
-            UrlEncodedFormEntity ent = null;
-            ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
-            post.setEntity(ent);
 
             HttpResponse responsePOST = client.execute(post);
             HttpEntity resEntity = responsePOST.getEntity();
