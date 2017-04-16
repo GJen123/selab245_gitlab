@@ -29,6 +29,7 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 
 import data.GitlabData;
+import db.UserDBManager;
 
 public class HttpConnect {
 	
@@ -39,6 +40,8 @@ public class HttpConnect {
 	}
 	
 	GitlabData gitData = new GitlabData();
+	
+	UserDBManager UserDB = UserDBManager.getInstance();
 	
 	public void httpPostReadme(String url, String content){
 		String file_path = "README.md";
@@ -157,14 +160,15 @@ public class HttpConnect {
         }
 	}
 	
-	public void httpPostForkProject(int projectId, int forkedId){
-		String url = gitData.getHostUrl() + "/projects/" + projectId + "/fork/" + forkedId + "?private_token=" + gitData.getApiToken();
+	public void httpPostForkProject(String userName, int forkedId){
+		String token = UserDB.getUser(userName).getPrivateToken();
+		String url = gitData.getHostUrl() + "/api/v3/projects/fork/" + forkedId + "?private_token=" + token;
 		
 		HttpClient client = new DefaultHttpClient();
         try {
             HttpPost post = new HttpPost(url);
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add((NameValuePair) new BasicNameValuePair("id",String.valueOf(projectId)));
+//            params.add((NameValuePair) new BasicNameValuePair("id",String.valueOf(projectId)));
             params.add((NameValuePair) new BasicNameValuePair("forked_from_id",String.valueOf(forkedId)));
             
             UrlEncodedFormEntity ent = null;

@@ -29,7 +29,7 @@ public class ProjectDBManager {
 		PreparedStatement preStmt = null;
 		Statement stmt = null;
 		String sql = "INSERT INTO Assignment(name, description, hasTemplate, type)  VALUES(?, ?, ?, ?)";
-		String query = "SELECT * FROM Student";
+		String query = "SELECT * FROM Assignment";
 		
 		try{
 			preStmt = conn.prepareStatement(sql);

@@ -48,7 +48,7 @@ public class UserDBManager {
 			System.out.println("List All Students");
 			while(rs.next()){
 				System.out.println("GitLabId: " + rs.getString("gitLabId") + ", StuId: " + rs.getString("stuId")
-				+ ", Name: " + rs.getString("name") + ", Email: " + rs.getString("email"));
+				+ ", Name: " + rs.getString("name") + ", Email: " + rs.getString("email") + ", Private_Token: " + rs.getString("privateToken"));
 			}
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -59,6 +59,37 @@ public class UserDBManager {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public User getUser(String userName){
+		User user = new User();
+		Connection conn = database.getConnection();
+		String query = "SELECT * FROM Student WHERE stuId = ?";
+		PreparedStatement preStmt = null;
+		
+		try {
+			preStmt = conn.prepareStatement(query);
+			preStmt.setString(1, userName);
+			ResultSet rs = preStmt.executeQuery();
+			while (rs.next()) {
+				int gitLabId = rs.getInt("gitLabId");
+				String stuId = userName;
+				String name = rs.getString("name");
+				String password = rs.getString("password");
+				String email = rs.getString("email");
+				String privateToken = rs.getString("privateToken");
+
+				user.setGitLabId(gitLabId);
+				user.setUserName(stuId);
+				user.setName(name);
+				user.setPassword(password);
+				user.setEmail(email);
+				user.setPrivateToken(privateToken);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return user;
 	}
 	
 	public List<User> listAllUsers() {
@@ -77,6 +108,7 @@ public class UserDBManager {
 				String name = rs.getString("name");
 				String password = rs.getString("password");
 				String email = rs.getString("email");
+				String privateToken = rs.getString("privateToken");
 
 				User user = new User();
 				user.setGitLabId(gitLabId);
@@ -84,6 +116,7 @@ public class UserDBManager {
 				user.setName(name);
 				user.setPassword(password);
 				user.setEmail(email);
+				user.setPrivateToken(privateToken);
 				lsUsers.add(user);
 			}
 		} catch (SQLException e) {

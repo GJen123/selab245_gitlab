@@ -205,10 +205,10 @@ public class Conn {
 		List<GitlabUser> users = getUsers();
 		try {
 			for (GitlabUser user : users) {
-				if (user.getId() == 1)
+				if (user.getId() == 1 || user.getId() == 2)
 					continue;
 				GitlabProject project = gitlab.createUserProject(user.getId(), Pname, null, null, null, null, null, null, null, null, null, null);
-				httpConn.httpPostForkProject(project.getId(), forkedId);
+				httpConn.httpPostForkProject(user.getUsername(), forkedId);
 			}
 			return true;
 		} catch (IOException e) {
@@ -216,6 +216,7 @@ public class Conn {
 		}
 		return false;
 	}
+	
 
 	/**
 	 * Create a new User createUser(String email, String password, String
@@ -326,7 +327,7 @@ public class Conn {
 
 	public boolean createRootProject(String Pname) {
 		try {
-			gitlab.createUserProject(1, Pname, null, null, null, null, null, null, null, null, null, null);
+			gitlab.createUserProject(1, Pname, null, null, null, null, null, null, null, null, 10, null);
 			return true;
 		} catch (IOException e) {
 			System.out.println(e);

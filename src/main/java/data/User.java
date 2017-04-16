@@ -16,6 +16,8 @@ public class User implements Serializable {
 	private String email; //學號@fcu.edu.tw
 	
 	private String password; //學號
+	
+	private String privateToken;
 
 //	private String password;
 //
@@ -77,6 +79,14 @@ public class User implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getPrivateToken() {
+		return privateToken;
+	}
+
+	public void setPrivateToken(String privateToken) {
+		this.privateToken = privateToken;
 	}
 
 //	public String getPassword() {
