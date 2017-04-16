@@ -34,7 +34,35 @@
 		src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	
 	<title>ProgEdu</title>
+	
+	<script>
+	$(document).ready(function() {
+		$("form").submit(function(evt) {
+			evt.preventDefault();
+			var formData = new FormData($(this)[0]);
+			$.ajax({
+				url : 'webapi/user/upload',
+				type : 'POST',
+				data : formData,
+				async : false,
+				cache : false,
+				contentType : false,
+				enctype : 'multipart/form-data',
+				processData : false,
+				success : function(response) {
+					alert("uploaded!");
+					top.location.href = "../testWeb2/studentManagement.jsp";
+				}, 
+				error : function(response) {
+					alert("failed!");
+				}
+			});
+			return false;
+		});
+	});
+	</script>
 </head>
+
 <body>
 	<!-- 設定語言 -->
 	<fmt:setBundle basename = "<%=basename %>"/>
@@ -50,8 +78,7 @@
 
 				<div class="panel-body">
 					<div class="form-group">
-						<form action="webapi/user/upload" method="post"
-							enctype="multipart/form-data">
+						<form>
 							<h4><fmt:message key="teacherManageStudent_h4_uploadStudent"/></h4>
 							Select File to Upload:<input type="file" name="file">
 							<br> <input type="submit" value="Upload">

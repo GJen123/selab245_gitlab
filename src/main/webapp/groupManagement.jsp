@@ -35,7 +35,35 @@
 		src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	
 	<title>ProgEdu</title>
+	
+	<script>
+	$(document).ready(function() {
+		$("form").submit(function(evt) {
+			evt.preventDefault();
+			var formData = new FormData($(this)[0]);
+			$.ajax({
+				url : 'webapi/group/upload',
+				type : 'POST',
+				data : formData,
+				async : false,
+				cache : false,
+				contentType : false,
+				enctype : 'multipart/form-data',
+				processData : false,
+				success : function(response) {
+					alert("uploaded!");
+					top.location.href = "../testWeb2/groupManagement.jsp";
+				}, 
+				error : function(response) {
+					alert("failed!");
+				}
+			});
+			return false;
+		});
+	});
+</script>
 </head>
+
 <body>
 	<!-- 設定語言 -->
 	<fmt:setBundle basename = "<%=basename %>"/>
@@ -55,8 +83,7 @@
 					</div>
 
 					<div class="col-md-10">
-						<form method="post" action="webapi/group/upload"
-							enctype="multipart/form-data">
+						<form>
 							<button type="button" class="btn btn-default" data-toggle="modal"
 								data-target="#exampleModal" data-whatever="@mdo"><fmt:message key="teacherManageGroup_button_importStudent"/></button>
 							<div class="modal fade" id="exampleModal" tabindex="-1"

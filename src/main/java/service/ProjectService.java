@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,6 +23,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
 
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
@@ -69,56 +69,67 @@ public class ProjectService {
 			@FormDataParam("Hw_README") String readMe, 
 			@FormDataParam("fileRadio") String fileType, 
 			@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail) throws URISyntaxException {
+			@FormDataParam("file") FormDataContentDisposition fileDetail) {
 		
 		boolean hasTemplate = false;
+		boolean isSave = true;
 		
-		//先create root project
-		userConn.createRootProject(name);
-		Integer projectId = getNewProId(name);
-		String projectUrl = getNewProUrl(name);
-		String filePath = null;
-		String folderName = null;
-		StringBuilder sb = new StringBuilder();
-		
-		//如果有選擇範例程式
-		if(!fileDetail.getFileName().isEmpty()){
-			hasTemplate = true;
+		try{
+			//先create root project
+			userConn.createRootProject(name);
+			Integer projectId = getNewProId(name);
+			String projectUrl = getNewProUrl(name);
+			String filePath = null;
+			String folderName = null;
+			StringBuilder sb = new StringBuilder();
 			
-			//取得所選擇的.zip檔案名稱
-			folderName = fileDetail.getFileName();
-			//將檔案存到C://User/AppData/Temp/uploads/
-			filePath = storeFileToTemp(fileDetail.getFileName(), uploadedInputStream);
-		}else{   //沒有選擇範例程式
-			filePath = this.getClass().getResource("MvnQuickStart.zip").getFile();
-			folderName = "MvnQuickStart.zip";
+			//如果有選擇範例程式
+			if(!fileDetail.getFileName().isEmpty()){
+				hasTemplate = true;
+				
+				//取得所選擇的.zip檔案名稱
+				folderName = fileDetail.getFileName();
+				//將檔案存到C://User/AppData/Temp/uploads/
+				filePath = storeFileToTemp(fileDetail.getFileName(), uploadedInputStream);
+			}else{   //沒有選擇範例程式
+				filePath = this.getClass().getResource("MvnQuickStart.zip").getFile();
+				folderName = "MvnQuickStart.zip";
+			}
+			unzipFile(filePath, projectId, folderName);
+			// config_javac.xml 裡需要的command line
+			sb = unzip.getStringBuilder();
+			
+			if(!readMe.equals("<br>")){
+				String readmeUrl = gitData.getHostUrl() + "/api/v3/projects/"+projectId+"/repository/files?private_token=" + gitData.getApiToken();
+				httpConn.httpPostReadme(readmeUrl, readMe);
+			}
+			
+			//create 每個學生的project
+			System.out.println("projectId : " + projectId);
+			forkProjectFromRoot(projectId);
+			//userConn.createPrivateProject(name, projectId);
+			
+			//---jenkins create job---
+			String jenkinsUrl = "http://" + jenkinsData.getUrl();
+			String jenkinsCrumb = jenkins.getCrumb(jenkinsData.getUserName(), jenkinsData.getPassWord(), jenkinsUrl);
+			jenkins.createRootJob(name, jenkinsCrumb, fileType, sb);
+			jenkins.createJenkinsJob(name, jenkinsCrumb, fileType, sb);
+			jenkins.buildJob(name, jenkinsCrumb);
+			//-----------------------
+			
+			addProject(name, readMe, fileType, hasTemplate);
+		}catch(Exception e){
+			isSave = false;
+			e.printStackTrace();
 		}
-		unzipFile(filePath, projectId, folderName);
-		// config_javac.xml 裡需要的command line
-		sb = unzip.getStringBuilder();
 		
-		if(!readMe.equals("<br>")){
-			String readmeUrl = gitData.getHostUrl() + "/api/v3/projects/"+projectId+"/repository/files?private_token=" + gitData.getApiToken();
-			httpConn.httpPostReadme(readmeUrl, readMe);
-		}
-		
-		//create 每個學生的project
-		System.out.println("projectId : " + projectId);
-		forkProjectFromRoot(projectId);
-		//userConn.createPrivateProject(name, projectId);
-		
-		//---jenkins create job---
-		String jenkinsUrl = "http://" + jenkinsData.getUrl();
-		String jenkinsCrumb = jenkins.getCrumb(jenkinsData.getUserName(), jenkinsData.getPassWord(), jenkinsUrl);
-		jenkins.createRootJob(name, jenkinsCrumb, fileType, sb);
-		jenkins.createJenkinsJob(name, jenkinsCrumb, fileType, sb);
-		jenkins.buildJob(name, jenkinsCrumb);
-		//-----------------------
-		
-		addProject(name, readMe, fileType, hasTemplate);
-		
-		java.net.URI location = new java.net.URI("../teacherHW.jsp");
-		  return Response.temporaryRedirect(location).build();
+//		java.net.URI location = new java.net.URI("../teacherHW.jsp");
+//		  return Response.temporaryRedirect(location).build();
+		Response response = Response.ok().build();
+	    if (!isSave) {
+	      response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
+	    }
+	    return response;
 	}
 	
 	public void unzipFile(String filePath, int projectId, String folderName){

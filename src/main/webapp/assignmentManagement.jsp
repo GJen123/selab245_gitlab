@@ -44,7 +44,32 @@
 			}
 		}
 	</script>
-	
+	<script>
+	$(document).ready(function() {
+		$("form").submit(function(evt) {
+			evt.preventDefault();
+			var formData = new FormData($(this)[0]);
+			$.ajax({
+				url : 'webapi/project/create',
+				type : 'POST',
+				data : formData,
+				async : false,
+				cache : false,
+				contentType : false,
+				enctype : 'multipart/form-data',
+				processData : false,
+				success : function(response) {
+					alert("uploaded!");
+					top.location.href = "../testWeb2/assignmentManagement.jsp";
+				}, 
+				error : function(response) {
+					alert("failed!");
+				}
+			});
+			return false;
+		});
+	});
+	</script>
 	<title>ProgEdu</title>
 	
 </head>
@@ -55,7 +80,7 @@
 	<%@ include file="header.jsp" %>
 	
 	<div class="container">
-		<form class="form-signin" method="post" action="webapi/project/create" enctype="multipart/form-data">
+		<form class="form-signin">
 			<div>
 				<div class="login-panel panel panel-default">
 					<div class="panel-heading">

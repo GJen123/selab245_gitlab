@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.io.*;
-import java.net.URISyntaxException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -16,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
 
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.apache.commons.lang.StringUtils;
@@ -37,7 +37,9 @@ public class GroupService {
 	@Path("upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response upload(@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail) throws URISyntaxException {
+			@FormDataParam("file") FormDataContentDisposition fileDetail) {
+		boolean isSave = true;
+		
 		String tempDir = System.getProperty("java.io.tmpdir");
 
 		String uploadDir = tempDir + "uploads/";
@@ -86,11 +88,17 @@ public class GroupService {
 			out.flush();
 			out.close();
 		} catch (IOException e) {
+			isSave = false;
 			e.printStackTrace();
 		}
-		System.out.println("fileName :" + fileName);
-		java.net.URI location = new java.net.URI("../teacherManageGroup.jsp");
-		return Response.temporaryRedirect(location).build();
+		Response response = Response.ok().build();
+	    if (!isSave) {
+	      response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
+	    }
+//		System.out.println("fileName :" + fileName);
+//		java.net.URI location = new java.net.URI("../teacherManageGroup.jsp");
+//		return Response.temporaryRedirect(location).build();
+	    return response;
 	}
 	
 	public void newGroup(List<String> data) {

@@ -57,7 +57,7 @@ public class AfterEnter extends HttpServlet {
 				if(access_token!=null){
 					HttpSession session = request.getSession();
 					if (username.equals("root")){
-						response.sendRedirect("teacherHW.jsp");
+						response.sendRedirect("dashboard.jsp");
 						session.setAttribute("username", username);
 						session.setAttribute("password", password);
 						session.setAttribute("private_token", null);
