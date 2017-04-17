@@ -3,7 +3,6 @@
 <%@ page import="conn.Conn,conn.HttpConnect,data.GitlabData,data.JenkinsData,data.CourseData,jenkins.JenkinsApi" %>
 <%@ page import="db.UserDBManager, db.ProjectDBManager" %>
 <%@ page import="data.User, data.Project" %>   
-<%@ page import="java.util.List" %> 
 <%@ page import="org.gitlab.api.GitlabAPI" %>
 <%@ page import="org.gitlab.api.models.*" %>
 <%@ page import="java.util.*" %>

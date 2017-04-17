@@ -264,6 +264,7 @@ public class Conn {
 		try {
 			GitlabUser user = new GitlabUser();
 			user = gitlab.createUser(email, password, userName, fullName, "", "", "", "", 10, "", "", "", false, true, null);
+			String private_token = conn.getSession(gitData.getHostUrl(), userName, password).getPrivateToken();
 			dbManager.addUser(user);
 			return true;
 		} catch (IOException e) {

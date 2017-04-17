@@ -62,7 +62,7 @@ public class AfterEnter extends HttpServlet {
 						session.setAttribute("password", password);
 						session.setAttribute("private_token", null);
 						session.setAttribute("language", language);
-						session.setAttribute("page", "teacherHW");
+						session.setAttribute("page", "dashboard.jsp");
 					}
 					else {
 						GitlabSession s = conn.getSession(gitlabURL, username, password);
@@ -72,7 +72,7 @@ public class AfterEnter extends HttpServlet {
 						session.setAttribute("private_token", private_token);
 						session.setAttribute("language", language);
 						session.setAttribute("page", "teacherHW");
-						response.sendRedirect("studentEnter.jsp");
+						response.sendRedirect("studentDashboard.jsp");
 					}
 				}else{
 					response.sendRedirect("index.jsp");

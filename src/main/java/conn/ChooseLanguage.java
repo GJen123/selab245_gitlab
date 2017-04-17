@@ -38,7 +38,13 @@ public class ChooseLanguage extends HttpServlet {
 		// TODO Auto-generated method stub
 		String lan = request.getParameter("language");
 		HttpSession session = request.getSession();
-		String page = session.getAttribute("page").toString();
+		String page = null;
+		if("null" != session.getAttribute("page").toString()){
+			page = session.getAttribute("page").toString();
+		}else{
+			page = "index";
+		}
+		
 		session.putValue("language", lan);
 		response.sendRedirect(page+".jsp");
 	}

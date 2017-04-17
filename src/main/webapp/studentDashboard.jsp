@@ -1,8 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="BIG5"%>
-<%@ page import="conn.Conn,conn.StudentConn,conn.HttpConnect,data.GitlabData"%>
-<%@ page import="java.util.List" import="java.util.ArrayList"
+<%@ page import="conn.Conn,conn.StudentConn,conn.HttpConnect,data.GitlabData,data.CourseData"%>
+<%@ page import="java.util.ArrayList"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
+<%@ page import="java.util.*" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -16,7 +17,7 @@
 <!-- Latest compiled JavaScript -->
 <script
 	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<title>Student Dashboard</title>
+<title>ProgEdu</title>
 </head>
 <body>
 
@@ -29,13 +30,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand">Teacher Dashboard</a>
+                <a class="navbar-brand" href="studentDashboard.jsp">ProgEdu</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="teacherDashboard.jsp">學生Projects</a></li>
+                    <li><a href="studentDashboard.jsp">儀表版</a></li>
                     <li><a href="#">作業</a></li>
-                    <li class="active"><a href="teacherGroup.jsp">專題</a></li>
+                    <li class="active"><a href="#">專題</a></li>
                     <li><a href="#">作業管理</a></li>
                     <li><a href="#">專題管理</a></li>
                 </ul>
@@ -50,31 +51,50 @@
 
 	<%
 		GitlabData gitData = new GitlabData();
+		CourseData courseData = new CourseData();
+	
 		String private_token = session.getAttribute("private_token").toString();
 		StudentConn sConn = new StudentConn(private_token); 
-		GitlabUser user = sConn.getUser();
-		String Username = sConn.getUserName();
-		List<GitlabProject> project = new ArrayList<GitlabProject>();
-		project = sConn.getProject();
+		List<GitlabProject> projects = new ArrayList<GitlabProject>();
+		
+		int pro_total_commits = 0;
 	%>
 	<div class="container">
-		<h1>Hello <%=Username %></h1>
-		<h3>Your Projects</h3>
-		<%
-			for(GitlabProject pro : project){
-				String proURL = pro.getWebUrl();
-				String oldStr = proURL.substring(0, 19);
-				proURL = proURL.replace(oldStr, gitData.getHostUrl());
-				%>
-				<p><a href="#" onclick="window.open('<%=proURL%>')"><%=pro.getName() %></a></p>
-				<p><%=proURL %></p>
-				
-				<%
-			}
-		%>
-		<br><br><br><br>
-		<h4>Your private_token</h4>
-		<p><%=private_token %></p>
+		<h2>Hello <%=sConn.getUsername() %></h2>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<%
+						projects = sConn.getProject();
+						Collections.reverse(projects);
+						for(GitlabProject project : projects){
+							if(courseData.getCourseName().equals(project.getName().substring(0,3))){
+								%>
+								<th><%=project.getName() %></th>
+								<%
+							}
+							
+						}
+					%>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<%
+						for(GitlabProject project : projects){
+							if(courseData.getCourseName().equals(project.getName().substring(0,3))){
+								pro_total_commits = sConn.getAllCommits(project.getId());
+								%>
+									<th><%=pro_total_commits %></th>
+								<%
+							}
+							
+						}
+					%>
+					
+				</tr>
+			</tbody>
+		</table>
 	</div>
 </body>
 </html>

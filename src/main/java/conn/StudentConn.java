@@ -7,6 +7,7 @@ import java.io.IOException;
 import org.gitlab.api.AuthMethod;
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.TokenType;
+import org.gitlab.api.models.GitlabCommit;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
 
@@ -17,7 +18,7 @@ public class StudentConn{
 	GitlabData gitData = new GitlabData();
 	
 	String private_token;
-	private GitlabUser gitlabUser = new GitlabUser();
+	private GitlabUser user = new GitlabUser();
 	private String _hostUrl = gitData.getHostUrl();
 	private String _apiToken = gitData.getApiToken();
 	private TokenType tokenType = TokenType.PRIVATE_TOKEN;
@@ -28,20 +29,20 @@ public class StudentConn{
 	public StudentConn (String private_token){
 		this.private_token = private_token;
 		gitlab = GitlabAPI.connect(_hostUrl, private_token, tokenType, authMethod);
-		
+		getUser();
 	}
 	
-	public GitlabUser getUser(){
+	public void getUser(){
 		try {
-			gitlabUser = gitlab.getUser();
-		}catch(IOException e) {
-			System.out.println(e);	
+			user = gitlab.getUser();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return gitlabUser;
 	}
 	
-	public String getUserName(){
-		return gitlabUser.getName();
+	public String getUsername(){
+		return user.getUsername();
 	}
 	
 	public List<GitlabProject> getProject(){
@@ -52,5 +53,22 @@ public class StudentConn{
 			e.printStackTrace();
 		}
 		return project;
+	}
+	
+	public int getAllCommits(int projectId){
+		int count = 0;
+		List<GitlabCommit> lsCommits = new ArrayList<GitlabCommit>();
+		try {
+			if(!gitlab.getAllCommits(projectId).isEmpty()){
+				lsCommits = gitlab.getAllCommits(projectId);
+				count = lsCommits.size();
+			}else{
+				count = 0;
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return count;
 	}
 }
