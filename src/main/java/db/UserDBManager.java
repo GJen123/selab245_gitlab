@@ -30,7 +30,7 @@ public class UserDBManager {
 		Connection conn = database.getConnection();
 		PreparedStatement preStmt = null;
 		Statement stmt = null;
-		String sql = "INSERT INTO Student(gitLabId, stuId, name, password, email)  VALUES(?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO Student(gitLabId, stuId, name, password, email, privateToken)  VALUES(?, ?, ?, ?, ?, ?)";
 		String query = "SELECT * FROM Student";
 		
 		try{
@@ -40,6 +40,7 @@ public class UserDBManager {
 			preStmt.setString(3, user.getName());
 			preStmt.setString(4, user.getUsername());
 			preStmt.setString(5, user.getEmail());
+			preStmt.setString(6, user.getPrivateToken());
 			preStmt.executeUpdate();
 			preStmt.close();
 			
@@ -48,7 +49,8 @@ public class UserDBManager {
 			System.out.println("List All Students");
 			while(rs.next()){
 				System.out.println("GitLabId: " + rs.getString("gitLabId") + ", StuId: " + rs.getString("stuId")
-				+ ", Name: " + rs.getString("name") + ", Email: " + rs.getString("email") + ", Private_Token: " + rs.getString("privateToken"));
+				+ ", Name: " + rs.getString("name") + ", Email: " + rs.getString("email") + ", Private_Token: " 
+						+ rs.getString("privateToken") + ", privateToken: " + rs.getString("privateToken"));
 			}
 		}catch(SQLException e){
 			e.printStackTrace();
