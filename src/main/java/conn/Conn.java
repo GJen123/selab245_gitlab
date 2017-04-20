@@ -336,7 +336,7 @@ public class Conn {
 		return false;
 	}
 
-	public int getAllCommits(int projectId){
+	public int getAllCommitsCounts(int projectId){
 		int count = 0;
 		List<GitlabCommit> lsCommits = new ArrayList<GitlabCommit>();
 		try {

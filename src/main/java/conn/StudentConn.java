@@ -55,7 +55,7 @@ public class StudentConn{
 		return project;
 	}
 	
-	public int getAllCommits(int projectId){
+	public int getAllCommitsCounts(int projectId){
 		int count = 0;
 		List<GitlabCommit> lsCommits = new ArrayList<GitlabCommit>();
 		try {
@@ -70,5 +70,16 @@ public class StudentConn{
 			e.printStackTrace();
 		}
 		return count;
+	}
+	
+	public List<GitlabCommit> getAllCommits(int projectId){
+		List<GitlabCommit> lsCommits = new ArrayList<GitlabCommit>();
+		try {
+			lsCommits = gitlab.getAllCommits(projectId);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return lsCommits;
 	}
 }

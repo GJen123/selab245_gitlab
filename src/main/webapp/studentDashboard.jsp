@@ -7,47 +7,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet"
-	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-<!-- jQuery library -->
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-<!-- Latest compiled JavaScript -->
-<script
-	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet"
+		href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<!-- jQuery library -->
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+	<!-- Latest compiled JavaScript -->
+	<script
+		src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <title>ProgEdu</title>
 </head>
 <body>
-
-	<div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="studentDashboard.jsp">ProgEdu</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="studentDashboard.jsp">儀表版</a></li>
-                    <li><a href="#">作業</a></li>
-                    <li class="active"><a href="#">專題</a></li>
-                    <li><a href="#">作業管理</a></li>
-                    <li><a href="#">專題管理</a></li>
-                </ul>
-                    <ul class="nav navbar-nav navbar-right">
-        <li><a href="memberLogOut.jsp" id="loginLink">登出</a></li>
-    </ul>
-
-            </div>
-        </div>
-    </div>
-	<br><br><br>
+	<%@ include file="header.jsp" %>
 
 	<%
 		GitlabData gitData = new GitlabData();
@@ -55,7 +28,9 @@
 	
 		String private_token = session.getAttribute("private_token").toString();
 		StudentConn sConn = new StudentConn(private_token); 
-		List<GitlabProject> projects = new ArrayList<GitlabProject>();
+		List<GitlabProject> projects;
+		List<GitlabCommit> commits;
+		int commits_counts = 0;
 		
 		int pro_total_commits = 0;
 	%>
@@ -83,7 +58,7 @@
 					<%
 						for(GitlabProject project : projects){
 							if(courseData.getCourseName().equals(project.getName().substring(0,3))){
-								pro_total_commits = sConn.getAllCommits(project.getId());
+								pro_total_commits = sConn.getAllCommitsCounts(project.getId());
 								%>
 									<th><%=pro_total_commits %></th>
 								<%
@@ -95,6 +70,45 @@
 				</tr>
 			</tbody>
 		</table>
+		<%
+			for(GitlabProject project : projects){
+				if(!courseData.getCourseName().equals(project.getName().substring(0,3))){
+					continue;
+				}
+				commits = sConn.getAllCommits(project.getId());
+				Collections.reverse(commits);
+				commits_counts = commits.size();
+				%>
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th><%=project.getName() %></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<%
+									for(int i=1;i<commits_counts+1;i++){
+										%>
+											<th><%=i %></th>
+										<%
+									}
+								%>
+							</tr>
+							<tr>
+								<%
+									for(GitlabCommit commit : commits){
+										%>
+											<th><%=commit.getMessage() %></th>
+										<%
+									}
+								%>
+							</tr>
+						</tbody>
+					</table>
+				<%
+			}
+		%>
 	</div>
 </body>
 </html>

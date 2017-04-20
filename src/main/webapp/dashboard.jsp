@@ -98,7 +98,7 @@
 												proUrl = gitProject.getWebUrl();
 												proUrl = conn.getReplaceUrl(proUrl);
 												proUrl += "/commits/master"; 
-												commit_count = conn.getAllCommits(gitProject.getId());
+												commit_count = conn.getAllCommitsCounts(gitProject.getId());
 												//---Jenkins---
 												String jobName = user.getUserName() + "_" + gitProject.getName();
 												String jobUrl = "http://" + jenkinsData.getUrl() + "/job/" + jobName + "/api/json";
