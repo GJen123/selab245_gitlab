@@ -39,6 +39,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.gitlab.api.models.GitlabUser;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -456,6 +457,87 @@ public class JenkinsApi{
 			colorPic = "jenkins_pic/jenkins_gray.PNG";
 		}
 		return colorPic;
+	}
+	
+	public List<String> getJobNameList(){
+		String jobUrl = "http://140.134.26.71:38080/api/json";
+		String username = "GJen";
+		String password = "zxcv1234";
+		List<String> jobNames = new ArrayList<String>();
+		HttpURLConnection conn = null;
+        try {
+            if (Thread.interrupted()) {
+                throw new InterruptedException();
+            }
+            // 建立連線
+            
+            URL url = new URL(jobUrl);
+            conn = (HttpURLConnection) url.openConnection();
+            String input = username + ":" + password;
+        	String encoding = new sun.misc.BASE64Encoder().encode(input.getBytes());
+            conn.setRequestProperty("Authorization", "Basic " + encoding);
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("GET");
+            conn.connect();
+            if (Thread.interrupted()) {
+                throw new InterruptedException();
+            }
+            // 讀取資料
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    conn.getInputStream(), "UTF-8"));
+            String jsonString1 = reader.readLine();
+            reader.close();
+            
+            JSONObject jsonObject = new JSONObject(jsonString1);
+            JSONArray ja = jsonObject.getJSONArray("jobs");
+            
+            for(int i=0;i<ja.length();i++){
+            	JSONObject jo = ja.getJSONObject(i);
+            	String name = jo.getString("name");
+            	jobNames.add(name);
+            }
+        }
+        catch (Exception e) {
+        	System.out.println("e : " +e);
+        }
+        finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+		return jobNames;
+	}
+	
+	public void deleteJob(String jobName){
+		HttpClient client = new DefaultHttpClient();
+		
+		String url = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/job/"+jobName+"/doDelete";
+        try {
+            HttpPost post = new HttpPost(url);
+            
+            post.addHeader("Content-Type", "application/x-www-form-urlencoded");
+            post.addHeader("Jenkins-Crumb", "e390d46093102dac6c0ec903b77af0a0");
+            
+            HttpResponse responsePOST = client.execute(post);
+            HttpEntity resEntity = responsePOST.getEntity();
+
+            if(resEntity != null){
+            	String result = EntityUtils.toString(responsePOST.getEntity());
+            	String result2 = resEntity.toString();
+                System.out.println(jobName+" : "+result2);
+            }else{
+
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e){
+        	e.printStackTrace();
+        }
 	}
 	
 }

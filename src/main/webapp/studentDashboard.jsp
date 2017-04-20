@@ -4,20 +4,21 @@
 <%@ page import="java.util.ArrayList"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
 <%@ page import="java.util.*" %>
+<%@ include file="language.jsp" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet"
-		href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-	<!-- jQuery library -->
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-	<!-- Latest compiled JavaScript -->
-	<script
-		src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<title>ProgEdu</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	
+	<title>ProgEdu</title>
 </head>
 <body>
 	<%@ include file="header.jsp" %>
@@ -79,33 +80,35 @@
 				Collections.reverse(commits);
 				commits_counts = commits.size();
 				%>
-					<table class="table table-bordered">
-						<thead>
-							<tr>
-								<th><%=project.getName() %></th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<%
-									for(int i=1;i<commits_counts+1;i++){
-										%>
-											<th><%=i %></th>
-										<%
-									}
-								%>
-							</tr>
-							<tr>
-								<%
-									for(GitlabCommit commit : commits){
-										%>
-											<th><%=commit.getMessage() %></th>
-										<%
-									}
-								%>
-							</tr>
-						</tbody>
-					</table>
+					<div class="table-responsive">
+						<table class="table">
+							<thead>
+								<tr>
+									<th><%=project.getName() %></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<%
+										for(int i=1;i<commits_counts+1;i++){
+											%>
+												<th><%=i %></th>
+											<%
+										}
+									%>
+								</tr>
+								<tr>
+									<%
+										for(GitlabCommit commit : commits){
+											%>
+												<th><%=commit.getMessage() %></th>
+											<%
+										}
+									%>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				<%
 			}
 		%>
