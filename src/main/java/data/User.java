@@ -5,104 +5,104 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class User implements Serializable {
 
-	private String ID; //¾Ç¸¹
-	
-	private int gitLabId;
+  private String ID; // ï¿½Ç¸ï¿½
 
-	private String userName; //µn¤J¥Î(­^¤å) ¾Ç¸¹
-	
-	private String name; //ºô­¶Åã¥Ü(¤¤¤å)
-	
-	private String email; //¾Ç¸¹@fcu.edu.tw
-	
-	private String password; //¾Ç¸¹
-	
-	private String privateToken;
+  private int gitLabId;
 
-//	private String password;
-//
-//	private String email;
-//
-//	private String phone;
+  private String userName; // ï¿½nï¿½Jï¿½ï¿½(ï¿½^ï¿½ï¿½) ï¿½Ç¸ï¿½
 
-	public String getID() {
-		return ID;
-	}
+  private String name; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)
 
-	public void setID(String ID) {
-		this.ID = ID;
-	}
+  private String email; // ï¿½Ç¸ï¿½@fcu.edu.tw
 
-//	public String getPhone() {
-//		return phone;
-//	}
-//
-//	public void setPhone(String phone) {
-//		this.phone = phone;
-//	}
+  private String password; // ï¿½Ç¸ï¿½
 
-	public int getGitLabId() {
-		return gitLabId;
-	}
+  private String privateToken;
 
-	public void setGitLabId(int gitLabId) {
-		this.gitLabId = gitLabId;
-	}
+  // private String password;
+  //
+  // private String email;
+  //
+  // private String phone;
 
-	public String getUserName() {
-		return userName;
-	}
+  public String getID() {
+    return ID;
+  }
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+  public void setID(String ID) {
+    this.ID = ID;
+  }
 
-	public String getName() {
-		return name;
-	}
+  // public String getPhone() {
+  // return phone;
+  // }
+  //
+  // public void setPhone(String phone) {
+  // this.phone = phone;
+  // }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public int getGitLabId() {
+    return gitLabId;
+  }
 
-	public String getEmail() {
-		return email;
-	}
+  public void setGitLabId(int gitLabId) {
+    this.gitLabId = gitLabId;
+  }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+  public String getUserName() {
+    return userName;
+  }
 
-	public String getPassword() {
-		return password;
-	}
+  public void setUserName(String userName) {
+    this.userName = userName;
+  }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public String getPrivateToken() {
-		return privateToken;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void setPrivateToken(String privateToken) {
-		this.privateToken = privateToken;
-	}
+  public String getEmail() {
+    return email;
+  }
 
-//	public String getPassword() {
-//		return password;
-//	}
-//
-//	public void setPassword(String password) {
-//		this.password = password;
-//	}
-//
-//	public String getEmail() {
-//		return email;
-//	}
-//
-//	public void setEmail(String email) {
-//		this.email = email;
-//	}
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public String getPrivateToken() {
+    return privateToken;
+  }
+
+  public void setPrivateToken(String privateToken) {
+    this.privateToken = privateToken;
+  }
+
+  // public String getPassword() {
+  // return password;
+  // }
+  //
+  // public void setPassword(String password) {
+  // this.password = password;
+  // }
+  //
+  // public String getEmail() {
+  // return email;
+  // }
+  //
+  // public void setEmail(String email) {
+  // this.email = email;
+  // }
 
 }

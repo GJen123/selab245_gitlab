@@ -12,188 +12,178 @@ import org.json.JSONObject;
 
 import data.GitlabData;
 
-public class teacherGetUserHw{
-	
-	GitlabData gitData = new GitlabData();
-	
-	private String hostUrl = gitData.getHostUrl();
-	
-	public int httpGetProjectEvent(String strUrl){
-		HttpURLConnection conn = null;
-		int total_count=0;
-        try {
-            if (Thread.interrupted()) {
-                throw new InterruptedException();
-            }
-            // «Ø¥ß³s½u
-            
-            URL url = new URL(strUrl);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000);
-            conn.setConnectTimeout(15000);
-            conn.setRequestMethod("GET");
-            conn.connect();
-            if (Thread.interrupted()) {
-                throw new InterruptedException();
-            }
-            // Åª¨ú¸ê®Æ
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    conn.getInputStream(), "UTF-8"));
-            String jsonString1 = reader.readLine();
-            reader.close();
-            
-            JSONArray ja = new JSONArray(jsonString1);
-            int JSONArrayLength = ja.length();
-            
-            
-            for(int i=0;i<JSONArrayLength;i++){
-            	JSONObject oj = ja.getJSONObject(i);
-            	JSONObject ojData = oj.getJSONObject("data");
-            	int total_commit_count = ojData.getInt("total_commits_count");
-            	if(total_commit_count==1){
-            		total_count++;
-            	}
-            }
-        }
-        catch (Exception e) {
-            
-        }
-        finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
-        }
-        return total_count;
-	}
-	
-	public List<String> httpGetStudentOwnedProjectName(String private_token){
-		HttpURLConnection conn = null;
-		List<String> projects_Name = new ArrayList<String>();
-        try {
-            if (Thread.interrupted()) {
-                throw new InterruptedException();
-            }
-            // «Ø¥ß³s½u
-            String strurl = hostUrl + "/api/v3/projects/owned?private_token="+private_token;
-            URL url = new URL(strurl);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000);
-            conn.setConnectTimeout(15000);
-            conn.setRequestMethod("GET");
-            conn.connect();
-            if (Thread.interrupted()) {
-                throw new InterruptedException();
-            }
-            // Åª¨ú¸ê®Æ
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    conn.getInputStream(), "UTF-8"));
-            String jsonString1 = reader.readLine();
-            reader.close();
+public class teacherGetUserHw {
 
-            JSONArray ja = new JSONArray(jsonString1);
-            int JSONArrayLength = ja.length();
-            for(int i=0;i<JSONArrayLength;i++){
-            	JSONObject jsonObject = ja.getJSONObject(i);
-            	String name = jsonObject.getString("name");
-            	projects_Name.add(name);
-            }
-        }
-        catch (Exception e) {
-            System.out.println(e.toString());
-        }
-        finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
-        }
-        return projects_Name;
-	}
-	
-	public List<String> httpGetStudentOwnedProjectUrl(String private_token){
-		HttpURLConnection conn = null;
-		List<String> projects_Url = new ArrayList<String>();
-        try {
-            if (Thread.interrupted()) {
-                throw new InterruptedException();
-            }
-            // «Ø¥ß³s½u
-            String strurl = hostUrl + "/api/v3/projects/owned?private_token="+private_token;
-            URL url = new URL(strurl);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000);
-            conn.setConnectTimeout(15000);
-            conn.setRequestMethod("GET");
-            conn.connect();
-            if (Thread.interrupted()) {
-                throw new InterruptedException();
-            }
-            // Åª¨ú¸ê®Æ
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    conn.getInputStream(), "UTF-8"));
-            String jsonString1 = reader.readLine();
-            reader.close();
+  GitlabData gitData = new GitlabData();
 
-            JSONArray ja = new JSONArray(jsonString1);
-            int JSONArrayLength = ja.length();
-            for(int i=0;i<JSONArrayLength;i++){
-            	JSONObject jsonObject = ja.getJSONObject(i);
-            	String web_url = jsonObject.getString("web_url");
-            	web_url = web_url.replace("http://0912fe2b3e43", "http://140.134.26.71:20080");
-            	projects_Url.add(web_url);
-            }
-        }
-        catch (Exception e) {
-            System.out.println(e.toString());
-        }
-        finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
-        }
-        return projects_Url;
-	}
-	
-	public List<Integer> httpGetStudentOwnedProjectId(String private_token){
-		HttpURLConnection conn = null;
-		List<Integer> projects_Id = new ArrayList<Integer>();
-        try {
-            if (Thread.interrupted()) {
-                throw new InterruptedException();
-            }
-            // «Ø¥ß³s½u
-            String strurl = hostUrl + "/api/v3/projects/owned?private_token="+private_token;
-            URL url = new URL(strurl);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000);
-            conn.setConnectTimeout(15000);
-            conn.setRequestMethod("GET");
-            conn.connect();
-            if (Thread.interrupted()) {
-                throw new InterruptedException();
-            }
-            // Åª¨ú¸ê®Æ
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    conn.getInputStream(), "UTF-8"));
-            String jsonString1 = reader.readLine();
-            reader.close();
+  private String hostUrl = gitData.getHostUrl();
 
-            JSONArray ja = new JSONArray(jsonString1);
-            int JSONArrayLength = ja.length();
-            for(int i=0;i<JSONArrayLength;i++){
-            	JSONObject jsonObject = ja.getJSONObject(i);
-            	int id = jsonObject.getInt("id");
-            	projects_Id.add(id);
-            }
+  public int httpGetProjectEvent(String strUrl) {
+    HttpURLConnection conn = null;
+    int total_count = 0;
+    try {
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+      // ï¿½Ø¥ß³sï¿½u
+
+      URL url = new URL(strUrl);
+      conn = (HttpURLConnection) url.openConnection();
+      conn.setReadTimeout(10000);
+      conn.setConnectTimeout(15000);
+      conn.setRequestMethod("GET");
+      conn.connect();
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+      // Åªï¿½ï¿½ï¿½ï¿½ï¿½
+      BufferedReader reader = new BufferedReader(
+          new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      String jsonString1 = reader.readLine();
+      reader.close();
+
+      JSONArray ja = new JSONArray(jsonString1);
+      int JSONArrayLength = ja.length();
+
+      for (int i = 0; i < JSONArrayLength; i++) {
+        JSONObject oj = ja.getJSONObject(i);
+        JSONObject ojData = oj.getJSONObject("data");
+        int total_commit_count = ojData.getInt("total_commits_count");
+        if (total_commit_count == 1) {
+          total_count++;
         }
-        catch (Exception e) {
-            System.out.println(e.toString());
-        }
-        finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
-        }
-        return projects_Id;
-	}
+      }
+    } catch (Exception e) {
+
+    } finally {
+      if (conn != null) {
+        conn.disconnect();
+      }
+    }
+    return total_count;
+  }
+
+  public List<String> httpGetStudentOwnedProjectName(String private_token) {
+    HttpURLConnection conn = null;
+    List<String> projects_Name = new ArrayList<String>();
+    try {
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+      // ï¿½Ø¥ß³sï¿½u
+      String strurl = hostUrl + "/api/v3/projects/owned?private_token=" + private_token;
+      URL url = new URL(strurl);
+      conn = (HttpURLConnection) url.openConnection();
+      conn.setReadTimeout(10000);
+      conn.setConnectTimeout(15000);
+      conn.setRequestMethod("GET");
+      conn.connect();
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+      // Åªï¿½ï¿½ï¿½ï¿½ï¿½
+      BufferedReader reader = new BufferedReader(
+          new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      String jsonString1 = reader.readLine();
+      reader.close();
+
+      JSONArray ja = new JSONArray(jsonString1);
+      int JSONArrayLength = ja.length();
+      for (int i = 0; i < JSONArrayLength; i++) {
+        JSONObject jsonObject = ja.getJSONObject(i);
+        String name = jsonObject.getString("name");
+        projects_Name.add(name);
+      }
+    } catch (Exception e) {
+      System.out.println(e.toString());
+    } finally {
+      if (conn != null) {
+        conn.disconnect();
+      }
+    }
+    return projects_Name;
+  }
+
+  public List<String> httpGetStudentOwnedProjectUrl(String private_token) {
+    HttpURLConnection conn = null;
+    List<String> projects_Url = new ArrayList<String>();
+    try {
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+      // ï¿½Ø¥ß³sï¿½u
+      String strurl = hostUrl + "/api/v3/projects/owned?private_token=" + private_token;
+      URL url = new URL(strurl);
+      conn = (HttpURLConnection) url.openConnection();
+      conn.setReadTimeout(10000);
+      conn.setConnectTimeout(15000);
+      conn.setRequestMethod("GET");
+      conn.connect();
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+      // Åªï¿½ï¿½ï¿½ï¿½ï¿½
+      BufferedReader reader = new BufferedReader(
+          new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      String jsonString1 = reader.readLine();
+      reader.close();
+
+      JSONArray ja = new JSONArray(jsonString1);
+      int JSONArrayLength = ja.length();
+      for (int i = 0; i < JSONArrayLength; i++) {
+        JSONObject jsonObject = ja.getJSONObject(i);
+        String web_url = jsonObject.getString("web_url");
+        web_url = web_url.replace("http://0912fe2b3e43", "http://140.134.26.71:20080");
+        projects_Url.add(web_url);
+      }
+    } catch (Exception e) {
+      System.out.println(e.toString());
+    } finally {
+      if (conn != null) {
+        conn.disconnect();
+      }
+    }
+    return projects_Url;
+  }
+
+  public List<Integer> httpGetStudentOwnedProjectId(String private_token) {
+    HttpURLConnection conn = null;
+    List<Integer> projects_Id = new ArrayList<Integer>();
+    try {
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+      // ï¿½Ø¥ß³sï¿½u
+      String strurl = hostUrl + "/api/v3/projects/owned?private_token=" + private_token;
+      URL url = new URL(strurl);
+      conn = (HttpURLConnection) url.openConnection();
+      conn.setReadTimeout(10000);
+      conn.setConnectTimeout(15000);
+      conn.setRequestMethod("GET");
+      conn.connect();
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+      // Åªï¿½ï¿½ï¿½ï¿½ï¿½
+      BufferedReader reader = new BufferedReader(
+          new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      String jsonString1 = reader.readLine();
+      reader.close();
+
+      JSONArray ja = new JSONArray(jsonString1);
+      int JSONArrayLength = ja.length();
+      for (int i = 0; i < JSONArrayLength; i++) {
+        JSONObject jsonObject = ja.getJSONObject(i);
+        int id = jsonObject.getInt("id");
+        projects_Id.add(id);
+      }
+    } catch (Exception e) {
+      System.out.println(e.toString());
+    } finally {
+      if (conn != null) {
+        conn.disconnect();
+      }
+    }
+    return projects_Id;
+  }
 }
-

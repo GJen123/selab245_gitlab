@@ -2,63 +2,63 @@ package data;
 
 public class Project {
 
-	private String name = "";
-	
-	private String description = "";
-	
-	private boolean hasTemplate = false;
-	
-	private String type = "";
-	
-	private String gitLabUrl = "";
-	
-	private String jenkinsUrl = "";
+  private String name = "";
 
-	public String getName() {
-		return name;
-	}
+  private String description = "";
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  private boolean hasTemplate = false;
 
-	public String getDescription() {
-		return description;
-	}
+  private String type = "";
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+  private String gitLabUrl = "";
 
-	public boolean isHasTemplate() {
-		return hasTemplate;
-	}
+  private String jenkinsUrl = "";
 
-	public void setHasTemplate(boolean hasTemplate) {
-		this.hasTemplate = hasTemplate;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public String getType() {
-		return type;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+  public String getDescription() {
+    return description;
+  }
 
-	public String getGitLabUrl() {
-		return gitLabUrl;
-	}
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-	public void setGitLabUrl(String gitLabUrl) {
-		this.gitLabUrl = gitLabUrl;
-	}
+  public boolean isHasTemplate() {
+    return hasTemplate;
+  }
 
-	public String getJenkinsUrl() {
-		return jenkinsUrl;
-	}
+  public void setHasTemplate(boolean hasTemplate) {
+    this.hasTemplate = hasTemplate;
+  }
 
-	public void setJenkinsUrl(String jenkinsUrl) {
-		this.jenkinsUrl = jenkinsUrl;
-	}
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  public String getGitLabUrl() {
+    return gitLabUrl;
+  }
+
+  public void setGitLabUrl(String gitLabUrl) {
+    this.gitLabUrl = gitLabUrl;
+  }
+
+  public String getJenkinsUrl() {
+    return jenkinsUrl;
+  }
+
+  public void setJenkinsUrl(String jenkinsUrl) {
+    this.jenkinsUrl = jenkinsUrl;
+  }
 }
