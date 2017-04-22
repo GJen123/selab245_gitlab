@@ -1,0 +1,55 @@
+package fcu.selab.progedu.config;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+import fcu.selab.progedu.exception.LoadConfigFailureException;
+
+public class MySqlDbConfig {
+
+  private static final String PROPERTY_FILE = "/config/db_config.properties";
+
+  private static MySqlDbConfig INSTANCE = new MySqlDbConfig();
+
+  public static MySqlDbConfig getInstance() {
+    return INSTANCE;
+  }
+
+  private Properties props;
+
+  private MySqlDbConfig() {
+
+    InputStream is = this.getClass().getResourceAsStream(PROPERTY_FILE);
+    try {
+      props = new Properties();
+      props.load(is);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public String getDbConnectionString() throws LoadConfigFailureException {
+    if (props != null) {
+      return props.getProperty("DB_CONNECTION");
+    }
+    throw new LoadConfigFailureException(
+        "Unable to get config of MYSQL connection string from file;" + PROPERTY_FILE);
+  }
+
+  public String getDbUser() throws LoadConfigFailureException {
+    if (props != null) {
+      return props.getProperty("DB_USER");
+    }
+    throw new LoadConfigFailureException(
+        "Unable to get config of MYSQL user from file;" + PROPERTY_FILE);
+  }
+
+  public String getDbPassword() throws LoadConfigFailureException {
+    if (props != null) {
+      return props.getProperty("DB_PASSWORD");
+    }
+    throw new LoadConfigFailureException(
+        "Unable to get config of MYSQL password from file;" + PROPERTY_FILE);
+  }
+}
