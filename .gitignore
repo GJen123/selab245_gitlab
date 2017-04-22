@@ -1,3 +1,7 @@
 /target/
 
 pom.properties
+.checkstyle
+.classpath
+.project
+.settings/

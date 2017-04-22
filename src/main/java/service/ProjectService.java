@@ -34,7 +34,6 @@ import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.util.PortalUtil;
 
-import UnZipped.UnZip;
 import conn.Conn;
 import conn.HttpConnect;
 import data.GitlabData;
@@ -42,6 +41,7 @@ import data.JenkinsData;
 import data.Project;
 import db.ProjectDBManager;
 import db.UserDBManager;
+import fcu.selab.progedu.utils.ZipHandler;
 import jenkins.JenkinsApi;
 
 @Path("project/")
@@ -51,7 +51,7 @@ public class ProjectService {
 	private JenkinsData jenkinsData = new JenkinsData();
 	private Conn userConn = Conn.getInstance();
 	private JenkinsApi jenkins = new JenkinsApi();
-	private UnZip unzip = new UnZip();
+	private ZipHandler unzip = new ZipHandler();
 	private GitlabUser root = userConn.getRoot();
 	private HttpConnect httpConn = new HttpConnect();
 	private ProjectDBManager dbManager = ProjectDBManager.getInstance();
@@ -75,7 +75,7 @@ public class ProjectService {
 		boolean isSave = true;
 		
 		try{
-			//¥ýcreate root project
+			//ï¿½ï¿½create root project
 			userConn.createRootProject(name);
 			Integer projectId = getNewProId(name);
 			String projectUrl = getNewProUrl(name);
@@ -83,20 +83,20 @@ public class ProjectService {
 			String folderName = null;
 			StringBuilder sb = new StringBuilder();
 			
-			//¦pªG¦³¿ï¾Ü½d¨Òµ{¦¡
+			//ï¿½pï¿½Gï¿½ï¿½ï¿½ï¿½Ü½dï¿½Òµ{ï¿½ï¿½
 			if(!fileDetail.getFileName().isEmpty()){
 				hasTemplate = true;
 				
-				//¨ú±o©Ò¿ï¾Üªº.zipÀÉ®×¦WºÙ
+				//ï¿½ï¿½ï¿½oï¿½Ò¿ï¿½Üªï¿½.zipï¿½É®×¦Wï¿½ï¿½
 				folderName = fileDetail.getFileName();
-				//±NÀÉ®×¦s¨ìC://User/AppData/Temp/uploads/
+				//ï¿½Nï¿½É®×¦sï¿½ï¿½C://User/AppData/Temp/uploads/
 				filePath = storeFileToTemp(fileDetail.getFileName(), uploadedInputStream);
-			}else{   //¨S¦³¿ï¾Ü½d¨Òµ{¦¡
+			}else{   //ï¿½Sï¿½ï¿½ï¿½ï¿½Ü½dï¿½Òµ{ï¿½ï¿½
 				filePath = this.getClass().getResource("MvnQuickStart.zip").getFile();
 				folderName = "MvnQuickStart.zip";
 			}
 			unzipFile(filePath, projectId, folderName);
-			// config_javac.xml ¸Ì»Ý­nªºcommand line
+			// config_javac.xml ï¿½Ì»Ý­nï¿½ï¿½command line
 			sb = unzip.getStringBuilder();
 			
 			if(!readMe.equals("<br>")){
@@ -104,7 +104,7 @@ public class ProjectService {
 				httpConn.httpPostReadme(readmeUrl, readMe);
 			}
 			
-			//create ¨C­Ó¾Ç¥Íªºproject
+			//create ï¿½Cï¿½Ó¾Ç¥Íªï¿½project
 			System.out.println("projectId : " + projectId);
 			forkProjectFromRoot(projectId);
 			//userConn.createPrivateProject(name, projectId);

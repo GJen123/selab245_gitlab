@@ -1,4 +1,4 @@
-package UnZipped;
+package fcu.selab.progedu.utils;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -7,14 +7,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import conn.HttpConnect;
 import data.GitlabData;
 
-public class UnZip{
+public class ZipHandler{
 	HttpConnect httpConn = new HttpConnect();
     private static final String tempDir = System.getProperty("java.io.tmpdir");
     
@@ -63,7 +62,7 @@ public class UnZip{
                 
                 String fileContent = readFile(filePath);
                 
-             // 因為.java 所以-5
+             // 嚙稽嚙踝蕭.java 嚙課以-5
                 String last = entryName.substring(entryName.length()-5, entryName.length());
                 System.out.println("last : " + last);
                 String fileName = null;
