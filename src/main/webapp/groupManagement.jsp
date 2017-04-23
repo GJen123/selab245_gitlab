@@ -1,12 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="utf-8"%>
-<%@ page import="conn.Conn,conn.Language"%>
+<%@ page import="conn.Conn,conn.Language, db.UserDBManager, data.User"%>
 <%@ page import="service.UserService" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.*" %>
-<%@ page import="org.gitlab.api.GitlabAPI" %>
-<%@ page import="org.gitlab.api.models.*" %>
 <%@ page import="java.util.Locale" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
@@ -15,6 +13,9 @@
 		response.sendRedirect("index.jsp");
 	}
 	session.putValue("page", "teacherManageGroup");
+	
+	UserDBManager uDB = UserDBManager.getInstance();
+	List<User> users = uDB.listAllUsers();
 %>
 
 <%@ include file="language.jsp"%>
@@ -115,22 +116,31 @@
 							</div>
 						</form>
 					</div>
-					<div>
-					<br><br>
-					<p>id, name</p>
-						<%
-							UserService userService = new UserService();
-							List<GitlabUser> lsUsers = userService.getUsers();
-							Collections.reverse(lsUsers);
-							for (GitlabUser user : lsUsers) {
-								if (user.getId() == 1) {
-									continue;
-								}
-						%>
-							<p><%=user.getId() %>, <%=user.getName()%></p>
-						<%
-							}
-						%>
+					<div class="col-md-12">
+						<form action="">
+							<table>
+								<tr>
+									<td>
+										<select style="width: 100px" name="select1" id="select1" multiple size="<%=users.size()%>">
+											<%for(User user : users){
+												%>
+												<option value="<%=user.getUserName()%>"><%=user.getUserName() %>-<%=user.getName() %></option>
+												<%
+											}%>
+										</select>
+									</td>
+									<td>
+										<input type="button" id="gt" name="gt" value="&gt;&gt;">
+										<br>
+										<input type="button" id="lt" name="lt" value="&lt;&lt;">
+									</td>
+									<td>
+										<select style="width: 100px" name="select2" id="select2" multiple>
+										</select>
+									</td>
+								</tr>
+							</table>
+						</form>
 					</div>
 				</div>
 				<!-- panel-body -->
@@ -138,6 +148,21 @@
 			<!-- panel -->
 		</div>
 	</div>
-
+	<script>
+		$('#gt').click(function(e){
+			$('#select1 option:selected').each(function(index){
+				$(this).remove();
+				$('#select2').append("<option value="+$(this).val()+">"+$(this).text()+"</option>");
+			})
+	
+		});
+		$('#lt').click(function(e){
+			$('#select2 option:selected').each(function(index){
+				$(this).remove();
+				$('#select1').append("<option value="+$(this).val()+">"+$(this).text()+"</option>");
+			})
+	
+		});
+</script>	
 </body>
 </html>

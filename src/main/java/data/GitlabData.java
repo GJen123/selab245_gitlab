@@ -29,6 +29,6 @@ public class GitlabData {
   }
 
   public String getUrl() {
-    return "http://root:iecsfcu123456@140.134.26.71:5487";
+    return "http://root:iecsfcu123456@140.134.26.71:20080";
   }
 }
