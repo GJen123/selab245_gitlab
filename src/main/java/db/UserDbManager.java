@@ -1,5 +1,8 @@
 package db;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,11 +43,13 @@ public class UserDbManager {
     String query = "SELECT * FROM Student";
 
     try {
+      String password = passwordMD5(user.getUsername());
+      password += user.getUsername();
       preStmt = conn.prepareStatement(sql);
       preStmt.setInt(1, user.getId());
       preStmt.setString(2, user.getUsername());
       preStmt.setString(3, user.getName());
-      preStmt.setString(4, user.getUsername());
+      preStmt.setString(4, password);
       preStmt.setString(5, user.getEmail());
       preStmt.setString(6, user.getPrivateToken());
       preStmt.executeUpdate();
@@ -68,6 +73,32 @@ public class UserDbManager {
         e.printStackTrace();
       }
     }
+  }
+  
+  /**
+   * encrypt the user password  
+   * @param password   The user's password
+   * @return MD5 string
+   * @throws NoSuchAlgorithmException on security api call error
+   */
+  public String passwordMD5(String password) {
+    String hashtext = "";
+    try {
+      String msg = password;
+      MessageDigest md = MessageDigest.getInstance("MD5");
+      byte[] messageDigest = md.digest(msg.getBytes());
+      BigInteger number = new BigInteger(1, messageDigest);
+      hashtext = number.toString(16);
+        
+      while (hashtext.length() < 32) {
+        hashtext = "0" + hashtext;
+      }
+      System.out.println(hashtext);
+    } catch (NoSuchAlgorithmException e) {
+      e.printStackTrace();
+    }
+    
+    return hashtext;
   }
 
   /**

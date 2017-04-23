@@ -36,6 +36,13 @@ public class GroupService {
   Conn userConn = Conn.getInstance();
   UserService userService = new UserService();
 
+  /**
+   * upload a csvfile to create group
+   * 
+   * @param uploadedInputStream   file content
+   * @param fileDetail            file information
+   * @return Response
+   */
   @POST
   @Path("upload")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -103,7 +110,12 @@ public class GroupService {
     // return Response.temporaryRedirect(location).build();
     return response;
   }
-
+  
+  /**
+   * parse csv file to create a group
+   * 
+   * @param data group data
+   */
   public void newGroup(List<String> data) {
     String groupName = "";
     String masterName = "";
@@ -163,7 +175,13 @@ public class GroupService {
       }
     }
   }
-
+  
+  /**
+   * create a group
+   * 
+   * @param name  The group's name
+   * @return GitLabGroup
+   */
   public GitlabGroup newGroup(String name) {
     GitlabGroup group = userConn.createGroup(name);
     System.out.println(group.getName() + ", " + group.getId());
@@ -176,9 +194,7 @@ public class GroupService {
 
   public void createGroup(Group group) {
     int groupId = -1, masterId = -1, developerId = -1;
-    ;
 
-    // for (Group group : groups) {
     groupId = newGroupId(newGroup(group.getGroupName()));
     masterId = findUser(group.getMaster());
     userConn.addMember(groupId, masterId, 40);

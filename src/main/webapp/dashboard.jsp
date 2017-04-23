@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="BIG5"%>
-<%@ page import="conn.Conn,conn.HttpConnect,data.GitlabData,data.JenkinsData,data.CourseData,jenkins.JenkinsApi" %>
-<%@ page import="db.UserDBManager, db.ProjectDBManager" %>
+<%@ page import="conn.Conn,conn.HttpConnect,jenkins.JenkinsApi" %>
+<%@ page import="fcu.selab.progedu.config.GitlabConfig" %>
+<%@ page import="fcu.selab.progedu.config.JenkinsConfig" %>
+<%@ page import="db.UserDbManager, db.ProjectDbManager" %>
 <%@ page import="data.User, data.Project" %>   
 <%@ page import="org.gitlab.api.GitlabAPI" %>
 <%@ page import="org.gitlab.api.models.*" %>
@@ -40,8 +42,8 @@
 		Conn conn = Conn.getInstance();
 		HttpConnect httpConn = HttpConnect.getInstance();
 	
-		UserDBManager db = UserDBManager.getInstance();
-		ProjectDBManager Pdb = ProjectDBManager.getInstance();
+		UserDbManager db = UserDbManager.getInstance();
+		ProjectDbManager Pdb = ProjectDbManager.getInstance();
 		
 		// db的所有users
 		List<User> users = db.listAllUsers();
@@ -53,9 +55,8 @@
 		List<Project> dbProjects = Pdb.listAllProjects();
 		
 		// gitlab jenkins course的Data
-		GitlabData gitData = new GitlabData();
-		JenkinsData jenkinsData = new JenkinsData();
-		CourseData courseData = new CourseData();
+		GitlabConfig gitData = GitlabConfig.getInstance();
+		JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 		
 		JenkinsApi jenkins = new JenkinsApi();
 	%>
@@ -79,7 +80,7 @@
 				<%
 					for(User user : users){
 						String userName = user.getUserName();
-						String personal_url = gitData.getHostUrl() + "/u/" + userName;
+						String personal_url = gitData.getGitlabHostUrl() + "/u/" + userName;
 						%>
 							<tr>
 								<td><%=user.getUserName() %></td>
@@ -101,8 +102,8 @@
 												commit_count = conn.getAllCommitsCounts(gitProject.getId());
 												//---Jenkins---
 												String jobName = user.getUserName() + "_" + gitProject.getName();
-												String jobUrl = "http://" + jenkinsData.getUrl() + "/job/" + jobName + "/api/json";
-												String color = jenkins.getJobJsonColor(jenkinsData.getUserName() ,jenkinsData.getPassWord(), jobUrl);
+												String jobUrl = "http://" + jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
+												String color = jenkins.getJobJsonColor(jenkinsData.getJenkinsRootUsername() ,jenkinsData.getJenkinsRootPassword(), jobUrl);
 												
 												if(color!=null){
 													colorPic = jenkins.getColorPic(color);

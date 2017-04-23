@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="utf-8"%>
-<%@ page import="conn.Conn,conn.HttpConnect,conn.Language,data.GitlabData"%>
+<%@ page import="conn.Conn,conn.HttpConnect,conn.Language,fcu.selab.progedu.config.GitlabConfig"%>
 <%@ page import="java.util.List" %>
 <%@ page import="org.gitlab.api.models.*" %>
 <%@ page import="java.util.ArrayList" %>
@@ -41,7 +41,7 @@
 	 
 	<%
 		Conn conn = Conn.getInstance();
-		GitlabData gitData = new GitlabData();
+		GitlabConfig gitData = GitlabConfig.getInstance();
 		List<GitlabGroup> groups = conn.getGroups();
 		
 		%>
@@ -75,7 +75,7 @@
 															for(GitlabProject project : projects){
 																String projectUrl = project.getWebUrl();
 																String oldStr = projectUrl.substring(0, 19);
-																projectUrl = projectUrl.replace(oldStr, gitData.getHostUrl());
+																projectUrl = projectUrl.replace(oldStr, gitData.getGitlabHostUrl());
 																projectUrl += "/commits/master";
 																%>
 																	<tr>
@@ -92,7 +92,7 @@
 														<%
 															for(GitlabGroupMember member : groupMembers){
 																String memberUsername = member.getUsername();
-																String memberUrl = gitData.getHostUrl() + "/u/" + memberUsername;
+																String memberUrl = gitData.getGitlabHostUrl() + "/u/" + memberUsername;
 																%>
 																	<tr>
 																		<td><a href="#" onclick="window.open('<%=memberUrl %>')"><%=member.getName() %></a></td>

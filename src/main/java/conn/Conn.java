@@ -101,10 +101,16 @@ public class Conn {
    * @return The project list of user
    * @throws IOException on gitlab api call error
    */
-  public List<GitlabProject> getProject(User user) throws IOException {
+  public List<GitlabProject> getProject(User user) {
     GitlabUser gitlabUser = new GitlabUser();
-    gitlabUser.setId(user.getGitLabId());
-    return getProject(gitlabUser);
+    List<GitlabProject> projects = new ArrayList<GitlabProject>();
+    try {
+      gitlabUser.setId(user.getGitLabId());
+      projects = gitlab.getProjectsViaSudo(gitlabUser);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return projects;
   }
 
   /**
@@ -113,10 +119,14 @@ public class Conn {
    * @return The project list of user
    * @throws IOException on gitlab api call error
    */
-  public List<GitlabProject> getProject(GitlabUser user) throws IOException {
-
+  public List<GitlabProject> getProject(GitlabUser user) {
     List<GitlabProject> projects = new ArrayList<GitlabProject>();
-    projects = gitlab.getProjectsViaSudo(user);
+    try {
+      projects = gitlab.getProjectsViaSudo(user);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    
     return projects;
   }
   

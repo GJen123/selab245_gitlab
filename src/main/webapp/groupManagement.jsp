@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="utf-8"%>
-<%@ page import="conn.Conn,conn.Language, db.UserDBManager, data.User"%>
+<%@ page import="conn.Conn,conn.Language, db.UserDbManager, data.User"%>
 <%@ page import="service.UserService" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
@@ -14,7 +14,7 @@
 	}
 	session.putValue("page", "teacherManageGroup");
 	
-	UserDBManager uDB = UserDBManager.getInstance();
+	UserDbManager uDB = UserDbManager.getInstance();
 	List<User> users = uDB.listAllUsers();
 %>
 

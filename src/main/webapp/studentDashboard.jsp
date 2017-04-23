@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="BIG5"%>
-<%@ page import="conn.Conn,conn.StudentConn,conn.HttpConnect,data.GitlabData,data.CourseData"%>
+<%@ page import="conn.Conn,conn.StudentConn,conn.HttpConnect,fcu.selab.progedu.config.GitlabConfig,data.CourseData"%>
 <%@ page import="java.util.ArrayList"
 	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
 <%@ page import="java.util.*" %>
@@ -24,7 +24,7 @@
 	<%@ include file="header.jsp" %>
 
 	<%
-		GitlabData gitData = new GitlabData();
+		GitlabConfig gitData = GitlabConfig.getInstance();
 		CourseData courseData = new CourseData();
 	
 		String private_token = session.getAttribute("private_token").toString();
