@@ -28,7 +28,12 @@ public class MySqlDbConfig {
       e.printStackTrace();
     }
   }
-
+  
+  /**
+   * Get database connection string
+   * @return db_connection
+   * @throws LoadConfigFailureException on properties call error
+   */
   public String getDbConnectionString() throws LoadConfigFailureException {
     if (props != null) {
       return props.getProperty("DB_CONNECTION");
@@ -37,6 +42,11 @@ public class MySqlDbConfig {
         "Unable to get config of MYSQL connection string from file;" + PROPERTY_FILE);
   }
 
+  /**
+   * Get database user
+   * @return user
+   * @throws LoadConfigFailureException on properties call error
+   */
   public String getDbUser() throws LoadConfigFailureException {
     if (props != null) {
       return props.getProperty("DB_USER");
@@ -45,6 +55,11 @@ public class MySqlDbConfig {
         "Unable to get config of MYSQL user from file;" + PROPERTY_FILE);
   }
 
+  /**
+   * Get database password
+   * @return password
+   * @throws LoadConfigFailureException on properties call error
+   */
   public String getDbPassword() throws LoadConfigFailureException {
     if (props != null) {
       return props.getProperty("DB_PASSWORD");

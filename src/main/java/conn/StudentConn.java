@@ -11,73 +11,80 @@ import org.gitlab.api.models.GitlabCommit;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
 
-import data.GitlabData;
+import fcu.selab.progedu.config.GitlabConfig;
+import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 public class StudentConn {
+  GitlabConfig gitData = GitlabConfig.getInstance();
 
-  GitlabData gitData = new GitlabData();
-
-  String private_token;
+  String privateToken;
   private GitlabUser user = new GitlabUser();
-  private String _hostUrl = gitData.getHostUrl();
-  private String _apiToken = gitData.getApiToken();
+  private String hostUrl;
+  private String apiToken;
   private TokenType tokenType = TokenType.PRIVATE_TOKEN;
   private AuthMethod authMethod = AuthMethod.URL_PARAMETER;
   private GitlabAPI gitlab;
   private List<GitlabProject> project = new ArrayList<GitlabProject>();
 
-  public StudentConn(String private_token) {
-    this.private_token = private_token;
-    gitlab = GitlabAPI.connect(_hostUrl, private_token, tokenType, authMethod);
+  /**
+   * Constructor
+   * @param privateToken      The student private token from gitlab
+   * @throws LoadConfigFailureException on properties call error
+   * @throws IOException on gitlab get user error
+   */
+  public StudentConn(String privateToken) throws LoadConfigFailureException, IOException {
+    this.privateToken = privateToken;
+    hostUrl = gitData.getGitlabHostUrl();
+    apiToken = gitData.getGitlabApiToken();
+    gitlab = GitlabAPI.connect(hostUrl, privateToken, tokenType, authMethod);
     getUser();
   }
 
-  public void getUser() {
-    try {
-      user = gitlab.getUser();
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+  public void getUser() throws IOException {
+    user = gitlab.getUser();
   }
 
   public String getUsername() {
     return user.getUsername();
   }
 
-  public List<GitlabProject> getProject() {
-    try {
-      project = gitlab.getProjects();
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+  /**
+   * Get user's projects
+   * @return list of projects
+   * @throws IOException on gitlab get projects error
+   */
+  public List<GitlabProject> getProject() throws IOException {
+    project = gitlab.getProjects();
     return project;
   }
 
-  public int getAllCommitsCounts(int projectId) {
+  /**
+   * Get gitlab project commit counts
+   * @param projectId          The gitlab project id
+   * @return commit counts
+   * @throws IOException on gitlab call error
+   */
+  public int getAllCommitsCounts(int projectId) throws IOException {
     int count = 0;
     List<GitlabCommit> lsCommits = new ArrayList<GitlabCommit>();
-    try {
-      if (!gitlab.getAllCommits(projectId).isEmpty()) {
-        lsCommits = gitlab.getAllCommits(projectId);
-        count = lsCommits.size();
-      } else {
-        count = 0;
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
+    if (!gitlab.getAllCommits(projectId).isEmpty()) {
+      lsCommits = gitlab.getAllCommits(projectId);
+      count = lsCommits.size();
+    } else {
+      count = 0;
     }
     return count;
   }
 
-  public List<GitlabCommit> getAllCommits(int projectId) {
+  /**
+   * Get all gitlab project's commits
+   * @param projectId        The gitlab project id
+   * @return list of commits
+   * @throws IOException on gitlab call error
+   */
+  public List<GitlabCommit> getAllCommits(int projectId) throws IOException {
     List<GitlabCommit> lsCommits = new ArrayList<GitlabCommit>();
-    try {
-      lsCommits = gitlab.getAllCommits(projectId);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    lsCommits = gitlab.getAllCommits(projectId);
     return lsCommits;
   }
 }

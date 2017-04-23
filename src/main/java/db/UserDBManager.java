@@ -12,25 +12,31 @@ import org.gitlab.api.models.GitlabUser;
 
 import data.User;
 
-public class UserDBManager {
+public class UserDbManager {
 
-  private static UserDBManager DB_MANAGER = new UserDBManager();
+  private static UserDbManager DB_MANAGER = new UserDbManager();
 
-  public static UserDBManager getInstance() {
+  public static UserDbManager getInstance() {
     return DB_MANAGER;
   }
 
   private IDatabase database = new MySqlDatabase();
 
-  private UserDBManager() {
+  private UserDbManager() {
 
   }
 
+  /**
+   * Add gitlab user to database
+   * @param user    The gitlab user
+   */
   public void addUser(GitlabUser user) {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
     Statement stmt = null;
-    String sql = "INSERT INTO Student(gitLabId, stuId, name, password, email, privateToken)  VALUES(?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO "
+                 + "Student(gitLabId, stuId, name, password, email, privateToken)  "
+                 + "VALUES(?, ?, ?, ?, ?, ?)";
     String query = "SELECT * FROM Student";
 
     try {
@@ -64,6 +70,11 @@ public class UserDBManager {
     }
   }
 
+  /**
+   * Get user from database
+   * @param userName      The gitlab user name
+   * @return user
+   */
   public User getUser(String userName) {
     User user = new User();
     Connection conn = database.getConnection();
@@ -95,6 +106,10 @@ public class UserDBManager {
     return user;
   }
 
+  /**
+   * List all the database user
+   * @return list of user
+   */
   public List<User> listAllUsers() {
     List<User> lsUsers = new ArrayList<User>();
 

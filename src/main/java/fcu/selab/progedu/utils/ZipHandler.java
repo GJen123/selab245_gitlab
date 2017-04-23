@@ -11,19 +11,25 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import conn.HttpConnect;
-import data.GitlabData;
+import fcu.selab.progedu.config.GitlabConfig;
+import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 public class ZipHandler {
   HttpConnect httpConn = new HttpConnect();
   private static final String tempDir = System.getProperty("java.io.tmpdir");
 
-  GitlabData gitData = new GitlabData();
+  GitlabConfig gitData = GitlabConfig.getInstance();
 
-  private String hostUrl = gitData.getHostUrl();
+  private String hostUrl;
 
-  private String token = gitData.getApiToken();
+  private String token;
 
   StringBuilder sb = new StringBuilder();
+  
+  public ZipHandler() throws LoadConfigFailureException {
+    hostUrl = gitData.getGitlabHostUrl();
+    token = gitData.getGitlabApiToken();
+  }
 
   /**
    * Size of the buffer to read/write data
@@ -34,9 +40,10 @@ public class ZipHandler {
    * Extracts a zip file specified by the zipFilePath to a directory specified by destDirectory
    * (will be created if does not exists)
    * 
-   * @param zipFilePath
-   * @param destDirectory
-   * @throws IOException
+   * @param zipFilePath      The zip file's path
+   * @param projectId        The gitlab project id
+   * @param folderName       The folder name
+   * @throws IOException on fileinputstream call error
    */
   public void unzip(String zipFilePath, Integer projectId, String folderName) throws IOException {
     System.out.println("folderName : " + folderName);
@@ -52,20 +59,16 @@ public class ZipHandler {
     // iterates over entries in the zip file
     while (entry != null) {
       String filePath = destDirectory + File.separator + entry.getName();
-      System.out.println("filePath : " + filePath);
 
       if (!entry.isDirectory()) {
-        System.out.println("!entry.isDirectory()");
         // if the entry is a file, extracts it
         extractFile(zipIn, filePath);
         String entryName = entry.getName();
-        System.out.println("entryName : " + entryName);
 
-        String fileContent = readFile(filePath);
+        final String fileContent = readFile(filePath);
 
-        // �]��.java �ҥH-5
+        // ".java" length = 5
         String last = entryName.substring(entryName.length() - 5, entryName.length());
-        System.out.println("last : " + last);
         String fileName = null;
         for (int i = 0; i < entryName.length() - 3; i++) {
           if (entryName.substring(i, i + 3).equals("src")) {
@@ -77,7 +80,6 @@ public class ZipHandler {
             }
           }
         }
-        System.out.println("\n--------sb---------\n" + sb.toString() + "\n--------sb---------\n");
 
         // ---httpPost to Gitlab---
         String url = hostUrl + "/api/v3/projects/" + projectId + "/repository/files?private_token="
@@ -99,9 +101,9 @@ public class ZipHandler {
   /**
    * Extracts a zip entry (file entry)
    * 
-   * @param zipIn
-   * @param filePath
-   * @throws IOException
+   * @param zipIn             The zip inputstream
+   * @param filePath          The file path
+   * @throws IOException on fileoutputstream call error
    */
   private void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
     BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));

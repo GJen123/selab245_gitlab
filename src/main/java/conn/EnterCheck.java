@@ -9,16 +9,25 @@ import java.net.URL;
 
 import org.json.JSONObject;
 
-import data.GitlabData;
+import fcu.selab.progedu.config.GitlabConfig;
+import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 public class EnterCheck {
-  GitlabData gitData = new GitlabData();
+  GitlabConfig gitData = GitlabConfig.getInstance();
 
-  public String httpPost(String username, String password) {
+  /**
+   * Httppost to check if username and password are right
+   * 
+   * @param username             Gitlab user name
+   * @param password             Gitalb user password
+   * @return result
+   * @throws LoadConfigFailureException on gitlab config call error
+   */
+  public String httpPost(String username, String password) throws LoadConfigFailureException {
     String result = null;
     String response = null;
     StringBuilder sb = new StringBuilder();
-    String url = gitData.getHostUrl() + "/oauth/token";
+    String url = gitData.getGitlabHostUrl() + "/oauth/token";
     try {
       URL object = new URL(url);
 
@@ -43,8 +52,8 @@ public class EnterCheck {
 
       // display what returns the POST request
 
-      int HttpResult = con.getResponseCode();
-      if (HttpResult == HttpURLConnection.HTTP_OK) {
+      int httpResult = con.getResponseCode();
+      if (httpResult == HttpURLConnection.HTTP_OK) {
         BufferedReader br = new BufferedReader(
             new InputStreamReader(con.getInputStream(), "utf-8"));
 
@@ -66,20 +75,25 @@ public class EnterCheck {
 
   }
 
-  public String analysisJSON(String str) {
-    String access_token = null;
+  /**
+   * Analysis the recall JSON for accessToken
+   * @param str    The string of JSON
+   * @return accessToken
+   */
+  public String analysisJson(String str) {
+    String accessToken = null;
     if (!str.equals("")) {
       JSONObject json = new JSONObject(str);
       if (json.has("access_token")) {
-        access_token = json.getString("access_token");
+        accessToken = json.getString("access_token");
       } else {
-        access_token = null;
+        accessToken = null;
       }
     } else {
       System.out.println("str == null");
     }
 
-    return access_token;
+    return accessToken;
   }
 
 }

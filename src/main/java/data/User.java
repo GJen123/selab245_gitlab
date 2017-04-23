@@ -5,17 +5,17 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class User implements Serializable {
 
-  private String ID; // �Ǹ�
+  private String id; // 嚙褒賂蕭
 
   private int gitLabId;
 
-  private String userName; // �n�J��(�^��) �Ǹ�
+  private String userName; // 嚙緯嚙皚嚙踝蕭(嚙稷嚙踝蕭) 嚙褒賂蕭
 
-  private String name; // �������(����)
+  private String name; // 嚙踝蕭嚙踝蕭嚙踝蕭嚙�(嚙踝蕭嚙踝蕭)
 
-  private String email; // �Ǹ�@fcu.edu.tw
+  private String email; // 嚙褒賂蕭@fcu.edu.tw
 
-  private String password; // �Ǹ�
+  private String password; // 嚙褒賂蕭
 
   private String privateToken;
 
@@ -25,12 +25,12 @@ public class User implements Serializable {
   //
   // private String phone;
 
-  public String getID() {
-    return ID;
+  public String getId() {
+    return id;
   }
 
-  public void setID(String ID) {
-    this.ID = ID;
+  public void setId(String id) {
+    this.id = id;
   }
 
   // public String getPhone() {

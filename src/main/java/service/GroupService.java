@@ -47,9 +47,9 @@ public class GroupService {
 
     String uploadDir = tempDir + "uploads/";
 
-    File fUploadDir = new File(uploadDir);
-    if (!fUploadDir.exists()) {
-      fUploadDir.mkdirs();
+    File fileUploadDir = new File(uploadDir);
+    if (!fileUploadDir.exists()) {
+      fileUploadDir.mkdirs();
     }
     String fileName = fileDetail.getFileName();
     System.out.println("fileName :" + fileName);
@@ -105,7 +105,8 @@ public class GroupService {
   }
 
   public void newGroup(List<String> data) {
-    String groupName = "", masterName = "";
+    String groupName = "";
+    String masterName = "";
     List<String> cons = new ArrayList<String>();
     List<Group> groups = new ArrayList<Group>();
     Group group = new Group();
@@ -117,8 +118,9 @@ public class GroupService {
       number++;
       String[] row = lsData.split(",");
 
-      if (row[0].equals("Team"))
+      if (row[0].equals("Team")) {
         continue;
+      }
       if (!row[0].isEmpty()) { // Team
         if (flag == 1) {
           group.setGroupName(groupName);
@@ -132,16 +134,18 @@ public class GroupService {
         group = new Group();
         cons = new ArrayList<String>();
         groupName = row[0];
-        if (!row[1].isEmpty())
+        if (!row[1].isEmpty()) {
           masterName = row[3]; // teamLeader
-        else
+        } else {
           cons.add(row[3]);
+        }
       } else {
         flag = 1;
-        if (!row[1].isEmpty())
+        if (!row[1].isEmpty()) {
           masterName = row[3]; // teamLeader
-        else
+        } else {
           cons.add(row[3]);
+        }
       }
       if (number == data.size()) {
         System.out.println("data final");

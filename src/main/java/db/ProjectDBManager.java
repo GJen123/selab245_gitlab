@@ -10,20 +10,24 @@ import java.util.List;
 
 import data.Project;
 
-public class ProjectDBManager {
+public class ProjectDbManager {
 
-  private static ProjectDBManager DB_MANAGER = new ProjectDBManager();
+  private static ProjectDbManager DB_MANAGER = new ProjectDbManager();
 
-  public static ProjectDBManager getInstance() {
+  public static ProjectDbManager getInstance() {
     return DB_MANAGER;
   }
 
   private IDatabase database = new MySqlDatabase();
 
-  private ProjectDBManager() {
+  private ProjectDbManager() {
 
   }
 
+  /**
+   * Add project to database
+   * @param project         Project
+   */
   public void addProject(Project project) {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
@@ -59,6 +63,10 @@ public class ProjectDBManager {
     }
   }
 
+  /**
+   * List all the projects
+   * @return List of projects
+   */
   public List<Project> listAllProjects() {
     List<Project> lsProjects = new ArrayList<Project>();
 

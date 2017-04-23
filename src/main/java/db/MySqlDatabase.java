@@ -13,7 +13,9 @@ public class MySqlDatabase implements IDatabase {
   private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
   private Connection con = null;
 
-  // @Override
+  /**
+   * Connection to db
+   */
   public Connection getConnection() {
 
     try {

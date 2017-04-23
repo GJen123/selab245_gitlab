@@ -44,51 +44,102 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import conn.Conn;
-import data.GitlabData;
-import data.JenkinsData;
+import fcu.selab.progedu.config.GitlabConfig;
+import fcu.selab.progedu.config.JenkinsConfig;
+import fcu.selab.progedu.exception.LoadConfigFailureException;
 import sun.misc.BASE64Encoder;
 
 public class JenkinsApi {
 
   private Conn conn = Conn.getInstance();
 
-  GitlabData gitData = new GitlabData();
+  GitlabConfig gitData = GitlabConfig.getInstance();
+  
+  private String gitlabHostUrl;
+  private String gitlabUsername;
+  private String gitlabPassword;
 
-  JenkinsData jenkinsData = new JenkinsData();
+  JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
-  public void createRootJob(String Pname, String jenkinsCrumb, String fileType, StringBuilder sb) {
+  private String jenkinsRootUrl;
+  private String jenkinsRootUsername;
+  private String jenkinsRootPassword;
+  private String jenkinsApiToken;
+  
+  /**
+   * constructor
+   * @throws LoadConfigFailureException on properties call error
+   */
+  public JenkinsApi() throws LoadConfigFailureException {
+    gitlabHostUrl = gitData.getGitlabHostUrl();
+    gitlabUsername = gitData.getGitlabRootUsername();
+    gitlabPassword = gitData.getGitlabRootPassword();
+    jenkinsRootUrl = jenkinsData.getJenkinsRootUrl();
+    jenkinsRootUsername = jenkinsData.getJenkinsRootUsername();
+    jenkinsRootPassword = jenkinsData.getJenkinsRootPassword();
+    jenkinsApiToken = jenkinsData.getJenkinsApiToken();
+  }
+  
+  /**
+   * Create gitlab root job on jenkins
+   * @param proName                 The project name
+   * @param jenkinsCrumb          The jenkins crumb
+   * @param fileType              The file type
+   * @param sb                    The config build job command
+   */
+  public void createRootJob(String proName, String jenkinsCrumb, 
+                            String fileType, StringBuilder sb) {
 
     // ---Create Jenkins Job---
-    String jobName = "root_" + Pname;
-    String strUrl = jenkinsData.getHostUrl() + "/createItem?name=" + jobName;
-    String proUrl = gitData.getHostUrl() + "/root/" + Pname + ".git";
-    postCreateJob(jenkinsData.getUserName(), jenkinsData.getPassWord(), strUrl, jobName, proUrl,
-        jenkinsCrumb, fileType, sb);
+    String jobName = "root_" + proName;
+    String strUrl = jenkinsRootUrl + "/createItem?name=" + jobName;
+    String proUrl = gitlabHostUrl + "/root/" + proName + ".git";
+    postCreateJob(jobName, proUrl, jenkinsCrumb, fileType, sb);
     // ------------------------
   }
 
-  public void createJenkinsJob(String Pname, String jenkinsCrumb, String fileType,
-      StringBuilder sb) {
+  /**
+   * Create all user jenkins job
+   * 
+   * @param proName             Project name
+   * @param jenkinsCrumb        Jenkins crumb
+   * @param fileType            File type
+   * @param sb                  The config build job command
+   * @throws LoadConfigFailureException on properties call error
+   * @throws IOException on gitlab getuser call error
+   */
+  public void createJenkinsJob(String proName, String jenkinsCrumb, String fileType,
+      StringBuilder sb) throws LoadConfigFailureException, IOException {
     List<GitlabUser> users = conn.getUsers();
     for (GitlabUser user : users) {
-      if (user.getId() == 1)
+      if (user.getId() == 1) {
         continue;
+      }
+        
       // ---Create Jenkins Job---
-      String jobName = user.getUsername() + "_" + Pname;
-      String strUrl = jenkinsData.getHostUrl() + "/createItem?name=" + jobName;
-      String proUrl = gitData.getHostUrl() + "/" + user.getUsername() + "/" + Pname + ".git";
-      postCreateJob(jenkinsData.getUserName(), jenkinsData.getPassWord(), strUrl, jobName, proUrl,
-          jenkinsCrumb, fileType, sb);
+      String jobName = user.getUsername() + "_" + proName;
+      String strUrl = jenkinsRootUrl + "/createItem?name=" + jobName;
+      String proUrl = gitData.getGitlabHostUrl() + "/" + user.getUsername() + "/" + proName 
+                      + ".git";
+      postCreateJob(jobName, proUrl, jenkinsCrumb, fileType, sb);
       // ------------------------
     }
   }
 
-  // ��httppost create jenkins job
-  public void postCreateJob(String username, String password, String strUrl, String jobName,
-      String proUrl, String jenkinsCrumb, String fileType, StringBuilder sb) {
+  /**
+   * Httppost to create jenkins job
+   * 
+   * @param jobName           Jenkins job name
+   * @param proUrl            Gitlab project url
+   * @param jenkinsCrumb      Jenkins crumb
+   * @param fileType          File type
+   * @param sb                The config build job command
+   */
+  public void postCreateJob(String jobName, String proUrl, String jenkinsCrumb, 
+                            String fileType, StringBuilder sb) {
     HttpClient client = new DefaultHttpClient();
 
-    String url = jenkinsData.getHostUrl() + "/createItem?name=" + jobName;
+    String url = jenkinsRootUrl + "/createItem?name=" + jobName;
     try {
       HttpPost post = new HttpPost(url);
 
@@ -96,7 +147,7 @@ public class JenkinsApi {
       post.addHeader("Jenkins-Crumb", jenkinsCrumb);
       // post.addHeader("Jenkins-Crumb", "e390d46093102dac6c0ec903b77af0a0");
       String filePath = null;
-      // �ܧ�config.xml�̪�url
+      // 嚙豌改蕭config.xml嚙諒迎蕭url
       if (fileType != null) {
         if (fileType.equals("Maven")) {
           filePath = this.getClass().getResource("config_maven.xml").getFile();
@@ -114,7 +165,7 @@ public class JenkinsApi {
         modifyXmlFileCommand(filePath, sb);
       }
 
-      // Ūconfig.xml
+      // 讀config.xml
 
       StringBuilder sbConfig = getConfig(filePath);
       StringEntity se = new StringEntity(sbConfig.toString(),
@@ -122,14 +173,12 @@ public class JenkinsApi {
       se.setChunked(true);
       post.setEntity(se);
 
-      HttpResponse responsePOST = client.execute(post);
-      HttpEntity resEntity = responsePOST.getEntity();
+      HttpResponse response = client.execute(post);
+      HttpEntity resEntity = response.getEntity();
 
       if (resEntity != null) {
         String result = resEntity.toString();
         System.out.println("result: " + result);
-      } else {
-
       }
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
@@ -140,17 +189,21 @@ public class JenkinsApi {
     }
   }
 
-  // ��httpget ��jenkins��crumb��
-  public String getCrumb(String username, String password, String strUrl) {
-    String JenkinsCrumb = null;
+  /**
+   * Get the jenkins crumb
+   * @param username              Jenkins root user name
+   * @param password              Jenkins root password             
+   * @return jenkins crumb
+   */
+  public String getCrumb(String username, String password) {
+    String jenkinsCrumb = null;
     HttpURLConnection conn = null;
 
     try {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // �إ߳s�u
-      strUrl += "/crumbIssuer/api/json";
+      String strUrl = jenkinsRootUrl += "/crumbIssuer/api/json";
       URL url = new URL(strUrl);
       conn = (HttpURLConnection) url.openConnection();
       String input = username + ":" + password;
@@ -164,14 +217,14 @@ public class JenkinsApi {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // Ū�����
+      
       BufferedReader reader = new BufferedReader(
           new InputStreamReader(conn.getInputStream(), "UTF-8"));
       String jsonString = reader.readLine();
       reader.close();
 
       JSONObject jsonObj = new JSONObject(jsonString);
-      JenkinsCrumb = jsonObj.getString("crumb");
+      jenkinsCrumb = jsonObj.getString("crumb");
     } catch (Exception e) {
       System.out.println("abc : " + e);
     } finally {
@@ -179,10 +232,15 @@ public class JenkinsApi {
         conn.disconnect();
       }
     }
-    return JenkinsCrumb;
+    return jenkinsCrumb;
   }
 
-  // ��config.xml ��Ū�X���ܦ�stringbuilder
+  /**
+   * Get the config file
+   * 
+   * @param filePath       Config file path
+   * @return config content
+   */
   public StringBuilder getConfig(String filePath) {
     FileInputStream fis;
     StringBuilder sb = new StringBuilder();
@@ -209,7 +267,12 @@ public class JenkinsApi {
     return sb;
   }
 
-  // �ܧ�config.xml file�̪�Url [jenkins]
+  /**
+   * Change the config file's project url
+   * 
+   * @param filePath         Config file path
+   * @param url              Project url
+   */
   public void modifyXmlFileUrl(String filePath, String url) {
     try {
       String filepath = filePath;
@@ -244,7 +307,12 @@ public class JenkinsApi {
     }
   }
 
-  // �ܧ�config.xml file�̪�Url [jenkins]
+  /**
+   * Change the config file command (Maven or Javac)
+   * 
+   * @param filePath           Config file path
+   * @param sb                 Command string
+   */
   public void modifyXmlFileCommand(String filePath, StringBuilder sb) {
     try {
       String filepath = filePath;
@@ -279,58 +347,14 @@ public class JenkinsApi {
     }
   }
 
-  // ���ojenkins job�����A�C��
-  public ArrayList<HashMap<String, String>> getJobJson(String username, String password,
-      String strUrl, String jobName) {
-    HttpURLConnection conn = null;
-    ArrayList<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
-    try {
-      if (Thread.interrupted()) {
-        throw new InterruptedException();
-      }
-      // �إ߳s�u
-
-      URL url = new URL(strUrl);
-      conn = (HttpURLConnection) url.openConnection();
-      String input = username + ":" + password;
-      String encoding = new sun.misc.BASE64Encoder().encode(input.getBytes());
-      conn.setRequestProperty("Authorization", "Basic " + encoding);
-      conn.setReadTimeout(10000);
-      conn.setConnectTimeout(15000);
-      conn.setRequestMethod("GET");
-      conn.connect();
-      if (Thread.interrupted()) {
-        throw new InterruptedException();
-      }
-      // Ū�����
-      BufferedReader reader = new BufferedReader(
-          new InputStreamReader(conn.getInputStream(), "UTF-8"));
-      String jsonString1 = reader.readLine();
-      reader.close();
-
-      JSONObject j1 = new JSONObject(jsonString1);
-      JSONArray ja = j1.getJSONArray("jobs");
-
-      int JSONArrayLength = ja.length();
-
-      for (int i = 0; i < JSONArrayLength; i++) {
-        JSONObject oj = ja.getJSONObject(i);
-        String name = oj.getString("name");
-        String color = oj.getString("color");
-        HashMap<String, String> hm = new HashMap<String, String>();
-        hm.put(name, color);
-        data.add(hm);
-      }
-    } catch (Exception e) {
-      System.out.println(e.toString());
-    } finally {
-      if (conn != null) {
-        conn.disconnect();
-      }
-    }
-    return data;
-  }
-
+  /**
+   * Get the jenkins job status color
+   * 
+   * @param username         Jenkins root user name
+   * @param password         Jenkins root password
+   * @param jobUrl           Jenkins job url
+   * @return job status color
+   */
   public String getJobJsonColor(String username, String password, String jobUrl) {
     String color = null;
     HttpURLConnection conn = null;
@@ -338,7 +362,6 @@ public class JenkinsApi {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // �إ߳s�u
 
       URL url = new URL(jobUrl);
       conn = (HttpURLConnection) url.openConnection();
@@ -352,7 +375,7 @@ public class JenkinsApi {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // Ū�����
+
       BufferedReader reader = new BufferedReader(
           new InputStreamReader(conn.getInputStream(), "UTF-8"));
       String jsonString1 = reader.readLine();
@@ -363,7 +386,7 @@ public class JenkinsApi {
       color = j1.getString("color");
 
     } catch (Exception e) {
-
+      System.out.println("Jenkins get job status color error : " + e.getStackTrace());
     } finally {
       if (conn != null) {
         conn.disconnect();
@@ -372,39 +395,33 @@ public class JenkinsApi {
     return color;
   }
 
-  public String getJobColor(ArrayList<HashMap<String, String>> jobJson, String userName,
-      String proName) {
-    String color = null;
-    int i = 0;
-    for (HashMap<String, String> map : jobJson) {
-      for (String key : map.keySet()) {
-        if (key.equals(userName + "_" + proName)) {
-          color = jobJson.get(i).get(key);
-          break;
-        }
-        i++;
-      }
-      if (color != null) {
-        break;
-      }
-    }
-    return color;
-  }
-
-  public void buildJob(String Pname, String jenkinsCrumb) {
+  /**
+   * Jenkins build the job
+   * 
+   * @param proName            Jenkins job name
+   * @param jenkinsCrumb       Jenkins crumb
+   * @throws IOException on gitlab getuser call error
+   */
+  public void buildJob(String proName, String jenkinsCrumb) throws IOException {
 
     String jobName = null;
     List<GitlabUser> users = conn.getUsers();
     for (GitlabUser user : users) {
-      jobName = user.getUsername() + "_" + Pname;
+      jobName = user.getUsername() + "_" + proName;
       postBuildJob(jobName, jenkinsCrumb);
     }
   }
 
+  /**
+   * Httppost to build jenkins job
+   * 
+   * @param jobName                 Jenkins job name
+   * @param jenkinsCrumb            Jenkins crumb
+   */
   public void postBuildJob(String jobName, String jenkinsCrumb) {
     HttpClient client = new DefaultHttpClient();
 
-    String url = jenkinsData.getHostUrl() + "/job/" + jobName + "/build";
+    String url = jenkinsRootUrl + "/job/" + jobName + "/build";
     try {
       HttpPost post = new HttpPost(url);
 
@@ -412,20 +429,18 @@ public class JenkinsApi {
       post.addHeader("Jenkins-Crumb", jenkinsCrumb);
 
       List<NameValuePair> params = new ArrayList<NameValuePair>();
-      params.add((NameValuePair) new BasicNameValuePair("token", jenkinsData.getApiToken()));
+      params.add((NameValuePair) new BasicNameValuePair("token", jenkinsApiToken));
 
       UrlEncodedFormEntity ent = null;
       ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
       post.setEntity(ent);
 
-      HttpResponse responsePOST = client.execute(post);
-      HttpEntity resEntity = responsePOST.getEntity();
+      HttpResponse response = client.execute(post);
+      HttpEntity resEntity = response.getEntity();
 
       if (resEntity != null) {
         String result = resEntity.toString();
-        System.out.println(jobName + " : abc : " + result);
-      } else {
-
+        System.out.println("httppost build " + jobName + " , result : " + result);
       }
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
@@ -436,6 +451,12 @@ public class JenkinsApi {
     }
   }
 
+  /**
+   * Get the job color file path
+   * 
+   * @param color          Jenkins job status color
+   * @return picture file path
+   */
   public String getColorPic(String color) {
     String colorPic = null;
     if (color.equals("blue")) {
@@ -448,6 +469,11 @@ public class JenkinsApi {
     return colorPic;
   }
 
+  /**
+   * Get a list of Jenkins jobs
+   * 
+   * @return list
+   */
   public List<String> getJobNameList() {
     String jobUrl = "http://140.134.26.71:38080/api/json";
     String username = "GJen";
@@ -458,7 +484,7 @@ public class JenkinsApi {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // �إ߳s�u
+      // 嚙諍立連嚙線
 
       URL url = new URL(jobUrl);
       conn = (HttpURLConnection) url.openConnection();
@@ -472,7 +498,7 @@ public class JenkinsApi {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // Ū�����
+      // 讀嚙踝蕭嚙踝蕭嚙�
       BufferedReader reader = new BufferedReader(
           new InputStreamReader(conn.getInputStream(), "UTF-8"));
       String jsonString1 = reader.readLine();
@@ -496,6 +522,11 @@ public class JenkinsApi {
     return jobNames;
   }
 
+  /**
+   * Delete the jenkins job
+   * 
+   * @param jobName          Jenkins job name
+   */
   public void deleteJob(String jobName) {
     HttpClient client = new DefaultHttpClient();
 
@@ -507,15 +538,13 @@ public class JenkinsApi {
       post.addHeader("Content-Type", "application/x-www-form-urlencoded");
       post.addHeader("Jenkins-Crumb", "e390d46093102dac6c0ec903b77af0a0");
 
-      HttpResponse responsePOST = client.execute(post);
-      HttpEntity resEntity = responsePOST.getEntity();
+      HttpResponse response = client.execute(post);
+      HttpEntity resEntity = response.getEntity();
 
       if (resEntity != null) {
-        String result = EntityUtils.toString(responsePOST.getEntity());
+        String result = EntityUtils.toString(response.getEntity());
         String result2 = resEntity.toString();
         System.out.println(jobName + " : " + result2);
-      } else {
-
       }
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
