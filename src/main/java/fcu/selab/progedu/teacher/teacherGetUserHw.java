@@ -10,13 +10,13 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import fcu.selab.progedu.data.GitlabData;
+import fcu.selab.progedu.config.GitlabConfig;
 
 public class teacherGetUserHw {
 
-  GitlabData gitData = new GitlabData();
+  GitlabConfig gitData = GitlabConfig.getInstance();
 
-  private String hostUrl = gitData.getHostUrl();
+  private String hostUrl = gitData.getGitlabHostUrl();
 
   public int httpGetProjectEvent(String strUrl) {
     HttpURLConnection conn = null;
@@ -37,8 +37,7 @@ public class teacherGetUserHw {
         throw new InterruptedException();
       }
       // Åªï¿½ï¿½ï¿½ï¿½ï¿?
-      BufferedReader reader = new BufferedReader(
-          new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
       String jsonString1 = reader.readLine();
       reader.close();
 
@@ -82,8 +81,7 @@ public class teacherGetUserHw {
         throw new InterruptedException();
       }
       // Åªï¿½ï¿½ï¿½ï¿½ï¿?
-      BufferedReader reader = new BufferedReader(
-          new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
       String jsonString1 = reader.readLine();
       reader.close();
 
@@ -123,8 +121,7 @@ public class teacherGetUserHw {
         throw new InterruptedException();
       }
       // Åªï¿½ï¿½ï¿½ï¿½ï¿?
-      BufferedReader reader = new BufferedReader(
-          new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
       String jsonString1 = reader.readLine();
       reader.close();
 
@@ -165,8 +162,7 @@ public class teacherGetUserHw {
         throw new InterruptedException();
       }
       // Åªï¿½ï¿½ï¿½ï¿½ï¿?
-      BufferedReader reader = new BufferedReader(
-          new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
       String jsonString1 = reader.readLine();
       reader.close();
 

@@ -20,17 +20,24 @@ import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.conn.Conn;
-import fcu.selab.progedu.data.CourseData;
 import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 @Path("user/")
 public class UserService {
 
   Conn userConn = Conn.getInstance();
 
-  CourseData course = new CourseData();
+  CourseConfig course = CourseConfig.getInstance();
 
+  /**
+   * 
+   * @param uploadedInputStream
+   * @param fileDetail
+   * @return
+   */
   @POST
   @Path("upload")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -42,9 +49,9 @@ public class UserService {
 
     String uploadDir = tempDir + "uploads\\";
 
-    File fUploadDir = new File(uploadDir);
-    if (!fUploadDir.exists()) {
-      fUploadDir.mkdirs();
+    File fileUploadDir = new File(uploadDir);
+    if (!fileUploadDir.exists()) {
+      fileUploadDir.mkdirs();
     }
     String fileName = fileDetail.getFileName();
     String uploadedFileLocation = uploadDir + fileName;
@@ -94,60 +101,103 @@ public class UserService {
     if (!isSave) {
       response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
     }
-    // String output = "File successfully uploaded to : " + uploadedFileLocation;
-    // System.out.println(StringUtils.substringAfterLast(fileDetail.getFileName(), ":"));
-    // java.net.URI location = new java.net.URI("../teacherHW.jsp");
-    // return Response.temporaryRedirect(location).build();
     return response;
   }
 
+  /**
+   * 
+   * @param data
+   */
   public void register(List<String> data) {
     List<User> lsStudent = new ArrayList<User>();
     for (String lsData : data) {
       String[] row = lsData.split(",");
-      String password = row[0];
-      String userName = row[0];
-      String fullName = row[1];
-      String ID = row[0];
+      String password;
+      password = row[0];
+
+      String userName;
+      userName = row[0];
+
+      String fullName;
+      fullName = row[1];
+
+      String id;
+      id = row[0];
+
       String email = "";
 
-      if (row[0].equalsIgnoreCase("studentid"))
+      if (row[0].equalsIgnoreCase("studentid")) {
         continue;
+      }
 
-      if (row.length >= 3)
+      if (row.length >= 3) {
         email = row[2];
-      else
-        email = row[0] + course.getSchoolEmail();
+      } else {
+        try {
+          email = row[0] + course.getSchoolEmail();
+        } catch (LoadConfigFailureException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+      }
 
       User student = new User();
-      student.setID(ID);
+      student.setId(id);
       student.setUserName(userName);
       student.setPassword(password);
       student.setEmail(email);
       student.setName(fullName);
       lsStudent.add(student);
 
-      if (userConn.createUser(email, password, userName, fullName))
-        System.out.println("register " + row[1] + " success!");
+      try {
+        if (userConn.createUser(email, password, userName, fullName)) {
+          System.out.println("register " + row[1] + " success!");
+        }
+      } catch (LoadConfigFailureException | IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
     }
     printStudent(lsStudent);
   }
 
+  /**
+   * Print user information
+   * 
+   * @param student
+   *          user
+   */
   public void printStudent(List<User> student) {
-    String ID = "", userName = "", password = "", email = "", name = "";
+    String id = "";
+    String userName = "";
+    String password = "";
+    String email = "";
+    String name = "";
     for (User user : student) {
-      ID = user.getID();
+      id = user.getId();
       userName = user.getUserName();
       password = user.getPassword();
       email = user.getEmail();
       name = user.getName();
 
-      System.out.println("ID: " + ID + ", userName: " + userName + ", password: " + password
-          + ", email: " + email + ", name: " + name);
+      System.out.println("ID: " + id + ", userName: " + userName + ", password: " + password + ", email: " + email
+          + ", name: " + name);
     }
   }
 
+  /**
+   * Get all user on GitLab
+   * 
+   * @return all GitLab users
+   */
   public List<GitlabUser> getUsers() {
-    return userConn.getUsers();
+    List<GitlabUser> users = new ArrayList<GitlabUser>();
+    try {
+      users = userConn.getUsers();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return users;
   }
 }
