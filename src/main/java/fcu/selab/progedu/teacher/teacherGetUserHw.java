@@ -1,4 +1,4 @@
-package teacher;
+package fcu.selab.progedu.teacher;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -10,7 +10,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import data.GitlabData;
+import fcu.selab.progedu.data.GitlabData;
 
 public class teacherGetUserHw {
 
@@ -36,7 +36,7 @@ public class teacherGetUserHw {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // Ū�����
+      // Ū�����?
       BufferedReader reader = new BufferedReader(
           new InputStreamReader(conn.getInputStream(), "UTF-8"));
       String jsonString1 = reader.readLine();
@@ -81,7 +81,7 @@ public class teacherGetUserHw {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // Ū�����
+      // Ū�����?
       BufferedReader reader = new BufferedReader(
           new InputStreamReader(conn.getInputStream(), "UTF-8"));
       String jsonString1 = reader.readLine();
@@ -122,7 +122,7 @@ public class teacherGetUserHw {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // Ū�����
+      // Ū�����?
       BufferedReader reader = new BufferedReader(
           new InputStreamReader(conn.getInputStream(), "UTF-8"));
       String jsonString1 = reader.readLine();
@@ -164,7 +164,7 @@ public class teacherGetUserHw {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // Ū�����
+      // Ū�����?
       BufferedReader reader = new BufferedReader(
           new InputStreamReader(conn.getInputStream(), "UTF-8"));
       String jsonString1 = reader.readLine();

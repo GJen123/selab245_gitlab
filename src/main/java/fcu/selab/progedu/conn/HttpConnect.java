@@ -1,4 +1,4 @@
-package conn;
+package fcu.selab.progedu.conn;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -17,8 +17,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
-import db.UserDbManager;
 import fcu.selab.progedu.config.GitlabConfig;
+import fcu.selab.progedu.db.UserDbManager;
 
 public class HttpConnect {
 

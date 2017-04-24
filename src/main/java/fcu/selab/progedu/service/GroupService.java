@@ -1,4 +1,4 @@
-package service;
+package fcu.selab.progedu.service;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,8 +27,8 @@ import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import conn.Conn;
-import data.Group;
+import fcu.selab.progedu.conn.Conn;
+import fcu.selab.progedu.data.Group;
 
 @Path("group/")
 public class GroupService {
@@ -192,29 +192,59 @@ public class GroupService {
     return group.getId();
   }
 
+  /**
+   * Create group
+   * 
+   * @param group     Group in database
+   */
   public void createGroup(Group group) {
-    int groupId = -1, masterId = -1, developerId = -1;
+    int groupId = -1;
+    int masterId = -1;
+    int developerId = -1;
 
     groupId = newGroupId(newGroup(group.getGroupName()));
     masterId = findUser(group.getMaster());
-    userConn.addMember(groupId, masterId, 40);
+    try {
+      userConn.addMember(groupId, masterId, 40);
 
-    for (String developName : group.getContributor()) {
-      developerId = findUser(developName);
-      userConn.addMember(groupId, developerId, 30);
+      for (String developName : group.getContributor()) {
+        developerId = findUser(developName);
+        userConn.addMember(groupId, developerId, 30);
+      }
+    } catch (IOException e) {
+      e.getStackTrace();
     }
-    // }
   }
 
+  /**
+   * Find user by user name
+   * 
+   * @param userName       user name
+   * @return user id
+   */
   public int findUser(String userName) {
-    List<GitlabUser> users = userConn.getUsers();
-    for (GitlabUser user : users) {
-      if (user.getUsername().equals(userName))
-        return user.getId();
+    List<GitlabUser> users;
+    try {
+      users = userConn.getUsers();
+      for (GitlabUser user : users) {
+        if (user.getUsername().equals(userName)) {
+          return user.getId();
+        }
+      }
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
+    
     return -1;
   }
 
+  /**
+   * Export student list
+   * 
+   * @return response
+   * @throws Exception on file writer call error
+   */
   @GET
   @Path("export")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -224,15 +254,15 @@ public class GroupService {
 
     String downloadDir = tempDir + "downloads/";
 
-    File fUploadDir = new File(downloadDir);
-    if (!fUploadDir.exists()) {
-      fUploadDir.mkdirs();
+    File fileUploadDir = new File(downloadDir);
+    if (!fileUploadDir.exists()) {
+      fileUploadDir.mkdirs();
     }
 
     String filepath = downloadDir + "StdentList.csv";
 
-    File file = new File(filepath);
-    FileWriter writer = new FileWriter(filepath);
+    final File file = new File(filepath);
+    final FileWriter writer = new FileWriter(filepath);
     StringBuilder build = new StringBuilder();
 
     String[] csvTitle = { "Team", "TeamLeader", "Student_Id", "name" };
@@ -243,16 +273,18 @@ public class GroupService {
     // insert title into file
     for (int i = 0; i < csvTitle.length; i++) {
       build.append(csvTitle[i]);
-      if (i == csvTitle.length)
+      if (i == csvTitle.length) {
         break;
+      }
       build.append(",");
     }
     build.append("\n");
 
     // insert user's id and name into file
     for (GitlabUser user : lsUsers) {
-      if (user.getId() == 1)
+      if (user.getId() == 1) {
         continue;
+      }
       build.append(""); // Team
       build.append(",");
       build.append(""); // TeamLeader

@@ -1,4 +1,4 @@
-package data;
+package fcu.selab.progedu.data;
 
 import java.util.List;
 

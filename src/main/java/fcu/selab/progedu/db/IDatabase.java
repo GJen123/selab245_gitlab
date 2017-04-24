@@ -1,4 +1,4 @@
-package db;
+package fcu.selab.progedu.db;
 
 import java.sql.Connection;
 

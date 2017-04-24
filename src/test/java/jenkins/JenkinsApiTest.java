@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import fcu.selab.progedu.jenkins.JenkinsApi;
+
 
 
 public class JenkinsApiTest {

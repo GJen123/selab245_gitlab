@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import conn.HttpConnect;
 import fcu.selab.progedu.config.GitlabConfig;
+import fcu.selab.progedu.conn.HttpConnect;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 public class ZipHandler {

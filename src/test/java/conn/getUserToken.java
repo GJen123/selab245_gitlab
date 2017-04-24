@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.gitlab.api.models.*;
 
-import conn.Conn;
-import data.GitlabData;
+import fcu.selab.progedu.conn.Conn;
+import fcu.selab.progedu.data.GitlabData;
 
 public class getUserToken {
 	

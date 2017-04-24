@@ -1,4 +1,4 @@
-package service;
+package fcu.selab.progedu.service;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,9 +20,9 @@ import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import conn.Conn;
-import data.CourseData;
-import data.User;
+import fcu.selab.progedu.conn.Conn;
+import fcu.selab.progedu.data.CourseData;
+import fcu.selab.progedu.data.User;
 
 @Path("user/")
 public class UserService {

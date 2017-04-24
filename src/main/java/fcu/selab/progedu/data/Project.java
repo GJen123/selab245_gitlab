@@ -1,4 +1,4 @@
-package data;
+package fcu.selab.progedu.data;
 
 public class Project {
 

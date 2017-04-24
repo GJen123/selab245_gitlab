@@ -1,21 +1,21 @@
-package data;
+package fcu.selab.progedu.data;
 
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
 public class User implements Serializable {
 
-  private String id; // åš™è¤’è³‚è•­
+  private String id; // ??™è?’è?‚è•­
 
   private int gitLabId;
 
-  private String userName; // åš™ç·¯åš™çššåš™è¸è•­(åš™ç¨·åš™è¸è•­) åš™è¤’è³‚è•­
+  private String userName; // ??™ç·¯??™ç?šå?™è?è•­(??™ç¨·??™è?è•­) ??™è?’è?‚è•­
 
-  private String name; // åš™è¸è•­åš™è¸è•­åš™è¸è•­åš™ï¿½(åš™è¸è•­åš™è¸è•­)
+  private String name; // ??™è?è•­??™è?è•­??™è?è•­??™ï¿½(??™è?è•­??™è?è•­)
 
-  private String email; // åš™è¤’è³‚è•­@fcu.edu.tw
+  private String email; // ??™è?’è?‚è•­@fcu.edu.tw
 
-  private String password; // åš™è¤’è³‚è•­
+  private String password; // ??™è?’è?‚è•­
 
   private String privateToken;
 

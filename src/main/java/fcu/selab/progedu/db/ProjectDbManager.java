@@ -1,4 +1,4 @@
-package db;
+package fcu.selab.progedu.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.Project;
+import fcu.selab.progedu.data.Project;
 
 public class ProjectDbManager {
 

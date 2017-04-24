@@ -1,4 +1,4 @@
-package db;
+package fcu.selab.progedu.db;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.gitlab.api.models.GitlabUser;
 
-import data.User;
+import fcu.selab.progedu.data.User;
 
 public class UserDbManager {
 

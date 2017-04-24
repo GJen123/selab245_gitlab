@@ -1,4 +1,4 @@
-package conn;
+package fcu.selab.progedu.conn;
 
 import java.io.IOException;
 

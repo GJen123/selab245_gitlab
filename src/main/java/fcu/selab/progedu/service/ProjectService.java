@@ -1,4 +1,4 @@
-package service;
+package fcu.selab.progedu.service;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,38 +20,80 @@ import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import conn.Conn;
-import conn.HttpConnect;
-import data.GitlabData;
-import data.JenkinsData;
-import data.Project;
-import db.ProjectDBManager;
-import db.UserDBManager;
+import fcu.selab.progedu.config.GitlabConfig;
+import fcu.selab.progedu.config.JenkinsConfig;
+import fcu.selab.progedu.conn.Conn;
+import fcu.selab.progedu.conn.HttpConnect;
+import fcu.selab.progedu.data.Project;
+import fcu.selab.progedu.db.ProjectDbManager;
+import fcu.selab.progedu.db.UserDbManager;
+import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.utils.ZipHandler;
-import jenkins.JenkinsApi;
 
 @Path("project/")
 public class ProjectService {
 
-  private GitlabData gitData = new GitlabData();
-  private JenkinsData jenkinsData = new JenkinsData();
+  private GitlabConfig gitData = GitlabConfig.getInstance();
+  private JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
   private Conn userConn = Conn.getInstance();
-  private JenkinsApi jenkins = new JenkinsApi();
-  private ZipHandler unzip = new ZipHandler();
-  private GitlabUser root = userConn.getRoot();
+  private JenkinsApi jenkins;
+  private ZipHandler unzip;
+  private GitlabUser root;
   private HttpConnect httpConn = new HttpConnect();
-  private ProjectDBManager dbManager = ProjectDBManager.getInstance();
-  private UserDBManager UserDB = UserDBManager.getInstance();
-  private List<GitlabUser> users = userConn.getUsers();
+  private ProjectDbManager dbManager = ProjectDbManager.getInstance();
+  private UserDbManager userDb = UserDbManager.getInstance();
+  private List<GitlabUser> users;
+  private String jenkinsHostUrl;
+  private String jenkinsRootUsername;
+  private String jenkinsRootPassword;
 
   private static final String tempDir = System.getProperty("java.io.tmpdir");
 
+  /**
+   * Constructor
+   */
+  public ProjectService() {
+    try {
+      jenkins = JenkinsApi.getInstance();
+      unzip = new ZipHandler();
+      root = userConn.getRoot();
+      users = userConn.getUsers();
+      jenkinsHostUrl = jenkinsData.getJenkinsHostUrl();
+      jenkinsRootUsername = jenkinsData.getJenkinsRootUsername();
+      jenkinsRootPassword = jenkinsData.getJenkinsRootPassword();
+    } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * New a gitlab project and jenkins job
+   * 
+   * @param name
+   *          Project name
+   * @param readMe
+   *          Project readme
+   * @param fileType
+   *          File type
+   * @param uploadedInputStream
+   *          File upload input stream
+   * @param fileDetail
+   *          File detail
+   * @return response
+   */
   @POST
   @Path("create")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response NewProject(@FormDataParam("Hw_Name") String name,
-      @FormDataParam("Hw_README") String readMe, @FormDataParam("fileRadio") String fileType,
+  public Response newProject(
+      @FormDataParam("Hw_Name") String name,
+      @FormDataParam("Hw_README") String readMe,
+      @FormDataParam("fileRadio") String fileType,
       @FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
 
@@ -59,45 +101,41 @@ public class ProjectService {
     boolean isSave = true;
 
     try {
-      // ��create root project
+      // create root project
       userConn.createRootProject(name);
       Integer projectId = getNewProId(name);
-      String projectUrl = getNewProUrl(name);
+      final String projectUrl = getNewProUrl(name);
       String filePath = null;
       String folderName = null;
       StringBuilder sb = new StringBuilder();
 
-      // �p�G����ܽd�ҵ{��
+      // if file detail is not empty
       if (!fileDetail.getFileName().isEmpty()) {
         hasTemplate = true;
 
-        // ���o�ҿ�ܪ�.zip�ɮצW��
+        // get the folder name
         folderName = fileDetail.getFileName();
-        // �N�ɮצs��C://User/AppData/Temp/uploads/
+        // store to C://User/AppData/Temp/uploads/
         filePath = storeFileToTemp(fileDetail.getFileName(), uploadedInputStream);
-      } else { // �S����ܽd�ҵ{��
+      } else { // if file detail is empty
         filePath = this.getClass().getResource("MvnQuickStart.zip").getFile();
         folderName = "MvnQuickStart.zip";
       }
       unzipFile(filePath, projectId, folderName);
-      // config_javac.xml �̻ݭn��command line
+      // config_javac.xml command line
       sb = unzip.getStringBuilder();
 
       if (!readMe.equals("<br>")) {
-        String readmeUrl = gitData.getHostUrl() + "/api/v3/projects/" + projectId
-            + "/repository/files?private_token=" + gitData.getApiToken();
+        String readmeUrl = gitData.getGitlabHostUrl() + "/api/v3/projects/" + projectId
+            + "/repository/files?private_token=" + gitData.getGitlabApiToken();
         httpConn.httpPostReadme(readmeUrl, readMe);
       }
 
-      // create �C�Ӿǥͪ�project
-      System.out.println("projectId : " + projectId);
-      forkProjectFromRoot(projectId);
-      // userConn.createPrivateProject(name, projectId);
+      // create student project
+      userConn.createPrivateProject(name, projectUrl);
 
       // ---jenkins create job---
-      String jenkinsUrl = "http://" + jenkinsData.getUrl();
-      String jenkinsCrumb = jenkins.getCrumb(jenkinsData.getUserName(), jenkinsData.getPassWord(),
-          jenkinsUrl);
+      String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername, jenkinsRootPassword);
       jenkins.createRootJob(name, jenkinsCrumb, fileType, sb);
       jenkins.createJenkinsJob(name, jenkinsCrumb, fileType, sb);
       jenkins.buildJob(name, jenkinsCrumb);
@@ -118,6 +156,16 @@ public class ProjectService {
     return response;
   }
 
+  /**
+   * Unzip the file
+   * 
+   * @param filePath
+   *          File path
+   * @param projectId
+   *          Project id
+   * @param folderName
+   *          Folder name
+   */
   public void unzipFile(String filePath, int projectId, String folderName) {
     try {
       // unzip file
@@ -127,12 +175,24 @@ public class ProjectService {
     }
   }
 
-  public void addProject(String name, String description, String type, boolean hasTemplate) {
+  /**
+   * Add a project to database
+   * 
+   * @param name
+   *          Project name
+   * @param readMe
+   *          Project readme
+   * @param fileType
+   *          File type
+   * @param hasTemplate
+   *          Has template
+   */
+  public void addProject(String name, String readMe, String fileType, boolean hasTemplate) {
     Project project = new Project();
 
     project.setName(name);
-    project.setDescription(description);
-    project.setType(type);
+    project.setDescription(readMe);
+    project.setType(fileType);
     project.setHasTemplate(hasTemplate);
 
     dbManager.addProject(project);
@@ -214,13 +274,5 @@ public class ProjectService {
       }
     }
     return url;
-  }
-
-  private void forkProjectFromRoot(int forkedIdFromRoot) {
-    for (GitlabUser user : users) {
-      String userName = user.getUsername();
-      String userPrivateToken = UserDB.getUser(userName).getPrivateToken();
-      httpConn.httpPostForkProject(userPrivateToken, forkedIdFromRoot);
-    }
   }
 }

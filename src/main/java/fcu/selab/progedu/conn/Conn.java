@@ -1,4 +1,4 @@
-package conn;
+package fcu.selab.progedu.conn;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,9 +15,9 @@ import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabSession;
 import org.gitlab.api.models.GitlabUser;
 
-import data.User;
-import db.UserDbManager;
 import fcu.selab.progedu.config.GitlabConfig;
+import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 public class Conn {

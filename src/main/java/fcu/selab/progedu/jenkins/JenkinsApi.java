@@ -1,4 +1,4 @@
-package jenkins;
+package fcu.selab.progedu.jenkins;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,7 +10,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -43,18 +42,19 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import conn.Conn;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
+import fcu.selab.progedu.conn.Conn;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import sun.misc.BASE64Encoder;
 
 public class JenkinsApi {
+  private static JenkinsApi INSTANCE;
 
   private Conn conn = Conn.getInstance();
 
   GitlabConfig gitData = GitlabConfig.getInstance();
-  
+
   private String gitlabHostUrl;
   private String gitlabUsername;
   private String gitlabPassword;
@@ -65,12 +65,15 @@ public class JenkinsApi {
   private String jenkinsRootUsername;
   private String jenkinsRootPassword;
   private String jenkinsApiToken;
-  
+
   /**
    * constructor
-   * @throws LoadConfigFailureException on properties call error
+   * 
+   * @throws LoadConfigFailureException
+   *           on properties call error
    */
   public JenkinsApi() throws LoadConfigFailureException {
+    INSTANCE = new JenkinsApi();
     gitlabHostUrl = gitData.getGitlabHostUrl();
     gitlabUsername = gitData.getGitlabRootUsername();
     gitlabPassword = gitData.getGitlabRootPassword();
@@ -79,16 +82,25 @@ public class JenkinsApi {
     jenkinsRootPassword = jenkinsData.getJenkinsRootPassword();
     jenkinsApiToken = jenkinsData.getJenkinsApiToken();
   }
-  
+
+  public static JenkinsApi getInstance() {
+    return INSTANCE;
+  }
+
   /**
    * Create gitlab root job on jenkins
-   * @param proName                 The project name
-   * @param jenkinsCrumb          The jenkins crumb
-   * @param fileType              The file type
-   * @param sb                    The config build job command
+   * 
+   * @param proName
+   *          The project name
+   * @param jenkinsCrumb
+   *          The jenkins crumb
+   * @param fileType
+   *          The file type
+   * @param sb
+   *          The config build job command
    */
-  public void createRootJob(String proName, String jenkinsCrumb, 
-                            String fileType, StringBuilder sb) {
+  public void createRootJob(String proName, String jenkinsCrumb,
+      String fileType, StringBuilder sb) {
 
     // ---Create Jenkins Job---
     String jobName = "root_" + proName;
@@ -101,26 +113,32 @@ public class JenkinsApi {
   /**
    * Create all user jenkins job
    * 
-   * @param proName             Project name
-   * @param jenkinsCrumb        Jenkins crumb
-   * @param fileType            File type
-   * @param sb                  The config build job command
-   * @throws LoadConfigFailureException on properties call error
-   * @throws IOException on gitlab getuser call error
+   * @param proName
+   *          Project name
+   * @param jenkinsCrumb
+   *          Jenkins crumb
+   * @param fileType
+   *          File type
+   * @param sb
+   *          The config build job command
+   * @throws LoadConfigFailureException
+   *           on properties call error
+   * @throws IOException
+   *           on gitlab getuser call error
    */
-  public void createJenkinsJob(String proName, String jenkinsCrumb, String fileType,
-      StringBuilder sb) throws LoadConfigFailureException, IOException {
+  public void createJenkinsJob(String proName, String jenkinsCrumb,
+      String fileType, StringBuilder sb) throws LoadConfigFailureException, IOException {
     List<GitlabUser> users = conn.getUsers();
     for (GitlabUser user : users) {
       if (user.getId() == 1) {
         continue;
       }
-        
+
       // ---Create Jenkins Job---
       String jobName = user.getUsername() + "_" + proName;
       String strUrl = jenkinsRootUrl + "/createItem?name=" + jobName;
-      String proUrl = gitData.getGitlabHostUrl() + "/" + user.getUsername() + "/" + proName 
-                      + ".git";
+      String proUrl = gitData.getGitlabHostUrl() + "/"
+          + user.getUsername() + "/" + proName + ".git";
       postCreateJob(jobName, proUrl, jenkinsCrumb, fileType, sb);
       // ------------------------
     }
@@ -129,14 +147,19 @@ public class JenkinsApi {
   /**
    * Httppost to create jenkins job
    * 
-   * @param jobName           Jenkins job name
-   * @param proUrl            Gitlab project url
-   * @param jenkinsCrumb      Jenkins crumb
-   * @param fileType          File type
-   * @param sb                The config build job command
+   * @param jobName
+   *          Jenkins job name
+   * @param proUrl
+   *          Gitlab project url
+   * @param jenkinsCrumb
+   *          Jenkins crumb
+   * @param fileType
+   *          File type
+   * @param sb
+   *          The config build job command
    */
-  public void postCreateJob(String jobName, String proUrl, String jenkinsCrumb, 
-                            String fileType, StringBuilder sb) {
+  public void postCreateJob(String jobName, String proUrl, String jenkinsCrumb,
+      String fileType, StringBuilder sb) {
     HttpClient client = new DefaultHttpClient();
 
     String url = jenkinsRootUrl + "/createItem?name=" + jobName;
@@ -147,7 +170,7 @@ public class JenkinsApi {
       post.addHeader("Jenkins-Crumb", jenkinsCrumb);
       // post.addHeader("Jenkins-Crumb", "e390d46093102dac6c0ec903b77af0a0");
       String filePath = null;
-      // 嚙豌改蕭config.xml嚙諒迎蕭url
+      // ??��?�改?��config.xml??��?��?�蕭url
       if (fileType != null) {
         if (fileType.equals("Maven")) {
           filePath = this.getClass().getResource("config_maven.xml").getFile();
@@ -165,7 +188,7 @@ public class JenkinsApi {
         modifyXmlFileCommand(filePath, sb);
       }
 
-      // 讀config.xml
+      // �?config.xml
 
       StringBuilder sbConfig = getConfig(filePath);
       StringEntity se = new StringEntity(sbConfig.toString(),
@@ -191,8 +214,11 @@ public class JenkinsApi {
 
   /**
    * Get the jenkins crumb
-   * @param username              Jenkins root user name
-   * @param password              Jenkins root password             
+   * 
+   * @param username
+   *          Jenkins root user name
+   * @param password
+   *          Jenkins root password
    * @return jenkins crumb
    */
   public String getCrumb(String username, String password) {
@@ -217,7 +243,7 @@ public class JenkinsApi {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      
+
       BufferedReader reader = new BufferedReader(
           new InputStreamReader(conn.getInputStream(), "UTF-8"));
       String jsonString = reader.readLine();
@@ -238,7 +264,8 @@ public class JenkinsApi {
   /**
    * Get the config file
    * 
-   * @param filePath       Config file path
+   * @param filePath
+   *          Config file path
    * @return config content
    */
   public StringBuilder getConfig(String filePath) {
@@ -270,8 +297,10 @@ public class JenkinsApi {
   /**
    * Change the config file's project url
    * 
-   * @param filePath         Config file path
-   * @param url              Project url
+   * @param filePath
+   *          Config file path
+   * @param url
+   *          Project url
    */
   public void modifyXmlFileUrl(String filePath, String url) {
     try {
@@ -310,8 +339,10 @@ public class JenkinsApi {
   /**
    * Change the config file command (Maven or Javac)
    * 
-   * @param filePath           Config file path
-   * @param sb                 Command string
+   * @param filePath
+   *          Config file path
+   * @param sb
+   *          Command string
    */
   public void modifyXmlFileCommand(String filePath, StringBuilder sb) {
     try {
@@ -350,9 +381,12 @@ public class JenkinsApi {
   /**
    * Get the jenkins job status color
    * 
-   * @param username         Jenkins root user name
-   * @param password         Jenkins root password
-   * @param jobUrl           Jenkins job url
+   * @param username
+   *          Jenkins root user name
+   * @param password
+   *          Jenkins root password
+   * @param jobUrl
+   *          Jenkins job url
    * @return job status color
    */
   public String getJobJsonColor(String username, String password, String jobUrl) {
@@ -398,9 +432,12 @@ public class JenkinsApi {
   /**
    * Jenkins build the job
    * 
-   * @param proName            Jenkins job name
-   * @param jenkinsCrumb       Jenkins crumb
-   * @throws IOException on gitlab getuser call error
+   * @param proName
+   *          Jenkins job name
+   * @param jenkinsCrumb
+   *          Jenkins crumb
+   * @throws IOException
+   *           on gitlab getuser call error
    */
   public void buildJob(String proName, String jenkinsCrumb) throws IOException {
 
@@ -415,8 +452,10 @@ public class JenkinsApi {
   /**
    * Httppost to build jenkins job
    * 
-   * @param jobName                 Jenkins job name
-   * @param jenkinsCrumb            Jenkins crumb
+   * @param jobName
+   *          Jenkins job name
+   * @param jenkinsCrumb
+   *          Jenkins crumb
    */
   public void postBuildJob(String jobName, String jenkinsCrumb) {
     HttpClient client = new DefaultHttpClient();
@@ -454,7 +493,8 @@ public class JenkinsApi {
   /**
    * Get the job color file path
    * 
-   * @param color          Jenkins job status color
+   * @param color
+   *          Jenkins job status color
    * @return picture file path
    */
   public String getColorPic(String color) {
@@ -484,7 +524,7 @@ public class JenkinsApi {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // 嚙諍立連嚙線
+      // ??��?��?��????��??
 
       URL url = new URL(jobUrl);
       conn = (HttpURLConnection) url.openConnection();
@@ -498,7 +538,7 @@ public class JenkinsApi {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // 讀嚙踝蕭嚙踝蕭嚙�
+      // �???��?�蕭??��?�蕭??��
       BufferedReader reader = new BufferedReader(
           new InputStreamReader(conn.getInputStream(), "UTF-8"));
       String jsonString1 = reader.readLine();
@@ -525,13 +565,13 @@ public class JenkinsApi {
   /**
    * Delete the jenkins job
    * 
-   * @param jobName          Jenkins job name
+   * @param jobName
+   *          Jenkins job name
    */
   public void deleteJob(String jobName) {
     HttpClient client = new DefaultHttpClient();
 
-    String url = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/job/" + jobName
-        + "/doDelete";
+    String url = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/job/" + jobName + "/doDelete";
     try {
       HttpPost post = new HttpPost(url);
 
