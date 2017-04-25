@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="utf-8"%>
-<%@ page import="conn.Conn,conn.HttpConnect,conn.Language,fcu.selab.progedu.config.GitlabConfig"%>
+<%@ page import=" fcu.selab.progedu.conn.Conn, fcu.selab.progedu.conn.HttpConnect"%>
+<%@ page import="fcu.selab.progedu.conn.Language,fcu.selab.progedu.config.GitlabConfig" %>
 <%@ page import="java.util.List" %>
 <%@ page import="org.gitlab.api.models.*" %>
 <%@ page import="java.util.ArrayList" %>

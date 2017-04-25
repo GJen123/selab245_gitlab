@@ -1,8 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="BIG5"%>
-<%@ page import="conn.Conn,conn.StudentConn,conn.HttpConnect,fcu.selab.progedu.config.GitlabConfig,data.CourseData"%>
-<%@ page import="java.util.ArrayList"
-	import="org.gitlab.api.GitlabAPI" import="org.gitlab.api.models.*"%>
+<%@ page import="fcu.selab.progedu.conn.Conn, fcu.selab.progedu.conn.StudentConn, fcu.selab.progedu.conn.HttpConnect"%>
+<%@ page import="fcu.selab.progedu.config.GitlabConfig,fcu.selab.progedu.config.CourseConfig" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="org.gitlab.api.GitlabAPI" %>
+<%@ page import="org.gitlab.api.models.*"%>
 <%@ page import="java.util.*" %>
 <%@ include file="language.jsp" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -25,7 +27,7 @@
 
 	<%
 		GitlabConfig gitData = GitlabConfig.getInstance();
-		CourseData courseData = new CourseData();
+		CourseConfig courseData = CourseConfig.getInstance();
 	
 		String private_token = session.getAttribute("private_token").toString();
 		StudentConn sConn = new StudentConn(private_token); 

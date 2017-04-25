@@ -1,12 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="utf-8"%>
-<%@ page import="conn.Conn,conn.Language"%>
-<%@ page import="conn.HttpConnect" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="org.gitlab.api.GitlabAPI" %>
-<%@ page import="org.gitlab.api.models.*" %>
-<%@ page import="java.util.Locale" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%

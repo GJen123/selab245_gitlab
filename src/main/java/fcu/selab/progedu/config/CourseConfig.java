@@ -38,7 +38,8 @@ public class CourseConfig {
     if (props != null) {
       return props.getProperty("COURSE_NAME");
     }
-    throw new LoadConfigFailureException("Unable to get config of COURSE connection string from file;" + PROPERTY_FILE);
+    String exception = "Unable to get config of COURSE connection string from file;";
+    throw new LoadConfigFailureException(exception + PROPERTY_FILE);
   }
 
   /**
@@ -52,6 +53,7 @@ public class CourseConfig {
     if (props != null) {
       return props.getProperty("COURSE_SCHOOL_EMAIL");
     }
-    throw new LoadConfigFailureException("Unable to get config of COURSE connection string from file;" + PROPERTY_FILE);
+    String exception = "Unable to get config of COURSE connection string from file;";
+    throw new LoadConfigFailureException(exception + PROPERTY_FILE);
   }
 }

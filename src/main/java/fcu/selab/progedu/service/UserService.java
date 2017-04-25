@@ -33,10 +33,13 @@ public class UserService {
   CourseConfig course = CourseConfig.getInstance();
 
   /**
+   * Upload a csv file for student batch registration
    * 
    * @param uploadedInputStream
+   *          file of student list
    * @param fileDetail
-   * @return
+   *          file information
+   * @return Response
    */
   @POST
   @Path("upload")
@@ -105,8 +108,10 @@ public class UserService {
   }
 
   /**
+   * Translate uploaded file content to string and parse to register
    * 
    * @param data
+   *          file content to string
    */
   public void register(List<String> data) {
     List<User> lsStudent = new ArrayList<User>();
@@ -180,8 +185,8 @@ public class UserService {
       email = user.getEmail();
       name = user.getName();
 
-      System.out.println("ID: " + id + ", userName: " + userName + ", password: " + password + ", email: " + email
-          + ", name: " + name);
+      System.out.println("ID: " + id + ", userName: " + userName + ", password: " + password
+          + ", email: " + email + ", name: " + name);
     }
   }
 

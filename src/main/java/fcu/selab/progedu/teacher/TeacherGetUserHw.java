@@ -11,16 +11,35 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fcu.selab.progedu.config.GitlabConfig;
+import fcu.selab.progedu.exception.LoadConfigFailureException;
 
-public class teacherGetUserHw {
+public class TeacherGetUserHw {
 
   GitlabConfig gitData = GitlabConfig.getInstance();
 
-  private String hostUrl = gitData.getGitlabHostUrl();
+  private String hostUrl;
 
+  private String getGlilabUrl() {
+    try {
+      hostUrl = gitData.getGitlabHostUrl();
+    } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    return hostUrl;
+  }
+
+  /**
+   * Use http connect to get project event
+   * 
+   * @param strUrl
+   *          project url
+   * @return event number
+   */
   public int httpGetProjectEvent(String strUrl) {
     HttpURLConnection conn = null;
-    int total_count = 0;
+    int totalCount = 0;
     try {
       if (Thread.interrupted()) {
         throw new InterruptedException();
@@ -37,40 +56,48 @@ public class teacherGetUserHw {
         throw new InterruptedException();
       }
       // Ū�����?
-      BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      InputStreamReader isr = new InputStreamReader(conn.getInputStream(), "UTF-8");
+      BufferedReader reader = new BufferedReader(isr);
       String jsonString1 = reader.readLine();
       reader.close();
 
       JSONArray ja = new JSONArray(jsonString1);
-      int JSONArrayLength = ja.length();
+      int jsonArrayLength = ja.length();
 
-      for (int i = 0; i < JSONArrayLength; i++) {
+      for (int i = 0; i < jsonArrayLength; i++) {
         JSONObject oj = ja.getJSONObject(i);
         JSONObject ojData = oj.getJSONObject("data");
-        int total_commit_count = ojData.getInt("total_commits_count");
-        if (total_commit_count == 1) {
-          total_count++;
+        int totalCommitCount = ojData.getInt("total_commits_count");
+        if (totalCommitCount == 1) {
+          totalCount++;
         }
       }
     } catch (Exception e) {
-
+      e.printStackTrace();
     } finally {
       if (conn != null) {
         conn.disconnect();
       }
     }
-    return total_count;
+    return totalCount;
   }
 
-  public List<String> httpGetStudentOwnedProjectName(String private_token) {
+  /**
+   * Use http connect to get all project name owned by student
+   * 
+   * @param privateToken
+   *          suer's private token
+   * @return lits of all project name
+   */
+  public List<String> httpGetStudentOwnedProjectName(String privateToken) {
     HttpURLConnection conn = null;
-    List<String> projects_Name = new ArrayList<String>();
+    List<String> projectsName = new ArrayList<String>();
     try {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
       // �إ߳s�u
-      String strurl = hostUrl + "/api/v3/projects/owned?private_token=" + private_token;
+      String strurl = getGlilabUrl() + "/api/v3/projects/owned?private_token=" + privateToken;
       URL url = new URL(strurl);
       conn = (HttpURLConnection) url.openConnection();
       conn.setReadTimeout(10000);
@@ -81,16 +108,17 @@ public class teacherGetUserHw {
         throw new InterruptedException();
       }
       // Ū�����?
-      BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      InputStreamReader isr = new InputStreamReader(conn.getInputStream(), "UTF-8");
+      BufferedReader reader = new BufferedReader(isr);
       String jsonString1 = reader.readLine();
       reader.close();
 
       JSONArray ja = new JSONArray(jsonString1);
-      int JSONArrayLength = ja.length();
-      for (int i = 0; i < JSONArrayLength; i++) {
+      int jsonArrayLength = ja.length();
+      for (int i = 0; i < jsonArrayLength; i++) {
         JSONObject jsonObject = ja.getJSONObject(i);
         String name = jsonObject.getString("name");
-        projects_Name.add(name);
+        projectsName.add(name);
       }
     } catch (Exception e) {
       System.out.println(e.toString());
@@ -99,18 +127,25 @@ public class teacherGetUserHw {
         conn.disconnect();
       }
     }
-    return projects_Name;
+    return projectsName;
   }
 
-  public List<String> httpGetStudentOwnedProjectUrl(String private_token) {
+  /**
+   * Use http connect to get all project url owned by student
+   * 
+   * @param privateToken
+   *          user's private token
+   * @return list of all project url
+   */
+  public List<String> httpGetStudentOwnedProjectUrl(String privateToken) {
     HttpURLConnection conn = null;
-    List<String> projects_Url = new ArrayList<String>();
+    List<String> projectsUrl = new ArrayList<String>();
     try {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
       // �إ߳s�u
-      String strurl = hostUrl + "/api/v3/projects/owned?private_token=" + private_token;
+      String strurl = getGlilabUrl() + "/api/v3/projects/owned?private_token=" + privateToken;
       URL url = new URL(strurl);
       conn = (HttpURLConnection) url.openConnection();
       conn.setReadTimeout(10000);
@@ -121,17 +156,18 @@ public class teacherGetUserHw {
         throw new InterruptedException();
       }
       // Ū�����?
-      BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      InputStreamReader isr = new InputStreamReader(conn.getInputStream(), "UTF-8");
+      BufferedReader reader = new BufferedReader(isr);
       String jsonString1 = reader.readLine();
       reader.close();
 
       JSONArray ja = new JSONArray(jsonString1);
-      int JSONArrayLength = ja.length();
-      for (int i = 0; i < JSONArrayLength; i++) {
+      int jsonArrayLength = ja.length();
+      for (int i = 0; i < jsonArrayLength; i++) {
         JSONObject jsonObject = ja.getJSONObject(i);
-        String web_url = jsonObject.getString("web_url");
-        web_url = web_url.replace("http://0912fe2b3e43", "http://140.134.26.71:20080");
-        projects_Url.add(web_url);
+        String webUrl = jsonObject.getString("web_url");
+        webUrl = webUrl.replace("http://0912fe2b3e43", "http://140.134.26.71:20080");
+        projectsUrl.add(webUrl);
       }
     } catch (Exception e) {
       System.out.println(e.toString());
@@ -140,18 +176,25 @@ public class teacherGetUserHw {
         conn.disconnect();
       }
     }
-    return projects_Url;
+    return projectsUrl;
   }
 
-  public List<Integer> httpGetStudentOwnedProjectId(String private_token) {
+  /**
+   * Use http connect to get all project owned by student
+   * 
+   * @param privateToken
+   *          user's private token
+   * @return list of all project id
+   */
+  public List<Integer> httpGetStudentOwnedProjectId(String privateToken) {
     HttpURLConnection conn = null;
-    List<Integer> projects_Id = new ArrayList<Integer>();
+    List<Integer> projectsId = new ArrayList<Integer>();
     try {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
       // �إ߳s�u
-      String strurl = hostUrl + "/api/v3/projects/owned?private_token=" + private_token;
+      String strurl = getGlilabUrl() + "/api/v3/projects/owned?private_token=" + privateToken;
       URL url = new URL(strurl);
       conn = (HttpURLConnection) url.openConnection();
       conn.setReadTimeout(10000);
@@ -162,16 +205,17 @@ public class teacherGetUserHw {
         throw new InterruptedException();
       }
       // Ū�����?
-      BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      InputStreamReader isr = new InputStreamReader(conn.getInputStream(), "UTF-8");
+      BufferedReader reader = new BufferedReader(isr);
       String jsonString1 = reader.readLine();
       reader.close();
 
       JSONArray ja = new JSONArray(jsonString1);
-      int JSONArrayLength = ja.length();
-      for (int i = 0; i < JSONArrayLength; i++) {
+      int jsonArrayLength = ja.length();
+      for (int i = 0; i < jsonArrayLength; i++) {
         JSONObject jsonObject = ja.getJSONObject(i);
         int id = jsonObject.getInt("id");
-        projects_Id.add(id);
+        projectsId.add(id);
       }
     } catch (Exception e) {
       System.out.println(e.toString());
@@ -180,6 +224,6 @@ public class teacherGetUserHw {
         conn.disconnect();
       }
     }
-    return projects_Id;
+    return projectsId;
   }
 }

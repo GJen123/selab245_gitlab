@@ -39,8 +39,10 @@ public class GroupService {
   /**
    * upload a csvfile to create group
    * 
-   * @param uploadedInputStream   file content
-   * @param fileDetail            file information
+   * @param uploadedInputStream
+   *          file content
+   * @param fileDetail
+   *          file information
    * @return Response
    */
   @POST
@@ -110,11 +112,12 @@ public class GroupService {
     // return Response.temporaryRedirect(location).build();
     return response;
   }
-  
+
   /**
    * parse csv file to create a group
    * 
-   * @param data group data
+   * @param data
+   *          group data
    */
   public void newGroup(List<String> data) {
     String groupName = "";
@@ -175,11 +178,12 @@ public class GroupService {
       }
     }
   }
-  
+
   /**
-   * create a group
+   * Use GitLab API to create GitlabGroup
    * 
-   * @param name  The group's name
+   * @param name
+   *          The group's name
    * @return GitLabGroup
    */
   public GitlabGroup newGroup(String name) {
@@ -188,14 +192,22 @@ public class GroupService {
     return group;
   }
 
+  /**
+   * Get new GitLab group id
+   * 
+   * @param group
+   *          group on GitLab
+   * @return id of GitLab group
+   */
   public int newGroupId(GitlabGroup group) {
     return group.getId();
   }
 
   /**
-   * Create group
+   * Create group in database
    * 
-   * @param group     Group in database
+   * @param group
+   *          Group in database
    */
   public void createGroup(Group group) {
     int groupId = -1;
@@ -219,7 +231,8 @@ public class GroupService {
   /**
    * Find user by user name
    * 
-   * @param userName       user name
+   * @param userName
+   *          user name
    * @return user id
    */
   public int findUser(String userName) {
@@ -235,7 +248,7 @@ public class GroupService {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    
+
     return -1;
   }
 
@@ -243,7 +256,8 @@ public class GroupService {
    * Export student list
    * 
    * @return response
-   * @throws Exception on file writer call error
+   * @throws Exception
+   *           on file writer call error
    */
   @GET
   @Path("export")
