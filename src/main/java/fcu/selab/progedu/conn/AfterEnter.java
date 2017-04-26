@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.gitlab.api.models.GitlabSession;
 
@@ -29,6 +30,8 @@ public class AfterEnter extends HttpServlet {
   private String language = null;
 
   private String privateToken = null;
+
+  boolean isEnter = true;
 
   /**
    * @see HttpServlet#HttpServlet()
@@ -55,13 +58,14 @@ public class AfterEnter extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     // TODO Auto-generated method stub
+    final HttpSession session = request.getSession();
     username = request.getParameter("username");
     password = request.getParameter("password");
     language = request.getParameter("language");
 
     privateToken = checkEnter(username, password);
 
-    sendRedirect(response, privateToken);
+    sendRedirect(response, session, privateToken);
   }
 
   /**
@@ -77,11 +81,13 @@ public class AfterEnter extends HttpServlet {
     String privateToken = null;
     GitlabSession gitSession = conn.getSession(username, password);
     if (gitSession != null) {
+      isEnter = true;
       privateToken = gitSession.getPrivateToken();
       System.out.println("token : " + gitSession.getPrivateToken());
     } else {
+      isEnter = false;
       privateToken = "Unauthorized";
-      System.out.println("token : " + "Unauthorized");
+      System.out.println("token : Unauthorized");
     }
     return privateToken;
   }
@@ -94,17 +100,20 @@ public class AfterEnter extends HttpServlet {
    * @param privateToken
    *          Check return private token
    */
-  public void sendRedirect(HttpServletResponse response, String privateToken) {
+  public void sendRedirect(HttpServletResponse response, HttpSession session, String privateToken) {
     try {
-      if (privateToken.equals(gitData.getGitlabApiToken())) {
-        System.out.println("Enter Teacher");
-        response.sendRedirect("dashboard.jsp");
-      } else if (privateToken.equals("Unauthorized")) {
-        System.out.println("Enter Unauthorized");
-        response.sendRedirect("index.jsp");
+      if (isEnter == true) {
+        if (privateToken.equals(gitData.getGitlabApiToken())) {
+          session.setAttribute("page", "dashboard.jsp");
+          response.sendRedirect("dashboard.jsp");
+        } else {
+          session.setAttribute("page", "studentDashboard.jsp");
+          session.setAttribute("private_token", privateToken);
+          response.sendRedirect("studentDashboard.jsp");
+        }
       } else {
-        System.out.println("Enter Student");
-        response.sendRedirect("studentDashboard.jsp");
+        session.setAttribute("enterError", "Enter Error");
+        response.sendRedirect("index.jsp");
       }
     } catch (LoadConfigFailureException e) {
       // TODO Auto-generated catch block

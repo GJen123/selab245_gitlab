@@ -32,6 +32,20 @@
 
 
 <title>ProgEdu Login</title>
+
+	<%
+	session.setMaxInactiveInterval(2);
+	%>
+	
+	 <script type="text/javascript">
+		var Msg ='<%=session.getAttribute("enterError")%>';
+		    if (Msg != "null") {
+			 function alertName(){
+			 	alert("Enter Error! Your username or password is incorrect");
+			 } 
+		 }
+	 </script> 
+	 <script type="text/javascript"> window.onload = alertName; </script>
 </head>
 <body>
 	
