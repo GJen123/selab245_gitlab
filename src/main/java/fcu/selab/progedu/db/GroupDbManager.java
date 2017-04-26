@@ -11,7 +11,7 @@ public class GroupDbManager {
 
   private static GroupDbManager DB_MANAGER = new GroupDbManager();
 
-  public static GroupDbManager getInstance() {
+  private static GroupDbManager getInstance() {
     return DB_MANAGER;
   }
 
@@ -26,11 +26,10 @@ public class GroupDbManager {
   /**
    * Insert group into database
    * 
-   * @param gname group's name
-   * @param userName student id
-   * @param isLeader whether student is team leader or not
+   * @param group
+   *          new group
    */
-  public void addGroup(String gname, String userName, boolean isLeader) {
+  public void addGroup(Group group) {
 
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
@@ -39,13 +38,9 @@ public class GroupDbManager {
     String query = "SELECT * FROM Team";
 
     try {
-      int sid = -1;
-      sid = udb.getUser(userName).getId();
-      preStmt = conn.prepareStatement(sql);
-      preStmt.setString(1, gname);
-      preStmt.setInt(2, sid);
-      preStmt.setBoolean(3, isLeader);
-      preStmt.executeQuery();
+      preStmt.setString(1, group.getGroupName());
+      int id;
+      id = udb.getUser(group.getMaster()).getId();
     } catch (SQLException e) {
       e.printStackTrace();
     } finally {
