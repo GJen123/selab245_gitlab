@@ -153,7 +153,7 @@ public class UserDbManager {
       ResultSet rs = stmt.executeQuery(sql);
       while (rs.next()) {
         int gitLabId = rs.getInt("gitLabId");
-        String stuId = rs.getString("stuId");
+        String stuId = rs.getString("userName");
         String name = rs.getString("name");
         String password = rs.getString("password");
         String email = rs.getString("email");
