@@ -29,12 +29,14 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import fcu.selab.progedu.conn.Conn;
 import fcu.selab.progedu.data.Group;
+import fcu.selab.progedu.db.GroupDbManager;
 
 @Path("group/")
 public class GroupService {
 
   Conn userConn = Conn.getInstance();
   UserService userService = new UserService();
+  GroupDbManager gdb = GroupDbManager.getInstance();
 
   /**
    * upload a csvfile to create group
@@ -204,7 +206,7 @@ public class GroupService {
   }
 
   /**
-   * Create group in database
+   * Add group member on gitlab
    * 
    * @param group
    *          Group in database
@@ -213,14 +215,17 @@ public class GroupService {
     int groupId = -1;
     int masterId = -1;
     int developerId = -1;
+    String gname = group.getGroupName();
 
-    groupId = newGroupId(newGroup(group.getGroupName()));
+    groupId = newGroupId(newGroup(gname));
     masterId = findUser(group.getMaster());
     userConn.addMember(groupId, masterId, 40);
+    gdb.addGroup(gname, group.getMaster(), true);
 
     for (String developName : group.getContributor()) {
       developerId = findUser(developName);
       userConn.addMember(groupId, developerId, 30);
+      gdb.addGroup(gname, developName, false);
     }
   }
 
