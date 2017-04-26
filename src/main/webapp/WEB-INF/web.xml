@@ -28,7 +28,7 @@
     <description></description>
     <display-name>AfterEnter</display-name>
     <servlet-name>AfterEnter</servlet-name>
-    <servlet-class>conn.AfterEnter</servlet-class>
+    <servlet-class>fcu.selab.progedu.conn.AfterEnter</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>AfterEnter</servlet-name>
@@ -38,7 +38,7 @@
     <description></description>
     <display-name>ChooseLanguage</display-name>
     <servlet-name>ChooseLanguage</servlet-name>
-    <servlet-class>conn.ChooseLanguage</servlet-class>
+    <servlet-class>fcu.selab.progedu.conn.ChooseLanguage</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>ChooseLanguage</servlet-name>

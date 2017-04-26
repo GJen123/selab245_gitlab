@@ -6,7 +6,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.gitlab.api.models.GitlabSession;
 
@@ -22,8 +21,6 @@ public class AfterEnter extends HttpServlet {
   GitlabConfig gitData = GitlabConfig.getInstance();
 
   private Conn conn = Conn.getInstance();
-  
-  private String gitlabUrl = null;
 
   private String username = null;
 
@@ -31,7 +28,7 @@ public class AfterEnter extends HttpServlet {
 
   private String language = null;
 
-  private EnterCheck check;
+  private String privateToken = null;
 
   /**
    * @see HttpServlet#HttpServlet()
@@ -42,7 +39,8 @@ public class AfterEnter extends HttpServlet {
   }
 
   /**
-   * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+   * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+   *      response)
    */
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
@@ -51,53 +49,67 @@ public class AfterEnter extends HttpServlet {
   }
 
   /**
-   * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+   * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+   *      response)
    */
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     // TODO Auto-generated method stub
-    try {
-      gitlabUrl = gitData.getGitlabHostUrl();
-    } catch (LoadConfigFailureException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     username = request.getParameter("username");
     password = request.getParameter("password");
     language = request.getParameter("language");
-    check = new EnterCheck();
+
+    privateToken = checkEnter(username, password);
+
+    sendRedirect(response, privateToken);
+  }
+
+  /**
+   * Check if username and password is correct
+   * 
+   * @param username
+   *          User name
+   * @param password
+   *          User password
+   * @return private token
+   */
+  public String checkEnter(String username, String password) {
+    String privateToken = null;
+    GitlabSession gitSession = conn.getSession(username, password);
+    if (gitSession != null) {
+      privateToken = gitSession.getPrivateToken();
+      System.out.println("token : " + gitSession.getPrivateToken());
+    } else {
+      privateToken = "Unauthorized";
+      System.out.println("token : " + "Unauthorized");
+    }
+    return privateToken;
+  }
+
+  /**
+   * After check, send redirect
+   * 
+   * @param response
+   *          HttpServletResponse
+   * @param privateToken
+   *          Check return private token
+   */
+  public void sendRedirect(HttpServletResponse response, String privateToken) {
     try {
-      if (check.httpPost(username, password) != null) {
-        String json = check.httpPost(username, password);
-        if (json.equals("Unauthorized")) {
-          response.sendRedirect("index.jsp");
-        } else {
-          String accessToken = check.analysisJson(json);
-          if (accessToken != null) {
-            HttpSession session = request.getSession();
-            if (username.equals("root")) {
-              response.sendRedirect("dashboard.jsp");
-              session.setAttribute("username", username);
-              session.setAttribute("password", password);
-              session.setAttribute("private_token", null);
-              session.setAttribute("language", language);
-              session.setAttribute("page", "dashboard.jsp");
-            } else {
-              GitlabSession gitSession = conn.getSession(username, password);
-              String privateToken = gitSession.getPrivateToken();
-              session.setAttribute("username", username);
-              session.setAttribute("password", password);
-              session.setAttribute("private_token", privateToken);
-              session.setAttribute("language", language);
-              session.setAttribute("page", "teacherHW");
-              response.sendRedirect("studentDashboard.jsp");
-            }
-          } else {
-            response.sendRedirect("index.jsp");
-          }
-        }
+      if (privateToken.equals(gitData.getGitlabApiToken())) {
+        System.out.println("Enter Teacher");
+        response.sendRedirect("dashboard.jsp");
+      } else if (privateToken.equals("Unauthorized")) {
+        System.out.println("Enter Unauthorized");
+        response.sendRedirect("index.jsp");
+      } else {
+        System.out.println("Enter Student");
+        response.sendRedirect("studentDashboard.jsp");
       }
     } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }

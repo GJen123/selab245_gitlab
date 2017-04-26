@@ -35,14 +35,12 @@
 	<title>ProgEdu</title>
 </head>
 <body>
-	<!-- 設定語言 -->
-	<fmt:setBundle basename = "<%=basename %>"/>
-	 
 	<%@ include file="header.jsp" %>
 	 
 	<%
 		Conn conn = Conn.getInstance();
 		GitlabConfig gitData = GitlabConfig.getInstance();
+		System.out.println("groups : " + conn.getGroups().get(0).getName());
 		List<GitlabGroup> groups = conn.getGroups();
 		
 		%>

@@ -216,15 +216,11 @@ public class GroupService {
 
     groupId = newGroupId(newGroup(group.getGroupName()));
     masterId = findUser(group.getMaster());
-    try {
-      userConn.addMember(groupId, masterId, 40);
+    userConn.addMember(groupId, masterId, 40);
 
-      for (String developName : group.getContributor()) {
-        developerId = findUser(developName);
-        userConn.addMember(groupId, developerId, 30);
-      }
-    } catch (IOException e) {
-      e.getStackTrace();
+    for (String developName : group.getContributor()) {
+      developerId = findUser(developName);
+      userConn.addMember(groupId, developerId, 30);
     }
   }
 
@@ -237,16 +233,11 @@ public class GroupService {
    */
   public int findUser(String userName) {
     List<GitlabUser> users;
-    try {
-      users = userConn.getUsers();
-      for (GitlabUser user : users) {
-        if (user.getUsername().equals(userName)) {
-          return user.getId();
-        }
+    users = userConn.getUsers();
+    for (GitlabUser user : users) {
+      if (user.getUsername().equals(userName)) {
+        return user.getId();
       }
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
     }
 
     return -1;

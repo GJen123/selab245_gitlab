@@ -59,7 +59,7 @@
 		GitlabConfig gitData = GitlabConfig.getInstance();
 		JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 		
-		JenkinsApi jenkins = new JenkinsApi();
+		JenkinsApi jenkins = JenkinsApi.getInstance();
 	%>
 	
 	<div class="container">

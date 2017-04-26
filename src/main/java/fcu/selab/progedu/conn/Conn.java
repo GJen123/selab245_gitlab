@@ -21,19 +21,8 @@ import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 public class Conn {
-  private static Conn INSTANCE;
-  
-  private Conn() throws LoadConfigFailureException {
-    INSTANCE = new Conn();
-    hostUrl = gitData.getGitlabHostUrl();
-    apiToken = gitData.getGitlabApiToken();
-  }
-  
+  private static Conn INSTANCE = new Conn();
 
-  public static Conn getInstance() {
-    return INSTANCE;
-  }
-  
   GitlabConfig gitData = GitlabConfig.getInstance();
 
   private String hostUrl;
@@ -41,25 +30,46 @@ public class Conn {
   private TokenType tokenType = TokenType.PRIVATE_TOKEN;
   private AuthMethod authMethod = AuthMethod.URL_PARAMETER;
 
-  private GitlabAPI gitlab = GitlabAPI.connect(hostUrl, apiToken, tokenType, authMethod);
+  private GitlabAPI gitlab;
 
   private static UserDbManager dbManager = UserDbManager.getInstance();
 
   HttpConnect httpConn = HttpConnect.getInstance();
-  
-  
-  
+
+  private Conn() {
+    try {
+      hostUrl = gitData.getGitlabHostUrl();
+      apiToken = gitData.getGitlabApiToken();
+    } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    gitlab = GitlabAPI.connect(hostUrl, apiToken, tokenType, authMethod);
+  }
+
+  public static Conn getInstance() {
+    return INSTANCE;
+  }
+
+  public String getAbc() {
+    return "abc";
+  }
+
   /**
    * Get root session from Gitlab
+   * 
    * @return root's session from Gitlab
    */
-  public GitlabSession getRootSession() throws LoadConfigFailureException {
+  public GitlabSession getRootSession() {
     GitlabSession rootSession = null;
     try {
-      rootSession = GitlabAPI.connect(hostUrl, 
-                                      gitData.getGitlabRootUsername(), 
-                                      gitData.getGitlabRootPassword());
+      rootSession = GitlabAPI.connect(hostUrl,
+          gitData.getGitlabRootUsername(),
+          gitData.getGitlabRootPassword());
     } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (LoadConfigFailureException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
@@ -69,14 +79,22 @@ public class Conn {
   /**
    * Get user session by username and password
    * 
-   * @param userName Gitlab username
-   * @param password Gitlab password
+   * @param userName
+   *          Gitlab username
+   * @param password
+   *          Gitlab password
    * @return User's Session
-   * @throws IOException on gitlab api call error
-   * */
-  public GitlabSession getSession(String userName, String password) throws IOException {
-    GitlabSession userSession = new GitlabSession();
-    userSession = GitlabAPI.connect(hostUrl, userName, password);
+   * @throws IOException
+   *           on gitlab api call error
+   */
+  public GitlabSession getSession(String userName, String password) {
+    GitlabSession userSession = null;
+    try {
+      userSession = GitlabAPI.connect(hostUrl, userName, password);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     return userSession;
   }
 
@@ -86,7 +104,9 @@ public class Conn {
 
   /**
    * Get a new GitlabApi by user token
-   * @param token A token from user
+   * 
+   * @param token
+   *          A token from user
    * @return a new GitlabApi
    */
   public GitlabAPI getUserApi(String token) {
@@ -97,9 +117,12 @@ public class Conn {
 
   /**
    * Get a list of project by user
-   * @param user A user from database
+   * 
+   * @param user
+   *          A user from database
    * @return The project list of user
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
   public List<GitlabProject> getProject(User user) {
     GitlabUser gitlabUser = new GitlabUser();
@@ -115,9 +138,12 @@ public class Conn {
 
   /**
    * Get a list of project by GitlabUser
-   * @param user of gitlab
+   * 
+   * @param user
+   *          of gitlab
    * @return The project list of user
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
   public List<GitlabProject> getProject(GitlabUser user) {
     List<GitlabProject> projects = new ArrayList<GitlabProject>();
@@ -126,44 +152,67 @@ public class Conn {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    
+
     return projects;
   }
-  
+
   /**
    * Get all user's list of projects
-   * @throws IOException on gitlab api call error
+   * 
+   * @throws IOException
+   *           on gitlab api call error
    */
-  public List<GitlabProject> getAllProjects() throws IOException {
+  public List<GitlabProject> getAllProjects() {
     List<GitlabProject> projects = new ArrayList<GitlabProject>();
-    projects = gitlab.getAllProjects();
+    try {
+      projects = gitlab.getAllProjects();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     return projects;
   }
 
   /**
    * Get a gitlab user
-   * @throws IOException on gitlab api call error
+   * 
+   * @throws IOException
+   *           on gitlab api call error
    */
-  public GitlabUser getUser() throws IOException {
+  public GitlabUser getUser() {
     GitlabUser gitlabUser = new GitlabUser();
-    gitlabUser = gitlab.getUser();
+    try {
+      gitlabUser = gitlab.getUser();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     return gitlabUser;
   }
 
   /**
    * Get all user from Gitlab
+   * 
    * @return a list of users
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
-  public List<GitlabUser> getUsers() throws IOException {
+  public List<GitlabUser> getUsers() {
     List<GitlabUser> users = new ArrayList<GitlabUser>();
-    users = gitlab.getUsers();
+    try {
+      users = gitlab.getUsers();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     return users;
   }
 
   /**
    * Get a private token by GitlabUser
-   * @param user A Gitlab user
+   * 
+   * @param user
+   *          A Gitlab user
    * @return a private token of user
    */
   public String getPrivateToken(GitlabUser user) {
@@ -178,47 +227,77 @@ public class Conn {
 
   /**
    * Get GitlabUser of Root
+   * 
    * @return GitlabUser of Root
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
-  public GitlabUser getRoot() throws IOException {
+  public GitlabUser getRoot() {
     GitlabUser root = new GitlabUser();
-    root = gitlab.getUser(1);
+    try {
+      root = gitlab.getUser(1);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     return root;
   }
 
   /**
    * Get all groups of Gitlab
+   * 
    * @return a list of groups from Gitlab
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
-  public List<GitlabGroup> getGroups() throws IOException {
+  public List<GitlabGroup> getGroups() {
     List<GitlabGroup> groups = new ArrayList<GitlabGroup>();
-    groups = gitlab.getGroups();
+    try {
+      groups = gitlab.getGroups();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     return groups;
   }
 
   /**
    * Get a list of project from group
-   * @param group A group form Gitlab
+   * 
+   * @param group
+   *          A group form Gitlab
    * @return a list of project from group
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
-  public List<GitlabProject> getGroupProject(GitlabGroup group) throws IOException {
+  public List<GitlabProject> getGroupProject(GitlabGroup group) {
     List<GitlabProject> projects = new ArrayList<GitlabProject>();
-    projects = gitlab.getGroupProjects(group);
+    try {
+      projects = gitlab.getGroupProjects(group);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     return projects;
   }
 
   /**
    * Get a list of group's member
-   * @param group a group from Gitlab
+   * 
+   * @param group
+   *          a group from Gitlab
    * @return a list of group's member
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
-  public List<GitlabGroupMember> getGroupMembers(GitlabGroup group) throws IOException {
+  public List<GitlabGroupMember> getGroupMembers(GitlabGroup group) {
     List<GitlabGroupMember> groupMembers = new ArrayList<GitlabGroupMember>();
-    groupMembers = gitlab.getGroupMembers(group);
+    try {
+      groupMembers = gitlab.getGroupMembers(group);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     return groupMembers;
   }
 
@@ -228,19 +307,28 @@ public class Conn {
   }
 
   /**
-   * createUserProject(Integer userId, String name, String description, String defaultBranch,
-   * Boolean issuesEnabled, Boolean wallEnabled, Boolean mergeRequestsEnabled, Boolean wikiEnabled,
-   * Boolean snippetsEnabled, Boolean publik, Integer visibilityLevel, String importUrl)
-   * @throws IOException on gitlab api call error
+   * createUserProject(Integer userId, String name, String description, String
+   * defaultBranch, Boolean issuesEnabled, Boolean wallEnabled, Boolean
+   * mergeRequestsEnabled, Boolean wikiEnabled, Boolean snippetsEnabled, Boolean
+   * publik, Integer visibilityLevel, String importUrl)
+   * 
+   * @throws IOException
+   *           on gitlab api call error
    */
-  public boolean createPrivateProject(String proName, String proUrl) throws IOException {
+  public boolean createPrivateProject(String proName, String proUrl) {
     List<GitlabUser> users = getUsers();
-    for (GitlabUser user : users) {
-      if (user.getId() == 1 || user.getId() == 2) {
-        continue;
+    try {
+      for (GitlabUser user : users) {
+        if (user.getId() == 1 || user.getId() == 2) {
+          continue;
+        }
+
+        GitlabProject project = gitlab.createUserProject(user.getId(), proName, null, null, null,
+            null, null, null, null, null, null, proUrl);
       }
-      GitlabProject project = gitlab.createUserProject(user.getId(), proName, null, null, null,
-                                                       null, null, null, null, null, null, proUrl);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
     return true;
   }
@@ -248,19 +336,29 @@ public class Conn {
   /**
    * Create a new User
    * 
-   * @param email          User email
-   * @param password       User password
-   * @param userName       User name
-   * @param fullName       Full name
+   * @param email
+   *          User email
+   * @param password
+   *          User password
+   * @param userName
+   *          User name
+   * @param fullName
+   *          Full name
    * @return true or false
-   * @throws LoadConfigFailureException on a instance call error
-   * @throws IOException on gitlab api call error
+   * @throws LoadConfigFailureException
+   *           on a instance call error
+   * @throws IOException
+   *           on gitlab api call error
    */
-  public boolean createUser(String email, String password, String userName, String fullName) 
-                 throws LoadConfigFailureException, IOException {
+  public boolean createUser(String email, String password, String userName, String fullName) {
     GitlabUser user = new GitlabUser();
-    user = gitlab.createUser(email, password, userName, fullName, 
-           "", "", "", "", 10, "", "", "", false, true, null);
+    try {
+      user = gitlab.createUser(email, password, userName, fullName,
+          "", "", "", "", 10, "", "", "", false, true, null);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     String privateToken = INSTANCE.getSession(userName, password).getPrivateToken();
     user.setPrivateToken(privateToken);
     dbManager.addUser(user);
@@ -271,7 +369,8 @@ public class Conn {
    * Creates a Group
    *
    * @param name
-   *          The name of the group. The name will also be used as the path of the group.
+   *          The name of the group. The name will also be used as the path of
+   *          the group.
    * @return The GitLab Group
    * @throws IOException
    *           on gitlab api call error
@@ -285,16 +384,20 @@ public class Conn {
     return new GitlabGroup();
   }
 
-
   /**
    * Add a member to group
-   * @param groupId         Group id
-   * @param userId          User id
-   * @param level           User level in group
+   * 
+   * @param groupId
+   *          Group id
+   * @param userId
+   *          User id
+   * @param level
+   *          User level in group
    * @return true or false
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
-  public boolean addMember(int groupId, int userId, int level) throws IOException {
+  public boolean addMember(int groupId, int userId, int level) {
     GitlabAccessLevel accessLevel = GitlabAccessLevel.Guest;
     if (level == 40) {
       accessLevel = GitlabAccessLevel.Master;
@@ -304,42 +407,66 @@ public class Conn {
       accessLevel = GitlabAccessLevel.Guest;
     }
 
-    gitlab.addGroupMember(groupId, userId, accessLevel);
+    try {
+      gitlab.addGroupMember(groupId, userId, accessLevel);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     return true;
   }
 
   /**
    * Create a root project
-   * @param proName         Project name
+   * 
+   * @param proName
+   *          Project name
    * @return true or false
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
-  public boolean createRootProject(String proName) throws IOException {
-    gitlab.createUserProject(1, proName, null, null, null, null, null, null, null, null, 10, null);
+  public boolean createRootProject(String proName) {
+    try {
+      gitlab.createUserProject(1, proName, null, null,
+          null, null, null, null, null, null, 10, null);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     return true;
   }
 
   /**
    * Get commit counts from project
-   * @param projectId     Project id
+   * 
+   * @param projectId
+   *          Project id
    * @return a count of commit
-   * @throws IOException on gitlab api call error
+   * @throws IOException
+   *           on gitlab api call error
    */
-  public int getAllCommitsCounts(int projectId) throws IOException {
+  public int getAllCommitsCounts(int projectId) {
     int count = 0;
     List<GitlabCommit> lsCommits = new ArrayList<GitlabCommit>();
-    if (!gitlab.getAllCommits(projectId).isEmpty()) {
-      lsCommits = gitlab.getAllCommits(projectId);
-      count = lsCommits.size();
-    } else {
-      count = 0;
+    try {
+      if (!gitlab.getAllCommits(projectId).isEmpty()) {
+        lsCommits = gitlab.getAllCommits(projectId);
+        count = lsCommits.size();
+      } else {
+        count = 0;
+      }
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
     return count;
   }
 
   /**
    * Replace the project url
-   * @param oldUrl      The old url of project
+   * 
+   * @param oldUrl
+   *          The old url of project
    * @return the new url
    */
   public String getReplaceUrl(String oldUrl) {

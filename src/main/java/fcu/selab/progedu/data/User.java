@@ -5,17 +5,17 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class User implements Serializable {
 
-  private String id; // ??™è?’è?‚è•­
+  private int id; // ??ï¿½ï¿½?ï¿½ï¿½?ï¿½è•­
 
   private int gitLabId;
 
-  private String userName; // ??™ç·¯??™ç?šå?™è?è•­(??™ç¨·??™è?è•­) ??™è?’è?‚è•­
+  private String userName; // ??ï¿½ç·¯??ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½è•­(??ï¿½ç¨·??ï¿½ï¿½?ï¿½è•­) ??ï¿½ï¿½?ï¿½ï¿½?ï¿½è•­
 
-  private String name; // ??™è?è•­??™è?è•­??™è?è•­??™ï¿½(??™è?è•­??™è?è•­)
+  private String name; // ??ï¿½ï¿½?ï¿½è•­??ï¿½ï¿½?ï¿½è•­??ï¿½ï¿½?ï¿½è•­??ï¿½ï¿½(??ï¿½ï¿½?ï¿½è•­??ï¿½ï¿½?ï¿½è•­)
 
-  private String email; // ??™è?’è?‚è•­@fcu.edu.tw
+  private String email; // ??ï¿½ï¿½?ï¿½ï¿½?ï¿½è•­@fcu.edu.tw
 
-  private String password; // ??™è?’è?‚è•­
+  private String password; // ??ï¿½ï¿½?ï¿½ï¿½?ï¿½è•­
 
   private String privateToken;
 
@@ -25,11 +25,11 @@ public class User implements Serializable {
   //
   // private String phone;
 
-  public String getId() {
+  public int getId() {
     return id;
   }
 
-  public void setId(String id) {
+  public void setId(int id) {
     this.id = id;
   }
 

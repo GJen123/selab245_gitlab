@@ -126,9 +126,6 @@ public class UserService {
       String fullName;
       fullName = row[1];
 
-      String id;
-      id = row[0];
-
       String email = "";
 
       if (row[0].equalsIgnoreCase("studentid")) {
@@ -147,20 +144,14 @@ public class UserService {
       }
 
       User student = new User();
-      student.setId(id);
       student.setUserName(userName);
       student.setPassword(password);
       student.setEmail(email);
       student.setName(fullName);
       lsStudent.add(student);
 
-      try {
-        if (userConn.createUser(email, password, userName, fullName)) {
-          System.out.println("register " + row[1] + " success!");
-        }
-      } catch (LoadConfigFailureException | IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+      if (userConn.createUser(email, password, userName, fullName)) {
+        System.out.println("register " + row[1] + " success!");
       }
     }
     printStudent(lsStudent);
@@ -173,19 +164,17 @@ public class UserService {
    *          user
    */
   public void printStudent(List<User> student) {
-    String id = "";
     String userName = "";
     String password = "";
     String email = "";
     String name = "";
     for (User user : student) {
-      id = user.getId();
       userName = user.getUserName();
       password = user.getPassword();
       email = user.getEmail();
       name = user.getName();
 
-      System.out.println("ID: " + id + ", userName: " + userName + ", password: " + password
+      System.out.println("userName: " + userName + ", password: " + password
           + ", email: " + email + ", name: " + name);
     }
   }
@@ -197,12 +186,7 @@ public class UserService {
    */
   public List<GitlabUser> getUsers() {
     List<GitlabUser> users = new ArrayList<GitlabUser>();
-    try {
-      users = userConn.getUsers();
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    users = userConn.getUsers();
     return users;
   }
 }

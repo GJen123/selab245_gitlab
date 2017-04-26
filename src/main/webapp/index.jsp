@@ -9,40 +9,7 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
 
-<%
-	//抓當地語言
-	Locale locale = request.getLocale();
-	String country = locale.getCountry();
-	String localLan = locale.getLanguage();
-	
-	String finalLan = localLan;
-	String reqLan = request.getParameter("lang");
-	String sesLan = null;
-	
-	if(reqLan == null || reqLan.trim().equals("")) { 
-		// 如果request裡沒有值
-		System.out.println("no request");
-		if(session.getAttribute("language") == null || session.getAttribute("language").toString().equals("")){
-			// 如果session裡沒有值
-			System.out.println("no session");
-			finalLan = localLan;
-		}else{
-			// session裡有值
-			System.out.println("has session");
-			sesLan = session.getAttribute("language").toString();
-			finalLan = sesLan;
-		}
-    } else{
-    	// request裡有值  優先考慮request裡的值
-    	System.out.println("has request");
-    	finalLan = reqLan;
-    }
-	
-	Language language = new Language();
-	String basename = language.getBaseName(finalLan);
-	System.out.println("finalLan : " + finalLan);
-	System.out.println("basename : " + basename);
-%>
+<%@ include file="language.jsp" %>
 
 <c:url value="index.jsp" var="displayLan">
 <c:param name="Language" value="tw" />
@@ -67,8 +34,6 @@
 <title>ProgEdu Login</title>
 </head>
 <body>
-	<!-- 設定語言 -->
-	<fmt:setBundle basename = "<%=basename %>"/>
 	
 	<div class="container" style="width:300px;height:60px">
         
