@@ -38,9 +38,9 @@ public class UserDbManager {
     PreparedStatement preStmt = null;
     Statement stmt = null;
     String sql = "INSERT INTO "
-                 + "Student(gitLabId, stuId, name, password, email, privateToken)  "
+                 + "User(gitLabId, stuId, name, password, email, privateToken)  "
                  + "VALUES(?, ?, ?, ?, ?, ?)";
-    String query = "SELECT * FROM Student";
+    String query = "SELECT * FROM User";
 
     try {
       String password = passwordMD5(user.getUsername());
@@ -109,7 +109,7 @@ public class UserDbManager {
   public User getUser(String userName) {
     User user = new User();
     Connection conn = database.getConnection();
-    String query = "SELECT * FROM Student WHERE stuId = ?";
+    String query = "SELECT * FROM User WHERE stuId = ?";
     PreparedStatement preStmt = null;
 
     try {
@@ -145,7 +145,7 @@ public class UserDbManager {
     List<User> lsUsers = new ArrayList<User>();
 
     Connection conn = database.getConnection();
-    String sql = "SELECT * FROM Student";
+    String sql = "SELECT * FROM User";
     Statement stmt = null;
 
     try {
