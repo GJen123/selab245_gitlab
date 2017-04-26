@@ -11,9 +11,9 @@
 <%@ page import="java.util.*" %>
     
 <%
-	//if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
-	//	response.sendRedirect("index.jsp");
-	//}
+	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+		response.sendRedirect("index.jsp");
+	}
 	session.putValue("page", "teacherHW");
 	String pages = "teacherHW.jsp";
 %>

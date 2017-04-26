@@ -65,7 +65,7 @@ public class AfterEnter extends HttpServlet {
 
     privateToken = checkEnter(username, password);
 
-    sendRedirect(response, session, privateToken);
+    sendRedirect(response, session, privateToken, username);
   }
 
   /**
@@ -100,15 +100,18 @@ public class AfterEnter extends HttpServlet {
    * @param privateToken
    *          Check return private token
    */
-  public void sendRedirect(HttpServletResponse response, HttpSession session, String privateToken) {
+  public void sendRedirect(HttpServletResponse response, HttpSession session,
+      String privateToken, String username) {
     try {
       if (isEnter == true) {
         if (privateToken.equals(gitData.getGitlabApiToken())) {
           session.setAttribute("page", "dashboard.jsp");
+          session.setAttribute("username", username);
           response.sendRedirect("dashboard.jsp");
         } else {
           session.setAttribute("page", "studentDashboard.jsp");
           session.setAttribute("private_token", privateToken);
+          session.setAttribute("username", username);
           response.sendRedirect("studentDashboard.jsp");
         }
       } else {
