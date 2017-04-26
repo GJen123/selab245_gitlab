@@ -64,7 +64,7 @@
 												<td>
 													<table class="table table-condensed">
 														<tr>
-															<td><a href="#" onclick="window.open('<%=groupUrl %>')"><%=group.getName() %></a></td>
+															<td><a href="<%=groupUrl %>" onclick="window.open('<%=groupUrl %>')"><%=group.getName() %></a></td>
 														</tr>
 													</table>
 												</td>
@@ -78,7 +78,7 @@
 																projectUrl += "/commits/master";
 																%>
 																	<tr>
-																		<td><a href="#" onclick="window.open('<%=projectUrl %>')"><%=project.getName() %></a></td>
+																		<td><a href="<%=projectUrl %>" onclick="window.open('<%=projectUrl %>')"><%=project.getName() %></a></td>
 																	</tr>
 																<%
 															}
@@ -94,7 +94,7 @@
 																String memberUrl = gitData.getGitlabHostUrl() + "/u/" + memberUsername;
 																%>
 																	<tr>
-																		<td><a href="#" onclick="window.open('<%=memberUrl %>')"><%=member.getName() %></a></td>
+																		<td><a href="<%=memberUrl %>" onclick="window.open('<%=memberUrl %>')"><%=member.getName() %></a></td>
 																	</tr>
 																<%
 															}

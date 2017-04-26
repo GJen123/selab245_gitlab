@@ -40,7 +40,7 @@
 	
 	<script>
 	$(document).ready(function() {
-		$("form").submit(function(evt) {
+		$('#upload').submit(function(evt) {
 			evt.preventDefault();
 			var formData = new FormData($(this)[0]);
 			$.ajax({
@@ -85,7 +85,7 @@
 					</div>
 
 					<div class="col-md-10">
-						<form>
+						<form id="upload" name="upload">
 							<button type="button" class="btn btn-default" data-toggle="modal"
 								data-target="#exampleModal" data-whatever="@mdo"><fmt:message key="teacherManageGroup_button_importStudent"/></button>
 							<div class="modal fade" id="exampleModal" tabindex="-1"
@@ -117,12 +117,18 @@
 							</div>
 						</form>
 					</div>
+					<br><br><br><br>
 					<div class="col-md-12">
-						<form action="">
+						<form id="select" name="select" action="">
 							<table>
 								<tr>
 									<td>
-										<select style="width: 100px" name="select1" id="select1" multiple size="<%=users.size()%>">
+										<label for="groupName">隊伍名稱：</label>
+										<input type="text" id="groupName" name="groupName">
+								</tr>
+								<tr>
+									<td>
+										<select style="width: 500px" name="select1" id="select1" multiple size="<%=users.size()%>">
 											<%for(User user : users){
 												%>
 												<option value="<%=user.getUserName()%>"><%=user.getUserName() %>-<%=user.getName() %></option>
@@ -136,7 +142,7 @@
 										<input type="button" id="lt" name="lt" value="&lt;&lt;">
 									</td>
 									<td>
-										<select style="width: 100px" name="select2" id="select2" multiple>
+										<select style="width: 500px" name="select2" id="select2" multiple>
 										</select>
 									</td>
 								</tr>
