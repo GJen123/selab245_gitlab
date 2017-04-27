@@ -25,7 +25,7 @@ public class ZipHandler {
   private String token;
 
   StringBuilder sb = new StringBuilder();
-  
+
   public ZipHandler() throws LoadConfigFailureException {
     hostUrl = gitData.getGitlabHostUrl();
     token = gitData.getGitlabApiToken();
@@ -37,19 +37,25 @@ public class ZipHandler {
   private static final int BUFFER_SIZE = 4096;
 
   /**
-   * Extracts a zip file specified by the zipFilePath to a directory specified by destDirectory
-   * (will be created if does not exists)
+   * Extracts a zip file specified by the zipFilePath to a directory specified
+   * by destDirectory (will be created if does not exists)
    * 
-   * @param zipFilePath      The zip file's path
-   * @param projectId        The gitlab project id
-   * @param folderName       The folder name
-   * @throws IOException on fileinputstream call error
+   * @param zipFilePath
+   *          The zip file's path
+   * @param projectId
+   *          The gitlab project id
+   * @param folderName
+   *          The folder name
+   * @throws IOException
+   *           on fileinputstream call error
    */
-  public void unzip(String zipFilePath, Integer projectId, String folderName) throws IOException {
+  public void unzip(String zipFilePath, Integer projectId, String folderName, String projectName)
+      throws IOException {
+    folderName = folderName.substring(0, folderName.length() - 4);
     System.out.println("folderName : " + folderName);
     System.out.println("zipFilePath : " + zipFilePath);
 
-    String destDirectory = tempDir + "uploads\\";
+    String destDirectory = tempDir + "uploads\\" + projectName;
     File destDir = new File(destDirectory);
     if (!destDir.exists()) {
       destDir.mkdir();
@@ -58,12 +64,15 @@ public class ZipHandler {
     ZipEntry entry = zipIn.getNextEntry();
     // iterates over entries in the zip file
     while (entry != null) {
-      String filePath = destDirectory + File.separator + entry.getName();
+      String entryNewName = entry.getName().substring(folderName.length() + 1);
+      System.out.println("entryNewName : " + entryNewName);
+
+      String filePath = destDirectory + File.separator + entryNewName;
 
       if (!entry.isDirectory()) {
         // if the entry is a file, extracts it
         extractFile(zipIn, filePath);
-        String entryName = entry.getName();
+        String entryName = entryNewName;
 
         final String fileContent = readFile(filePath);
 
@@ -81,11 +90,12 @@ public class ZipHandler {
           }
         }
 
-        // ---httpPost to Gitlab---
-        String url = hostUrl + "/api/v3/projects/" + projectId + "/repository/files?private_token="
-            + token;
-        httpConn.httpPostFile(fileName, url, fileContent);
-        // ------------------------
+        // // ---httpPost to Gitlab---
+        // String url = hostUrl + "/api/v3/projects/" + projectId +
+        // "/repository/files?private_token="
+        // + token;
+        // httpConn.httpPostFile(fileName, url, fileContent);
+        // // ------------------------
 
       } else {
         // if the entry is a directory, make the directory
@@ -101,9 +111,12 @@ public class ZipHandler {
   /**
    * Extracts a zip entry (file entry)
    * 
-   * @param zipIn             The zip inputstream
-   * @param filePath          The file path
-   * @throws IOException on fileoutputstream call error
+   * @param zipIn
+   *          The zip inputstream
+   * @param filePath
+   *          The file path
+   * @throws IOException
+   *           on fileoutputstream call error
    */
   private void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
     BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));

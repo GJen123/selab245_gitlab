@@ -1,9 +1,11 @@
 package fcu.selab.progedu.service;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -102,10 +104,13 @@ public class ProjectService {
       userConn.createRootProject(name);
       Integer projectId = getNewProId(name);
       final String projectUrl = getNewProUrl(name);
+
+      // Clone the new root gitlab project
+      String cloneCommand = "git clone " + projectUrl;
+      execCmd(cloneCommand);
+
       String filePath = null;
       String folderName = null;
-      StringBuilder sb = new StringBuilder();
-
       // if file detail is not empty
       if (!fileDetail.getFileName().isEmpty()) {
         hasTemplate = true;
@@ -118,8 +123,9 @@ public class ProjectService {
         filePath = this.getClass().getResource("MvnQuickStart.zip").getFile();
         folderName = "MvnQuickStart.zip";
       }
-      unzipFile(filePath, projectId, folderName);
+      unzipFile(filePath, projectId, folderName, name);
       // config_javac.xml command line
+      StringBuilder sb = new StringBuilder();
       sb = unzip.getStringBuilder();
 
       if (!readMe.equals("<br>")) {
@@ -163,10 +169,10 @@ public class ProjectService {
    * @param folderName
    *          Folder name
    */
-  public void unzipFile(String filePath, int projectId, String folderName) {
+  public void unzipFile(String filePath, int projectId, String folderName, String projectName) {
     try {
       // unzip file
-      unzip.unzip(filePath, projectId, folderName);
+      unzip.unzip(filePath, projectId, folderName, projectName);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -271,5 +277,30 @@ public class ProjectService {
       }
     }
     return url;
+  }
+
+  private void execCmd(String command) {
+    Process process;
+    String tempDir = System.getProperty("java.io.tmpdir");
+    String uploadDir = tempDir + "uploads\\";
+
+    try {
+      process = Runtime.getRuntime()
+          .exec("cmd.exe /c " + command, // path to executable
+              null, // env vars, null means pass parent env
+              new File(uploadDir));
+      BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+      String line;
+      while (true) {
+        line = br.readLine();
+        if (line == null) {
+          break;
+        }
+        System.out.println(line);
+      }
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 }

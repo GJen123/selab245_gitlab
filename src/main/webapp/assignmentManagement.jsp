@@ -9,9 +9,9 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%
-	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
-		response.sendRedirect("index.jsp");
-	}
+	//if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+	//	response.sendRedirect("index.jsp");
+	//}
 	session.putValue("page", "teacherManageHw");
 %>
 
@@ -50,7 +50,7 @@
 			evt.preventDefault();
 			var formData = new FormData($(this)[0]);
 			$.ajax({
-				url : 'webapi/project/create',
+				url : 'webapi/project2/create',
 				type : 'POST',
 				data : formData,
 				async : false,

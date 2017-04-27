@@ -19,7 +19,7 @@ public class ZipHandlerTest {
     }
     String zipFilePath = this.getClass().getResource("MvnQuickStart.zip").getFile();
     try {
-      unzip.unzip(zipFilePath, 0, "MvnQuickStart.zip");
+      unzip.unzip(zipFilePath, 0, "MvnQuickStart.zip", "abc");
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
