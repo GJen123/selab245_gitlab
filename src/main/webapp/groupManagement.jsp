@@ -54,7 +54,7 @@
 				processData : false,
 				success : function(response) {
 					alert("uploaded!");
-					top.location.href = "../testWeb2/groupManagement.jsp";
+					top.location.href = "../ProgEdu/groupManagement.jsp";
 				}, 
 				error : function(response) {
 					alert("failed!");

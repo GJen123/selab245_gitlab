@@ -7,6 +7,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="org.gitlab.api.GitlabAPI" %>
 <%@ page import="java.util.Locale" %>
+<%@ page import="java.util.Collections" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%
@@ -57,6 +58,7 @@
 						<%
 							for(GitlabGroup group : groups){
 								List<GitlabGroupMember> groupMembers = conn.getGroupMembers(group);
+								Collections.reverse(groupMembers);
 								List<GitlabProject> projects = conn.getGroupProject(group);
 								String groupUrl = conn.getGroupUrl(group);
 										%>

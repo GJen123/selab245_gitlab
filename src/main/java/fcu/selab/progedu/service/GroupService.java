@@ -176,6 +176,7 @@ public class GroupService {
       for (String c : g.getContributor()) {
         System.out.println("Group member: " + c);
       }
+      createGroup(g);
     }
   }
 
@@ -216,6 +217,7 @@ public class GroupService {
 
     groupId = newGroupId(newGroup(group.getGroupName()));
     masterId = findUser(group.getMaster());
+    System.out.println(group.getMaster());
     userConn.addMember(groupId, masterId, 40);
 
     for (String developName : group.getContributor()) {
@@ -227,15 +229,15 @@ public class GroupService {
   /**
    * Find user by user name
    * 
-   * @param userName
+   * @param name
    *          user name
    * @return user id
    */
-  public int findUser(String userName) {
+  public int findUser(String name) {
     List<GitlabUser> users;
     users = userConn.getUsers();
     for (GitlabUser user : users) {
-      if (user.getUsername().equals(userName)) {
+      if (user.getName().equals(name)) {
         return user.getId();
       }
     }
