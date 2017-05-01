@@ -90,7 +90,7 @@ public class ProjectService2 {
 
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
     String cloneCommand = "git clone " + rootProjectUrl;
-    execCmd(cloneCommand, name);
+    execCmdInUploads(cloneCommand);
 
     // 3. Store Zip File to folder if file is not empty
     if (!fileDetail.getFileName().isEmpty()) {
@@ -136,9 +136,9 @@ public class ProjectService2 {
     // 8. Cmd gitlab push
     String pushCommand = "git push";
     execCmd(pushCommand, name);
-    
+
     // send notification email to student
-    //sendEmail();
+    // sendEmail();
 
     Response response = Response.ok().build();
     // if (!isSave) {
@@ -182,6 +182,31 @@ public class ProjectService2 {
     Process process;
     String tempDir = System.getProperty("java.io.tmpdir");
     String uploadDir = tempDir + "uploads\\" + projectName;
+
+    try {
+      process = Runtime.getRuntime()
+          .exec("cmd.exe /c " + command, // path to executable
+              null, // env vars, null means pass parent env
+              new File(uploadDir));
+      BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+      String line;
+      while (true) {
+        line = br.readLine();
+        if (line == null) {
+          break;
+        }
+        System.out.println(line);
+      }
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+  private void execCmdInUploads(String command) {
+    Process process;
+    String tempDir = System.getProperty("java.io.tmpdir");
+    String uploadDir = tempDir + "uploads\\";
 
     try {
       process = Runtime.getRuntime()
@@ -263,7 +288,7 @@ public class ProjectService2 {
       e.printStackTrace();
     }
   }
-  
+
   /**
    * Send the notification email to student
    *
@@ -271,7 +296,7 @@ public class ProjectService2 {
   public void sendEmail() {
     String email;
     email = "";
-    final String username = "rtc@mail.fcu.edu.tw";  //teacher's email
+    final String username = "rtc@mail.fcu.edu.tw"; // teacher's email
     final String password = "xrjiuuiityofurzi";// teacher's mail password
 
     Properties props = new Properties();
@@ -289,7 +314,9 @@ public class ProjectService2 {
       String content = "";
       // Message message = new MimeMessage(session);
       MimeMessage message = new MimeMessage(session);
-      message.setFrom(new InternetAddress("rtc@mail.fcu.edu.tw")); //send from teacher's email
+      message.setFrom(new InternetAddress("rtc@mail.fcu.edu.tw")); // send from
+                                                                   // teacher's
+                                                                   // email
       message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
       message.setSubject("You got a new assignment", "utf-8");
       message.setContent(content, "text/html;charset=utf-8");

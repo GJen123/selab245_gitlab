@@ -60,7 +60,7 @@
 				processData : false,
 				success : function(response) {
 					alert("uploaded!");
-					top.location.href = "../ProgEdutestWeb2/assignmentManagement.jsp";
+					top.location.href = "../ProgEdu/assignmentManagement.jsp";
 				}, 
 				error : function(response) {
 					alert("failed!");
