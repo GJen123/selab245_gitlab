@@ -53,11 +53,11 @@
 				enctype : 'multipart/form-data',
 				processData : false,
 				success : function(response) {
-					alert("uploaded!");
+					alert("Uploaded!");
 					top.location.href = "../ProgEdu/groupManagement.jsp";
 				}, 
 				error : function(response) {
-					alert("failed!");
+					alert("Failed! Check out whether there is the group with the same name on GitLab.");
 				}
 			});
 			return false;

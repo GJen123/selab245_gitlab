@@ -29,12 +29,14 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import fcu.selab.progedu.conn.Conn;
 import fcu.selab.progedu.data.Group;
+import fcu.selab.progedu.db.GroupDbManager;
 
 @Path("group/")
 public class GroupService {
 
   Conn userConn = Conn.getInstance();
   UserService userService = new UserService();
+  GroupDbManager gdb = GroupDbManager.getInstance();
 
   /**
    * upload a csvfile to create group
@@ -163,7 +165,6 @@ public class GroupService {
         }
       }
       if (number == data.size()) {
-        System.out.println("data final");
         group.setGroupName(groupName);
         group.setMaster(masterName);
         group.setContributor(cons);
@@ -189,7 +190,6 @@ public class GroupService {
    */
   public GitlabGroup newGroup(String name) {
     GitlabGroup group = userConn.createGroup(name);
-    System.out.println(group.getName() + ", " + group.getId());
     return group;
   }
 
@@ -217,12 +217,13 @@ public class GroupService {
 
     groupId = newGroupId(newGroup(group.getGroupName()));
     masterId = findUser(group.getMaster());
-    System.out.println(group.getMaster());
-    userConn.addMember(groupId, masterId, 40);
-
+    userConn.addMember(groupId, masterId, 40);  //add member on GitLab
+    gdb.addGroup(group.getGroupName(), group.getMaster(), true); //insert into db
+    
     for (String developName : group.getContributor()) {
       developerId = findUser(developName);
-      userConn.addMember(groupId, developerId, 30);
+      userConn.addMember(groupId, developerId, 30);  //add member on GitLab
+      gdb.addGroup(group.getGroupName(), developName, false); //insert into db
     }
   }
 

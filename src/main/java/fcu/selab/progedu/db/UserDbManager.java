@@ -38,7 +38,7 @@ public class UserDbManager {
     PreparedStatement preStmt = null;
     Statement stmt = null;
     String sql = "INSERT INTO "
-                 + "User(gitLabId, stuId, name, password, email, privateToken)  "
+                 + "User(gitLabId, userName, name, password, email, privateToken)  "
                  + "VALUES(?, ?, ?, ?, ?, ?)";
     String query = "SELECT * FROM User";
 
@@ -109,7 +109,7 @@ public class UserDbManager {
   public User getUser(String userName) {
     User user = new User();
     Connection conn = database.getConnection();
-    String query = "SELECT * FROM User WHERE stuId = ?";
+    String query = "SELECT * FROM User WHERE userName = ?";
     PreparedStatement preStmt = null;
 
     try {
@@ -135,6 +135,31 @@ public class UserDbManager {
       e.printStackTrace();
     }
     return user;
+  }
+  
+  /**
+   * user name to find userId  in db
+   * 
+   * @param name user's name
+   * @return id
+   */
+  public int getUserId(String name) {
+    Connection conn = database.getConnection();
+    String query = "SELECT * FROM User WHERE name = ?";
+    PreparedStatement preStmt = null;
+    int id = -1;
+
+    try {
+      preStmt = conn.prepareStatement(query);
+      preStmt.setString(1, name);
+      ResultSet rs = preStmt.executeQuery();
+      while (rs.next()) {
+        id = rs.getInt("id");
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return id;
   }
 
   /**
