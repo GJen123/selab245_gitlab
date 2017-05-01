@@ -8,7 +8,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Properties;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -128,6 +136,9 @@ public class ProjectService2 {
     // 8. Cmd gitlab push
     String pushCommand = "git push";
     execCmd(pushCommand, name);
+    
+    // send notification email to student
+    //sendEmail();
 
     Response response = Response.ok().build();
     // if (!isSave) {
@@ -250,6 +261,45 @@ public class ProjectService2 {
       zipHandler.unzip(filePath, projectId, folderName, projectName);
     } catch (IOException e) {
       e.printStackTrace();
+    }
+  }
+  
+  /**
+   * Send the notification email to student
+   *
+   */
+  public void sendEmail() {
+    String email;
+    email = "";
+    final String username = "rtc@mail.fcu.edu.tw";  //teacher's email
+    final String password = "xrjiuuiityofurzi";// teacher's mail password
+
+    Properties props = new Properties();
+    props.put("mail.smtp.host", "smtp.gmail.com");
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.port", "587");
+    Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+      protected PasswordAuthentication getPasswordAuthentication() {
+        return new PasswordAuthentication(username, password);
+      }
+    });
+
+    try {
+      String content = "";
+      // Message message = new MimeMessage(session);
+      MimeMessage message = new MimeMessage(session);
+      message.setFrom(new InternetAddress("rtc@mail.fcu.edu.tw")); //send from teacher's email
+      message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+      message.setSubject("You got a new assignment", "utf-8");
+      message.setContent(content, "text/html;charset=utf-8");
+
+      Transport.send(message);
+
+      System.out.println("Mail sent succesfully!");
+
+    } catch (MessagingException e) {
+      throw new RuntimeException(e);
     }
   }
 
