@@ -30,10 +30,10 @@
 	<!-- Latest compiled JavaScript -->
 	<script
 		src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-	
+
 	<script src="http://js.nicedit.com/nicEdit-latest.js" type="text/javascript"></script>
-	<script type="text/javascript">bkLib.onDomLoaded(nicEditors.allTextAreas);</script>			
-	
+	<script type="text/javascript">bkLib.onDomLoaded(nicEditors.allTextAreas);</script>	
+	 
 	<script type="text/javascript">
 		function handleClick(cb, divId){
 			var o=document.getElementById(divId);
@@ -125,7 +125,7 @@
 							</div>
 							
 							<div class="form-group">
-								<button type="submit" class="btn btn-default"><fmt:message key="teacherManageHW_button_send"/></button>
+								<button type="submit" class="btn btn-default" onclick="nicEditors.findEditor('Hw_README').saveContent();"><fmt:message key="teacherManageHW_button_send"/></button>
 							</div>
 						</div>
 					</div>

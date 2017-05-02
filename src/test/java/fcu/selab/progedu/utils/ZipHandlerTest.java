@@ -18,8 +18,9 @@ public class ZipHandlerTest {
       e1.printStackTrace();
     }
     String zipFilePath = this.getClass().getResource("MvnQuickStart.zip").getFile();
+    String filePath = "C:\\Users\\GJen\\AppData\\Local\\Temp\\uploads\\selab245_gitlab.zip";
     try {
-      unzip.unzip(zipFilePath, 0, "MvnQuickStart.zip", "abc");
+      unzip.unzip(filePath, 0, "selab245_gitlab.zip", "abc");
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

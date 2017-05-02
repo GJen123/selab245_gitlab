@@ -1,12 +1,15 @@
 package fcu.selab.progedu.service;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.List;
 import java.util.Properties;
 
@@ -29,8 +32,10 @@ import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.Conn;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.utils.ZipHandler;
 
 @Path("project2/")
@@ -39,6 +44,14 @@ public class ProjectService2 {
   private Conn conn = Conn.getInstance();
   private GitlabUser root = conn.getRoot();
   private ZipHandler zipHandler;
+  private JenkinsApi jenkins = JenkinsApi.getInstance();
+
+  private JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+
+  private String jenkinsRootUsername;
+  private String jenkinsRootPassword;
+
+  private StringBuilder javacSb;
 
   boolean isSave = true;
 
@@ -48,6 +61,8 @@ public class ProjectService2 {
   public ProjectService2() {
     try {
       zipHandler = new ZipHandler();
+      jenkinsRootUsername = jenkinsData.getJenkinsRootUsername();
+      jenkinsRootPassword = jenkinsData.getJenkinsRootPassword();
     } catch (LoadConfigFailureException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -121,8 +136,9 @@ public class ProjectService2 {
     unzipFile(filePath, rootProjectId, folderName, name);
 
     // 5. if README is not null
-    if (!readMe.equals("<br>")) {
+    if (!readMe.equals("<br>") || !"".equals(readMe) || !readMe.isEmpty()) {
       // Add readme to folder
+      createReadmeFile(readMe, name);
     }
 
     // 6. Cmd gitlab add
@@ -136,6 +152,12 @@ public class ProjectService2 {
     // 8. Cmd gitlab push
     String pushCommand = "git push";
     execCmd(pushCommand, name);
+
+    // 9. Create student project, and import project
+    // conn.createPrivateProject(name, rootProjectUrl);
+
+    // 10. Create each Jenkins Jobs
+    // createJenkinsJob(name, fileType);
 
     // send notification email to student
     // sendEmail();
@@ -327,6 +349,43 @@ public class ProjectService2 {
 
     } catch (MessagingException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  private void createJenkinsJob(String name, String fileType) {
+    String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername, jenkinsRootPassword);
+    StringBuilder sb = zipHandler.getStringBuilder();
+    jenkins.createRootJob(name, jenkinsCrumb, fileType, sb);
+    try {
+      jenkins.createJenkinsJob(name, jenkinsCrumb, fileType, sb);
+      jenkins.buildJob(name, jenkinsCrumb);
+    } catch (LoadConfigFailureException | IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+  }
+
+  private void createReadmeFile(String readMe, String projectName) {
+    String tempDir = System.getProperty("java.io.tmpdir");
+    String uploadDir = tempDir + "uploads\\";
+    String projectDir = uploadDir + projectName;
+
+    Writer writer = null;
+    System.out.println("readMe : " + readMe);
+
+    try {
+      writer = new BufferedWriter(new OutputStreamWriter(
+          new FileOutputStream(projectDir + "\\README.md"), "utf-8"));
+      writer.write(readMe);
+    } catch (IOException ex) {
+      // report
+    } finally {
+      try {
+        writer.close();
+      } catch (Exception ex) {
+        /* ignore */
+      }
     }
   }
 

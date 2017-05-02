@@ -23,7 +23,7 @@
 	<title>ProgEdu</title>
 </head>
 <body>
-	<%@ include file="studentHeader.jsp" %>
+	<%@ include file="header.jsp" %>
 
 	<%
 		GitlabConfig gitData = GitlabConfig.getInstance();

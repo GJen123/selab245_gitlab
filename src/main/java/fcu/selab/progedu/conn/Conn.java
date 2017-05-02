@@ -319,7 +319,7 @@ public class Conn {
     List<GitlabUser> users = getUsers();
     try {
       for (GitlabUser user : users) {
-        if (user.getId() == 1 || user.getId() == 2) {
+        if (user.getId() == 1) {
           continue;
         }
 

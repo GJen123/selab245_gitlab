@@ -44,15 +44,15 @@ public class ZipHandler {
    *          The zip file's path
    * @param projectId
    *          The gitlab project id
-   * @param folderName
-   *          The folder name
+   * @param zipFolderName
+   *          The zip folder name
    * @throws IOException
    *           on fileinputstream call error
    */
-  public void unzip(String zipFilePath, Integer projectId, String folderName, String projectName)
+  public void unzip(String zipFilePath, Integer projectId, String zipFolderName, String projectName)
       throws IOException {
-    folderName = folderName.substring(0, folderName.length() - 4);
-    System.out.println("folderName : " + folderName);
+    zipFolderName = zipFolderName.substring(0, zipFolderName.length() - 4);
+    System.out.println("zipFolderName : " + zipFolderName);
     System.out.println("zipFilePath : " + zipFilePath);
 
     String destDirectory = tempDir + "uploads\\" + projectName;
@@ -64,7 +64,16 @@ public class ZipHandler {
     ZipEntry entry = zipIn.getNextEntry();
     // iterates over entries in the zip file
     while (entry != null) {
-      String entryNewName = entry.getName().substring(folderName.length() + 1);
+      if (entry.isDirectory()) {
+        System.out.println("---entry getName is directory : " + entry.getName());
+      }
+      // String firstFolderName = getParentDir(entry.getName());
+      // System.out.println("firstFolderName : " + firstFolderName);
+      System.out.println("entry.getName() : " + entry.getName());
+      System.out.println("zipFolderName : " + zipFolderName);
+      // delete the folder name
+      // MvnQuickStart/src/....... -> src/.......
+      String entryNewName = entry.getName().substring(zipFolderName.length() + 1);
       System.out.println("entryNewName : " + entryNewName);
 
       String filePath = destDirectory + File.separator + entryNewName;
@@ -152,4 +161,18 @@ public class ZipHandler {
   public StringBuilder getStringBuilder() {
     return sb;
   }
+
+  /**
+   * 
+   * @param filePath
+   *          a
+   * @return aa
+   */
+  public String getParentDir(String filePath) {
+    String dir = null;
+    File file = new File(filePath);
+    dir = file.getParent();
+    return dir;
+  }
+
 }

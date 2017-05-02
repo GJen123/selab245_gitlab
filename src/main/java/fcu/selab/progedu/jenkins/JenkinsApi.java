@@ -49,7 +49,7 @@ import fcu.selab.progedu.exception.LoadConfigFailureException;
 import sun.misc.BASE64Encoder;
 
 public class JenkinsApi {
-  private static JenkinsApi INSTANCE;
+  private static JenkinsApi INSTANCE = new JenkinsApi();
 
   private Conn conn = Conn.getInstance();
 
@@ -72,15 +72,19 @@ public class JenkinsApi {
    * @throws LoadConfigFailureException
    *           on properties call error
    */
-  public JenkinsApi() throws LoadConfigFailureException {
-    INSTANCE = new JenkinsApi();
-    gitlabHostUrl = gitData.getGitlabHostUrl();
-    gitlabUsername = gitData.getGitlabRootUsername();
-    gitlabPassword = gitData.getGitlabRootPassword();
-    jenkinsRootUrl = jenkinsData.getJenkinsRootUrl();
-    jenkinsRootUsername = jenkinsData.getJenkinsRootUsername();
-    jenkinsRootPassword = jenkinsData.getJenkinsRootPassword();
-    jenkinsApiToken = jenkinsData.getJenkinsApiToken();
+  public JenkinsApi() {
+    try {
+      gitlabHostUrl = gitData.getGitlabHostUrl();
+      gitlabUsername = gitData.getGitlabRootUsername();
+      gitlabPassword = gitData.getGitlabRootPassword();
+      jenkinsRootUrl = jenkinsData.getJenkinsRootUrl();
+      jenkinsRootUsername = jenkinsData.getJenkinsRootUsername();
+      jenkinsRootPassword = jenkinsData.getJenkinsRootPassword();
+      jenkinsApiToken = jenkinsData.getJenkinsApiToken();
+    } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
   public static JenkinsApi getInstance() {
@@ -168,9 +172,7 @@ public class JenkinsApi {
 
       post.addHeader("Content-Type", "application/xml");
       post.addHeader("Jenkins-Crumb", jenkinsCrumb);
-      // post.addHeader("Jenkins-Crumb", "e390d46093102dac6c0ec903b77af0a0");
       String filePath = null;
-      // ??��?�改?��config.xml??��?��?�蕭url
       if (fileType != null) {
         if (fileType.equals("Maven")) {
           filePath = this.getClass().getResource("config_maven.xml").getFile();
@@ -188,8 +190,6 @@ public class JenkinsApi {
         modifyXmlFileCommand(filePath, sb);
       }
 
-      // �?config.xml
-
       StringBuilder sbConfig = getConfig(filePath);
       StringEntity se = new StringEntity(sbConfig.toString(),
           ContentType.create("text/xml", Consts.UTF_8));
@@ -201,7 +201,6 @@ public class JenkinsApi {
 
       if (resEntity != null) {
         String result = resEntity.toString();
-        System.out.println("result: " + result);
       }
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
@@ -229,7 +228,7 @@ public class JenkinsApi {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      String strUrl = jenkinsRootUrl += "/crumbIssuer/api/json";
+      String strUrl = jenkinsRootUrl + "/crumbIssuer/api/json";
       URL url = new URL(strUrl);
       conn = (HttpURLConnection) url.openConnection();
       String input = username + ":" + password;
@@ -252,7 +251,7 @@ public class JenkinsApi {
       JSONObject jsonObj = new JSONObject(jsonString);
       jenkinsCrumb = jsonObj.getString("crumb");
     } catch (Exception e) {
-      System.out.println("abc : " + e);
+      e.printStackTrace();
     } finally {
       if (conn != null) {
         conn.disconnect();
@@ -318,9 +317,6 @@ public class JenkinsApi {
       DOMSource source = new DOMSource(doc);
       StreamResult result = new StreamResult(new File(filepath));
       transformer.transform(source, result);
-
-      System.out.println("Done");
-
     } catch (ParserConfigurationException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -360,9 +356,6 @@ public class JenkinsApi {
       DOMSource source = new DOMSource(doc);
       StreamResult result = new StreamResult(new File(filepath));
       transformer.transform(source, result);
-
-      System.out.println("Done");
-
     } catch (ParserConfigurationException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -524,7 +517,6 @@ public class JenkinsApi {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // ??��?��?��????��??
 
       URL url = new URL(jobUrl);
       conn = (HttpURLConnection) url.openConnection();
@@ -553,7 +545,7 @@ public class JenkinsApi {
         jobNames.add(name);
       }
     } catch (Exception e) {
-      System.out.println("e : " + e);
+      e.printStackTrace();
     } finally {
       if (conn != null) {
         conn.disconnect();

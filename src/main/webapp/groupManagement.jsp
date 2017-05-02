@@ -10,9 +10,9 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%
-	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
-		response.sendRedirect("index.jsp");
-	}
+	//if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+	//	response.sendRedirect("index.jsp");
+	//}
 	session.putValue("page", "teacherManageGroup");
 	
 	UserDbManager uDB = UserDbManager.getInstance();
