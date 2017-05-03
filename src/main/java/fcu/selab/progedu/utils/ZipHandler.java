@@ -1,11 +1,9 @@
 package fcu.selab.progedu.utils;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -17,6 +15,7 @@ import fcu.selab.progedu.exception.LoadConfigFailureException;
 public class ZipHandler {
   HttpConnect httpConn = new HttpConnect();
   private static final String tempDir = System.getProperty("java.io.tmpdir");
+  private static final String uploadDir = tempDir + "uploads\\";
 
   GitlabConfig gitData = GitlabConfig.getInstance();
 
@@ -51,11 +50,11 @@ public class ZipHandler {
    */
   public void unzip(String zipFilePath, Integer projectId, String zipFolderName, String projectName)
       throws IOException {
+    String parentDir = null;
+    int parDirLength = 0;
     zipFolderName = zipFolderName.substring(0, zipFolderName.length() - 4);
-    System.out.println("zipFolderName : " + zipFolderName);
-    System.out.println("zipFilePath : " + zipFilePath);
 
-    String destDirectory = tempDir + "uploads\\" + projectName;
+    String destDirectory = uploadDir + projectName;
     File destDir = new File(destDirectory);
     if (!destDir.exists()) {
       destDir.mkdir();
@@ -64,48 +63,20 @@ public class ZipHandler {
     ZipEntry entry = zipIn.getNextEntry();
     // iterates over entries in the zip file
     while (entry != null) {
-      if (entry.isDirectory()) {
-        System.out.println("---entry getName is directory : " + entry.getName());
-      }
-      // String firstFolderName = getParentDir(entry.getName());
-      // System.out.println("firstFolderName : " + firstFolderName);
-      System.out.println("entry.getName() : " + entry.getName());
-      System.out.println("zipFolderName : " + zipFolderName);
-      // delete the folder name
-      // MvnQuickStart/src/....... -> src/.......
-      String entryNewName = entry.getName().substring(zipFolderName.length() + 1);
-      System.out.println("entryNewName : " + entryNewName);
+      String filePath = destDirectory + File.separator + entry.getName();
 
-      String filePath = destDirectory + File.separator + entryNewName;
+      if (filePath.substring(filePath.length() - 4).equals("src/")) {
+        parentDir = getParentDir(filePath);
+        parDirLength = parentDir.length() + 1;
+      }
+      String entryNewName = filePath.substring(parDirLength);
 
       if (!entry.isDirectory()) {
         // if the entry is a file, extracts it
         extractFile(zipIn, filePath);
-        String entryName = entryNewName;
 
-        final String fileContent = readFile(filePath);
-
-        // ".java" length = 5
-        String last = entryName.substring(entryName.length() - 5, entryName.length());
-        String fileName = null;
-        for (int i = 0; i < entryName.length() - 3; i++) {
-          if (entryName.substring(i, i + 3).equals("src")) {
-            fileName = entryName.substring(i);
-            System.out.println("fileName : " + fileName);
-            if (last.equals(".java")) {
-              sb.append("javac " + fileName + "\n");
-              setStringBuilder(sb);
-            }
-          }
-        }
-
-        // // ---httpPost to Gitlab---
-        // String url = hostUrl + "/api/v3/projects/" + projectId +
-        // "/repository/files?private_token="
-        // + token;
-        // httpConn.httpPostFile(fileName, url, fileContent);
-        // // ------------------------
-
+        // Search the java file which jenkins java config needs.
+        searchJavaFile(entryNewName);
       } else {
         // if the entry is a directory, make the directory
         File dir = new File(filePath);
@@ -137,23 +108,6 @@ public class ZipHandler {
     bos.close();
   }
 
-  private String readFile(String fileName) throws IOException {
-    BufferedReader br = new BufferedReader(new FileReader(fileName));
-    try {
-      StringBuilder sb = new StringBuilder();
-      String line = br.readLine();
-
-      while (line != null) {
-        sb.append(line);
-        sb.append("\n");
-        line = br.readLine();
-      }
-      return sb.toString();
-    } finally {
-      br.close();
-    }
-  }
-
   public void setStringBuilder(StringBuilder sb) {
     this.sb = sb;
   }
@@ -173,6 +127,22 @@ public class ZipHandler {
     File file = new File(filePath);
     dir = file.getParent();
     return dir;
+  }
+
+  private void searchJavaFile(String entryName) {
+    // ".java" length = 5
+    String last = entryName.substring(entryName.length() - 5, entryName.length());
+    String fileName = null;
+    for (int i = 0; i < entryName.length() - 3; i++) {
+      if (entryName.substring(i, i + 3).equals("src")) {
+        fileName = entryName.substring(i);
+        System.out.println("fileName : " + fileName);
+        if (last.equals(".java")) {
+          sb.append("javac " + fileName + "\n");
+          setStringBuilder(sb);
+        }
+      }
+    }
   }
 
 }

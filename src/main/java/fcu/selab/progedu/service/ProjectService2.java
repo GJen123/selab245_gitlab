@@ -154,10 +154,10 @@ public class ProjectService2 {
     execCmd(pushCommand, name);
 
     // 9. Create student project, and import project
-    // conn.createPrivateProject(name, rootProjectUrl);
+    conn.createPrivateProject(name, rootProjectUrl);
 
     // 10. Create each Jenkins Jobs
-    // createJenkinsJob(name, fileType);
+    createJenkinsJob(name, fileType);
 
     // send notification email to student
     // sendEmail();
