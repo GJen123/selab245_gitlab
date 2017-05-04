@@ -9,14 +9,6 @@
 <%@ page import="org.gitlab.api.GitlabAPI" %>
 <%@ page import="org.gitlab.api.models.*" %>
 <%@ page import="java.util.*" %>
-    
-<%
-	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
-		response.sendRedirect("index.jsp");
-	}
-	session.putValue("page", "teacherHW");
-	String pages = "teacherHW.jsp";
-%>
 
 <%@ include file="language.jsp" %>
     
@@ -56,8 +48,18 @@
 		
 		JenkinsApi jenkins = JenkinsApi.getInstance();
 	%>
-	<div class="container">
-		<div id="inline">
+      <div class="row">
+        <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+          <ul class="nav nav-pills flex-column">
+            <li class="nav-item">
+              <a class="nav-link" href="#">Overview <span class="sr-only">(current)</span></a>
+            </li>
+          </ul>
+        </nav>
+
+        <main class="col-md-9 col-xs-11 p-l-2 p-t-2">
+          <h1>Dashboard</h1>
+			<div id="inline">
 			<ul>
 				<li><img src="jenkins_pic/jenkins_blue.PNG" width="36" height="31">Commit過且沒問題</li>
 				<li><img src="jenkins_pic/jenkins_red.PNG" width="36" height="31">Commit過但有Error</li>
@@ -65,7 +67,7 @@
 			</ul>
 		</div>
 		<table class="table table-striped">
-			<thead class="thead-inverse">
+			<thead class="bg-primary text-white">
 				<tr>
 					<th><fmt:message key="teacherHW_th_studentId"/></th>
 					<th><fmt:message key="teacherHW_th_studentName"/></th>
@@ -140,6 +142,8 @@
 				%>
 			</tbody>
 		</table>
-	</div>
+        </main>
+      </div>
+
 </body>
 </html>

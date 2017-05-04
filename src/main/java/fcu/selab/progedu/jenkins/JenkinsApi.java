@@ -409,7 +409,6 @@ public class JenkinsApi {
       reader.close();
 
       JSONObject j1 = new JSONObject(jsonString1);
-
       color = j1.getString("color");
 
     } catch (Exception e) {

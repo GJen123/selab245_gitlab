@@ -34,6 +34,8 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.Conn;
+import fcu.selab.progedu.data.Project;
+import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.utils.ZipHandler;
@@ -52,6 +54,8 @@ public class ProjectService2 {
   private String jenkinsRootPassword;
 
   private StringBuilder javacSb;
+
+  private ProjectDbManager dbManager = ProjectDbManager.getInstance();
 
   boolean isSave = true;
 
@@ -97,6 +101,7 @@ public class ProjectService2 {
     String rootProjectUrl = null;
     String folderName = null;
     String filePath = null;
+    boolean hasTemplate = false;
 
     // 1. Create root project and get project id and url
     createRootProject(name);
@@ -109,6 +114,7 @@ public class ProjectService2 {
 
     // 3. Store Zip File to folder if file is not empty
     if (!fileDetail.getFileName().isEmpty()) {
+      hasTemplate = true;
       // get the folder name
       folderName = fileDetail.getFileName();
       // store to C://User/AppData/Temp/uploads/
@@ -153,10 +159,13 @@ public class ProjectService2 {
     String pushCommand = "git push";
     execCmd(pushCommand, name);
 
-    // 9. Create student project, and import project
+    // 9. Add project to database
+    addProject(name, readMe, fileType, hasTemplate);
+
+    // 10. Create student project, and import project
     conn.createPrivateProject(name, rootProjectUrl);
 
-    // 10. Create each Jenkins Jobs
+    // 11. Create each Jenkins Jobs
     createJenkinsJob(name, fileType);
 
     // send notification email to student
@@ -387,6 +396,29 @@ public class ProjectService2 {
         /* ignore */
       }
     }
+  }
+
+  /**
+   * Add a project to database
+   * 
+   * @param name
+   *          Project name
+   * @param readMe
+   *          Project readme
+   * @param fileType
+   *          File type
+   * @param hasTemplate
+   *          Has template
+   */
+  public void addProject(String name, String readMe, String fileType, boolean hasTemplate) {
+    Project project = new Project();
+
+    project.setName(name);
+    project.setDescription(readMe);
+    project.setType(fileType);
+    project.setHasTemplate(hasTemplate);
+
+    dbManager.addProject(project);
   }
 
 }
