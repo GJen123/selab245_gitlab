@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -312,5 +313,19 @@ public class GroupService {
     response.header("Content-Disposition", "attachment;filename=StudentList.csv");
     return response.build();
 
+  }
+  
+  /**
+   * Add a new member into a group
+   * 
+   * @param groupName the group name which new member join
+   * @param member the member name
+   */
+  @GET
+  @Path("email/{email}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public void addMember(@FormParam("groupName")String groupName, 
+      @FormParam("member")String member) {
+    
   }
 }

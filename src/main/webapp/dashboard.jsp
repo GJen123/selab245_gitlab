@@ -59,8 +59,8 @@
 	<div class="container">
 		<div id="inline">
 			<ul>
-				<li><img src="jenkins_pic/jenkins_blue.PNG" width="36" height="31">Commit過且沒問題</li>
-				<li><img src="jenkins_pic/jenkins_red.PNG" width="36" height="31">Commit過但有Error</li>
+				<li><img src="jenkins_pic/jenkins_blue.PNG" width="36" height="31">Compile成功</li>
+				<li><img src="jenkins_pic/jenkins_red.PNG" width="36" height="31">Compile失敗</li>
 				<li><img src="jenkins_pic/jenkins_gray.PNG" width="36" height="31">未Commit</li>
 			</ul>
 		</div>

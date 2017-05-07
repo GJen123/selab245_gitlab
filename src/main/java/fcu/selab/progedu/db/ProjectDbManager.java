@@ -7,8 +7,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import fcu.selab.progedu.data.Project;
+import fcu.selab.progedu.data.User;
 
 public class ProjectDbManager {
 
@@ -23,6 +33,8 @@ public class ProjectDbManager {
   private ProjectDbManager() {
 
   }
+  
+  UserDbManager udb = UserDbManager.getInstance();
 
   /**
    * Add project to database
@@ -34,6 +46,7 @@ public class ProjectDbManager {
     Statement stmt = null;
     String sql = "INSERT INTO Assignment(name, description, hasTemplate, type)  VALUES(?, ?, ?, ?)";
     String query = "SELECT * FROM Assignment";
+    List<User> users = udb.listAllUsers();
 
     try {
       preStmt = conn.prepareStatement(sql);
@@ -43,6 +56,10 @@ public class ProjectDbManager {
       preStmt.setString(4, project.getType());
       preStmt.executeUpdate();
       preStmt.close();
+      
+      for (User user : users) {
+        sendEmail(user.getEmail());
+      }
 
       stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(query);
@@ -60,6 +77,45 @@ public class ProjectDbManager {
       } catch (SQLException e) {
         e.printStackTrace();
       }
+    }
+  }
+  
+  /**
+   * Send notification email to student
+   * @param email students' email
+   */
+  public void sendEmail(String email) {
+    
+    final String username = "kira070725@gmail.com";
+    final String password = "csclbyqwjhgogypt";// your password
+
+    Properties props = new Properties();
+    props.put("mail.smtp.host", "smtp.gmail.com");
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.port", "587");
+    Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+      protected PasswordAuthentication getPasswordAuthentication() {
+        return new PasswordAuthentication(username, password);
+      }
+    });
+
+    try {
+      // String url = "140.134.26.64:7870/2017/verify.jsp";
+      String content = "您有新作業!";
+      // Message message = new MimeMessage(session);
+      MimeMessage message = new MimeMessage(session);
+      message.setFrom(new InternetAddress(username));
+      message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+      message.setSubject("新作業通知", "utf-8");
+      message.setContent(content, "text/html;charset=utf-8");
+
+      Transport.send(message);
+
+      System.out.println("Mail sent succesfully!");
+
+    } catch (MessagingException e) {
+      throw new RuntimeException(e);
     }
   }
 

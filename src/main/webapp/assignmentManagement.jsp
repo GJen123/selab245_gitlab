@@ -99,7 +99,7 @@
 									<label class="radio-inline"><input type="radio" name="fileRadio" value="Maven">Maven</label>
 									<label class="radio-inline"><input type="radio" name="fileRadio" value="Javac">Javac</label>
 								</div>
-								<div class = "form-group">
+								<div class="form-group">
 									
 									<label for="file"><fmt:message key="teacherManageHW_label_uploadZip"/></label>
 									<input type="file" accept=".zip" name="file" size="50" width="48"/>

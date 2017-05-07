@@ -133,6 +133,11 @@
 										</select>
 									</td>
 								</tr>
+								<tr>
+									<td>
+										<button type="submit" class="btn btn-default"><fmt:message key="teacherManageHW_button_send"/></button>
+									</td>
+								</tr>
 							</table>
 						</form>
 					</div>
