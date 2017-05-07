@@ -58,7 +58,8 @@
         </nav>
 
         <main class="col-md-9 col-xs-11 p-l-2 p-t-2">
-          <h1>Dashboard</h1>
+          <h1>Overview</h1>
+          <br><br>
 			<div id="inline">
 			<ul>
 				<li><img src="jenkins_pic/jenkins_blue.PNG" width="36" height="31">Commit過且沒問題</li>
@@ -66,8 +67,9 @@
 				<li><img src="jenkins_pic/jenkins_gray.PNG" width="36" height="31">未Commit</li>
 			</ul>
 		</div>
+		<h2>Student Project</h2>
 		<table class="table table-striped">
-			<thead class="bg-primary text-white">
+			<thead>
 				<tr>
 					<th><fmt:message key="teacherHW_th_studentId"/></th>
 					<th><fmt:message key="teacherHW_th_studentName"/></th>
