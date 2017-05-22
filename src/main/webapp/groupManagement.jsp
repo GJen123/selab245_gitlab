@@ -24,8 +24,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title>ProgEdu</title>
-	<script>
+<title>ProgEdu</title>
+</head>
+
+<body>
+	<!-- 設定語言 -->
+	<fmt:setBundle basename = "<%=basename %>"/>
+	
+	<%@ include file="header.jsp" %>
+<script>
 	$(document).ready(function() {
 		$('#upload').submit(function(evt) {
 			evt.preventDefault();
@@ -51,13 +58,32 @@
 		});
 	});
 </script>
-</head>
-
-<body>
-	<!-- 設定語言 -->
-	<fmt:setBundle basename = "<%=basename %>"/>
-	
-	<%@ include file="header.jsp" %>
+<script>
+	$(document).ready(function() {
+		$('#addMember').submit(function(evt) {
+			evt.preventDefault();
+			var formData = new FormData($(this)[0]);
+			$.ajax({
+				url : 'webapi/group/add',
+				type : 'POST',
+				data : formData,
+				async : false,
+				cache : false,
+				contentType : false,
+				enctype : 'application/x-www-form-urlencoded',
+				processData : false,
+				success : function(response) {
+					alert("Added!");
+					top.location.href = "../ProgEdu/groupManagement.jsp";
+				}, 
+				error : function(response) {
+					alert("Failed!");
+				}
+			});
+			return false;
+		});
+	});
+</script>
 
 	<div class="container">
 		<div>
@@ -106,19 +132,20 @@
 					</div>
 					<br><br><br><br>
 					<div class="col-md-12">
-						<form id="select" name="select" action="">
+						<form id="addMember" name="select">
 							<table>
 								<tr>
 									<td>
 										<label for="groupName">隊伍名稱：</label>
-										<input type="text" id="groupName" name="groupName">
+										<input type="text" id="groupName" name="groupName"/>
+									</td>
 								</tr>
 								<tr>
 									<td>
 										<select style="width: 500px" name="select1" id="select1" multiple size="<%=users.size()%>">
 											<%for(User user : users){
 												%>
-												<option value="<%=user.getUserName()%>"><%=user.getUserName() %>-<%=user.getName() %></option>
+												<option id="member" value="<%=user.getUserName()%>"><%=user.getUserName() %>-<%=user.getName() %></option>
 												<%
 											}%>
 										</select>
@@ -147,7 +174,7 @@
 			<!-- panel -->
 		</div>
 	</div>
-	<script>
+<script>
 		$('#gt').click(function(e){
 			$('#select1 option:selected').each(function(index){
 				$(this).remove();
@@ -162,6 +189,6 @@
 			})
 	
 		});
-</script>	
+</script>
 </body>
 </html>

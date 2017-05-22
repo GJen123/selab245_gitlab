@@ -89,7 +89,7 @@ public class UserService {
 
         studentList.add(convert);
       }
-      register(studentList);
+//      register(studentList);
 
       fr.close();
       br.close();

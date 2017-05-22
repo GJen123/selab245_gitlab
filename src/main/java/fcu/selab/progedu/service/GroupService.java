@@ -93,9 +93,9 @@ public class GroupService {
         }
         System.out.println(convert + "\n");
 
-        groupList.add(convert);
+//        groupList.add(convert);
       }
-      newGroup(groupList);
+//      newGroup(groupList);
 
       fr.close();
       br.close();
@@ -321,11 +321,13 @@ public class GroupService {
    * @param groupName the group name which new member join
    * @param member the member name
    */
-  @GET
-  @Path("email/{email}")
-  @Produces(MediaType.APPLICATION_JSON)
-  public void addMember(@FormParam("groupName")String groupName, 
+  @POST
+  @Path("add")
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  public Response addMember(@FormParam("groupName")String groupName, 
       @FormParam("member")String member) {
-    
+    System.out.println(groupName + ", " + member);
+    Response response = Response.ok().build();
+    return response;
   }
 }
