@@ -483,25 +483,6 @@ public class JenkinsApi {
   }
 
   /**
-   * Get the job color file path
-   * 
-   * @param color
-   *          Jenkins job status color
-   * @return picture file path
-   */
-  public String getColorPic(String color) {
-    String colorPic = null;
-    if (color.equals("blue")) {
-      colorPic = "jenkins_pic/jenkins_blue.PNG";
-    } else if (color.equals("red")) {
-      colorPic = "jenkins_pic/jenkins_red.PNG";
-    } else {
-      colorPic = "jenkins_pic/jenkins_gray.PNG";
-    }
-    return colorPic;
-  }
-
-  /**
    * Get a list of Jenkins jobs
    * 
    * @return list

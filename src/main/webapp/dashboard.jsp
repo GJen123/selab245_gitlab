@@ -24,8 +24,36 @@
 <html>
 <head>
 	<style type="text/css">
-		#inline li {
+		#inline p {
 		    display: inline;
+		}
+		.ovol {
+			border-radius: 50px;
+			height: 50px;
+            font-weight: bold;
+            width: 120px;
+            color: white;
+            text-align: center;
+		}
+		.circle {
+			border-radius: 30px;
+			height: 30px;
+            font-weight: bold;
+            width: 30px;
+            color: white;
+            text-align: center;
+		}
+		.red {
+			background: red;
+		}
+		.blue {
+			background: blue;
+		}
+		.gray {
+			background: gray;
+		}
+		.circle a {
+			color: white;
 		}
 	</style>
 	
@@ -83,6 +111,90 @@
 	        	
 		        <br><br>
 		        
+		        <h2>Student Project</h2>
+				<div id="inline">
+					<p class="ovol blue">Compile成功</p>
+					<p class="ovol red">Compile失敗</p>
+					<p class="ovol gray">未Commit</p>
+				</div>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th><fmt:message key="teacherHW_th_studentId"/></th>
+							<th><fmt:message key="teacherHW_th_studentName"/></th>
+							<%
+								for(Project project : dbProjects){
+									%>
+										<th><%=project.getName() %></th>
+									<%
+								}
+							%>
+						</tr>
+					</thead>
+					<tbody>
+						<%
+							for(User user : users){
+								String userName = user.getUserName();
+								String personal_url = gitData.getGitlabHostUrl() + "/u/" + userName;
+								%>
+									<tr>
+										<td width="15%"><%=user.getUserName() %></td>
+										<td width="10%"><strong><a href="#" onclick="window.open('<%=personal_url %>')"><%=user.getName() %></a></strong></td>
+										<%
+											gitProjects = conn.getProject(user);
+											Collections.reverse(gitProjects);
+											for(Project dbProject : dbProjects){
+												String proName = null;
+												String proUrl = null;
+												int commit_count = 0;
+												String circleColor = "circle gray";
+												for(GitlabProject gitProject : gitProjects){
+													if(dbProject.getName().equals(gitProject.getName())){
+														proName = dbProject.getName();
+														proUrl = gitProject.getWebUrl();
+														proUrl = conn.getReplaceUrl(proUrl);
+														proUrl += "/commits/master"; 
+														commit_count = conn.getAllCommitsCounts(gitProject.getId());
+														//---Jenkins---
+														String jobName = user.getUserName() + "_" + gitProject.getName();
+														String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
+														String color = jenkins.getJobJsonColor(jenkinsData.getJenkinsRootUsername() ,jenkinsData.getJenkinsRootPassword(), jobUrl);
+														if(commit_count == 1){
+														  circleColor = "circle gray";
+														} else {
+														  	if(color!=null){
+														  	  circleColor = "circle " + color;
+															}else{
+															  circleColor = "circle gray";
+															}
+														}
+														//-------------
+														break;
+													}else{
+														proName = "N/A";
+													}
+												}
+												
+												if("N/A".equals(proName)){
+													%>
+														<td><%=proName %></td>
+													<%
+												}else{
+													%>
+														<td><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=proUrl %>')"><%=commit_count %></a></p></td>
+													<%
+												}
+											}
+										%>
+									</tr>
+								<%
+							}
+						%>
+					</tbody>
+				</table>
+				
+				<br><br>
+		        
 		        <!-- Nav tabs -->
 				<ul class="nav nav-tabs" role="tablist">
 				  <li class="nav-item">
@@ -118,93 +230,7 @@
 				  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
 				  </div>
 				</div>
-		        
-		        <br><br>
-		        
-				<h2>Student Project</h2>
-				<div id="inline">
-					<ul>
-						<li><img src="jenkins_pic/jenkins_blue.PNG" width="36" height="31">Commit過且沒問題</li>
-						<li><img src="jenkins_pic/jenkins_red.PNG" width="36" height="31">Commit過但有Error</li>
-						<li><img src="jenkins_pic/jenkins_gray.PNG" width="36" height="31">未Commit</li>
-					</ul>
-				</div>
-				<table class="table table-striped">
-					<thead>
-						<tr>
-							<th><fmt:message key="teacherHW_th_studentId"/></th>
-							<th><fmt:message key="teacherHW_th_studentName"/></th>
-							<%
-								for(Project project : dbProjects){
-									%>
-										<th><%=project.getName() %></th>
-									<%
-								}
-							%>
-						</tr>
-					</thead>
-					<tbody>
-						<%
-							for(User user : users){
-								String userName = user.getUserName();
-								String personal_url = gitData.getGitlabHostUrl() + "/u/" + userName;
-								%>
-									<tr>
-										<td width="15%"><%=user.getUserName() %></td>
-										<td width="10%"><strong><a href="#" onclick="window.open('<%=personal_url %>')"><%=user.getName() %></a></strong></td>
-										<%
-											gitProjects = conn.getProject(user);
-											Collections.reverse(gitProjects);
-											for(Project dbProject : dbProjects){
-												String proName = null;
-												String proUrl = null;
-												int commit_count = 0;
-												String colorPic = null;
-												for(GitlabProject gitProject : gitProjects){
-													if(dbProject.getName().equals(gitProject.getName())){
-														proName = dbProject.getName();
-														proUrl = gitProject.getWebUrl();
-														proUrl = conn.getReplaceUrl(proUrl);
-														proUrl += "/commits/master"; 
-														commit_count = conn.getAllCommitsCounts(gitProject.getId());
-														//---Jenkins---
-														String jobName = user.getUserName() + "_" + gitProject.getName();
-														String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
-														String color = jenkins.getJobJsonColor(jenkinsData.getJenkinsRootUsername() ,jenkinsData.getJenkinsRootPassword(), jobUrl);
-														if(commit_count == 1){
-														  colorPic = "jenkins_pic/jenkins_gray.PNG";
-														} else {
-														  	if(color!=null){
-																colorPic = jenkins.getColorPic(color);
-															}else{
-																colorPic = "jenkins_pic/jenkins_gray.PNG";
-															}
-														}
-														//-------------
-														break;
-													}else{
-														proName = "N/A";
-													}
-												}
-												
-												if("N/A".equals(proName)){
-													%>
-														<td><%=proName %></td>
-													<%
-												}else{
-													%>
-														<td><a href="#" onclick="window.open('<%=proUrl %>')"><%=commit_count %></a>
-														<img src="<%=colorPic %>" width="36" height="31"></td>
-													<%
-												}
-											}
-										%>
-									</tr>
-								<%
-							}
-						%>
-					</tbody>
-				</table>
+		        			
 	        </div>
         
         </main>
