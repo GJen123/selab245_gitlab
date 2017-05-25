@@ -138,6 +138,30 @@ public class UserDbManager {
   }
   
   /**
+   * Get user from database
+   * @param userId      The db user id
+   * @return user
+   */
+  public String getName(int userId) {
+    Connection conn = database.getConnection();
+    String query = "SELECT * FROM User WHERE id = ?";
+    PreparedStatement preStmt = null;
+    String name = "";
+
+    try {
+      preStmt = conn.prepareStatement(query);
+      preStmt.setInt(1, userId);
+      ResultSet rs = preStmt.executeQuery();
+      while (rs.next()) {
+        name = rs.getString("name");
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return name;
+  }
+  
+  /**
    * user name to find userId  in db
    * 
    * @param name user's name

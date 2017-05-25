@@ -2,8 +2,11 @@ package fcu.selab.progedu.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import fcu.selab.progedu.data.Group;
 
@@ -60,6 +63,67 @@ public class GroupDbManager {
         e.printStackTrace();
       }
     }
-
+  }
+  
+  /**
+   * get all groups
+   * 
+   * @return  all group on gitlab
+   */
+  
+  public List<Group> listGroups() {
+    List<Group> lsGroups = new ArrayList<Group>();
+    List<String> members = new ArrayList<String>();
+    Group group = new Group();
+    String groupName = "";
+    
+    Connection conn = database.getConnection();
+    String sql = "SELECT * FROM Team";
+    Statement stmt = null;
+    
+    try {
+      stmt = conn.createStatement();
+      ResultSet rs = stmt.executeQuery(sql);
+      
+      while (rs.next()) {
+        if (groupName.equals(rs.getString("name"))) {
+          boolean isLeader = rs.getBoolean("isLeader");
+          
+          if (isLeader) {
+            int leaderId = rs.getInt("sId");
+            group.setMaster(udb.getName(leaderId));
+          } else {
+            int memberId = rs.getInt("sId");
+            members.add(udb.getName(memberId));
+            group.setContributor(members);
+          }
+        } else {
+          group = new Group();
+          members = new ArrayList<String>();
+          
+          groupName = rs.getString("name");
+          group.setGroupName(groupName);
+          boolean isLeader = rs.getBoolean("isLeader");
+          if (isLeader) {
+            int leaderId = rs.getInt("sId");
+            group.setMaster(udb.getName(leaderId));
+          } else {
+            int memberId = rs.getInt("sId");
+            members.add(udb.getName(memberId));
+            group.setContributor(members);
+          }
+          lsGroups.add(group);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }    
+    return lsGroups;
   }
 }

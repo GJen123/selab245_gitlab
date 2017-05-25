@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
 	pageEncoding="utf-8"%>
-<%@ page import=" fcu.selab.progedu.conn.Conn, fcu.selab.progedu.conn.HttpConnect"%>
-<%@ page import="fcu.selab.progedu.conn.Language,fcu.selab.progedu.config.GitlabConfig" %>
+<%@ page import="fcu.selab.progedu.conn.Conn, fcu.selab.progedu.conn.HttpConnect, fcu.selab.progedu.db.GroupDbManager"%>
+<%@ page import="fcu.selab.progedu.conn.Language,fcu.selab.progedu.config.GitlabConfig, fcu.selab.progedu.data.Group" %>
 <%@ page import="java.util.List" %>
 <%@ page import="org.gitlab.api.models.*" %>
 <%@ page import="java.util.ArrayList" %>
@@ -28,9 +28,12 @@
 	<%@ include file="header.jsp" %>
 	 
 	<%
-		Conn conn = Conn.getInstance();
+		//Conn conn = Conn.getInstance();
 		GitlabConfig gitData = GitlabConfig.getInstance();
-		List<GitlabGroup> groups = conn.getGroups();
+		//List<GitlabGroup> groups = conn.getGroups();
+		GroupDbManager gdb = GroupDbManager.getInstance();
+		List<Group> groups = gdb.listGroups();
+		String groupUrl = "/groups/";
 		
 		%>
 			<div class="container">
@@ -44,49 +47,58 @@
 					</thead>
 					<tbody>
 						<%
-							for(GitlabGroup group : groups){
-								List<GitlabGroupMember> groupMembers = conn.getGroupMembers(group);
-								Collections.reverse(groupMembers);
-								List<GitlabProject> projects = conn.getGroupProject(group);
-								String groupUrl = conn.getGroupUrl(group);
+							for(Group group : groups){
+								//List<GitlabGroupMember> groupMembers = conn.getGroupMembers(group);
+								//Collections.reverse(groupMembers);
+								//List<GitlabProject> projects = conn.getGroupProject(group);
+								//String groupUrl = conn.getGroupUrl(group);
 										%>
 											<tr>
 												<td>
 													<table class="table table-condensed">
 														<tr>
-															<td><a href="<%=groupUrl %>" onclick="window.open('<%=groupUrl %>')"><%=group.getName() %></a></td>
+															<td><a href="<%=groupUrl + group.getGroupName() %>" onclick="window.open('<%=groupUrl + group.getGroupName() %>')"><%=group.getGroupName() %></a></td>
 														</tr>
 													</table>
 												</td>
 												<td>
 													<table class="table table-condensed">
 														<%
-															for(GitlabProject project : projects){
+															/*for(GitlabProject project : projects){
 																String projectUrl = project.getWebUrl();
 																String oldStr = projectUrl.substring(0, 19);
 																projectUrl = projectUrl.replace(oldStr, gitData.getGitlabHostUrl());
-																projectUrl += "/commits/master";
+																projectUrl += "/commits/master";*/
 																%>
 																	<tr>
-																		<td><a href="<%=projectUrl %>" onclick="window.open('<%=projectUrl %>')"><%=project.getName() %></a></td>
+																		
 																	</tr>
 																<%
-															}
+															//}
 														%>
 														
 													</table>
 												</td>
 												<td>
 													<table class="table table-condensed">
+													<%
+														String master = group.getMaster();
+														String memberUrl = gitData.getGitlabHostUrl() + "/u/" + master;
+													%>
+														<tr>
+															<td><a href="<%=memberUrl %>" onclick="window.open('<%=memberUrl %>')">組長：<%=master %></a></td>
+														</tr>
 														<%
-															for(GitlabGroupMember member : groupMembers){
-																String memberUsername = member.getUsername();
-																String memberUrl = gitData.getGitlabHostUrl() + "/u/" + memberUsername;
+															for(String member : group.getContributor()){
+																memberUrl = gitData.getGitlabHostUrl() + "/u/" + member;
+																if(member.equals("Administrator")) {
+																	continue;
+																}
 																%>
-																	<tr>
-																		<td><a href="<%=memberUrl %>" onclick="window.open('<%=memberUrl %>')"><%=member.getName() %></a></td>
+																																		<tr>
+																		<td><a href="<%=memberUrl %>" onclick="window.open('<%=memberUrl %>')">組員：<%=member %></a></td>
 																	</tr>
-																<%
+																<% 
 															}
 														
 														%>
