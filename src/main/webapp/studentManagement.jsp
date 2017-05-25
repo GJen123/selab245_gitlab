@@ -15,7 +15,36 @@
 <html>
 <head>
 	<title>ProgEdu</title>
-	<script>
+</head>
+
+<body>
+	<!-- 設定語言 -->
+	<fmt:setBundle basename = "<%=basename %>"/>
+	
+	<%@ include file="header.jsp" %>
+	
+	<div class="container">
+		<div>
+			<div class="login-panel panel panel-default">
+				<div class="panel-heading">
+					<h3><fmt:message key="teacherManageStudent_h3_newAllStudent"/></h3>
+				</div>
+
+				<div class="panel-body">
+					<div class="form-group">
+						<form>
+							<h4><fmt:message key="teacherManageStudent_h4_uploadStudent"/></h4>
+							Select File to Upload:<input type="file" name="file">
+							<br> <input type="submit" value="Upload">
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+<script>
 	$(document).ready(function() {
 		$("form").submit(function(evt) {
 			evt.preventDefault();
@@ -40,34 +69,5 @@
 			return false;
 		});
 	});
-	</script>
-</head>
-
-<body>
-	<!-- 設定語言 -->
-	<fmt:setBundle basename = "<%=basename %>"/>
-	
-	<%@ include file="header.jsp" %>
-
-	<div class="container">
-		<div>
-			<div class="login-panel panel panel-default">
-				<div class="panel-heading">
-					<h3><fmt:message key="teacherManageStudent_h3_newAllStudent"/></h3>
-				</div>
-
-				<div class="panel-body">
-					<div class="form-group">
-						<form>
-							<h4><fmt:message key="teacherManageStudent_h4_uploadStudent"/></h4>
-							Select File to Upload:<input type="file" name="file">
-							<br> <input type="submit" value="Upload">
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-</body>
+</script>
 </html>

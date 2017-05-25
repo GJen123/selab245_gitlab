@@ -1,13 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=BIG5"
-<<<<<<< HEAD
-	pageEncoding="utf-8"%>
+<%@ page language="java" contentType="text/html; charset=BIG5"	pageEncoding="utf-8"%>
 <%@ page import="fcu.selab.progedu.conn.Conn, fcu.selab.progedu.conn.HttpConnect, fcu.selab.progedu.db.GroupDbManager"%>
 <%@ page import="fcu.selab.progedu.conn.Language,fcu.selab.progedu.config.GitlabConfig, fcu.selab.progedu.data.Group" %>
 <%@ page import="java.util.List" %>
 <%@ page import="org.gitlab.api.models.*" %>
 <%@ page import="java.util.ArrayList" %>
-=======
-    pageEncoding="BIG5"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ page import="fcu.selab.progedu.conn.Conn,fcu.selab.progedu.conn.HttpConnect" %>
 <%@ page import="fcu.selab.progedu.jenkins.JenkinsApi, fcu.selab.progedu.conn.Language" %>
@@ -15,7 +12,6 @@
 <%@ page import="fcu.selab.progedu.config.JenkinsConfig" %>
 <%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager" %>
 <%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>   
->>>>>>> 58809bb32d0ddd25c32cac5cb911230d33e3c14d
 <%@ page import="org.gitlab.api.GitlabAPI" %>
 <%@ page import="org.gitlab.api.models.*" %>
 <%@ page import="java.util.*" %>
@@ -28,6 +24,11 @@
 	
 	List<GitlabGroup> groups = conn.getGroups();
 	Collections.reverse(groups);
+	
+	GroupDbManager gdb = GroupDbManager.getInstance();
+	List<Group> dbGroups = gdb.listGroups();
+	String groupUrl = "/groups/";
+		
 
 	String groupId = request.getParameter("id"); // Get group id
 	if(null == groupId){
@@ -53,103 +54,13 @@
 </head>
 <body>
 	<%@ include file="header.jsp" %>
-<<<<<<< HEAD
-	 
-	<%
-		//Conn conn = Conn.getInstance();
-		GitlabConfig gitData = GitlabConfig.getInstance();
-		//List<GitlabGroup> groups = conn.getGroups();
-		GroupDbManager gdb = GroupDbManager.getInstance();
-		List<Group> groups = gdb.listGroups();
-		String groupUrl = "/groups/";
-		
-		%>
-			<div class="container">
-				<table class="table table-condensed">
-					<thead>
-						<tr>
-					      <th><fmt:message key="teacherGroup_th_group"/></th>
-					      <th><fmt:message key="teacherGroup_th_project"/></th>
-					      <th><fmt:message key="teacherGroup_th_student"/></th>
-					    </tr>
-					</thead>
-					<tbody>
-						<%
-							for(Group group : groups){
-								//List<GitlabGroupMember> groupMembers = conn.getGroupMembers(group);
-								//Collections.reverse(groupMembers);
-								//List<GitlabProject> projects = conn.getGroupProject(group);
-								//String groupUrl = conn.getGroupUrl(group);
-										%>
-											<tr>
-												<td>
-													<table class="table table-condensed">
-														<tr>
-															<td><a href="<%=groupUrl + group.getGroupName() %>" onclick="window.open('<%=groupUrl + group.getGroupName() %>')"><%=group.getGroupName() %></a></td>
-														</tr>
-													</table>
-												</td>
-												<td>
-													<table class="table table-condensed">
-														<%
-															/*for(GitlabProject project : projects){
-																String projectUrl = project.getWebUrl();
-																String oldStr = projectUrl.substring(0, 19);
-																projectUrl = projectUrl.replace(oldStr, gitData.getGitlabHostUrl());
-																projectUrl += "/commits/master";*/
-																%>
-																	<tr>
-																		
-																	</tr>
-																<%
-															//}
-														%>
-														
-													</table>
-												</td>
-												<td>
-													<table class="table table-condensed">
-													<%
-														String master = group.getMaster();
-														String memberUrl = gitData.getGitlabHostUrl() + "/u/" + master;
-													%>
-														<tr>
-															<td><a href="<%=memberUrl %>" onclick="window.open('<%=memberUrl %>')">組長：<%=master %></a></td>
-														</tr>
-														<%
-															for(String member : group.getContributor()){
-																memberUrl = gitData.getGitlabHostUrl() + "/u/" + member;
-																if(member.equals("Administrator")) {
-																	continue;
-																}
-																%>
-																																		<tr>
-																		<td><a href="<%=memberUrl %>" onclick="window.open('<%=memberUrl %>')">組員：<%=member %></a></td>
-																	</tr>
-																<% 
-															}
-														
-														%>
-													</table>
-												</td>
-											</tr>
-										<%
-							}
-						%>
-					</tbody>
-				</table>
-			</div>
-		<%
-	%>
-=======
->>>>>>> 58809bb32d0ddd25c32cac5cb911230d33e3c14d
-	
+
 	<div class="row">
         <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
           <ul class="nav nav-pills flex-column">
             <%
             	for(GitlabGroup group : groups){
-            	  String href = "\"testGroup.jsp?id=" + group.getId() + "\"";
+            	  String href = "\"teacherGroup.jsp?id=" + group.getId() + "\"";
             	  %>
             	  	<li class="nav-item"><a class="nav-link" href=<%=href %>><%=group.getName() %></a></li>
             	  <%
@@ -198,23 +109,15 @@
 	        					</table>
 	        				</td>
 	        				<td>
-	        					<!-- 
-	        					<ul style="list-style-type:none">
-	        						<%
-	        							for(GitlabGroupMember member : groupMembers){
-	        							  %>
-	        							  	<li><%=member.getName() %></li>
-	        							  <%
-	        							}
-	        						%>
-	        					</ul>
-	        					 -->
-	        					 
 	        					<table id="noborder">
 	        						<%
 	        						for(GitlabGroupMember member : groupMembers){
+	        							if(member.getName().equals("Administrator")) {
+        									continue;
+        								}
+	        							member.getAccessLevel();
 	        						  %>
-	        						  	<tr><th><%=member.getName() %></th></tr>
+	        						  	<tr><th><%=member.getName() %>, <%=member.getAccessLevel() %></th></tr>
 	        						  <%
 	        						}
 	        						%>
