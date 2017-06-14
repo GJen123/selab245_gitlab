@@ -93,6 +93,7 @@
 	        				List<GitlabProject> projects = conn.getGroupProject(groupChoosed);
 	        				Collections.reverse(projects);
 	        				List<GitlabGroupMember> groupMembers = conn.getGroupMembers(groupChoosed);
+	        				Collections.reverse(groupMembers);
 	        			%>
 	        			<tr>
 	        				<td>
@@ -112,12 +113,18 @@
 	        					<table id="noborder">
 	        						<%
 	        						for(GitlabGroupMember member : groupMembers){
+	        							String rule = "";
 	        							if(member.getName().equals("Administrator")) {
         									continue;
         								}
-	        							member.getAccessLevel();
+	        							if(member.getAccessLevel().toString().equals("Master")) {
+	        								rule = "組長";
+	        							}
+	        							if(member.getAccessLevel().toString().equals("Developer")) {
+	        								rule = "組員";
+	        							}
 	        						  %>
-	        						  	<tr><th><%=member.getName() %>, <%=member.getAccessLevel() %></th></tr>
+	        						  	<tr><th><%=rule %>：  <%=member.getName() %></th></tr>
 	        						  <%
 	        						}
 	        						%>
@@ -127,7 +134,6 @@
 	        		</tbody>
 	        	</table>
         	</div>
-        	
         </main>
     </div>
 </body>

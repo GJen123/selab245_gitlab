@@ -62,15 +62,14 @@
 	$(document).ready(function() {
 		$('#addMember').submit(function(evt) {
 			evt.preventDefault();
-			var formData = new FormData($(this)[0]);
+			var formData = $(this).serialize();
 			$.ajax({
 				url : 'webapi/group/add',
 				type : 'POST',
 				data : formData,
 				async : false,
 				cache : false,
-				contentType : false,
-				enctype : 'application/x-www-form-urlencoded',
+				contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
 				processData : false,
 				success : function(response) {
 					alert("Added!");
@@ -84,7 +83,6 @@
 		});
 	});
 </script>
-
 	<div class="container">
 		<div>
 			<div class="login-panel panel panel-default">
@@ -178,14 +176,14 @@
 		$('#gt').click(function(e){
 			$('#select1 option:selected').each(function(index){
 				$(this).remove();
-				$('#select2').append("<option value="+$(this).val()+">"+$(this).text()+"</option>");
+				$('#select2').append("<option selected id="+$(this).val()+" value="+$(this).val()+">"+$(this).text()+"</option>");
 			})
 	
 		});
 		$('#lt').click(function(e){
 			$('#select2 option:selected').each(function(index){
 				$(this).remove();
-				$('#select1').append("<option value="+$(this).val()+">"+$(this).text()+"</option>");
+				$('#select1').append("<option id="+$(this).val()+" value="+$(this).val()+">" + $(this).text() + "</option>");
 			})
 	
 		});

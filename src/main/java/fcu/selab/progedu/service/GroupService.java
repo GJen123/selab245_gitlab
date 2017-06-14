@@ -319,15 +319,22 @@ public class GroupService {
    * Add a new member into a group
    * 
    * @param groupName the group name which new member join
-   * @param member the member name
+   * @param members the member name
    */
   @POST
   @Path("add")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Response addMember(@FormParam("groupName")String groupName, 
-      @FormParam("member")String member) {
-    System.out.println(groupName + ", " + member);
+      @FormParam("select2")List<String> members) {
+    boolean check = gdb.addGroupMember(groupName, members);
+    System.out.println(groupName);
+    for (int i = 0; i < members.size(); i++) {
+      System.out.println(members.get(i));
+    }
     Response response = Response.ok().build();
+    if (!check) {
+      response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
+    }
     return response;
   }
 }

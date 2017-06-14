@@ -118,6 +118,7 @@ public class UserDbManager {
       ResultSet rs = preStmt.executeQuery();
       while (rs.next()) {
         int gitLabId = rs.getInt("gitLabId");
+        int id = rs.getInt("id");
         String stuId = userName;
         String name = rs.getString("name");
         String password = rs.getString("password");
@@ -125,6 +126,7 @@ public class UserDbManager {
         String privateToken = rs.getString("privateToken");
 
         user.setGitLabId(gitLabId);
+        user.setId(id);
         user.setUserName(stuId);
         user.setName(name);
         user.setPassword(password);
