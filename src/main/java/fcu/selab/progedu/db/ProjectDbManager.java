@@ -86,8 +86,9 @@ public class ProjectDbManager {
    */
   public void sendEmail(String email) {
     
-    final String username = "kira070725@gmail.com";
-    final String password = "csclbyqwjhgogypt";// your password
+    final String username = "fcuselab245@gmail.com";
+//    final String password = "csclbyqwjhgogypt";// your password
+    final String password = "52005505";
 
     Properties props = new Properties();
     props.put("mail.smtp.host", "smtp.gmail.com");
@@ -101,9 +102,7 @@ public class ProjectDbManager {
     });
 
     try {
-      // String url = "140.134.26.64:7870/2017/verify.jsp";
       String content = "您有新作業!";
-      // Message message = new MimeMessage(session);
       MimeMessage message = new MimeMessage(session);
       message.setFrom(new InternetAddress(username));
       message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
