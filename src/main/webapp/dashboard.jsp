@@ -72,16 +72,16 @@
 		UserDbManager db = UserDbManager.getInstance();
 		ProjectDbManager Pdb = ProjectDbManager.getInstance();
 		
-		// dbªº©Ò¦³users
+		// dbçš„æ‰€æœ‰users
 		List<User> users = db.listAllUsers();
 		
-		// ¨C­Ó¾Ç¥Ígitlabªºprojects
+		// æ¯å€‹å­¸ç”Ÿgitlabçš„projects
 		List<GitlabProject> gitProjects = new ArrayList<GitlabProject>();
 		
-		// dbªº©Ò¦³projects
+		// dbçš„æ‰€æœ‰projects
 		List<Project> dbProjects = Pdb.listAllProjects();
 		
-		// gitlab jenkins courseªºData
+		// gitlab jenkins courseçš„Data
 		GitlabConfig gitData = GitlabConfig.getInstance();
 		JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 		
@@ -92,7 +92,7 @@
           <ul class="nav nav-pills flex-column">
             <li class="nav-item"><font size="4"><a class="nav-link" href="dashboard.jsp">Overview <span class="sr-only">(current)</span></a></font></li>
             <li class="nav-item">
-                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-fw fa-arrows-v"></i> Student¡¿ <i class="fa fa-fw fa-caret-down"></i></a></font>
+                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-fw fa-arrows-v"></i> Studentâ–¼ <i class="fa fa-fw fa-caret-down"></i></a></font>
                 <ul id="student" class="collapse" style="list-style: none;">
                     <%
 		            	for(User user : users){
@@ -119,9 +119,9 @@
 		        	<div class="card-block">
 		        		
 						<div id="inline">
-							<p class="ovol blue">Compile¦¨¥\</p>
-							<p class="ovol red">Compile¥¢±Ñ</p>
-							<p class="ovol gray">¥¼Commit</p>
+							<p class="ovol blue" style="padding: 5px 5px 5px 5px">CompileæˆåŠŸ</p>
+							<p class="ovol red" style="padding: 5px 5px 5px 5px">Compileå¤±æ•—</p>
+							<p class="ovol gray" style="padding: 5px 5px 5px 5px">æœªCommit</p>
 						</div>
 						<table class="table table-striped">
 							<thead>

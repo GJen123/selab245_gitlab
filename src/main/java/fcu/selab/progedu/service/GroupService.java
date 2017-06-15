@@ -35,7 +35,7 @@ import fcu.selab.progedu.db.GroupDbManager;
 @Path("group/")
 public class GroupService {
 
-  Conn userConn = Conn.getInstance();
+  Conn conn = Conn.getInstance();
   UserService userService = new UserService();
   GroupDbManager gdb = GroupDbManager.getInstance();
 
@@ -64,10 +64,10 @@ public class GroupService {
       fileUploadDir.mkdirs();
     }
     String fileName = fileDetail.getFileName();
-    System.out.println("fileName :" + fileName);
+//    System.out.println("fileName :" + fileName);
     String uploadedFileLocation = uploadDir + fileName;
     List<String> groupList = new ArrayList<String>();
-    System.out.println("File successfully uploaded to : " + uploadedFileLocation);
+//    System.out.println("File successfully uploaded to : " + uploadedFileLocation);
 
     try {
       FileOutputStream out = new FileOutputStream(new File(uploadedFileLocation));
@@ -91,11 +91,11 @@ public class GroupService {
         for (int i = 1; i < row.length; i++) {
           convert = convert + "," + row[i];
         }
-        System.out.println(convert + "\n");
+//        System.out.println(convert + "\n");
 
-//        groupList.add(convert);
+        groupList.add(convert);
       }
-//      newGroup(groupList);
+      newGroup(groupList);
 
       fr.close();
       br.close();
@@ -149,6 +149,7 @@ public class GroupService {
 
           flag = 0;
         }
+        //flag = 0
         group = new Group();
         cons = new ArrayList<String>();
         groupName = row[0];
@@ -173,12 +174,15 @@ public class GroupService {
       }
     }
     for (Group g : groups) {
-      System.out.println("Group name: " + g.getGroupName());
-      System.out.println("Group master: " + g.getMaster());
-      for (String c : g.getContributor()) {
-        System.out.println("Group member: " + c);
+//      System.out.println("Group name: " + g.getGroupName());
+//      System.out.println("Group master: " + g.getMaster());
+//      for (String c : g.getContributor()) {
+//        System.out.println("Group member: " + c);
+//      }
+      if (g.getGroupName().equals("")) {
+        continue;
       }
-      createGroup(g);
+//      createGroup(g);
     }
   }
 
@@ -190,7 +194,7 @@ public class GroupService {
    * @return GitLabGroup
    */
   public GitlabGroup newGroup(String name) {
-    GitlabGroup group = userConn.createGroup(name);
+    GitlabGroup group = conn.createGroup(name);
     return group;
   }
 
@@ -218,12 +222,12 @@ public class GroupService {
 
     groupId = newGroupId(newGroup(group.getGroupName()));
     masterId = findUser(group.getMaster());
-    userConn.addMember(groupId, masterId, 40);  //add member on GitLab
+    conn.addMember(groupId, masterId, 40);  //add member on GitLab
     gdb.addGroup(group.getGroupName(), group.getMaster(), true); //insert into db
     
     for (String developName : group.getContributor()) {
       developerId = findUser(developName);
-      userConn.addMember(groupId, developerId, 30);  //add member on GitLab
+      conn.addMember(groupId, developerId, 30);  //add member on GitLab
       gdb.addGroup(group.getGroupName(), developName, false); //insert into db
     }
   }
@@ -237,7 +241,7 @@ public class GroupService {
    */
   public int findUser(String name) {
     List<GitlabUser> users;
-    users = userConn.getUsers();
+    users = conn.getUsers();
     for (GitlabUser user : users) {
       if (user.getName().equals(name)) {
         return user.getId();
@@ -305,7 +309,7 @@ public class GroupService {
     }
 
     // write the file
-    System.out.println("content:\n" + build.toString());
+//    System.out.println("content:\n" + build.toString());
     writer.write(build.toString());
     writer.close();
 
@@ -327,9 +331,10 @@ public class GroupService {
   public Response addMember(@FormParam("groupName")String groupName, 
       @FormParam("select2")List<String> members) {
     boolean check = gdb.addGroupMember(groupName, members);
-    System.out.println(groupName);
-    for (int i = 0; i < members.size(); i++) {
-      System.out.println(members.get(i));
+    for (String userName : members) {
+      int groupId = conn.getGitlabGroup(groupName).getId();
+      int userId = conn.getUserViaSudo(userName).getId();
+      conn.addMember(groupId, userId, 30);
     }
     Response response = Response.ok().build();
     if (!check) {

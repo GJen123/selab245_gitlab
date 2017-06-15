@@ -22,9 +22,8 @@
 	<fmt:setBundle basename = "<%=basename %>"/>
 	
 	<%@ include file="header.jsp" %>
-	
 	<div>
-		<div class="container">
+		<div class="container" style="margin-top: 30px">
 			<br>
 			<div>
 				<div class="card">

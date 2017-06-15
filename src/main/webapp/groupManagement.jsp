@@ -83,94 +83,89 @@
 		});
 	});
 </script>
-	<div>
-		<div class="container">
-			<br>
-			<div>
-				<div class="card">
-					<h3 class="card-header"><fmt:message key="teacherManageGroup_h3_newGroup"/></h3>
-	
-					<div class="card-block">
-						<div class="col-md-2">
-							<a href="webapi/group/export" class="btn btn-secondary" style="background-color:#F5F5F5;"><fmt:message key="teacherManageGroup_a_exportStudent"/></a>
-						</div>
-	
-						<div class="col-md-10">
-							<form id="upload" name="upload">
-								<button type="button" class="btn btn-secondary" style="background-color:#F5F5F5;" data-toggle="modal"
-									data-target="#exampleModal" data-whatever="@mdo"><fmt:message key="teacherManageGroup_button_importStudent"/></button>
-								<div class="modal fade" id="exampleModal" tabindex="-1"
-									role="dialog" aria-labelledby="exampleModalLabel"
-									aria-hidden="true">
-									<div class="modal-dialog">
-										<div class="modal-content">
-											<div class="modal-header">
-												<button type="button" class="close" data-dismiss="modal">
-													<span aria-hidden="true">&times;</span> <span
-														class="sr-only">Close</span>
-												</button>
-												<h4 class="modal-title" id="exampleModalLabel"><fmt:message key="teacherManageGroup_h4_importStudent"/></h4>
-											</div>
-	
-											<div class="modal-body">
-												<div class="form-group">
-													<h4><fmt:message key="teacherManageGroup_h4_uploadFile"/></h4>
-													<input type="file" name="file" size="50" />
-												</div>
-											</div>
-											<div class="modal-footer">
-												<button type="button" class="btn btn-primary"
-													data-dismiss="modal"><fmt:message key="teacherManageGroup_button_close"/></button>
-												<button type="submit" class="btn btn-secondary" style="background-color:#F5F5F5;"><fmt:message key="teacherManageGroup_button_send"/></button>
-											</div>
-										</div>
+	<div class="container">
+		<div class="card" style="margin-top: 30px">
+  			<div class="card-block">
+   				 <h4 class="card-title"><fmt:message key="teacherManageGroup_h3_newGroup"/></h4>
+    			 <a href="webapi/group/export" class="btn btn-secondary" style="background-color:#F5F5F5;">
+    			 	<fmt:message key="teacherManageGroup_a_exportStudent"/>
+    			 </a>
+    			 <form id="upload" name="upload">
+					<button type="button" class="btn btn-default" style="background-color:#F5F5F5;" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">
+						<fmt:message key="teacherManageGroup_button_importStudent"/>
+					</button>
+					<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">
+										<span aria-hidden="true">&times;</span>
+										<span class="sr-only">Close</span>
+									</button>
+									<h4 class="modal-title" id="exampleModalLabel"><fmt:message key="teacherManageGroup_h4_importStudent"/></h4>
+								</div>
+
+								<div class="modal-body">
+									<div class="form-group">
+										<h4><fmt:message key="teacherManageGroup_h4_uploadFile"/></h4>
+										<input type="file" name="file" size="50" />
 									</div>
 								</div>
-							</form>
-						</div>
-						<br><br><br><br>
-						<div class="col-md-12">
-							<form id="addMember" name="select">
-								<table>
-									<tr>
-										<td>
-											<label for="groupName">隊伍名稱：</label>
-											<input type="text" id="groupName" name="groupName"/>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<select style="width: 500px" name="select1" id="select1" multiple size="<%=users.size()%>">
-												<%for(User user : users){
-													%>
-													<option id="member" value="<%=user.getUserName()%>"><%=user.getUserName() %>-<%=user.getName() %></option>
-													<%
-												}%>
-											</select>
-										</td>
-										<td>
-											<input type="button" id="gt" name="gt" value="&gt;&gt;">
-											<br>
-											<input type="button" id="lt" name="lt" value="&lt;&lt;">
-										</td>
-										<td>
-											<select style="width: 500px" name="select2" id="select2" multiple>
-											</select>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<button type="submit" class="btn btn-primary"><fmt:message key="teacherManageHW_button_send"/></button>
-										</td>
-									</tr>
-								</table>
-							</form>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default" data-dismiss="modal">
+										<fmt:message key="teacherManageGroup_button_close"/>
+									</button>
+									<button type="submit" class="btn btn-primary">
+										<fmt:message key="teacherManageGroup_button_send"/>
+									</button>
+								</div>
+							</div>
 						</div>
 					</div>
-					<!-- panel-body -->
-				</div>
-				<!-- panel -->
-			</div>
+				</form>
+  			</div>
+		</div>
+		<div class="card" style="margin-top: 30px">
+  			<div class="card-block">
+   				<h4 class="card-title"><fmt:message key="teacherManageGroup_addMember"/></h4>
+    			<form id="addMember" name="select">
+					<table>
+						<tr>
+							<td>
+								<label for="groupName"><fmt:message key="teacherManageGroup_groupName"/>: </label>
+								<input type="text" id="groupName" name="groupName"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<select style="width: 500px; padding-top: 5px; padding-bottom: 5px" name="select1" id="select1" multiple size="<%=users.size()%>">
+									<%
+										for(User user : users){
+									%>
+											<option id="member" value="<%=user.getUserName()%>"><%=user.getUserName() %>-<%=user.getName() %></option>
+									<%
+										}
+									%>
+								</select>
+							</td>
+							<td>
+								<input type="button" id="gt" name="gt" value="&gt;&gt;">
+								<br>
+								<input type="button" id="lt" name="lt" value="&lt;&lt;">
+							</td>
+							<td>
+								<select style="width: 500px; padding-top: 5px; padding-bottom: 5px" name="select2" id="select2" multiple size="<%=users.size()%>">
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<button type="submit" class="btn btn-default" style="margin-top: 10px"><fmt:message key="teacherManageHW_button_send"/></button>
+							</td>
+						</tr>
+					</table>
+				</form>
+  			</div>
 		</div>
 	</div>
 <script>
