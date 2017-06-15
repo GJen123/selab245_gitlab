@@ -113,9 +113,9 @@
 		        
 		        <h2>Student Project</h2>
 				<div id="inline">
-					<p class="ovol blue">Compile成功</p>
-					<p class="ovol red">Compile失敗</p>
-					<p class="ovol gray">未Commit</p>
+					<p class="ovol blue" style="padding: 5px 5px 5px 5px">Compile成功</p>
+					<p class="ovol red" style="padding: 5px 5px 5px 5px">Compile失敗</p>
+					<p class="ovol gray" style="padding: 5px 5px 5px 5px">未Commit</p>
 				</div>
 				<table class="table table-striped">
 					<thead>

@@ -24,25 +24,18 @@
 	<%@ include file="header.jsp" %>
 	
 	<div class="container">
-		<div>
-			<div class="login-panel panel panel-default">
-				<div class="panel-heading">
-					<h3><fmt:message key="teacherManageStudent_h3_newAllStudent"/></h3>
-				</div>
-
-				<div class="panel-body">
-					<div class="form-group">
-						<form>
-							<h4><fmt:message key="teacherManageStudent_h4_uploadStudent"/></h4>
-							Select File to Upload:<input type="file" name="file">
-							<br> <input type="submit" value="Upload">
-						</form>
-					</div>
-				</div>
-			</div>
+		<div class="card" style="margin-top: 30px">
+  			<div class="card-block">
+    			<h4 class="card-title"><fmt:message key="teacherManageStudent_h3_newAllStudent"/></h4>
+    			<form>
+					<h6><fmt:message key="teacherManageStudent_h4_uploadStudent"/></h6>
+					Select File to Upload: <input type="file" name="file">
+					<br>
+					<input class="btn btn-default" type="submit" value="Upload">
+				</form>
+  			</div>
 		</div>
 	</div>
-
 </body>
 <script>
 	$(document).ready(function() {

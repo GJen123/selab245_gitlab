@@ -64,10 +64,10 @@ public class GroupService {
       fileUploadDir.mkdirs();
     }
     String fileName = fileDetail.getFileName();
-    System.out.println("fileName :" + fileName);
+//    System.out.println("fileName :" + fileName);
     String uploadedFileLocation = uploadDir + fileName;
     List<String> groupList = new ArrayList<String>();
-    System.out.println("File successfully uploaded to : " + uploadedFileLocation);
+//    System.out.println("File successfully uploaded to : " + uploadedFileLocation);
 
     try {
       FileOutputStream out = new FileOutputStream(new File(uploadedFileLocation));
@@ -91,7 +91,7 @@ public class GroupService {
         for (int i = 1; i < row.length; i++) {
           convert = convert + "," + row[i];
         }
-        System.out.println(convert + "\n");
+//        System.out.println(convert + "\n");
 
         groupList.add(convert);
       }
@@ -149,6 +149,7 @@ public class GroupService {
 
           flag = 0;
         }
+        //flag = 0
         group = new Group();
         cons = new ArrayList<String>();
         groupName = row[0];
@@ -178,7 +179,10 @@ public class GroupService {
 //      for (String c : g.getContributor()) {
 //        System.out.println("Group member: " + c);
 //      }
-      createGroup(g);
+      if (g.getGroupName().equals("")) {
+        continue;
+      }
+//      createGroup(g);
     }
   }
 
@@ -305,7 +309,7 @@ public class GroupService {
     }
 
     // write the file
-    System.out.println("content:\n" + build.toString());
+//    System.out.println("content:\n" + build.toString());
     writer.write(build.toString());
     writer.close();
 
