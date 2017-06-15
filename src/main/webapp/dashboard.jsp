@@ -87,16 +87,16 @@
       <div class="row">
         <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
           <ul class="nav nav-pills flex-column">
-            <li class="nav-item"><a class="nav-link" href="dashboard.jsp">Overview <span class="sr-only">(current)</span></a></li>
+            <li class="nav-item"><font size="4"><a class="nav-link" href="dashboard.jsp">Overview <span class="sr-only">(current)</span></a></font></li>
             <li class="nav-item">
-                <a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-fw fa-arrows-v"></i> Student▼ <i class="fa fa-fw fa-caret-down"></i></a>
+                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-fw fa-arrows-v"></i> Student▼ <i class="fa fa-fw fa-caret-down"></i></a></font>
                 <ul id="student" class="collapse" style="list-style: none;">
                     <%
 		            	for(User user : users){
 		            	  String userName = user.getUserName();
 		            	  String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
 		            	  %>
-		            	  	<li class="nav-item"><a class="nav-link" href=<%=href %>><%=userName %></a></li>
+		            	  	<li class="nav-item"><font size="4"><a class="nav-link" href=<%=href %>><%=userName %></a></font></li>
 		            	  <%
 		            	}
 		            %>
@@ -105,135 +105,151 @@
           </ul>
         </nav>
 
+<!-- ------------------------ main -------------------------------------- -->
         <main class="col-md-9 col-xs-11 p-l-2 p-t-2">
         <h1>Overview</h1>
 	        <div class="container">
-	        	
 		        <br><br>
-		        
-		        <h2>Student Project</h2>
-				<div id="inline">
-					<p class="ovol blue">Compile成功</p>
-					<p class="ovol red">Compile失敗</p>
-					<p class="ovol gray">未Commit</p>
-				</div>
-				<table class="table table-striped">
-					<thead>
-						<tr>
-							<th><fmt:message key="teacherHW_th_studentId"/></th>
-							<th><fmt:message key="teacherHW_th_studentName"/></th>
-							<%
-								for(Project project : dbProjects){
-									%>
-										<th><%=project.getName() %></th>
+		        <!-- ---------------------------- Student Project ------------------------------- -->
+		        <div class="card">
+		        	<h2 class="card-header">Student Project</h2>
+		        	<div class="card-block">
+		        		
+						<div id="inline">
+							<p class="ovol blue">Compile成功</p>
+							<p class="ovol red">Compile失敗</p>
+							<p class="ovol gray">未Commit</p>
+						</div>
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th><fmt:message key="teacherHW_th_studentId"/></th>
+									<th><fmt:message key="teacherHW_th_studentName"/></th>
 									<%
-								}
-							%>
-						</tr>
-					</thead>
-					<tbody>
-						<%
-							for(User user : users){
-								String userName = user.getUserName();
-								String personal_url = gitData.getGitlabHostUrl() + "/u/" + userName;
-								%>
-									<tr>
-										<td width="15%"><%=user.getUserName() %></td>
-										<td width="10%"><strong><a href="#" onclick="window.open('<%=personal_url %>')"><%=user.getName() %></a></strong></td>
-										<%
-											gitProjects = conn.getProject(user);
-											Collections.reverse(gitProjects);
-											for(Project dbProject : dbProjects){
-												String proName = null;
-												String proUrl = null;
-												int commit_count = 0;
-												String circleColor = "circle gray";
-												for(GitlabProject gitProject : gitProjects){
-													if(dbProject.getName().equals(gitProject.getName())){
-														proName = dbProject.getName();
-														proUrl = gitProject.getWebUrl();
-														proUrl = conn.getReplaceUrl(proUrl);
-														proUrl += "/commits/master"; 
-														commit_count = conn.getAllCommitsCounts(gitProject.getId());
-														//---Jenkins---
-														String jobName = user.getUserName() + "_" + gitProject.getName();
-														String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
-														String color = jenkins.getJobJsonColor(jenkinsData.getJenkinsRootUsername() ,jenkinsData.getJenkinsRootPassword(), jobUrl);
-														if(commit_count == 1){
-														  circleColor = "circle gray";
-														} else {
-														  	if(color!=null){
-														  	  circleColor = "circle " + color;
+										for(Project project : dbProjects){
+											%>
+												<th><%=project.getName() %></th>
+											<%
+										}
+									%>
+								</tr>
+							</thead>
+							<tbody>
+								<%
+									for(User user : users){
+										String userName = user.getUserName();
+										String personal_url = gitData.getGitlabHostUrl() + "/u/" + userName;
+										%>
+											<tr>
+												<td width="15%"><%=user.getUserName() %></td>
+												<td width="10%"><strong><a href="#" onclick="window.open('<%=personal_url %>')"><%=user.getName() %></a></strong></td>
+												<%
+													gitProjects = conn.getProject(user);
+													Collections.reverse(gitProjects);
+													for(Project dbProject : dbProjects){
+														String proName = null;
+														String proUrl = null;
+														int commit_count = 0;
+														String circleColor = "circle gray";
+														for(GitlabProject gitProject : gitProjects){
+															if(dbProject.getName().equals(gitProject.getName())){
+																proName = dbProject.getName();
+																proUrl = gitProject.getWebUrl();
+																proUrl = conn.getReplaceUrl(proUrl);
+																proUrl += "/commits/master"; 
+																commit_count = conn.getAllCommitsCounts(gitProject.getId());
+																//---Jenkins---
+																String jobName = user.getUserName() + "_" + gitProject.getName();
+																String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
+																String color = jenkins.getJobJsonColor(jenkinsData.getJenkinsRootUsername() ,jenkinsData.getJenkinsRootPassword(), jobUrl);
+																if(commit_count == 1){
+																  circleColor = "circle gray";
+																} else {
+																  	if(color!=null){
+																  	  circleColor = "circle " + color;
+																	}else{
+																	  circleColor = "circle gray";
+																	}
+																}
+																//-------------
+																break;
 															}else{
-															  circleColor = "circle gray";
+																proName = "N/A";
 															}
 														}
-														//-------------
-														break;
-													}else{
-														proName = "N/A";
+														
+														if("N/A".equals(proName)){
+															%>
+																<td><%=proName %></td>
+															<%
+														}else{
+															%>
+																<td><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=proUrl %>')"><%=commit_count %></a></p></td>
+															<%
+														}
 													}
-												}
-												
-												if("N/A".equals(proName)){
-													%>
-														<td><%=proName %></td>
-													<%
-												}else{
-													%>
-														<td><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=proUrl %>')"><%=commit_count %></a></p></td>
-													<%
-												}
-											}
-										%>
-									</tr>
-								<%
-							}
-						%>
-					</tbody>
-				</table>
-				
+												%>
+											</tr>
+										<%
+									}
+								%>
+							</tbody>
+						</table>
+		        	</div>
+		        </div>
+		        <!-- ---------------------------- Student Project ------------------------------- -->
+		        
 				<br><br>
 		        
 		        <!-- Nav tabs -->
-				<ul class="nav nav-tabs" role="tablist">
-				  <li class="nav-item">
-				    <a class="nav-link active" data-toggle="tab" href="#chart1" role="tab">Chart1</a>
-				  </li>
-				  <li class="nav-item">
-				    <a class="nav-link" data-toggle="tab" href="#chart2" role="tab">Chart2</a>
-				  </li>
-				  <li class="nav-item">
-				    <a class="nav-link" data-toggle="tab" href="#chart3" role="tab">Chart3</a>
-				  </li>
-				  <li class="nav-item">
-				    <a class="nav-link" data-toggle="tab" href="#chart4" role="tab">Chart4</a>
-				  </li>
-				</ul>
+		        <div class="card">
+		        	<div class="card-header">
+				        <ul class="nav nav-tabs" role="tablist">
+						  <li class="nav-item">
+						    <a class="nav-link active" data-toggle="tab" href="#chart1" role="tab">Chart1</a>
+						  </li>
+						  <li class="nav-item">
+						    <a class="nav-link" data-toggle="tab" href="#chart2" role="tab">Chart2</a>
+						  </li>
+						  <li class="nav-item">
+						    <a class="nav-link" data-toggle="tab" href="#chart3" role="tab">Chart3</a>
+						  </li>
+						  <li class="nav-item">
+						    <a class="nav-link" data-toggle="tab" href="#chart4" role="tab">Chart4</a>
+						  </li>
+						</ul>
+		        	</div>
+		        	
+		        	<div class="card-block">
+		        		<!-- Tab panes -->
+						<div class="tab-content">
+						  <div class="tab-pane active" id="chart1" role="tabpanel">
+						  	<h3>Chart1</h3>
+						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
+						  </div>
+						  <div class="tab-pane" id="chart2" role="tabpanel">
+						  	<h3>Chart2</h3>
+						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
+						  </div>
+						  <div class="tab-pane" id="chart3" role="tabpanel">
+						  	<h3>Chart3</h3>
+						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
+						  </div>
+						  <div class="tab-pane" id="chart4" role="tabpanel">
+						  	<h3>Chart4</h3>
+						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
+						  </div>
+						</div>
+		        	</div>
+		        </div>
 				
-				<!-- Tab panes -->
-				<div class="tab-content">
-				  <div class="tab-pane active" id="chart1" role="tabpanel">
-				  	<h3>Chart1</h3>
-				  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
-				  </div>
-				  <div class="tab-pane" id="chart2" role="tabpanel">
-				  	<h3>Chart2</h3>
-				  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
-				  </div>
-				  <div class="tab-pane" id="chart3" role="tabpanel">
-				  	<h3>Chart3</h3>
-				  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
-				  </div>
-				  <div class="tab-pane" id="chart4" role="tabpanel">
-				  	<h3>Chart4</h3>
-				  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
-				  </div>
-				</div>
+				
+				
 		        			
 	        </div>
         
         </main>
+<!-- ------------------------ main -------------------------------------- -->
       </div>
 
 </body>

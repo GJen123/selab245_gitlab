@@ -3,10 +3,10 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%
-	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+	/*if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
 		response.sendRedirect("index.jsp");
 	}
-	session.putValue("page", "teacherManageStudent");
+	session.putValue("page", "teacherManageStudent");*/
 %>
 
 <%@ include file="language.jsp"%>
@@ -17,32 +17,32 @@
 	<title>ProgEdu</title>
 </head>
 
-<body>
+<body  style="background-color:#F5F5F5;">
 	<!-- 設定語言 -->
 	<fmt:setBundle basename = "<%=basename %>"/>
 	
 	<%@ include file="header.jsp" %>
 	
-	<div class="container">
-		<div>
-			<div class="login-panel panel panel-default">
-				<div class="panel-heading">
-					<h3><fmt:message key="teacherManageStudent_h3_newAllStudent"/></h3>
-				</div>
-
-				<div class="panel-body">
-					<div class="form-group">
-						<form>
-							<h4><fmt:message key="teacherManageStudent_h4_uploadStudent"/></h4>
-							Select File to Upload:<input type="file" name="file">
-							<br> <input type="submit" value="Upload">
-						</form>
+	<div>
+		<div class="container">
+			<br>
+			<div>
+				<div class="card">
+					<h3 class="card-header"><fmt:message key="teacherManageStudent_h3_newAllStudent"/></h3>
+	
+					<div class="card-block">
+						<div class="form-group">
+							<form>
+								<h4><fmt:message key="teacherManageStudent_h4_uploadStudent"/></h4>
+								Select File to Upload:<input type="file" name="file">
+								<br> <input type="submit" value="Upload">
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
 </body>
 <script>
 	$(document).ready(function() {
