@@ -9,10 +9,10 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%
-	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+	/*if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
 		response.sendRedirect("index.jsp");
 	}
-	session.putValue("page", "teacherManageHw");
+	session.putValue("page", "teacherManageHw");*/
 %>
 
 <%@ include file="language.jsp"%>
@@ -62,24 +62,23 @@
 	<title>ProgEdu</title>
 	
 </head>
-<body>
+<body style="background-color:#F5F5F5;">
 	<!-- 設定語言 -->
 	<fmt:setBundle basename = "<%=basename %>"/>
 	
 	<%@ include file="header.jsp" %>
 	
-	<div class="container">
-		<form class="form-signin">
-			<div>
-				<div class="login-panel panel panel-default">
-					<div class="panel-heading">
-						<h3><fmt:message key="teacherManageHW_h3_distributeHW"/></h3>
-					</div>
-
-					<div class="panel-body">
+	<div>
+		<div class="container">
+			<br>
+			<form class="form-signin">
+				<div class="card">
+					<h3 class="card-header"><fmt:message key="teacherManageHW_h3_distributeHW"/></h3>
+	
+					<div class="card-block">
 						<div class="col-md-4">
 							<div class="form-group">
-								<label for="Hw_Name"><fmt:message key="teacherManageHW_label_hwName"/></label>
+								<label for="Hw_Name"><h3><fmt:message key="teacherManageHW_label_hwName"/></h3></label>
 								<input id="Hw_Name" type="text" class="form-control" name="Hw_Name" required="required" placeholder="ex. OOP-HW1"/>
 							</div>				
 							
@@ -91,8 +90,8 @@
 							</div>
 							<div style="display:none" id="example">
 								<div class = "form-group">
-									<a href="MvnQuickStart.zip" class="btn btn-default" id="mvn_download"><fmt:message key="teacherManageHW_a_downloadMaven"/></a>
-									<a href="JavacQuickStart.zip" class="btn btn-default" id="java_download"><fmt:message key="teacherManageHW_a_downloadJavac"/></a>
+									<a href="MvnQuickStart.zip" class="btn btn-secondary" style="background-color:#F5F5F5;" id="mvn_download"><fmt:message key="teacherManageHW_a_downloadMaven"/></a>
+									<a href="JavacQuickStart.zip" class="btn btn-secondary" style="background-color:#F5F5F5;" id="java_download"><fmt:message key="teacherManageHW_a_downloadJavac"/></a>
 								</div>
 								<div class="form-group">
 									<label for="fileRadio"><fmt:message key="teacherManageHW_label_zipradio"/></label>
@@ -109,19 +108,18 @@
 					
 							
 							<div class="form-group">
-								<label for="Hw_README"><fmt:message key="teacherManageHW_label_hwReadme"/></label>
+								<label for="Hw_README"><h3><fmt:message key="teacherManageHW_label_hwReadme"/></h3></label>
 								<textarea id="Hw_README" cols="100" rows="20" name="Hw_README"></textarea>
 							</div>
 							
 							<div class="form-group">
-								<button type="submit" class="btn btn-default" onclick="nicEditors.findEditor('Hw_README').saveContent();"><fmt:message key="teacherManageHW_button_send"/></button>
+								<button type="submit" class="btn btn-secondary" style="background-color:#F5F5F5;" onclick="nicEditors.findEditor('Hw_README').saveContent();"><fmt:message key="teacherManageHW_button_send"/></button>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		</form>
-		
+			</form>
+		</div>
 	</div>
 	
 </body>

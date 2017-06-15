@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="BIG5"%>
-<%@ page import="fcu.selab.progedu.conn.Conn,fcu.selab.progedu.conn.HttpConnect" %>
+<%@ page import="fcu.selab.progedu.conn.Conn,fcu.selab.progedu.conn.HttpConnect, fcu.selab.progedu.conn.StudentConn" %>
 <%@ page import="fcu.selab.progedu.jenkins.JenkinsApi, fcu.selab.progedu.conn.Language" %>
+<%@ page import="fcu.selab.progedu.config.GitlabConfig,fcu.selab.progedu.config.CourseConfig" %>
 <%@ page import="fcu.selab.progedu.config.GitlabConfig" %>
 <%@ page import="fcu.selab.progedu.config.JenkinsConfig" %>
 <%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager" %>
@@ -42,6 +43,9 @@
             font-weight: bold;
             width: 200px;
         }
+        body, html, .row, #navHeight{
+			height:100%;
+		}
 	</style>
 	
 	<title>ProgEdu</title>
@@ -67,22 +71,23 @@
 		// gitlab jenkins course的Data
 		GitlabConfig gitData = GitlabConfig.getInstance();
 		JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+		CourseConfig courseData = CourseConfig.getInstance();
 		
 		JenkinsApi jenkins = JenkinsApi.getInstance();
 	%>
       <div class="row">
-        <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+        <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar" id="navHeight">
           <ul class="nav nav-pills flex-column">
-            <li class="nav-item"><a class="nav-link" href="dashboard.jsp">Overview <span class="sr-only">(current)</span></a></li>
+            <li class="nav-item"><font size="4"><a class="nav-link" href="dashboard.jsp">Overview <span class="sr-only">(current)</span></a></font></li>
             <li class="nav-item">
-                <a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-fw fa-arrows-v"></i> Student▼ <i class="fa fa-fw fa-caret-down"></i></a>
+                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-fw fa-arrows-v"></i> Student▼ <i class="fa fa-fw fa-caret-down"></i></a></font>
                 <ul id="student" class="collapse" style="list-style: none;">
                     <%
 		            	for(User user : users){
 		            	  String userName = user.getUserName();
 		            	  String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
 		            	  %>
-		            	  	<li class="nav-item"><a class="nav-link" href=<%=href %>><%=userName %></a></li>
+		            	  	<li class="nav-item"><font size="4"><a class="nav-link" href=<%=href %>><%=userName %></a></font></li>
 		            	  <%
 		            	}
 		            %>
@@ -101,9 +106,56 @@
         		  }
         		}
         		
+        		String private_token = choosedUser.getPrivateToken();
+            	StudentConn sConn = new StudentConn(private_token); 	
+            	List<GitlabProject> projects;
+            	int pro_total_commits = 0;
+        		
         	%>
+        	
         	<h1><%=choosedUser.getName() %></h1>
+        	
+        	
         	<div class="container">
+        		<br><br>
+        		<table class="table">
+					<thead>
+						<tr class="table-info">
+							<th width="15%">作業</th>
+							<%
+								projects = sConn.getProject();
+								Collections.reverse(projects);
+								for(GitlabProject project : projects){
+									if(courseData.getCourseName().equals(project.getName().substring(0,3))){
+										%>
+										<th><%=project.getName() %></th>
+										<%
+									}
+									
+								}
+							%>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th width="15%">Commits次數</th>
+							<%
+								for(GitlabProject project : projects){
+									if(courseData.getCourseName().equals(project.getName().substring(0,3))){
+										pro_total_commits = sConn.getAllCommitsCounts(project.getId());
+										%>
+											<th><%=pro_total_commits %></th>
+										<%
+									}
+									
+								}
+							%>
+							
+						</tr>
+					</tbody>
+				</table>
+				
+				<br><br>
         		
         		<!-- Nav tabs -->
 				<ul class="nav nav-tabs" role="tablist">

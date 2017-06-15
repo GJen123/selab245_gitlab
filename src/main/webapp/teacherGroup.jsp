@@ -38,6 +38,7 @@
 
 <html>
 <head>
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 	<style type="text/css">
 		#inline li {
 		    display: inline;
@@ -50,19 +51,35 @@
 	    }
 	</style>
 	
+	<style>
+		body, html, .row, #navHeight{
+			height:100%;
+		}
+	</style>
+	
 	<title>ProgEdu</title>
 </head>
 <body>
 	<%@ include file="header.jsp" %>
 
 	<div class="row">
-        <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+        <nav class="bg-faded sidebar col-sm-3 col-md-2 hidden-xs-down" id="navHeight">
+        	<!-- <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:15%">
+			  <%
+            	for(GitlabGroup group : groups){
+            	  String href = "\"teacherGroup.jsp?id=" + group.getId() + "\"";
+            	  %>
+            	  	<a class="nav-link" href=<%=href %>><%=group.getName() %></a>
+            	  <%
+            	}
+           	%>
+			</div> -->
           <ul class="nav nav-pills flex-column">
             <%
             	for(GitlabGroup group : groups){
             	  String href = "\"teacherGroup.jsp?id=" + group.getId() + "\"";
             	  %>
-            	  	<li class="nav-item"><a class="nav-link" href=<%=href %>><%=group.getName() %></a></li>
+            	  	<li class="nav-item"><font size="4"><a class="nav-link" href=<%=href %>><%=group.getName() %></a></font></li>
             	  <%
             	}
             %>
@@ -78,61 +95,78 @@
         		  }
         		}
         	%>
-        	<h1><%=groupChoosed.getName() %></h1>
+        	
         	<br><br>
         	<div class="container">
-	        	<table class="table">
-	        		<thead>
-	        			<tr>
-	        				<th width="20%"><fmt:message key="teacherGroup_th_project"/></th>
-						    <th width="20%"><fmt:message key="teacherGroup_th_student"/></th>
-	        			</tr>
-	        		</thead>
-	        		<tbody>
-	        			<%
-	        				List<GitlabProject> projects = conn.getGroupProject(groupChoosed);
-	        				Collections.reverse(projects);
-	        				List<GitlabGroupMember> groupMembers = conn.getGroupMembers(groupChoosed);
-	        				Collections.reverse(groupMembers);
-	        			%>
-	        			<tr>
-	        				<td>
-	        					<table>
-	        						<tr>
-	        							<%
-	        								for(GitlabProject project : projects){
-	        								  	%>
-	        								  		<td width="20%"><%=project.getName() %></td>
-	        								  	<%
-	        								}
-	        							%>
-	        						</tr>
-	        					</table>
-	        				</td>
-	        				<td>
-	        					<table id="noborder">
-	        						<%
-	        						for(GitlabGroupMember member : groupMembers){
-	        							String rule = "";
-	        							if(member.getName().equals("Administrator")) {
-        									continue;
-        								}
-	        							if(member.getAccessLevel().toString().equals("Master")) {
-	        								rule = "組長";
-	        							}
-	        							if(member.getAccessLevel().toString().equals("Developer")) {
-	        								rule = "組員";
-	        							}
-	        						  %>
-	        						  	<tr><th><%=rule %>：  <%=member.getName() %></th></tr>
-	        						  <%
-	        						}
-	        						%>
-	        					</table>
-	        				</td>
-						</tr>
-	        		</tbody>
-	        	</table>
+        		<div class="card">
+	        		<h1 class="card-header"><%=groupChoosed.getName() %></h1>
+	        		<div class="card-block">
+	        			<table class="table">
+			        		<thead class="thead-default">
+			        			<tr>
+			        				<th width="20%"><fmt:message key="teacherGroup_th_project"/></th>
+								    <th width="20%"><fmt:message key="teacherGroup_th_student"/></th>
+			        			</tr>
+			        		</thead>
+			        		<tbody>
+			        			<%
+			        				List<GitlabProject> projects = conn.getGroupProject(groupChoosed);
+			        				Collections.reverse(projects);
+			        				List<GitlabGroupMember> groupMembers = conn.getGroupMembers(groupChoosed);
+			        				Collections.reverse(groupMembers);
+			        			%>
+			        			<tr>
+			        				<td>
+			        					<table>
+			        						<tr>
+			        							<%
+			        								for(GitlabProject project : projects){
+			        								  	%>
+			        								  		<td width="20%"><%=project.getName() %></td>
+			        								  	<%
+			        								}
+			        							%>
+			        						</tr>
+			        					</table>
+			        				</td>
+			        				<td>
+			        					<table id="noborder">
+			        						<%
+			        						for(GitlabGroupMember member : groupMembers){
+			        						  String role = "";
+			        							if(member.getName().equals("Administrator")) {
+		        									continue;
+		        								}
+			        							if(member.getAccessLevel().toString().equals("Master")) {
+			        								role = "組長";
+			        								%>
+			        									<tr><th><font size="4"><%=role %>：  <%=member.getName() %></font></th></tr>
+			        								<%
+			        							}else{
+			        							  	continue;
+			        							}
+			        						}
+			        						for(GitlabGroupMember member : groupMembers){
+			        							String role = "";
+			        							if(member.getName().equals("Administrator")) {
+		        									continue;
+		        								}
+			        							if(member.getAccessLevel().toString().equals("Developer")) {
+			        								role = "組員";
+			        								%>
+					        						  	<tr><th><font size="3"><%=role %>：  <%=member.getName() %></font></th></tr>
+					        						<%
+			        							}
+			        						}
+			        						%>
+			        					</table>
+			        				</td>
+								</tr>
+			        		</tbody>
+			        	</table>
+	        		</div>
+        		</div>
+	        	
         	</div>
         </main>
     </div>

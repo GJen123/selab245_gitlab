@@ -10,10 +10,10 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%
-	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+	/*if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
 		response.sendRedirect("index.jsp");
 	}
-	session.putValue("page", "teacherManageGroup");
+	session.putValue("page", "teacherManageGroup");*/
 	
 	UserDbManager uDB = UserDbManager.getInstance();
 	List<User> users = uDB.listAllUsers();
@@ -27,7 +27,7 @@
 <title>ProgEdu</title>
 </head>
 
-<body>
+<body style="background-color:#F5F5F5;">
 	<!-- 設定語言 -->
 	<fmt:setBundle basename = "<%=basename %>"/>
 	
@@ -87,11 +87,11 @@
 		<div class="card" style="margin-top: 30px">
   			<div class="card-block">
    				 <h4 class="card-title"><fmt:message key="teacherManageGroup_h3_newGroup"/></h4>
-    			 <a href="webapi/group/export" class="btn btn-default">
+    			 <a href="webapi/group/export" class="btn btn-secondary" style="background-color:#F5F5F5;">
     			 	<fmt:message key="teacherManageGroup_a_exportStudent"/>
     			 </a>
     			 <form id="upload" name="upload">
-					<button type="button" class="btn btn-default" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">
+					<button type="button" class="btn btn-default" style="background-color:#F5F5F5;" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">
 						<fmt:message key="teacherManageGroup_button_importStudent"/>
 					</button>
 					<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

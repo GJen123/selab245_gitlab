@@ -47,7 +47,7 @@
 		 </script> 
 		 <script type="text/javascript"> window.onload = alertName; </script>
 	</head>
-	<body>
+	<body  style="background-color:#F5F5F5;">
 		
 		<div class="container" style="width:300px;height:60px">
 	        
