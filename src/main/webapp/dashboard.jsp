@@ -55,6 +55,9 @@
 		.circle a {
 			color: white;
 		}
+		body, html, .row, #navHeight{
+			height:100%;
+		}
 	</style>
 	
 	<title>ProgEdu</title>
@@ -85,7 +88,7 @@
 		JenkinsApi jenkins = JenkinsApi.getInstance();
 	%>
       <div class="row">
-        <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+        <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar" id="navHeight">
           <ul class="nav nav-pills flex-column">
             <li class="nav-item"><font size="4"><a class="nav-link" href="dashboard.jsp">Overview <span class="sr-only">(current)</span></a></font></li>
             <li class="nav-item">

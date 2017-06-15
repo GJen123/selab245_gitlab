@@ -52,7 +52,7 @@
 	</style>
 	
 	<style>
-		body, html{
+		body, html, .row, #navHeight{
 			height:100%;
 		}
 	</style>
@@ -63,7 +63,7 @@
 	<%@ include file="header.jsp" %>
 
 	<div class="row">
-        <nav class="bg-faded sidebar col-sm-3 col-md-2 hidden-xs-down">
+        <nav class="bg-faded sidebar col-sm-3 col-md-2 hidden-xs-down" id="navHeight">
         	<!-- <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:15%">
 			  <%
             	for(GitlabGroup group : groups){
@@ -79,7 +79,7 @@
             	for(GitlabGroup group : groups){
             	  String href = "\"teacherGroup.jsp?id=" + group.getId() + "\"";
             	  %>
-            	  	<li class="nav-item"><a class="nav-link" href=<%=href %>><%=group.getName() %></a></li>
+            	  	<li class="nav-item"><font size="4"><a class="nav-link" href=<%=href %>><%=group.getName() %></a></font></li>
             	  <%
             	}
             %>
