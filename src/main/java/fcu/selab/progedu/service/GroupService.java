@@ -35,7 +35,7 @@ import fcu.selab.progedu.db.GroupDbManager;
 @Path("group/")
 public class GroupService {
 
-  Conn userConn = Conn.getInstance();
+  Conn conn = Conn.getInstance();
   UserService userService = new UserService();
   GroupDbManager gdb = GroupDbManager.getInstance();
 
@@ -93,9 +93,9 @@ public class GroupService {
         }
         System.out.println(convert + "\n");
 
-//        groupList.add(convert);
+        groupList.add(convert);
       }
-//      newGroup(groupList);
+      newGroup(groupList);
 
       fr.close();
       br.close();
@@ -173,11 +173,11 @@ public class GroupService {
       }
     }
     for (Group g : groups) {
-      System.out.println("Group name: " + g.getGroupName());
-      System.out.println("Group master: " + g.getMaster());
-      for (String c : g.getContributor()) {
-        System.out.println("Group member: " + c);
-      }
+//      System.out.println("Group name: " + g.getGroupName());
+//      System.out.println("Group master: " + g.getMaster());
+//      for (String c : g.getContributor()) {
+//        System.out.println("Group member: " + c);
+//      }
       createGroup(g);
     }
   }
@@ -190,7 +190,7 @@ public class GroupService {
    * @return GitLabGroup
    */
   public GitlabGroup newGroup(String name) {
-    GitlabGroup group = userConn.createGroup(name);
+    GitlabGroup group = conn.createGroup(name);
     return group;
   }
 
@@ -218,12 +218,12 @@ public class GroupService {
 
     groupId = newGroupId(newGroup(group.getGroupName()));
     masterId = findUser(group.getMaster());
-    userConn.addMember(groupId, masterId, 40);  //add member on GitLab
+    conn.addMember(groupId, masterId, 40);  //add member on GitLab
     gdb.addGroup(group.getGroupName(), group.getMaster(), true); //insert into db
     
     for (String developName : group.getContributor()) {
       developerId = findUser(developName);
-      userConn.addMember(groupId, developerId, 30);  //add member on GitLab
+      conn.addMember(groupId, developerId, 30);  //add member on GitLab
       gdb.addGroup(group.getGroupName(), developName, false); //insert into db
     }
   }
@@ -237,7 +237,7 @@ public class GroupService {
    */
   public int findUser(String name) {
     List<GitlabUser> users;
-    users = userConn.getUsers();
+    users = conn.getUsers();
     for (GitlabUser user : users) {
       if (user.getName().equals(name)) {
         return user.getId();
@@ -327,9 +327,10 @@ public class GroupService {
   public Response addMember(@FormParam("groupName")String groupName, 
       @FormParam("select2")List<String> members) {
     boolean check = gdb.addGroupMember(groupName, members);
-    System.out.println(groupName);
-    for (int i = 0; i < members.size(); i++) {
-      System.out.println(members.get(i));
+    for (String userName : members) {
+      int groupId = conn.getGitlabGroup(groupName).getId();
+      int userId = conn.getUserViaSudo(userName).getId();
+      conn.addMember(groupId, userId, 30);
     }
     Response response = Response.ok().build();
     if (!check) {

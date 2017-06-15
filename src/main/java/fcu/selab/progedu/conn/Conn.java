@@ -207,6 +207,22 @@ public class Conn {
     }
     return users;
   }
+  
+  /**
+   * get Gitlab user id via sudo
+   * @param userName user name
+   * @return Gitlab user
+   */
+  public GitlabUser getUserViaSudo(String userName) {
+    GitlabUser user = new GitlabUser();
+    try {
+      user = gitlab.getUserViaSudo(userName);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return user;
+  }
 
   /**
    * Get a private token by GitlabUser
@@ -299,6 +315,22 @@ public class Conn {
       e.printStackTrace();
     }
     return groupMembers;
+  }
+  
+  /**
+   * get Gitlab group id with group name
+   * @param groupName group name
+   * @return group id
+   */
+  public GitlabGroup getGitlabGroup(String groupName) {
+    GitlabGroup group = new GitlabGroup();
+    try {
+      group = gitlab.getGroup(groupName);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return group;
   }
 
   public String getGroupUrl(GitlabGroup group) {
