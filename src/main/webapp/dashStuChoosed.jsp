@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
-    pageEncoding="BIG5"%>
+    pageEncoding="utf-8"%>
 <%@ page import="fcu.selab.progedu.conn.Conn,fcu.selab.progedu.conn.HttpConnect, fcu.selab.progedu.conn.StudentConn" %>
 <%@ page import="fcu.selab.progedu.jenkins.JenkinsApi, fcu.selab.progedu.conn.Language" %>
 <%@ page import="fcu.selab.progedu.config.GitlabConfig,fcu.selab.progedu.config.CourseConfig" %>
@@ -59,16 +59,16 @@
 		UserDbManager db = UserDbManager.getInstance();
 		ProjectDbManager Pdb = ProjectDbManager.getInstance();
 		
-		// dbªº©Ò¦³users
+		// dbçš„æ‰€æœ‰users
 		List<User> users = db.listAllUsers();
 		
-		// ¨C­Ó¾Ç¥Ígitlabªºprojects
+		// æ¯å€‹å­¸ç”Ÿgitlabçš„projects
 		List<GitlabProject> gitProjects = new ArrayList<GitlabProject>();
 		
-		// dbªº©Ò¦³projects
+		// dbçš„æ‰€æœ‰projects
 		List<Project> dbProjects = Pdb.listAllProjects();
 		
-		// gitlab jenkins courseªºData
+		// gitlab jenkins courseçš„Data
 		GitlabConfig gitData = GitlabConfig.getInstance();
 		JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 		CourseConfig courseData = CourseConfig.getInstance();
@@ -80,7 +80,7 @@
           <ul class="nav nav-pills flex-column">
             <li class="nav-item"><font size="4"><a class="nav-link" href="dashboard.jsp">Overview <span class="sr-only">(current)</span></a></font></li>
             <li class="nav-item">
-                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-fw fa-arrows-v"></i> Student¡¿ <i class="fa fa-fw fa-caret-down"></i></a></font>
+                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-fw fa-arrows-v"></i> Studentâ–¼ <i class="fa fa-fw fa-caret-down"></i></a></font>
                 <ul id="student" class="collapse" style="list-style: none;">
                     <%
 		            	for(User user : users){
@@ -121,7 +121,7 @@
         		<table class="table">
 					<thead>
 						<tr class="table-info">
-							<th width="15%">§@·~</th>
+							<th width="15%">ä½œæ¥­</th>
 							<%
 								projects = sConn.getProject();
 								Collections.reverse(projects);
@@ -138,7 +138,7 @@
 					</thead>
 					<tbody>
 						<tr>
-							<th width="15%">Commits¦¸¼Æ</th>
+							<th width="15%">Commitsæ¬¡æ•¸</th>
 							<%
 								for(GitlabProject project : projects){
 									if(courseData.getCourseName().equals(project.getName().substring(0,3))){

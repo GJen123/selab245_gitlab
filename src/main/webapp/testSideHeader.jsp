@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
-    pageEncoding="BIG5"%>
+    pageEncoding="utf-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ include file="language.jsp" %>
 <html>
@@ -54,7 +54,7 @@
         		</div>
       		</li>
       		<li>
-                <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> <fmt:message key="top_navbar_manage"/>¡õ <i class="fa fa-fw fa-caret-down"></i></a>
+                <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> <fmt:message key="top_navbar_manage"/>â†“ <i class="fa fa-fw fa-caret-down"></i></a>
                 <ul id="demo" class="collapse">
                     <li><a class="dropdown-item" href="studentManagement.jsp"><fmt:message key="top_navbar_manageStudent"/></a></li>
                     <li><a class="dropdown-item" href="assignmentManagement.jsp"><fmt:message key="top_navbar_manageHW"/></a></li>

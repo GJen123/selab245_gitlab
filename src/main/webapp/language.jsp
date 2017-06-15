@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
-    pageEncoding="BIG5"%>
+    pageEncoding="utf-8"%>
 <%@ page import="fcu.selab.progedu.conn.Language" %>
 <%@ page import="java.util.Locale" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%
 	//*****
-	// ***¿ï¾Ü»y¨¥
+	// ***é¸æ“‡èªžè¨€
 	// *****
 	Locale locale = request.getLocale();
 	String localLan = locale.getLanguage();  // internet Language
@@ -30,5 +30,5 @@
 	Language language = new Language();
 	String basename = language.getBaseName(finalLan);
 %>
-<!-- ³]©w»y¨¥ -->
+<!-- è¨­å®šèªžè¨€ -->
 <fmt:setBundle basename = "<%=basename %>"/>

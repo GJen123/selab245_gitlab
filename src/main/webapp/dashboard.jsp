@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
-    pageEncoding="BIG5"%>
+    pageEncoding="utf-8"%>
 <%@ page import="fcu.selab.progedu.conn.Conn,fcu.selab.progedu.conn.HttpConnect" %>
 <%@ page import="fcu.selab.progedu.jenkins.JenkinsApi, fcu.selab.progedu.conn.Language" %>
 <%@ page import="fcu.selab.progedu.config.GitlabConfig" %>
@@ -72,16 +72,16 @@
 		UserDbManager db = UserDbManager.getInstance();
 		ProjectDbManager Pdb = ProjectDbManager.getInstance();
 		
-		// db的所有users
+		// db������users
 		List<User> users = db.listAllUsers();
 		
-		// 每個學生gitlab的projects
+		// 瘥���摮貊��gitlab��projects
 		List<GitlabProject> gitProjects = new ArrayList<GitlabProject>();
 		
-		// db的所有projects
+		// db������projects
 		List<Project> dbProjects = Pdb.listAllProjects();
 		
-		// gitlab jenkins course的Data
+		// gitlab jenkins course��Data
 		GitlabConfig gitData = GitlabConfig.getInstance();
 		JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 		
@@ -92,7 +92,7 @@
           <ul class="nav nav-pills flex-column">
             <li class="nav-item"><font size="4"><a class="nav-link" href="dashboard.jsp">Overview <span class="sr-only">(current)</span></a></font></li>
             <li class="nav-item">
-                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-fw fa-arrows-v"></i> Student▼ <i class="fa fa-fw fa-caret-down"></i></a></font>
+                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-fw fa-arrows-v"></i> Student <i class="fa fa-fw fa-caret-down"></i></a></font>
                 <ul id="student" class="collapse" style="list-style: none;">
                     <%
 		            	for(User user : users){
@@ -119,11 +119,11 @@
 		        	<div class="card-block">
 		        		
 						<div id="inline">
-							<p class="ovol blue" style="padding: 5px 5px 5px 5px">Compile成功</p>
-							<p class="ovol red" style="padding: 5px 5px 5px 5px">Compile失敗</p>
-							<p class="ovol gray" style="padding: 5px 5px 5px 5px">未Commit</p>
+							<p class="ovol blue" style="padding: 5px 5px 5px 5px">建置成功</p>
+							<p class="ovol red" style="padding: 5px 5px 5px 5px">建置失敗</p>
+							<p class="ovol gray" style="padding: 5px 5px 5px 5px">未建置</p>
 						</div>
-						<table class="table table-striped">
+						<table class="table table-striped" style="margin-top: 10px;">
 							<thead>
 								<tr>
 									<th><fmt:message key="teacherHW_th_studentId"/></th>
@@ -244,16 +244,10 @@
 						  </div>
 						</div>
 		        	</div>
-		        </div>
-				
-				
-				
-		        			
+		        </div>	
 	        </div>
-        
         </main>
 <!-- ------------------------ main -------------------------------------- -->
       </div>
-
 </body>
 </html>

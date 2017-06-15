@@ -182,7 +182,7 @@ public class GroupService {
       if (g.getGroupName().equals("")) {
         continue;
       }
-//      createGroup(g);
+      createGroup(g);
     }
   }
 
