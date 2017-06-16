@@ -77,17 +77,23 @@
 	%>
       <div class="row">
         <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar" id="navHeight">
-          <ul class="nav nav-pills flex-column">
-            <li class="nav-item"><font size="4"><a class="nav-link" href="dashboard.jsp">Overview <span class="sr-only">(current)</span></a></font></li>
+          <ul class="nav nav-pills flex-column" style="margin-top: 20px;">
             <li class="nav-item">
-                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-fw fa-arrows-v"></i> Student▼ <i class="fa fa-fw fa-caret-down"></i></a></font>
+            	<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link">Overview <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+            	<ul id="overview" class="collapse" style="list-style: none;">
+            		<li class="nav-item"><font size="3"><a class="nav-link" href="#Student Projects"><i class="fa fa-table" aria-hidden="true"></i> Student Projects</a></font></li>
+            		<li class="nav-item"><font size="3"><a class="nav-link" href="#Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i> Statistics Chart</a></font></li>
+            	</ul>
+            </li>
+            <li class="nav-item">
+                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"> Student <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
                 <ul id="student" class="collapse" style="list-style: none;">
                     <%
 		            	for(User user : users){
 		            	  String userName = user.getUserName();
 		            	  String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
 		            	  %>
-		            	  	<li class="nav-item"><font size="4"><a class="nav-link" href=<%=href %>><%=userName %></a></font></li>
+		            	  	<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><%=userName %></a></font></li>
 		            	  <%
 		            	}
 		            %>
@@ -112,11 +118,8 @@
             	int pro_total_commits = 0;
         		
         	%>
-        	
-        	<h1><%=choosedUser.getName() %></h1>
-        	
-        	
         	<div class="container">
+        	<h2 style="margin-top: 30px;"><%=choosedUser.getName() %></h2>
         		<br><br>
         		<table class="table">
 					<thead>
@@ -174,7 +177,7 @@
 				</ul>
 				
 				<!-- Tab panes -->
-				<div class="tab-content">
+				<div class="tab-content" style="margin-top: 10px;">
 				  <div class="tab-pane active" id="chart1" role="tabpanel">
 				  	<h3>Chart1</h3>
 				  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">

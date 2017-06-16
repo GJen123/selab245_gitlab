@@ -23,7 +23,7 @@
 	
 	<%@ include file="header.jsp" %>
 	<div>
-		<div class="container" style="margin-top: 30px">
+		<div class="container" style="margin-top: 30px; width: 1140px;">
 			<br>
 			<div>
 				<div class="card">

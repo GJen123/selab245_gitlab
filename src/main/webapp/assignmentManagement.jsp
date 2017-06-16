@@ -69,7 +69,7 @@
 	<%@ include file="header.jsp" %>
 	
 	<div>
-		<div class="container">
+		<div class="container" style="width: 1140px;">
 			<br>
 			<form class="form-signin">
 				<div class="card">

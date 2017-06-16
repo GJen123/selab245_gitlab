@@ -83,15 +83,19 @@
 		});
 	});
 </script>
-	<div class="container">
+	<div class="container" style="width: 1140px;">
 		<div class="card" style="margin-top: 30px">
+			<div class="card-header">
+				<h4 ><strong><fmt:message key="teacherManageGroup_h3_newGroup"/></strong></h4>
+			</div>
   			<div class="card-block">
-   				 <h4 class="card-title"><fmt:message key="teacherManageGroup_h3_newGroup"/></h4>
     			 <a href="webapi/group/export" class="btn btn-secondary" style="background-color:#F5F5F5;">
+    			 	<i class="fa fa-download" aria-hidden="true"></i>
     			 	<fmt:message key="teacherManageGroup_a_exportStudent"/>
     			 </a>
-    			 <form id="upload" name="upload">
-					<button type="button" class="btn btn-default" style="background-color:#F5F5F5;" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">
+    			 <form id="upload" name="upload" style="margin-top: 10px;">
+					<button type="button" class="btn btn-default" style="background-color:#F5F5F5; color: #292b2c; border-color: #ccc" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">
+						<i class="fa fa-file-excel-o" aria-hidden="true"></i>
 						<fmt:message key="teacherManageGroup_button_importStudent"/>
 					</button>
 					<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -126,19 +130,21 @@
   			</div>
 		</div>
 		<div class="card" style="margin-top: 30px">
+			<div class="card-header">
+				<h4 ><strong><fmt:message key="teacherManageGroup_addMember"/></strong></h4>
+			</div>
   			<div class="card-block">
-   				<h4 class="card-title"><fmt:message key="teacherManageGroup_addMember"/></h4>
     			<form id="addMember" name="select">
 					<table>
 						<tr>
 							<td>
-								<label for="groupName"><fmt:message key="teacherManageGroup_groupName"/>: </label>
+								<label for="groupName" style="font-size: 20px;"><fmt:message key="teacherManageGroup_groupName"/>: </label>
 								<input type="text" id="groupName" name="groupName"/>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<select style="width: 500px; padding-top: 5px; padding-bottom: 5px" name="select1" id="select1" multiple size="<%=users.size()%>">
+								<select style="width: 100%; padding-top: 5px; padding-bottom: 5px; margin-top: 10px;" name="select1" id="select1" multiple size="<%=users.size()%>">
 									<%
 										for(User user : users){
 									%>
@@ -154,7 +160,7 @@
 								<input type="button" id="lt" name="lt" value="&lt;&lt;">
 							</td>
 							<td>
-								<select style="width: 500px; padding-top: 5px; padding-bottom: 5px" name="select2" id="select2" multiple size="<%=users.size()%>">
+								<select style="width: 100%; padding-top: 5px; padding-bottom: 5px" name="select2" id="select2" multiple size="<%=users.size()+1%>">
 								</select>
 							</td>
 						</tr>

@@ -44,19 +44,16 @@
             text-align: center;
 		}
 		.red {
-			background: red;
+			background: #e52424;
 		}
 		.blue {
-			background: blue;
+			background: #258ce8;
 		}
 		.gray {
-			background: gray;
+			background: #878787;
 		}
 		.circle a {
-			color: white;
-		}
-		body, html, .row, #navHeight{
-			height:100%;
+			color: #fff;
 		}
 	</style>
 	
@@ -88,18 +85,24 @@
 		JenkinsApi jenkins = JenkinsApi.getInstance();
 	%>
       <div class="row">
-        <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar" id="navHeight">
-          <ul class="nav nav-pills flex-column">
-            <li class="nav-item"><font size="4"><a class="nav-link" href="dashboard.jsp">Overview <span class="sr-only">(current)</span></a></font></li>
+        <nav class="hidden-xs-down bg-faded sidebar" id="navHeight">
+          <ul class="nav nav-pills flex-column" style="margin-top: 20px;">
             <li class="nav-item">
-                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-fw fa-arrows-v"></i> Student <i class="fa fa-fw fa-caret-down"></i></a></font>
+            	<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Overview <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+            	<ul id="overview" class="collapse" style="list-style: none;">
+            		<li class="nav-item"><font size="3"><a class="nav-link" href="#Student Projects"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; Student Projects</a></font></li>
+            		<li class="nav-item"><font size="3"><a class="nav-link" href="#Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; Statistics Chart</a></font></li>
+            	</ul>
+            </li>
+            <li class="nav-item">
+                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Student <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
                 <ul id="student" class="collapse" style="list-style: none;">
                     <%
 		            	for(User user : users){
 		            	  String userName = user.getUserName();
 		            	  String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
 		            	  %>
-		            	  	<li class="nav-item"><font size="4"><a class="nav-link" href=<%=href %>><%=userName %></a></font></li>
+		            	  	<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName %></a></font></li>
 		            	  <%
 		            	}
 		            %>
@@ -110,20 +113,18 @@
 
 <!-- ------------------------ main -------------------------------------- -->
         <main class="col-md-9 col-xs-11 p-l-2 p-t-2">
-        <h1>Overview</h1>
-	        <div class="container">
-		        <br><br>
+	        <div class="container" style="margin-top: 20px;">
+	        <h1 style="margin-top: 30px; margin-bottom: 20px;">Overview</h1>
 		        <!-- ---------------------------- Student Project ------------------------------- -->
 		        <div class="card">
-		        	<h2 class="card-header">Student Project</h2>
+		        	<h4 id="Student Projects" class="card-header"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; Student Projects</h4>
 		        	<div class="card-block">
-		        		
 						<div id="inline">
-							<p class="ovol blue" style="padding: 5px 5px 5px 5px">建置成功</p>
-							<p class="ovol red" style="padding: 5px 5px 5px 5px">建置失敗</p>
-							<p class="ovol gray" style="padding: 5px 5px 5px 5px">未建置</p>
+							<p class="ovol blue" style="padding: 5px 10px;">建置成功</p>
+							<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;">建置失敗</p>
+							<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;">未建置</p>
 						</div>
-						<table class="table table-striped" style="margin-top: 10px;">
+						<table class="table table-striped" style="margin-top: 20px; width: 100%">
 							<thead>
 								<tr>
 									<th><fmt:message key="teacherHW_th_studentId"/></th>
@@ -207,7 +208,11 @@
 		        <!-- Nav tabs -->
 		        <div class="card">
 		        	<div class="card-header">
-				        <ul class="nav nav-tabs" role="tablist">
+		        		<h4 id="Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; Statistics Chart</h4>
+		        	</div>
+		        	
+		        	<div class="card-block">
+		        		<ul class="nav nav-tabs" role="tablist">
 						  <li class="nav-item">
 						    <a class="nav-link active" data-toggle="tab" href="#chart1" role="tab">Chart1</a>
 						  </li>
@@ -221,26 +226,27 @@
 						    <a class="nav-link" data-toggle="tab" href="#chart4" role="tab">Chart4</a>
 						  </li>
 						</ul>
-		        	</div>
-		        	
-		        	<div class="card-block">
 		        		<!-- Tab panes -->
-						<div class="tab-content">
+						<div class="tab-content text-center" style="margin-top: 10px">
 						  <div class="tab-pane active" id="chart1" role="tabpanel">
-						  	<h3>Chart1</h3>
+						  	
 						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
+						  	<h3 style="margin-top: 20px">Chart1</h3>
 						  </div>
 						  <div class="tab-pane" id="chart2" role="tabpanel">
-						  	<h3>Chart2</h3>
+						  	
 						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
+						  	<h3 style="margin-top: 20px">Chart2</h3>
 						  </div>
 						  <div class="tab-pane" id="chart3" role="tabpanel">
-						  	<h3>Chart3</h3>
+						  	
 						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
+						  	<h3 style="margin-top: 20px">Chart3</h3>
 						  </div>
 						  <div class="tab-pane" id="chart4" role="tabpanel">
-						  	<h3>Chart4</h3>
+						  	
 						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
+						  	<h3 style="margin-top: 20px">Chart4</h3>
 						  </div>
 						</div>
 		        	</div>
