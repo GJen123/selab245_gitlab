@@ -102,11 +102,11 @@ public class ProjectDbManager {
     });
 
     try {
-      String content = "您有新作業!";
+      String content = "You have a new assignment!";
       MimeMessage message = new MimeMessage(session);
       message.setFrom(new InternetAddress(username));
       message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
-      message.setSubject("新作業通知", "utf-8");
+      message.setSubject("New assignment notification", "utf-8");
       message.setContent(content, "text/html;charset=utf-8");
 
       Transport.send(message);
