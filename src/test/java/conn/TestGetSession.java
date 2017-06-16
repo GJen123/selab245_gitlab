@@ -11,12 +11,12 @@ public class TestGetSession {
   @Test
   public void testSession() {
     Conn conn = Conn.getInstance();
-    String username = "root1";
+    String username = "root";
     String password = "iecsfcu123456";
 
     GitlabSession session = conn.getSession(username, password);
     if (session == null) {
-      System.out.println("abbcc");
+      System.out.println("session null");
     }
     JSONObject json = new JSONObject(session);
     System.out.println("session : " + session);

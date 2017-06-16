@@ -38,6 +38,7 @@ public class GroupService {
   Conn conn = Conn.getInstance();
   UserService userService = new UserService();
   GroupDbManager gdb = GroupDbManager.getInstance();
+  ProjectService2 projectService = new ProjectService2(); 
 
   /**
    * upload a csvfile to create group
@@ -221,6 +222,7 @@ public class GroupService {
     int developerId = -1;
 
     groupId = newGroupId(newGroup(group.getGroupName()));
+    
     masterId = findUser(group.getMaster());
     conn.addMember(groupId, masterId, 40);  //add member on GitLab
     gdb.addGroup(group.getGroupName(), group.getMaster(), true); //insert into db
