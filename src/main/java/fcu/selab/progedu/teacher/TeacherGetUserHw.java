@@ -44,7 +44,7 @@ public class TeacherGetUserHw {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // 嚙諍立連嚙線
+      // 建立連線
 
       URL url = new URL(strUrl);
       conn = (HttpURLConnection) url.openConnection();
@@ -55,7 +55,7 @@ public class TeacherGetUserHw {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // 讀嚙踝蕭嚙踝蕭嚙?
+      // 讀取資料
       InputStreamReader isr = new InputStreamReader(conn.getInputStream(), "UTF-8");
       BufferedReader reader = new BufferedReader(isr);
       String jsonString1 = reader.readLine();
@@ -96,7 +96,7 @@ public class TeacherGetUserHw {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // 嚙諍立連嚙線
+      // 建立連線
       String strurl = getGlilabUrl() + "/api/v3/projects/owned?private_token=" + privateToken;
       URL url = new URL(strurl);
       conn = (HttpURLConnection) url.openConnection();
@@ -107,7 +107,7 @@ public class TeacherGetUserHw {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // 讀嚙踝蕭嚙踝蕭嚙?
+      // 讀取資料
       InputStreamReader isr = new InputStreamReader(conn.getInputStream(), "UTF-8");
       BufferedReader reader = new BufferedReader(isr);
       String jsonString1 = reader.readLine();
@@ -144,7 +144,7 @@ public class TeacherGetUserHw {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // 嚙諍立連嚙線
+      // 建立連線
       String strurl = getGlilabUrl() + "/api/v3/projects/owned?private_token=" + privateToken;
       URL url = new URL(strurl);
       conn = (HttpURLConnection) url.openConnection();
@@ -155,7 +155,7 @@ public class TeacherGetUserHw {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // 讀嚙踝蕭嚙踝蕭嚙?
+      // 讀取資料
       InputStreamReader isr = new InputStreamReader(conn.getInputStream(), "UTF-8");
       BufferedReader reader = new BufferedReader(isr);
       String jsonString1 = reader.readLine();
@@ -193,7 +193,7 @@ public class TeacherGetUserHw {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // 嚙諍立連嚙線
+      // 建立連線
       String strurl = getGlilabUrl() + "/api/v3/projects/owned?private_token=" + privateToken;
       URL url = new URL(strurl);
       conn = (HttpURLConnection) url.openConnection();
@@ -204,7 +204,7 @@ public class TeacherGetUserHw {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // 讀嚙踝蕭嚙踝蕭嚙?
+      // 讀取資料
       InputStreamReader isr = new InputStreamReader(conn.getInputStream(), "UTF-8");
       BufferedReader reader = new BufferedReader(isr);
       String jsonString1 = reader.readLine();
