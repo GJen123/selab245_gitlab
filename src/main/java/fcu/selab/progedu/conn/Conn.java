@@ -16,6 +16,7 @@ import org.gitlab.api.models.GitlabSession;
 import org.gitlab.api.models.GitlabUser;
 
 import fcu.selab.progedu.config.GitlabConfig;
+import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
@@ -49,10 +50,6 @@ public class Conn {
 
   public static Conn getInstance() {
     return INSTANCE;
-  }
-
-  public String getAbc() {
-    return "abc";
   }
 
   /**
@@ -414,6 +411,22 @@ public class Conn {
       System.out.println(e);
     }
     return new GitlabGroup();
+  }
+  
+  /**
+   * transfer project into group
+   * @param groupName groupName
+   */
+  public void createGroupProject(String groupName) {
+    createRootProject(groupName);
+    List<GitlabProject> projects = getProject(getRoot());
+    int projectId = 0;
+    for (GitlabProject project : projects) {
+      if (groupName.equals(project.getName())) {
+        projectId = project.getId();
+        httpConn.transferProjectToGroup(getGitlabGroup(groupName).getId(), projectId);
+      }
+    }
   }
 
   /**

@@ -142,7 +142,7 @@
 								<input type="text" id="groupName" name="groupName"/>
 							</td>
 						</tr>
-						<tr>
+						<tr class="col-md-12">
 							<td>
 								<select style="width: 100%; padding-top: 5px; padding-bottom: 5px; margin-top: 10px;" name="select1" id="select1" multiple size="<%=users.size()%>">
 									<%
@@ -160,7 +160,7 @@
 								<input type="button" id="lt" name="lt" value="&lt;&lt;">
 							</td>
 							<td>
-								<select style="width: 100%; padding-top: 5px; padding-bottom: 5px" name="select2" id="select2" multiple size="<%=users.size()+1%>">
+								<select style="width: 300px; padding-top: 5px; padding-bottom: 5px" name="select2" id="select2" multiple size="<%=users.size()+1%>">
 								</select>
 							</td>
 						</tr>

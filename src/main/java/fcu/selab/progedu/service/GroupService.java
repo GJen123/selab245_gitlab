@@ -232,6 +232,8 @@ public class GroupService {
       conn.addMember(groupId, developerId, 30);  //add member on GitLab
       gdb.addGroup(group.getGroupName(), developName, false); //insert into db
     }
+    
+    conn.createGroupProject(group.getGroupName());
   }
 
   /**
