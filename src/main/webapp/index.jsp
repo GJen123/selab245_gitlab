@@ -42,6 +42,8 @@
 			 }
 		 </script> 
 		 <script type="text/javascript"> window.onload = alertName; </script>
+		 <link rel="shortcut icon" href="img/favicon.ico"/>
+		 <link rel="bookmark" href="img/favicon.ico"/>
 	</head>
 	<body  style="background-color:#F5F5F5;">
 		

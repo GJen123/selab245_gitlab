@@ -18,7 +18,6 @@
 			font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 		}
 	</style>
-<body>
 	<nav class="navbar fixed-top navbar-toggleable-md navbar-inverse bg-inverse">
 	  		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
 	    		<span class="navbar-toggler-icon"></span>
@@ -53,4 +52,3 @@
 		    	</ul>
 	  		</div>
 	</nav>
-</body>
