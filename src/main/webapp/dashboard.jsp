@@ -182,7 +182,10 @@
 															}
 														}
 														
-														if("N/A".equals(proName)){
+														if("N/A".equals(proName) || "".equals(proName) || null == proName){
+															if(proName == null) {
+																proName = "N/A";
+															}
 															%>
 																<td><%=proName %></td>
 															<%
