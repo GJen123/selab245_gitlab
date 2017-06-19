@@ -16,6 +16,13 @@
 <%@ page import="org.gitlab.api.models.*" %>
 <%@ page import="java.util.*" %>
 
+<%
+	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+		response.sendRedirect("index.jsp");
+	}
+	session.putValue("page", "teacherGroup");
+%>
+
 <%@ include file="language.jsp" %>
 
 <%
@@ -27,7 +34,7 @@
 	
 	GroupDbManager gdb = GroupDbManager.getInstance();
 	List<Group> dbGroups = gdb.listGroups();
-	String groupUrl = "/groups/";
+	//String groupUrl = "/groups/";
 		
 
 	String groupId = request.getParameter("id"); // Get group id
@@ -82,9 +89,10 @@
         		    break;
         		  }
         		}
+        		String groupUrl = gitData.getGitlabHostUrl() + "/groups/" + groupChoosed.getName();
         	%>
         	<div class="container" style="margin-top: 20px;">
-	        	<h2><%=groupChoosed.getName() %></h2>
+	        	<h2 href="#" onclick="window.open('<%=groupUrl %>')"><a><%=groupChoosed.getName() %></a></h2>
 	        		<table class="table" style="margin-top: 20px;">
 			        	<thead class="thead-default">
 			        		<tr>
@@ -105,8 +113,9 @@
 			        					<tr>
 			        						<%
 			        							for(GitlabProject project : projects){
+			        							  String projectUrl = gitData.getGitlabHostUrl() + "/" + groupChoosed.getName() + "/" + project.getName();
 			        							  	%>
-			        							  		<td id="groupMamber" width="20%"><p><%=project.getName() %>專案</p></td>
+			        							  		<td id="groupMamber" width="20%"><p><a href="#" onclick="window.open('<%=projectUrl %>')"><%=project.getName() %>專案</a></p></td>
 			        							  	<%
 			        							}
 			       							%>
@@ -117,28 +126,28 @@
 			        				<table id="noborder">
 			        					<%
 			        					for(GitlabGroupMember member : groupMembers){
-			        					  String role = "";
+			        					  String userName = member.getUsername();
+			        					  String personal_url = gitData.getGitlabHostUrl() + "/u/" + userName;
 			        						if(member.getName().equals("Administrator")) {
 		        								continue;
 		        							}
 			        						if(member.getAccessLevel().toString().equals("Master")) {
-			        							role = "組長";
 			        							%>
-			        								<tr><td id="groupMamber"><h5><%=role %>：  <%=member.getName() %></h5></td></tr>
+			        								<tr><td id="groupMamber"><h5><fmt:message key="teacherGroup_h5_leader"/><a href="#" onclick="window.open('<%=personal_url %>')"><%=member.getName() %></a></h5></td></tr>
 			       								<%
 			       							}else{
 			       							  	continue;
 			       							}
 			       						}
 			       						for(GitlabGroupMember member : groupMembers){
-			       							String role = "";
+			       							String userName = member.getUsername();
+			        					  	String personal_url = gitData.getGitlabHostUrl() + "/u/" + userName;
 			       							if(member.getName().equals("Administrator")) {
 		       									continue;
 		       								}
 		        							if(member.getAccessLevel().toString().equals("Developer")) {
-		        								role = "組員";
 		        								%>
-					        					  	<tr><td id="groupMamber"><h6><%=role %>：  <%=member.getName() %></h6></td></tr>
+					        					  	<tr><td id="groupMamber"><h6><fmt:message key="teacherGroup_h5_member"/><a href="#" onclick="window.open('<%=personal_url %>')"><%=member.getName() %></a></h6></td></tr>
 					        					<%
 			        						}
 			        					}

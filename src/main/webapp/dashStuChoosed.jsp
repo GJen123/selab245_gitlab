@@ -79,14 +79,14 @@
         <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar" id="navHeight">
           <ul class="nav nav-pills flex-column" style="margin-top: 20px;">
             <li class="nav-item">
-            	<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link">Overview <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+            	<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><fmt:message key="dashboard_a_overview"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
             	<ul id="overview" class="collapse" style="list-style: none;">
-            		<li class="nav-item"><font size="3"><a class="nav-link" href="#Student Projects"><i class="fa fa-table" aria-hidden="true"></i> Student Projects</a></font></li>
-            		<li class="nav-item"><font size="3"><a class="nav-link" href="#Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i> Statistics Chart</a></font></li>
+            		<li class="nav-item"><font size="3"><a class="nav-link" href="#Student Projects"><i class="fa fa-table" aria-hidden="true"></i> <fmt:message key="dashboard_li_studentProjects"/></a></font></li>
+            		<li class="nav-item"><font size="3"><a class="nav-link" href="#Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i> <fmt:message key="dashboard_li_chart"/></a></font></li>
             	</ul>
             </li>
             <li class="nav-item">
-                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"> Student <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"> <fmt:message key="dashboard_a_student"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
                 <ul id="student" class="collapse" style="list-style: none;">
                     <%
 		            	for(User user : users){
