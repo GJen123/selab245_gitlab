@@ -3,10 +3,10 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%
-	/*if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
 		response.sendRedirect("index.jsp");
 	}
-	session.putValue("page", "teacherManageStudent");*/
+	session.putValue("page", "teacherManageStudent");
 %>
 
 <%@ include file="language.jsp"%>

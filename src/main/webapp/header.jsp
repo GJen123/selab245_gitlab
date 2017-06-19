@@ -26,7 +26,7 @@
 	  		<a class="navbar-brand" href="dashboard.jsp">ProgEdu</a>
 	  		<div class="collapse navbar-collapse" id="navbarNavDropdown">
 		    	<ul class="navbar-nav">
-		    		<li class="nav-item"><a class="nav-link" href="#page-top">回頁首</a></li>
+		    		<li class="nav-item"><a class="nav-link" href="#page-top"><fmt:message key="top_navbar_backToTop"/></a></li>
 		      		<li class="nav-item"><a class="nav-link" href="dashboard.jsp"><fmt:message key="top_navbar_dashboard"/></a></li>
 		      		<li class="nav-item"><a class="nav-link" href="teacherGroup.jsp"><fmt:message key="top_navbar_groupProject"/></a></li>
 		      		<li class="nav-item dropdown">

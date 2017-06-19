@@ -14,8 +14,7 @@
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
 		response.sendRedirect("index.jsp");
 	}
-	session.putValue("page", "teacherHW");
-	String pages = "teacherHW.jsp";
+	session.putValue("page", "dashboard");
 %>
 
 <%@ include file="language.jsp" %>
@@ -88,14 +87,14 @@
         <nav class="hidden-xs-down bg-faded sidebar" id="navHeight">
           <ul class="nav nav-pills flex-column" style="margin-top: 20px;">
             <li class="nav-item">
-            	<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Overview <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+            	<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_overview"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
             	<ul id="overview" class="collapse" style="list-style: none;">
-            		<li class="nav-item"><font size="3"><a class="nav-link" href="#Student Projects"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; Student Projects</a></font></li>
-            		<li class="nav-item"><font size="3"><a class="nav-link" href="#Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; Statistics Chart</a></font></li>
+            		<li class="nav-item"><font size="3"><a class="nav-link" href="#Student Projects"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_studentProjects"/></a></font></li>
+            		<li class="nav-item"><font size="3"><a class="nav-link" href="#Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_chart"/></a></font></li>
             	</ul>
             </li>
             <li class="nav-item">
-                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Student <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_student"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
                 <ul id="student" class="collapse" style="list-style: none;">
                     <%
 		            	for(User user : users){
@@ -114,21 +113,21 @@
 <!-- ------------------------ main -------------------------------------- -->
         <main class="col-md-9 col-xs-11 p-l-2 p-t-2">
 	        <div class="container" style="margin-top: 20px;">
-	        <h1 style="margin-top: 30px; margin-bottom: 20px;">Overview</h1>
+	        <h1 style="margin-top: 30px; margin-bottom: 20px;"><fmt:message key="dashboard_a_overview"/></h1>
 		        <!-- ---------------------------- Student Project ------------------------------- -->
 		        <div class="card">
-		        	<h4 id="Student Projects" class="card-header"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; Student Projects</h4>
+		        	<h4 id="Student Projects" class="card-header"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_studentProjects"/></h4>
 		        	<div class="card-block">
 						<div id="inline">
-							<p class="ovol blue" style="padding: 5px 10px;">建置成功</p>
-							<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;">建置失敗</p>
-							<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;">未建置</p>
+							<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
+							<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
+							<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
 						</div>
 						<table class="table table-striped" style="margin-top: 20px; width: 100%">
 							<thead>
 								<tr>
-									<th><fmt:message key="teacherHW_th_studentId"/></th>
-									<th><fmt:message key="teacherHW_th_studentName"/></th>
+									<th><fmt:message key="dashboard_th_studentId"/></th>
+									<th><fmt:message key="dashboard_th_studentName"/></th>
 									<%
 										for(Project project : dbProjects){
 											%>
@@ -145,7 +144,7 @@
 										String personal_url = gitData.getGitlabHostUrl() + "/u/" + userName;
 										%>
 											<tr>
-												<td width="15%"><%=user.getUserName() %></td>
+												<td width="10%"><%=user.getUserName() %></td>
 												<td width="10%"><strong><a href="#" onclick="window.open('<%=personal_url %>')"><%=user.getName() %></a></strong></td>
 												<%
 													gitProjects = conn.getProject(user);
@@ -208,7 +207,7 @@
 		        <!-- Nav tabs -->
 		        <div class="card">
 		        	<div class="card-header">
-		        		<h4 id="Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; Statistics Chart</h4>
+		        		<h4 id="Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_chart"/></h4>
 		        	</div>
 		        	
 		        	<div class="card-block">

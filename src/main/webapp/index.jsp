@@ -32,10 +32,6 @@
 	
 	
 		<title>ProgEdu Login</title>
-	
-		<%
-		session.setMaxInactiveInterval(2);
-		%>
 		
 		 <script type="text/javascript">
 			var Msg ='<%=session.getAttribute("enterError")%>';
