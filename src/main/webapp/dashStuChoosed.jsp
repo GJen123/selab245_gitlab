@@ -43,9 +43,6 @@
             font-weight: bold;
             width: 200px;
         }
-        body, html, .row, #navHeight{
-			height:100%;
-		}
 	</style>
 	
 	<title>ProgEdu</title>
@@ -76,7 +73,7 @@
 		JenkinsApi jenkins = JenkinsApi.getInstance();
 	%>
       <div class="row">
-        <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar" id="navHeight">
+        <nav class="hidden-xs-down bg-faded sidebar" id="navHeight">
           <ul class="nav nav-pills flex-column" style="margin-top: 20px;">
             <li class="nav-item">
             	<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><fmt:message key="dashboard_a_overview"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
@@ -161,40 +158,51 @@
 				<br><br>
         		
         		<!-- Nav tabs -->
-				<ul class="nav nav-tabs" role="tablist">
-				  <li class="nav-item">
-				    <a class="nav-link active" data-toggle="tab" href="#chart1" role="tab">Chart1</a>
-				  </li>
-				  <li class="nav-item">
-				    <a class="nav-link" data-toggle="tab" href="#chart2" role="tab">Chart2</a>
-				  </li>
-				  <li class="nav-item">
-				    <a class="nav-link" data-toggle="tab" href="#chart3" role="tab">Chart3</a>
-				  </li>
-				  <li class="nav-item">
-				    <a class="nav-link" data-toggle="tab" href="#chart4" role="tab">Chart4</a>
-				  </li>
-				</ul>
-				
-				<!-- Tab panes -->
-				<div class="tab-content" style="margin-top: 10px;">
-				  <div class="tab-pane active" id="chart1" role="tabpanel">
-				  	<h3>Chart1</h3>
-				  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
-				  </div>
-				  <div class="tab-pane" id="chart2" role="tabpanel">
-				  	<h3>Chart2</h3>
-				  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
-				  </div>
-				  <div class="tab-pane" id="chart3" role="tabpanel">
-				  	<h3>Chart3</h3>
-				  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
-				  </div>
-				  <div class="tab-pane" id="chart4" role="tabpanel">
-				  	<h3>Chart4</h3>
-				  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
-				  </div>
-				</div>
+				<div class="card">
+		        	<div class="card-header">
+		        		<h4 id="Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_chart"/></h4>
+		        	</div>
+		        	
+		        	<div class="card-block">
+		        		<ul class="nav nav-tabs" role="tablist">
+						  <li class="nav-item">
+						    <a class="nav-link active" data-toggle="tab" href="#chart1" role="tab">Chart1</a>
+						  </li>
+						  <li class="nav-item">
+						    <a class="nav-link" data-toggle="tab" href="#chart2" role="tab">Chart2</a>
+						  </li>
+						  <li class="nav-item">
+						    <a class="nav-link" data-toggle="tab" href="#chart3" role="tab">Chart3</a>
+						  </li>
+						  <li class="nav-item">
+						    <a class="nav-link" data-toggle="tab" href="#chart4" role="tab">Chart4</a>
+						  </li>
+						</ul>
+		        		<!-- Tab panes -->
+						<div class="tab-content text-center" style="margin-top: 10px">
+						  <div class="tab-pane active" id="chart1" role="tabpanel">
+						  	
+						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
+						  	<h3 style="margin-top: 20px">Chart1</h3>
+						  </div>
+						  <div class="tab-pane" id="chart2" role="tabpanel">
+						  	
+						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
+						  	<h3 style="margin-top: 20px">Chart2</h3>
+						  </div>
+						  <div class="tab-pane" id="chart3" role="tabpanel">
+						  	
+						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
+						  	<h3 style="margin-top: 20px">Chart3</h3>
+						  </div>
+						  <div class="tab-pane" id="chart4" role="tabpanel">
+						  	
+						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
+						  	<h3 style="margin-top: 20px">Chart4</h3>
+						  </div>
+						</div>
+		        	</div>
+		        </div>
 				<!-- Nav tabs end -->
 				
 				

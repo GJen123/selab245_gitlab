@@ -58,7 +58,7 @@ public class ProjectDbManager {
       preStmt.close();
       
       for (User user : users) {
-        sendEmail(user.getEmail());
+//        sendEmail(user.getEmail());
       }
 
       stmt = conn.createStatement();

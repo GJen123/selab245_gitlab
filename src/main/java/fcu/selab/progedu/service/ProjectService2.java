@@ -133,8 +133,9 @@ public class ProjectService2 {
         }
       } else {
         // fileType is null
-        filePath = this.getClass().getResource("MvnQuickStart.zip").getFile();
-        folderName = "MvnQuickStart.zip";
+        fileType = "Javac";
+        filePath = this.getClass().getResource("JavacQuickStart.zip").getFile();
+        folderName = "JavacQuickStart.zip";
       }
     }
 

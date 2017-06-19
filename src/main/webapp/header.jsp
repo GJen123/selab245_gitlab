@@ -18,7 +18,7 @@
 			font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 		}
 	</style>
-<body id="page-top">
+<body>
 	<nav class="navbar fixed-top navbar-toggleable-md navbar-inverse bg-inverse">
 	  		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
 	    		<span class="navbar-toggler-icon"></span>
@@ -26,7 +26,6 @@
 	  		<a class="navbar-brand" href="dashboard.jsp">ProgEdu</a>
 	  		<div class="collapse navbar-collapse" id="navbarNavDropdown">
 		    	<ul class="navbar-nav">
-		    		<li class="nav-item"><a class="nav-link" href="#page-top"><fmt:message key="top_navbar_backToTop"/></a></li>
 		      		<li class="nav-item"><a class="nav-link" href="dashboard.jsp"><fmt:message key="top_navbar_dashboard"/></a></li>
 		      		<li class="nav-item"><a class="nav-link" href="teacherGroup.jsp"><fmt:message key="top_navbar_groupProject"/></a></li>
 		      		<li class="nav-item dropdown">

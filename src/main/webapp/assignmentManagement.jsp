@@ -33,6 +33,15 @@
 			}
 		}
 	</script>
+	<title>ProgEdu</title>
+	
+</head>
+<body style="background-color:#F5F5F5;">
+	<!-- 設定語言 -->
+	<fmt:setBundle basename = "<%=basename %>"/>
+	
+	<%@ include file="header.jsp" %>
+	
 	<script>
 	$(document).ready(function() {
 		$("form").submit(function(evt) {
@@ -59,14 +68,6 @@
 		});
 	});
 	</script>
-	<title>ProgEdu</title>
-	
-</head>
-<body style="background-color:#F5F5F5;">
-	<!-- 設定語言 -->
-	<fmt:setBundle basename = "<%=basename %>"/>
-	
-	<%@ include file="header.jsp" %>
 	
 	<div>
 		<div class="container" style="width: 1140px;">

@@ -60,6 +60,13 @@
 		#groupMamber {
 			padding: 5px !important;
 		}
+		#groupNameLink {
+			color: #464a4c;
+		}
+		#groupMamber a{
+			color: #464a4c;
+			border-bottom: 1px solid #464a4c;
+		}
 	</style>
 	
 	<title>ProgEdu</title>
@@ -92,7 +99,7 @@
         		String groupUrl = gitData.getGitlabHostUrl() + "/groups/" + groupChoosed.getName();
         	%>
         	<div class="container" style="margin-top: 20px;">
-	        	<h2 href="#" onclick="window.open('<%=groupUrl %>')"><a><%=groupChoosed.getName() %></a></h2>
+	        	<h2><a id="groupNameLink" href="#" onclick="window.open('<%=groupUrl %>')"><%=groupChoosed.getName() %></a></h2>
 	        		<table class="table" style="margin-top: 20px;">
 			        	<thead class="thead-default">
 			        		<tr>
@@ -133,7 +140,7 @@
 		        							}
 			        						if(member.getAccessLevel().toString().equals("Master")) {
 			        							%>
-			        								<tr><td id="groupMamber"><h5><fmt:message key="teacherGroup_h5_leader"/><a href="#" onclick="window.open('<%=personal_url %>')"><%=member.getName() %></a></h5></td></tr>
+			        								<tr><td id="groupMamber"><h5><a href="#" onclick="window.open('<%=personal_url %>')"><i class="fa fa-flag" aria-hidden="true"></i>&nbsp; <%=member.getName() %></a></h5></td></tr>
 			       								<%
 			       							}else{
 			       							  	continue;
@@ -147,7 +154,7 @@
 		       								}
 		        							if(member.getAccessLevel().toString().equals("Developer")) {
 		        								%>
-					        					  	<tr><td id="groupMamber"><h6><fmt:message key="teacherGroup_h5_member"/><a href="#" onclick="window.open('<%=personal_url %>')"><%=member.getName() %></a></h6></td></tr>
+					        					  	<tr><td id="groupMamber"><h6><a href="#" onclick="window.open('<%=personal_url %>')"><i class="fa fa-user" aria-hidden="true"></i>&nbsp; <%=member.getName() %></a></h6></td></tr>
 					        					<%
 			        						}
 			        					}

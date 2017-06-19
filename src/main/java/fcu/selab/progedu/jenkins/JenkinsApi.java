@@ -182,11 +182,11 @@ public class JenkinsApi {
           filePath = this.getClass().getResource("config_maven.xml").getFile();
         }
       } else {
-        filePath = this.getClass().getResource("config_maven.xml").getFile();
+        filePath = this.getClass().getResource("config_javac.xml").getFile();
       }
 
       modifyXmlFileUrl(filePath, proUrl);
-      if (fileType.equals("Javac")) {
+      if ("Javac".equals(fileType)) {
         modifyXmlFileCommand(filePath, sb);
       }
 
@@ -412,7 +412,8 @@ public class JenkinsApi {
       color = j1.getString("color");
 
     } catch (Exception e) {
-      System.out.println("Jenkins get job status color error : " + e.getStackTrace());
+      System.out.print("Jenkins get job status color error : ");
+      e.printStackTrace();
     } finally {
       if (conn != null) {
         conn.disconnect();
@@ -510,7 +511,7 @@ public class JenkinsApi {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // �???��?�蕭??��?�蕭??��
+      // 嚙�???嚙踝蕭?嚙質??嚙踝蕭?嚙質??嚙踝蕭
       BufferedReader reader = new BufferedReader(
           new InputStreamReader(conn.getInputStream(), "UTF-8"));
       String jsonString1 = reader.readLine();
