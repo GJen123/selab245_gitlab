@@ -3,6 +3,8 @@ package fcu.selab.progedu.data;
 public class Project {
 
   private String name = "";
+  
+  private String deadline = "";
 
   private String description = "";
 
@@ -20,6 +22,14 @@ public class Project {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getDeadline() {
+    return deadline;
+  }
+
+  public void setDeadline(String deadline) {
+    this.deadline = deadline;
   }
 
   public String getDescription() {

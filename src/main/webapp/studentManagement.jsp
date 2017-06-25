@@ -23,17 +23,17 @@
 	
 	<%@ include file="header.jsp" %>
 	<div>
-		<div class="container" style="margin-top: 30px; width: 1140px;">
+		<div class="container" style="margin-top: 20px; width: 1140px;">
 			<br>
 			<div>
 				<div class="card">
-					<h3 class="card-header"><fmt:message key="teacherManageStudent_h3_newAllStudent"/></h3>
+					<h4 class="card-header"><strong><fmt:message key="teacherManageStudent_h3_newAllStudent"/></strong></h4>
 	
 					<div class="card-block">
 						<div class="form-group">
 							<form>
-								<h4><fmt:message key="teacherManageStudent_h4_uploadStudent"/></h4>
-								Select File to Upload:<input type="file" name="file">
+								<h5><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageStudent_h4_uploadStudent"/></h5>
+								Select File to Upload:<input type="file" name="file" style="margin-left: 10px;">
 								<br> <input type="submit" value="Upload">
 							</form>
 						</div>

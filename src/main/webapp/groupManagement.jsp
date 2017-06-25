@@ -83,8 +83,8 @@
 		});
 	});
 </script>
-	<div class="container" style="width: 1140px;">
-		<div class="card" style="margin-top: 30px">
+	<div class="container" style="margin-top: 30px; width: 1140px;">
+		<div class="card">
 			<div class="card-header">
 				<h4 ><strong><fmt:message key="teacherManageGroup_h3_newGroup"/></strong></h4>
 			</div>

@@ -122,7 +122,7 @@
 			        							for(GitlabProject project : projects){
 			        							  String projectUrl = gitData.getGitlabHostUrl() + "/" + groupChoosed.getName() + "/" + project.getName();
 			        							  	%>
-			        							  		<td id="groupMamber" width="20%"><p><a href="#" onclick="window.open('<%=projectUrl %>')"><%=project.getName() %>專案</a></p></td>
+			        							  		<td id="groupMamber" width="20%"><p><a href="#" onclick="window.open('<%=projectUrl %>')"><%=project.getName() %></a></p></td>
 			        							  	<%
 			        							}
 			       							%>

@@ -44,16 +44,18 @@ public class ProjectDbManager {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
     Statement stmt = null;
-    String sql = "INSERT INTO Assignment(name, description, hasTemplate, type)  VALUES(?, ?, ?, ?)";
+    String sql = "INSERT INTO Assignment(name, deadline, description, hasTemplate, type)"
+        + "  VALUES(?, ?, ?, ?, ?)";
     String query = "SELECT * FROM Assignment";
     List<User> users = udb.listAllUsers();
 
     try {
       preStmt = conn.prepareStatement(sql);
       preStmt.setString(1, project.getName());
-      preStmt.setString(2, project.getDescription());
-      preStmt.setBoolean(3, project.isHasTemplate());
-      preStmt.setString(4, project.getType());
+      preStmt.setString(2, project.getDeadline());
+      preStmt.setString(3, project.getDescription());
+      preStmt.setBoolean(4, project.isHasTemplate());
+      preStmt.setString(5, project.getType());
       preStmt.executeUpdate();
       preStmt.close();
       
@@ -65,8 +67,10 @@ public class ProjectDbManager {
       ResultSet rs = stmt.executeQuery(query);
       System.out.println("List All Projects");
       while (rs.next()) {
-        System.out.println("Name: " + rs.getString("name") + ", Description: "
-            + rs.getString("description") + ", HasTemplate: " + rs.getBoolean("hasTemplate")
+        System.out.println("Name: " + rs.getString("name") 
+            + ", Deadline" + rs.getString("deadline") 
+            + ", Description: "  + rs.getString("description") 
+            + ", HasTemplate: " + rs.getBoolean("hasTemplate")
             + ", Type: " + rs.getString("type"));
       }
     } catch (SQLException e) {
