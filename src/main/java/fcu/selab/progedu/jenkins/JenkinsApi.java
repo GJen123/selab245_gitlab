@@ -604,7 +604,6 @@ public class JenkinsApi {
       reader.close();
 
       JSONObject j1 = new JSONObject(jsonString1);
-      
       JSONObject j2 = j1.getJSONObject("lastBuild");
       lastBuildUrl = j2.get("url").toString();
     } catch (Exception e) {
