@@ -193,7 +193,8 @@
 															<%
 														}else{
 															%>
-																<td><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=checkStyleResultUrl %>')"><%=commit_count %></a></p></td>
+																<td><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=checkStyleResultUrl  %>')"><%=commit_count %></a></p></td>
+
 															<%
 														}
 													}

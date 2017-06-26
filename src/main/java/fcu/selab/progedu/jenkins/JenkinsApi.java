@@ -509,7 +509,6 @@ public class JenkinsApi {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // 嚙�???嚙踝蕭?嚙質??嚙踝蕭?嚙質??嚙踝蕭
       BufferedReader reader = new BufferedReader(
           new InputStreamReader(conn.getInputStream(), "UTF-8"));
       String jsonString1 = reader.readLine();
@@ -567,7 +566,7 @@ public class JenkinsApi {
       e.printStackTrace();
     }
   }
-
+  
   /**
    * Get last build number
    * 
@@ -605,11 +604,8 @@ public class JenkinsApi {
       reader.close();
 
       JSONObject j1 = new JSONObject(jsonString1);
-      System.out.println("j1 : " + j1);
       JSONObject j2 = j1.getJSONObject("lastBuild");
-      System.out.println("j2 : " + j2);
       lastBuildUrl = j2.get("url").toString();
-      System.out.println("lastBuildUrl : " + lastBuildUrl);
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
