@@ -566,7 +566,7 @@ public class JenkinsApi {
       e.printStackTrace();
     }
   }
-  
+
   /**
    * Get last build number
    * 
@@ -614,5 +614,54 @@ public class JenkinsApi {
       }
     }
     return lastBuildUrl;
+  }
+
+  /**
+   * Get
+   * 
+   * @param strUrl
+   *          strUrl
+   * @return console
+   */
+  public String getConsoleText(String strUrl) {
+    String console = "";
+    HttpURLConnection conn = null;
+
+    try {
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+      URL url = new URL(strUrl);
+      conn = (HttpURLConnection) url.openConnection();
+      String input = "GJen:zxcv1234";
+      BASE64Encoder enc = new BASE64Encoder();
+      String encoding = enc.encode(input.getBytes());
+      conn.setRequestProperty("Authorization", "Basic " + encoding);
+      conn.setReadTimeout(10000);
+      conn.setConnectTimeout(15000);
+      conn.setRequestMethod("GET");
+      conn.connect();
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+
+      BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      String str = "";
+      StringBuffer sb = new StringBuffer();
+      while (null != ((str = br.readLine()))) {
+        sb.append("\n");
+        sb.append(str);
+      }
+      br.close();
+      console = sb.toString();
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      if (conn != null) {
+        conn.disconnect();
+      }
+    }
+    return console;
   }
 }

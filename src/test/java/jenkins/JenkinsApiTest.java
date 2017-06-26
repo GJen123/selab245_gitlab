@@ -13,4 +13,10 @@ public class JenkinsApiTest {
     String lastBuildUrl = jenkins.getLastBuildUrl("GJen", "zxcv1234", jobUrl);
     System.out.println("lastBuildUrl : " + lastBuildUrl);
   }
+
+  @Test
+  public void testReadConsoleOutput() {
+    String console = jenkins.getConsoleText("http://140.134.26.71:38080/job/HelloMaven/22/consoleText");
+    System.out.println("console : " + console);
+  }
 }
