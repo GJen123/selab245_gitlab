@@ -108,7 +108,6 @@ public class JenkinsApi {
 
     // ---Create Jenkins Job---
     String jobName = "root_" + proName;
-    String strUrl = jenkinsRootUrl + "/createItem?name=" + jobName;
     String proUrl = gitlabHostUrl + "/root/" + proName + ".git";
     postCreateJob(jobName, proUrl, jenkinsCrumb, fileType, sb);
     // ------------------------
@@ -140,7 +139,6 @@ public class JenkinsApi {
 
       // ---Create Jenkins Job---
       String jobName = user.getUsername() + "_" + proName;
-      String strUrl = jenkinsRootUrl + "/createItem?name=" + jobName;
       String proUrl = gitData.getGitlabHostUrl() + "/"
           + user.getUsername() + "/" + proName + ".git";
       postCreateJob(jobName, proUrl, jenkinsCrumb, fileType, sb);
@@ -511,7 +509,6 @@ public class JenkinsApi {
       if (Thread.interrupted()) {
         throw new InterruptedException();
       }
-      // 嚙�???嚙踝蕭?嚙質??嚙踝蕭?嚙質??嚙踝蕭
       BufferedReader reader = new BufferedReader(
           new InputStreamReader(conn.getInputStream(), "UTF-8"));
       String jsonString1 = reader.readLine();
@@ -569,5 +566,54 @@ public class JenkinsApi {
       e.printStackTrace();
     }
   }
+  
+  /**
+   * Get last build number
+   * 
+   * @param username
+   *          jenkins username
+   * @param password
+   *          jenkins password
+   * @param jobUrl
+   *          job url
+   */
+  public String getLastBuildUrl(String username, String password, String jobUrl) {
+    String lastBuildUrl = null;
+    HttpURLConnection conn = null;
+    try {
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
 
+      URL url = new URL(jobUrl);
+      conn = (HttpURLConnection) url.openConnection();
+      String input = username + ":" + password;
+      String encoding = new sun.misc.BASE64Encoder().encode(input.getBytes());
+      conn.setRequestProperty("Authorization", "Basic " + encoding);
+      conn.setReadTimeout(10000);
+      conn.setConnectTimeout(15000);
+      conn.setRequestMethod("GET");
+      conn.connect();
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+
+      BufferedReader reader = new BufferedReader(
+          new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      String jsonString1 = reader.readLine();
+      reader.close();
+
+      JSONObject j1 = new JSONObject(jsonString1);
+      
+      JSONObject j2 = j1.getJSONObject("lastBuild");
+      lastBuildUrl = j2.get("url").toString();
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      if (conn != null) {
+        conn.disconnect();
+      }
+    }
+    return lastBuildUrl;
+  }
 }

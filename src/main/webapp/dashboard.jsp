@@ -152,6 +152,7 @@
 													for(Project dbProject : dbProjects){
 														String proName = null;
 														String proUrl = null;
+														String checkStyleResultUrl = null;
 														int commit_count = 0;
 														String circleColor = "circle gray";
 														for(GitlabProject gitProject : gitProjects){
@@ -165,6 +166,8 @@
 																String jobName = user.getUserName() + "_" + gitProject.getName();
 																String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
 																String color = jenkins.getJobJsonColor(jenkinsData.getJenkinsRootUsername() ,jenkinsData.getJenkinsRootPassword(), jobUrl);
+																checkStyleResultUrl = jenkins.getLastBuildUrl(jenkinsData.getJenkinsRootUsername(), jenkinsData.getJenkinsRootPassword(), jobUrl);
+																checkStyleResultUrl += "checkstyleResult";
 																if(commit_count == 1){
 																  circleColor = "circle gray";
 																} else {
@@ -190,7 +193,7 @@
 															<%
 														}else{
 															%>
-																<td><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=proUrl %>')"><%=commit_count %></a></p></td>
+																<td><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=checkStyleResultUrl  %>')"><%=commit_count %></a></p></td>
 															<%
 														}
 													}
