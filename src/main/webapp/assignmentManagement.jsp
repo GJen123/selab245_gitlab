@@ -70,17 +70,21 @@
 	</script>
 	
 	<div>
-		<div class="container" style="width: 1140px;">
+		<div class="container" style="margin-top: 20px; width: 1140px;">
 			<br>
 			<form class="form-signin">
 				<div class="card">
-					<h3 class="card-header"><fmt:message key="teacherManageHW_h3_distributeHW"/></h3>
+					<h4 class="card-header"><strong><fmt:message key="teacherManageHW_h3_distributeHW"/></strong></h4>
 	
 					<div class="card-block">
 						<div class="col-md-4">
 							<div class="form-group">
-								<label for="Hw_Name"><h3><fmt:message key="teacherManageHW_label_hwName"/></h3></label>
-								<input id="Hw_Name" type="text" class="form-control" name="Hw_Name" required="required" placeholder="ex. OOP-HW1"/>
+								<label for="Hw_Name"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwName"/></h4></label>
+								<input id="Hw_Name" type="text" class="form-control" name="Hw_Name" required="required" placeholder="eg. OOP-HW1"/>
+							</div>
+							<div class="form-group">
+								<label for="Hw_Deadline"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwDeadline"/></h4></label>
+								<input id="Hw_Deadline" type="text" class="form-control" name="Hw_Deadline" required="required" placeholder="eg. 2017/01/01 23:59"/>
 							</div>				
 							
 							<!-- ------------------------checkbox display------------------------------- -->
@@ -109,7 +113,7 @@
 					
 							
 							<div class="form-group">
-								<label for="Hw_README"><h3><fmt:message key="teacherManageHW_label_hwReadme"/></h3></label>
+								<label for="Hw_README"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwReadme"/></h4></label>
 								<textarea id="Hw_README" cols="100" rows="20" name="Hw_README"></textarea>
 							</div>
 							

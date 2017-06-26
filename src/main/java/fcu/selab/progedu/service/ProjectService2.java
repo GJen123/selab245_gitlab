@@ -93,6 +93,7 @@ public class ProjectService2 {
   @Produces(MediaType.APPLICATION_JSON)
   public Response newProject(
       @FormDataParam("Hw_Name") String name,
+      @FormDataParam("Hw_Deadline") String deadline,
       @FormDataParam("Hw_README") String readMe,
       @FormDataParam("fileRadio") String fileType,
       @FormDataParam("file") InputStream uploadedInputStream,
@@ -161,7 +162,7 @@ public class ProjectService2 {
     execCmd(pushCommand, name);
 
     // 9. Add project to database
-    addProject(name, readMe, fileType, hasTemplate);
+    addProject(name, deadline, readMe, fileType, hasTemplate);
 
     // 10. Create student project, and import project
     conn.createPrivateProject(name, rootProjectUrl);
@@ -404,6 +405,8 @@ public class ProjectService2 {
    * 
    * @param name
    *          Project name
+   * @param deadline
+   *          Project deadline  
    * @param readMe
    *          Project readme
    * @param fileType
@@ -411,10 +414,12 @@ public class ProjectService2 {
    * @param hasTemplate
    *          Has template
    */
-  public void addProject(String name, String readMe, String fileType, boolean hasTemplate) {
+  public void addProject(String name, String deadline, String readMe, String fileType,
+      boolean hasTemplate) {
     Project project = new Project();
 
     project.setName(name);
+    project.setDeadline(deadline);
     project.setDescription(readMe);
     project.setType(fileType);
     project.setHasTemplate(hasTemplate);

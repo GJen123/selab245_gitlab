@@ -10,6 +10,7 @@
 	<style>
 		body{
 			padding-top: 50px;
+			overflow-x: hidden;
 		}
 		.container{
 			padding-bottom: 30px;
