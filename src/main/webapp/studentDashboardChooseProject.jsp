@@ -57,6 +57,7 @@
 	border: 1px solid #1079c9;
 	margin-bottom: 10px;
 }
+
 </style>
 
 <title>ProgEdu</title>

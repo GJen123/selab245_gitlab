@@ -52,6 +52,20 @@
 	color: #1079c9;
 	border: 1px solid #1079c9;
 }
+#gotop {
+    display: none;
+    position: fixed;
+    right: 20px;
+    bottom: 20px;    
+    padding: 10px 15px;    
+    font-size: 20px;
+    background: #777;
+    color: white;
+    cursor: pointer;
+}
+body, html, .row, #navHeight{
+			height:100%;
+		}
 </style>
 
 <title>ProgEdu</title>
@@ -137,5 +151,22 @@
 		</div>
 		</main>
 	</div>
+	<div id="gotop"><i class="fa fa-chevron-up" aria-hidden="true"></i></div>
 </body>
+<script type="text/javascript">
+$(function(){
+    $("#gotop").click(function(){
+        jQuery("html,body").animate({
+            scrollTop:0
+        },1000);
+    });
+    $(window).scroll(function() {
+        if ( $(this).scrollTop() > 300){
+            $('#gotop').fadeIn("fast");
+        } else {
+            $('#gotop').stop().fadeOut("fast");
+        }
+    });
+});
+</script>
 </html>
