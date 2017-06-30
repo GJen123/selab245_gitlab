@@ -170,7 +170,7 @@ public class ProjectService2 {
     // 11. Create each Jenkins Jobs
     createJenkinsJob(name, fileType);
 
-    // send notification email to student
+    // 12. send notification email to student
     // sendEmail();
 
     Response response = Response.ok().build();

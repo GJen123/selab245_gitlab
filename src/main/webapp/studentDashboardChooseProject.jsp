@@ -136,7 +136,12 @@
 						<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
 						<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
 						<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
-						<a href="#" id="goToJenkins" class="btn btn-default"><fmt:message key="stuDashboard_card_goToJenkins"/></a>
+						<%
+							String jenkinsHostUrl = jenkinsData.getJenkinsHostUrl();
+							String jenkinsJobUrl = user.getUsername() + "_" + projectName;
+							//http://140.134.26.71:38080/job/D0239866_OOP-HelloWorld/
+						%>
+						<a href="<%=jenkinsHostUrl + "/job/" + jenkinsJobUrl%>" id="goToJenkins" class="btn btn-default"><fmt:message key="stuDashboard_card_goToJenkins"/></a>
 					</div>
 					<table class="table table-striped">
 						<thead style="background-color: #a3a3a3;">
@@ -159,35 +164,41 @@
 							<%
 							GitlabProject project = sConn.getProjectById(projectId);
 							commits = sConn.getAllCommits(projectId);
+							Collections.reverse(commits);
 							String proUrl = project.getWebUrl();
-							proUrl = conn.getReplaceUrl(proUrl);
-							proUrl += "/commit/";
+							String replaceProUrl = conn.getReplaceUrl(proUrl);
 							for(int i=0; i<pro_total_commits; i++) {
-								proUrl += commits.get(i).getId();
+								proUrl = replaceProUrl + "/commit/" + commits.get(i).getId();
 								
 								String jobName = sConn.getUsername() + "_" + project.getName();
 								String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
-								String color = jenkins.getJobJsonColor(jenkinsData.getJenkinsRootUsername() ,jenkinsData.getJenkinsRootPassword(), jobUrl);
+								List<Integer> numbers = jenkins.getJenkinsJobAllBuildNumber(jenkinsData.getJenkinsRootUsername() ,jenkinsData.getJenkinsRootPassword(), jobUrl);
+								String buildNumber = numbers.get(i).toString();
+								String buildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + buildNumber + "/api/json";
+								String result = jenkins.getJobBuildResult(jenkinsData.getJenkinsRootUsername() ,jenkinsData.getJenkinsRootPassword(), buildUrl);
 								String circleColor = "";
-								if(pro_total_commits == 1){
-									  circleColor = "circle gray";
-									} else {
-									  	if(color!=null){
-									  	  circleColor = "circle " + color;
-										}else{
-										  circleColor = "circle gray";
-										}
+								if(i == 0){
+									circleColor = "circle gray";
+								}
+								else {
+									if(result.equals("SUCCESS")){
+										circleColor = "circle blue";
 									}
-								%>
-									<td style="background-color: white;">
-										<a href="#" onclick="window.open('<%=proUrl %>')"><p class="<%=circleColor%>"></p></a>
-									</td>
-								<%
+									if(result.equals("FAILURE")){
+										circleColor = "circle red";
+									}
+								}
+									%>
+										<td style="background-color: white;">
+											<a href="#" onclick="window.open('<%=proUrl %>')"><p class="<%=circleColor%>"></p></a>
+										</td>
+									<%
 							}
 							%>
 							</tr>
 						</tbody>
 					</table>
+					<iframe src="http://140.134.26.71:38080/job/D0239866_OOP-HelloWorld/" width=100% frameborder="1" scrolling="yes"></iframe>
 				</div>
 			</div>
 			<div class="card" style="margin-top: 30px">
