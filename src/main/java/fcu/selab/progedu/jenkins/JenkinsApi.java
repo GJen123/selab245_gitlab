@@ -130,21 +130,15 @@ public class JenkinsApi {
    * @throws IOException
    *           on gitlab getuser call error
    */
-  public void createJenkinsJob(String proName, String jenkinsCrumb,
+  public void createJenkinsJob(String userName, String proName, String jenkinsCrumb,
       String fileType, StringBuilder sb) throws LoadConfigFailureException, IOException {
-    List<GitlabUser> users = conn.getUsers();
-    for (GitlabUser user : users) {
-      if (user.getId() == 1) {
-        continue;
-      }
-
+   
       // ---Create Jenkins Job---
-      String jobName = user.getUsername() + "_" + proName;
-      String proUrl = gitData.getGitlabHostUrl() + "/"
-          + user.getUsername() + "/" + proName + ".git";
-      postCreateJob(jobName, proUrl, jenkinsCrumb, fileType, sb);
+    String jobName = userName + "_" + proName;
+    String proUrl = gitData.getGitlabHostUrl() + "/"
+          + userName + "/" + proName + ".git";
+    postCreateJob(jobName, proUrl, jenkinsCrumb, fileType, sb);
       // ------------------------
-    }
   }
 
   /**
@@ -537,14 +531,11 @@ public class JenkinsApi {
    * @throws IOException
    *           on gitlab getuser call error
    */
-  public void buildJob(String proName, String jenkinsCrumb) throws IOException {
-
+  public void buildJob(String userName, String proName, String jenkinsCrumb) throws IOException {
     String jobName = null;
-    List<GitlabUser> users = conn.getUsers();
-    for (GitlabUser user : users) {
-      jobName = user.getUsername() + "_" + proName;
-      postBuildJob(jobName, jenkinsCrumb);
-    }
+    
+    jobName = userName + "_" + proName;
+    postBuildJob(jobName, jenkinsCrumb);
   }
 
   /**
