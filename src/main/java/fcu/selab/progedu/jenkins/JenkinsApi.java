@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -411,6 +412,115 @@ public class JenkinsApi {
       }
     }
     return color;
+  }
+
+  /**
+   * Get the jenkins job all status color
+   * 
+   * @param username
+   *          Jenkins root user name
+   * @param password
+   *          Jenkins root password
+   * @param buildUrl
+   *          Jenkins job url
+   * @return job status color
+   */
+  public String getJobBuildResult(String username, String password, String buildUrl) {
+    String buildResult = null;
+    HttpURLConnection conn = null;
+    try {
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+
+      URL url = new URL(buildUrl);
+      conn = (HttpURLConnection) url.openConnection();
+      String input = username + ":" + password;
+      String encoding = new sun.misc.BASE64Encoder().encode(input.getBytes());
+      conn.setRequestProperty("Authorization", "Basic " + encoding);
+      conn.setReadTimeout(10000);
+      conn.setConnectTimeout(15000);
+      conn.setRequestMethod("GET");
+      conn.connect();
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+
+      BufferedReader reader = new BufferedReader(
+          new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      String jsonString1 = reader.readLine();
+      reader.close();
+
+      JSONObject j1 = new JSONObject(jsonString1);
+      buildResult = j1.getString("result");
+
+    } catch (Exception e) {
+      System.out.print("Jenkins get job build result error : ");
+      e.printStackTrace();
+    } finally {
+      if (conn != null) {
+        conn.disconnect();
+      }
+    }
+    return buildResult;
+  }
+
+  /**
+   * get jekins job all build number
+   * 
+   * @param username
+   *          jenkins user name
+   * @param password
+   *          jenkins user password
+   * @param jobUrl
+   *          jenkins job url
+   * @return number list
+   */
+  public List<Integer> getJenkinsJobAllBuildNumber(String username, String password,
+      String jobUrl) {
+    List<Integer> numbers = new ArrayList<Integer>();
+    HttpURLConnection conn = null;
+    try {
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+
+      URL url = new URL(jobUrl);
+      conn = (HttpURLConnection) url.openConnection();
+      String input = username + ":" + password;
+      String encoding = new sun.misc.BASE64Encoder().encode(input.getBytes());
+      conn.setRequestProperty("Authorization", "Basic " + encoding);
+      conn.setReadTimeout(10000);
+      conn.setConnectTimeout(15000);
+      conn.setRequestMethod("GET");
+      conn.connect();
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+
+      BufferedReader reader = new BufferedReader(
+          new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      String jsonString1 = reader.readLine();
+      reader.close();
+
+      JSONObject j1 = new JSONObject(jsonString1);
+      JSONArray builds = j1.getJSONArray("builds");
+      for (int i = 0; i < builds.length(); i++) {
+        JSONObject build = builds.getJSONObject(i);
+        int buildNumber = build.optInt("number");
+        numbers.add(buildNumber);
+      }
+
+    } catch (Exception e) {
+      System.out.print("Jenkins get job build result error : ");
+      e.printStackTrace();
+    } finally {
+      if (conn != null) {
+        conn.disconnect();
+      }
+    }
+    Collections.reverse(numbers);
+    return numbers;
   }
 
   /**
