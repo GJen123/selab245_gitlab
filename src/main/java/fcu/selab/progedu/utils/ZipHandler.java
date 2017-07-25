@@ -8,6 +8,19 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
+
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.conn.HttpConnect;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
@@ -41,14 +54,12 @@ public class ZipHandler {
    * 
    * @param zipFilePath
    *          The zip file's path
-   * @param projectId
-   *          The gitlab project id
    * @param zipFolderName
    *          The zip folder name
    * @throws IOException
    *           on fileinputstream call error
    */
-  public void unzip(String zipFilePath, Integer projectId, String zipFolderName, String projectName)
+  public void unzip(String zipFilePath, String zipFolderName, String projectName)
       throws IOException {
     String parentDir = null;
     int parDirLength = 0;
@@ -64,6 +75,10 @@ public class ZipHandler {
     // iterates over entries in the zip file
     while (entry != null) {
       String filePath = destDirectory + File.separator + entry.getName();
+
+      if (filePath.substring(filePath.length() - 7, filePath.length()).equals("pom.xml")) {
+        modifyPomXml(filePath, projectName);
+      }
 
       if (filePath.substring(filePath.length() - 4).equals("src/")) {
         parentDir = getParentDir(filePath);
@@ -142,6 +157,48 @@ public class ZipHandler {
           setStringBuilder(sb);
         }
       }
+    }
+  }
+
+  private void modifyPomXml(String filePath, String projectName) {
+    try {
+      System.out.println("modify filePath : " + filePath);
+      System.out.println("projectName : " + projectName);
+      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+      Document doc = docBuilder.parse(filePath);
+
+      // NodeList project = doc.getElementsByTagName("project");
+      // for(int i=0; i<project.getLength(); i++){
+      // Element
+      // }
+
+      Node ndId = doc.getElementsByTagName("artifactId").item(0);
+      ndId.setTextContent(projectName);
+      System.out.println("doc : " + ndId.getTextContent());
+
+      Node ndName = doc.getElementsByTagName("name").item(0);
+      ndName.setTextContent(projectName);
+      System.out.println("doc : " + doc.getElementsByTagName("name").item(0));
+
+      // write the content into xml file
+      TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      Transformer transformer = transformerFactory.newTransformer();
+      DOMSource source = new DOMSource(doc);
+      StreamResult result = new StreamResult(new File(filePath + "abc"));
+      transformer.transform(source, result);
+    } catch (ParserConfigurationException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (TransformerException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (SAXException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
   }
 

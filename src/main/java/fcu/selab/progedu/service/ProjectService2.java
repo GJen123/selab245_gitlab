@@ -339,7 +339,7 @@ public class ProjectService2 {
   private void unzipFile(String filePath, int projectId, String folderName, String projectName) {
     try {
       // unzip file
-      zipHandler.unzip(filePath, projectId, folderName, projectName);
+      zipHandler.unzip(filePath, folderName, projectName);
     } catch (IOException e) {
       e.printStackTrace();
     }

@@ -10,7 +10,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -104,8 +103,8 @@ public class JenkinsApi {
    * @param sb
    *          The config build job command
    */
-  public void createRootJob(String proName, String jenkinsCrumb,
-      String fileType, StringBuilder sb) {
+  public void createRootJob(String proName, String jenkinsCrumb, String fileType,
+      StringBuilder sb) {
 
     // ---Create Jenkins Job---
     String jobName = "root_" + proName;
@@ -132,13 +131,12 @@ public class JenkinsApi {
    */
   public void createJenkinsJob(String userName, String proName, String jenkinsCrumb,
       String fileType, StringBuilder sb) throws LoadConfigFailureException, IOException {
-   
-      // ---Create Jenkins Job---
+
+    // ---Create Jenkins Job---
     String jobName = userName + "_" + proName;
-    String proUrl = gitData.getGitlabHostUrl() + "/"
-          + userName + "/" + proName + ".git";
+    String proUrl = gitData.getGitlabHostUrl() + "/" + userName + "/" + proName + ".git";
     postCreateJob(jobName, proUrl, jenkinsCrumb, fileType, sb);
-      // ------------------------
+    // ------------------------
   }
 
   /**
@@ -155,8 +153,8 @@ public class JenkinsApi {
    * @param sb
    *          The config build job command
    */
-  public void postCreateJob(String jobName, String proUrl, String jenkinsCrumb,
-      String fileType, StringBuilder sb) {
+  public void postCreateJob(String jobName, String proUrl, String jenkinsCrumb, String fileType,
+      StringBuilder sb) {
     HttpClient client = new DefaultHttpClient();
 
     String url = jenkinsRootUrl + "/createItem?name=" + jobName;
@@ -414,112 +412,6 @@ public class JenkinsApi {
     }
     return color;
   }
-  
-  /**
-  * Get the jenkins job all status color
-  * 
-  * @param username
-  *          Jenkins root user name
-  * @param password
-  *          Jenkins root password
-  * @param buildUrl
-  *          Jenkins job url
-  * @return job status color
-  */
-  public String getJobBuildResult(String username, String password, String buildUrl) {
-    String buildResult = null;
-    HttpURLConnection conn = null;
-    try {
-      if (Thread.interrupted()) {
-        throw new InterruptedException();
-      }
-
-      URL url = new URL(buildUrl);
-      conn = (HttpURLConnection) url.openConnection();
-      String input = username + ":" + password;
-      String encoding = new sun.misc.BASE64Encoder().encode(input.getBytes());
-      conn.setRequestProperty("Authorization", "Basic " + encoding);
-      conn.setReadTimeout(10000);
-      conn.setConnectTimeout(15000);
-      conn.setRequestMethod("GET");
-      conn.connect();
-      if (Thread.interrupted()) {
-        throw new InterruptedException();
-      }
-
-      BufferedReader reader = new BufferedReader(
-          new InputStreamReader(conn.getInputStream(), "UTF-8"));
-      String jsonString1 = reader.readLine();
-      reader.close();
-
-      JSONObject j1 = new JSONObject(jsonString1);
-      buildResult = j1.getString("result");
-
-    } catch (Exception e) {
-      System.out.print("Jenkins get job build result error : ");
-      e.printStackTrace();
-    } finally {
-      if (conn != null) {
-        conn.disconnect();
-      }
-    }
-    return buildResult;
-  }
-  
-  /**
-   * get jekins job all build number
-   * 
-   * @param username jenkins user name
-   * @param password jenkins user password
-   * @param jobUrl jenkins job url
-   * @return number list
-   */
-  public List<Integer> getJenkinsJobAllBuildNumber(String username, String password,
-      String jobUrl) {
-    List<Integer> numbers = new ArrayList<Integer>();
-    HttpURLConnection conn = null;
-    try {
-      if (Thread.interrupted()) {
-        throw new InterruptedException();
-      }
-
-      URL url = new URL(jobUrl);
-      conn = (HttpURLConnection) url.openConnection();
-      String input = username + ":" + password;
-      String encoding = new sun.misc.BASE64Encoder().encode(input.getBytes());
-      conn.setRequestProperty("Authorization", "Basic " + encoding);
-      conn.setReadTimeout(10000);
-      conn.setConnectTimeout(15000);
-      conn.setRequestMethod("GET");
-      conn.connect();
-      if (Thread.interrupted()) {
-        throw new InterruptedException();
-      }
-
-      BufferedReader reader = new BufferedReader(
-          new InputStreamReader(conn.getInputStream(), "UTF-8"));
-      String jsonString1 = reader.readLine();
-      reader.close();
-
-      JSONObject j1 = new JSONObject(jsonString1);
-      JSONArray builds = j1.getJSONArray("builds");
-      for (int i = 0; i < builds.length(); i++) { 
-        JSONObject build = builds.getJSONObject(i);
-        int buildNumber = build.optInt("number");
-        numbers.add(buildNumber);
-      }
-
-    } catch (Exception e) {
-      System.out.print("Jenkins get job build result error : ");
-      e.printStackTrace();
-    } finally {
-      if (conn != null) {
-        conn.disconnect();
-      }
-    }
-    Collections.reverse(numbers);
-    return numbers;
-  }
 
   /**
    * Jenkins build the job
@@ -533,7 +425,6 @@ public class JenkinsApi {
    */
   public void buildJob(String userName, String proName, String jenkinsCrumb) throws IOException {
     String jobName = null;
-    
     jobName = userName + "_" + proName;
     postBuildJob(jobName, jenkinsCrumb);
   }
@@ -639,7 +530,8 @@ public class JenkinsApi {
   public void deleteJob(String jobName) {
     HttpClient client = new DefaultHttpClient();
 
-    String url = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/job/" + jobName + "/doDelete";
+    String url = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/job/" + jobName
+        + "/doDelete";
     try {
       HttpPost post = new HttpPost(url);
 

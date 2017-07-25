@@ -22,7 +22,7 @@ public class ZipHandlerTest {
     // "C:\\Users\\GJen\\AppData\\Local\\Temp\\uploads\\JavacQuickStart.zip";
     String filePath = "C:\\Users\\GJen\\AppData\\Local\\Temp\\uploads\\selab245_gitlab.zip";
     try {
-      unzip.unzip(filePath, 0, "selab245_gitlab.zip", "selab245_gitlab");
+      unzip.unzip(filePath, "selab245_gitlab.zip", "selab245_gitlab");
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
