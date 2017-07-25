@@ -59,6 +59,16 @@
 }
 
 </style>
+<script type="text/javascript">
+		function handleClick(cb, divId){
+			var o=document.getElementById(divId);
+			if(cb.checked){
+				o.style.display='';
+			}else{
+				o.style.display='none';
+			}
+		}
+</script>
 
 <title>ProgEdu</title>
 </head>
@@ -147,7 +157,8 @@
 							String jenkinsJobUrl = user.getUsername() + "_" + projectName;
 							//http://140.134.26.71:38080/job/D0239866_OOP-HelloWorld/
 						%>
-						<a href="<%=jenkinsHostUrl + "/job/" + jenkinsJobUrl%>" id="goToJenkins" class="btn btn-default"><fmt:message key="stuDashboard_card_goToJenkins"/></a>
+						<!-- <a href="<%=jenkinsHostUrl + "/job/" + jenkinsJobUrl%>" id="goToJenkins" class="btn btn-default"><fmt:message key="stuDashboard_card_goToJenkins"/></a>
+					 -->
 					</div>
 					<table class="table table-striped">
 						<thead style="background-color: #a3a3a3;">
@@ -173,6 +184,7 @@
 							Collections.reverse(commits);
 							String proUrl = project.getWebUrl();
 							String replaceProUrl = conn.getReplaceUrl(proUrl);
+							String consoleOutput = "";
 							for(int i=0; i<pro_total_commits; i++) {
 								proUrl = replaceProUrl + "/commit/" + commits.get(i).getId();
 								
@@ -197,6 +209,18 @@
 									%>
 										<td style="background-color: white;">
 											<a href="#" onclick="window.open('<%=proUrl %>')"><p class="<%=circleColor%>"></p></a>
+											<%
+											if(result.equals("FAILURE")){
+												consoleOutput = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + buildNumber + "/consoleText";
+											%>
+												<div class="form-group col-md-3">
+													<label for="checkbox">
+														<input type="checkbox" id="checkbox" onclick='handleClick(this, "console")'>查看建置結果
+													</label>
+												</div>
+											<%
+											}
+											%>
 										</td>
 									<%
 							}
@@ -204,7 +228,10 @@
 							</tr>
 						</tbody>
 					</table>
-					<iframe src="http://140.134.26.71:38080/job/D0239866_OOP-HelloWorld/" width=100% frameborder="1" scrolling="yes"></iframe>
+					<iframe src="http://140.134.26.71:38080/job/D0239866_OOP-HelloWorld/4/consoleText"></iframe>
+					<div style="display:none" id="console">
+							<p><%=jenkins.getConsoleText(consoleOutput) %></p>
+					</div>
 				</div>
 			</div>
 			

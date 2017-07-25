@@ -47,7 +47,6 @@ public class ProjectDbManager {
     String sql = "INSERT INTO Assignment(name, deadline, description, hasTemplate, type)"
         + "  VALUES(?, ?, ?, ?, ?)";
     String query = "SELECT * FROM Assignment";
-    List<User> users = udb.listAllUsers();
 
     try {
       preStmt = conn.prepareStatement(sql);
@@ -58,21 +57,17 @@ public class ProjectDbManager {
       preStmt.setString(5, project.getType());
       preStmt.executeUpdate();
       preStmt.close();
-      
-      for (User user : users) {
-//        sendEmail(user.getEmail());
-      }
-
-      stmt = conn.createStatement();
-      ResultSet rs = stmt.executeQuery(query);
-      System.out.println("List All Projects");
-      while (rs.next()) {
-        System.out.println("Name: " + rs.getString("name") 
-            + ", Deadline" + rs.getString("deadline") 
-            + ", Description: "  + rs.getString("description") 
-            + ", HasTemplate: " + rs.getBoolean("hasTemplate")
-            + ", Type: " + rs.getString("type"));
-      }
+//
+//      stmt = conn.createStatement();
+//      ResultSet rs = stmt.executeQuery(query);
+//      System.out.println("List All Projects");
+//      while (rs.next()) {
+//        System.out.println("Name: " + rs.getString("name") 
+//            + ", Deadline: " + rs.getString("deadline") 
+//            + ", Description: "  + rs.getString("description") 
+//            + ", HasTemplate: " + rs.getBoolean("hasTemplate")
+//            + ", Type: " + rs.getString("type"));
+//      }
     } catch (SQLException e) {
       e.printStackTrace();
     } finally {
@@ -81,44 +76,6 @@ public class ProjectDbManager {
       } catch (SQLException e) {
         e.printStackTrace();
       }
-    }
-  }
-  
-  /**
-   * Send notification email to student
-   * @param email students' email
-   */
-  public void sendEmail(String email) {
-    
-    final String username = "fcuselab245@gmail.com";
-//    final String password = "csclbyqwjhgogypt";// your password
-    final String password = "52005505";
-
-    Properties props = new Properties();
-    props.put("mail.smtp.host", "smtp.gmail.com");
-    props.put("mail.smtp.auth", "true");
-    props.put("mail.smtp.starttls.enable", "true");
-    props.put("mail.smtp.port", "587");
-    Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-      protected PasswordAuthentication getPasswordAuthentication() {
-        return new PasswordAuthentication(username, password);
-      }
-    });
-
-    try {
-      String content = "You have a new assignment!";
-      MimeMessage message = new MimeMessage(session);
-      message.setFrom(new InternetAddress(username));
-      message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
-      message.setSubject("New assignment notification", "utf-8");
-      message.setContent(content, "text/html;charset=utf-8");
-
-      Transport.send(message);
-
-      System.out.println("Mail sent succesfully!");
-
-    } catch (MessagingException e) {
-      throw new RuntimeException(e);
     }
   }
 

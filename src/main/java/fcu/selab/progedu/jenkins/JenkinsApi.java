@@ -104,8 +104,8 @@ public class JenkinsApi {
    * @param sb
    *          The config build job command
    */
-  public void createRootJob(String proName, String jenkinsCrumb,
-      String fileType, StringBuilder sb) {
+  public void createRootJob(String proName, String jenkinsCrumb, String fileType,
+      StringBuilder sb) {
 
     // ---Create Jenkins Job---
     String jobName = "root_" + proName;
@@ -130,21 +130,14 @@ public class JenkinsApi {
    * @throws IOException
    *           on gitlab getuser call error
    */
-  public void createJenkinsJob(String proName, String jenkinsCrumb,
+  public void createJenkinsJob(String userName, String proName, String jenkinsCrumb,
       String fileType, StringBuilder sb) throws LoadConfigFailureException, IOException {
-    List<GitlabUser> users = conn.getUsers();
-    for (GitlabUser user : users) {
-      if (user.getId() == 1) {
-        continue;
-      }
 
-      // ---Create Jenkins Job---
-      String jobName = user.getUsername() + "_" + proName;
-      String proUrl = gitData.getGitlabHostUrl() + "/"
-          + user.getUsername() + "/" + proName + ".git";
-      postCreateJob(jobName, proUrl, jenkinsCrumb, fileType, sb);
-      // ------------------------
-    }
+    // ---Create Jenkins Job---
+    String jobName = userName + "_" + proName;
+    String proUrl = gitData.getGitlabHostUrl() + "/" + userName + "/" + proName + ".git";
+    postCreateJob(jobName, proUrl, jenkinsCrumb, fileType, sb);
+    // ------------------------
   }
 
   /**
@@ -161,8 +154,8 @@ public class JenkinsApi {
    * @param sb
    *          The config build job command
    */
-  public void postCreateJob(String jobName, String proUrl, String jenkinsCrumb,
-      String fileType, StringBuilder sb) {
+  public void postCreateJob(String jobName, String proUrl, String jenkinsCrumb, String fileType,
+      StringBuilder sb) {
     HttpClient client = new DefaultHttpClient();
 
     String url = jenkinsRootUrl + "/createItem?name=" + jobName;
@@ -420,18 +413,18 @@ public class JenkinsApi {
     }
     return color;
   }
-  
+
   /**
-  * Get the jenkins job all status color
-  * 
-  * @param username
-  *          Jenkins root user name
-  * @param password
-  *          Jenkins root password
-  * @param buildUrl
-  *          Jenkins job url
-  * @return job status color
-  */
+   * Get the jenkins job all status color
+   * 
+   * @param username
+   *          Jenkins root user name
+   * @param password
+   *          Jenkins root password
+   * @param buildUrl
+   *          Jenkins job url
+   * @return job status color
+   */
   public String getJobBuildResult(String username, String password, String buildUrl) {
     String buildResult = null;
     HttpURLConnection conn = null;
@@ -471,13 +464,16 @@ public class JenkinsApi {
     }
     return buildResult;
   }
-  
+
   /**
    * get jekins job all build number
    * 
-   * @param username jenkins user name
-   * @param password jenkins user password
-   * @param jobUrl jenkins job url
+   * @param username
+   *          jenkins user name
+   * @param password
+   *          jenkins user password
+   * @param jobUrl
+   *          jenkins job url
    * @return number list
    */
   public List<Integer> getJenkinsJobAllBuildNumber(String username, String password,
@@ -509,7 +505,7 @@ public class JenkinsApi {
 
       JSONObject j1 = new JSONObject(jsonString1);
       JSONArray builds = j1.getJSONArray("builds");
-      for (int i = 0; i < builds.length(); i++) { 
+      for (int i = 0; i < builds.length(); i++) {
         JSONObject build = builds.getJSONObject(i);
         int buildNumber = build.optInt("number");
         numbers.add(buildNumber);
@@ -537,14 +533,10 @@ public class JenkinsApi {
    * @throws IOException
    *           on gitlab getuser call error
    */
-  public void buildJob(String proName, String jenkinsCrumb) throws IOException {
-
+  public void buildJob(String userName, String proName, String jenkinsCrumb) throws IOException {
     String jobName = null;
-    List<GitlabUser> users = conn.getUsers();
-    for (GitlabUser user : users) {
-      jobName = user.getUsername() + "_" + proName;
-      postBuildJob(jobName, jenkinsCrumb);
-    }
+    jobName = userName + "_" + proName;
+    postBuildJob(jobName, jenkinsCrumb);
   }
 
   /**
@@ -648,7 +640,8 @@ public class JenkinsApi {
   public void deleteJob(String jobName) {
     HttpClient client = new DefaultHttpClient();
 
-    String url = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/job/" + jobName + "/doDelete";
+    String url = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/job/" + jobName
+        + "/doDelete";
     try {
       HttpPost post = new HttpPost(url);
 
