@@ -98,7 +98,6 @@ public class ProjectService2 {
       @FormDataParam("fileRadio") String fileType,
       @FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
-    int rootProjectId;
     String rootProjectUrl = null;
     String folderName = null;
     String filePath = null;
@@ -106,7 +105,6 @@ public class ProjectService2 {
 
     // 1. Create root project and get project id and url
     createRootProject(name);
-    rootProjectId = getThisProjectId(name);
     rootProjectUrl = getThisProjectUrl(name);
 
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
@@ -141,7 +139,7 @@ public class ProjectService2 {
     }
 
     // 4. Unzip the file to the root project
-    unzipFile(filePath, rootProjectId, folderName, name);
+    unzipFile(filePath, folderName, name);
 
     // 5. if README is not null
     if (!readMe.equals("<br>") || !"".equals(readMe) || !readMe.isEmpty()) {
@@ -313,10 +311,10 @@ public class ProjectService2 {
     }
   }
 
-  private void unzipFile(String filePath, int projectId, String folderName, String projectName) {
+  private void unzipFile(String filePath, String folderName, String projectName) {
     try {
       // unzip file
-      zipHandler.unzip(filePath, projectId, folderName, projectName);
+      zipHandler.unzip(filePath, folderName, projectName);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -406,7 +404,7 @@ public class ProjectService2 {
    * @param name
    *          Project name
    * @param deadline
-   *          Project deadline  
+   *          Project deadline
    * @param readMe
    *          Project readme
    * @param fileType

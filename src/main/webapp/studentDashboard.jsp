@@ -79,7 +79,12 @@ body, html, .row, #navHeight{
 		GitlabConfig gitData = GitlabConfig.getInstance();
 		CourseConfig courseData = CourseConfig.getInstance();
 
-		String private_token = session.getAttribute("private_token").toString();
+		String private_token = null;
+		if(!"".equals(session.getAttribute("private_token").toString()) && null != session.getAttribute("private_token").toString()){
+		  private_token = session.getAttribute("private_token").toString();
+		}else{
+		  response.sendRedirect("index.jsp");
+		}
 		StudentConn sConn = new StudentConn(private_token);
 		GitlabUser user = sConn.getUser();
 		List<GitlabProject> projects = sConn.getProject();

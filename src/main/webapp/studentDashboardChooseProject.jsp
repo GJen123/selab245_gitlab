@@ -79,7 +79,13 @@
 		Conn conn = Conn.getInstance();
 		JenkinsApi jenkins = JenkinsApi.getInstance();
 
-		String private_token = session.getAttribute("private_token").toString();
+		String private_token = null;
+		if(!"".equals(session.getAttribute("private_token").toString()) && null != session.getAttribute("private_token").toString()){
+		  private_token = session.getAttribute("private_token").toString();
+		}else{
+		  response.sendRedirect("index.jsp");
+		}
+		
 		StudentConn sConn = new StudentConn(private_token);
 		GitlabUser user = sConn.getUser();
 		List<GitlabProject> projects = sConn.getProject();
@@ -190,6 +196,26 @@
 					</table>
 				</div>
 			</div>
+			
+			<!-- iFrame -->
+			<%
+				String jobName = sConn.getUsername() + "_" + project.getName();
+				String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/console";
+			%>
+			<div class="card" style="margin-top: 30px">
+				<h4 id="Student Projects" class="card-header">
+		        	<i class="fa fa-table" aria-hidden="true"></i>&nbsp; 
+		        		Jenkins
+		        </h4>
+		        <div class="card-block">
+			        <iframe src="<%=lastBuildUrl %>" width="1000px" height="500px">
+		  				<p>Your browser does not support iframes.</p>
+					</iframe>
+		        </div>
+			</div>
+			
+			<!-- iFrame -->
+			
 			<div class="card" style="margin-top: 30px">
 		        <h4 id="Student Projects" class="card-header">
 		        	<i class="fa fa-table" aria-hidden="true"></i>&nbsp; 
