@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -164,14 +165,36 @@ public class ProjectService2 {
     // 9. Add project to database
     addProject(name, deadline, readMe, fileType, hasTemplate);
 
-    // 10. Create student project, and import project
-    conn.createPrivateProject(name, rootProjectUrl);
+//    // 10. Create student project, and import project
+//    conn.createPrivateProject(name, rootProjectUrl);
+//
+//    // 11. Create each Jenkins Jobs
+//    createJenkinsJob(name, fileType);
+//
+//    // 12. send notification email to student
+//    // sendEmail();
+    
+    createRootJenkinsJob(name, fileType);
+    
+    List<GitlabUser> users = conn.getUsers();
+    Collections.reverse(users);
+    for (GitlabUser user : users) {
+      if (user.getId() == 1) {
+        continue;
+      }
+      
+      // 10. Create student project, and import project
+      conn.createPrivateProject(user.getId(), name, rootProjectUrl);
+      System.out.println(user.getName() + ", Create student project, and import project");
 
-    // 11. Create each Jenkins Jobs
-    createJenkinsJob(name, fileType);
+      // 11. Create each Jenkins Jobs
+      createStudentJenkinsJob(user.getUsername(), name, fileType);
+      System.out.println(user.getName() + ", Create each Jenkins Jobs");
 
-    // 12. send notification email to student
-    // sendEmail();
+      // 12. send notification email to student
+      sendEmail(user.getEmail());
+      System.out.println(user.getName() + ", Send notification email to student");
+    }
 
     Response response = Response.ok().build();
     // if (!isSave) {
@@ -326,11 +349,10 @@ public class ProjectService2 {
    * Send the notification email to student
    *
    */
-  public void sendEmail() {
-    String email;
-    email = "";
-    final String username = "rtc@mail.fcu.edu.tw"; // teacher's email
-    final String password = "xrjiuuiityofurzi";// teacher's mail password
+  public void sendEmail(String email) {
+    final String username = "fcuselab245@gmail.com";
+//  final String password = "csclbyqwjhgogypt";// your password
+    final String password = "52005505";
 
     Properties props = new Properties();
     props.put("mail.smtp.host", "smtp.gmail.com");
@@ -344,14 +366,11 @@ public class ProjectService2 {
     });
 
     try {
-      String content = "";
-      // Message message = new MimeMessage(session);
+      String content = "You have a new assignment!";
       MimeMessage message = new MimeMessage(session);
-      message.setFrom(new InternetAddress("rtc@mail.fcu.edu.tw")); // send from
-                                                                   // teacher's
-                                                                   // email
+      message.setFrom(new InternetAddress(username));
       message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
-      message.setSubject("You got a new assignment", "utf-8");
+      message.setSubject("New assignment notification", "utf-8");
       message.setContent(content, "text/html;charset=utf-8");
 
       Transport.send(message);
@@ -363,18 +382,22 @@ public class ProjectService2 {
     }
   }
 
-  private void createJenkinsJob(String name, String fileType) {
+  private void createRootJenkinsJob(String name, String fileType) {
     String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername, jenkinsRootPassword);
     StringBuilder sb = zipHandler.getStringBuilder();
     jenkins.createRootJob(name, jenkinsCrumb, fileType, sb);
+  }
+  
+  private void createStudentJenkinsJob(String userName, String name, String fileType) {
+    String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername, jenkinsRootPassword);
+    StringBuilder sb = zipHandler.getStringBuilder();
     try {
-      jenkins.createJenkinsJob(name, jenkinsCrumb, fileType, sb);
-      jenkins.buildJob(name, jenkinsCrumb);
+      jenkins.createJenkinsJob(userName, name, jenkinsCrumb, fileType, sb);
+      jenkins.buildJob(userName, name, jenkinsCrumb);
     } catch (LoadConfigFailureException | IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-
   }
 
   private void createReadmeFile(String readMe, String projectName) {

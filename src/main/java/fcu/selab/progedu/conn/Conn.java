@@ -344,17 +344,10 @@ public class Conn {
    * @throws IOException
    *           on gitlab api call error
    */
-  public boolean createPrivateProject(String proName, String proUrl) {
-    List<GitlabUser> users = getUsers();
+  public boolean createPrivateProject(int userId, String proName, String proUrl) {
     try {
-      for (GitlabUser user : users) {
-        if (user.getId() == 1) {
-          continue;
-        }
-
-        GitlabProject project = gitlab.createUserProject(user.getId(), proName, null, null, null,
+      GitlabProject project = gitlab.createUserProject(userId, proName, null, null, null,
             null, null, null, null, null, null, proUrl);
-      }
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

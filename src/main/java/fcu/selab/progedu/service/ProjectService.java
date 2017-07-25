@@ -135,13 +135,13 @@ public class ProjectService {
       }
 
       // create student project
-      userConn.createPrivateProject(name, projectUrl);
+//      userConn.createPrivateProject(name, projectUrl);
 
       // ---jenkins create job---
       String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername, jenkinsRootPassword);
       jenkins.createRootJob(name, jenkinsCrumb, fileType, sb);
-      jenkins.createJenkinsJob(name, jenkinsCrumb, fileType, sb);
-      jenkins.buildJob(name, jenkinsCrumb);
+//      jenkins.createJenkinsJob(name, jenkinsCrumb, fileType, sb);
+//      jenkins.buildJob(name, jenkinsCrumb);
       // -----------------------
 
       addProject(name, readMe, fileType, hasTemplate);
