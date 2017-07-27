@@ -142,7 +142,7 @@ public class ProjectService2 {
     }
 
     // 4. Unzip the file to the root project
-    unzipFile(filePath, rootProjectId, folderName, name);
+    unzipFile(filePath, folderName, name);
 
     // 5. if README is not null
     if (!readMe.equals("<br>") || !"".equals(readMe) || !readMe.isEmpty()) {
@@ -336,7 +336,7 @@ public class ProjectService2 {
     }
   }
 
-  private void unzipFile(String filePath, int projectId, String folderName, String projectName) {
+  private void unzipFile(String filePath, String folderName, String projectName) {
     try {
       // unzip file
       zipHandler.unzip(filePath, folderName, projectName);
