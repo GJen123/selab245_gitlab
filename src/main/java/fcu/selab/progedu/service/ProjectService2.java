@@ -92,10 +92,8 @@ public class ProjectService2 {
   @Path("create")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response newProject(
-      @FormDataParam("Hw_Name") String name,
-      @FormDataParam("Hw_Deadline") String deadline,
-      @FormDataParam("Hw_README") String readMe,
+  public Response newProject(@FormDataParam("Hw_Name") String name,
+      @FormDataParam("Hw_Deadline") String deadline, @FormDataParam("Hw_README") String readMe,
       @FormDataParam("fileRadio") String fileType,
       @FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
@@ -163,36 +161,33 @@ public class ProjectService2 {
     // 9. Add project to database
     addProject(name, deadline, readMe, fileType, hasTemplate);
 
-//    // 10. Create student project, and import project
-//    conn.createPrivateProject(name, rootProjectUrl);
-//
-//    // 11. Create each Jenkins Jobs
-//    createJenkinsJob(name, fileType);
-//
-//    // 12. send notification email to student
-//    // sendEmail();
-    
-    createRootJenkinsJob(name, fileType);
-    
+    // // 10. Create student project, and import project
+    // conn.createPrivateProject(name, rootProjectUrl);
+    //
+    // // 11. Create each Jenkins Jobs
+    // createJenkinsJob(name, fileType);
+    //
+    // // 12. send notification email to student
+    // // sendEmail();
+   
     List<GitlabUser> users = conn.getUsers();
     Collections.reverse(users);
     for (GitlabUser user : users) {
       if (user.getId() == 1) {
         continue;
       }
-      
+
       // 10. Create student project, and import project
       conn.createPrivateProject(user.getId(), name, rootProjectUrl);
       System.out.println(user.getName() + ", Create student project, and import project");
 
-      // 11. Create each Jenkins Jobs
-      createStudentJenkinsJob(user.getUsername(), name, fileType);
-      System.out.println(user.getName() + ", Create each Jenkins Jobs");
-
-      // 12. send notification email to student
+      // 11. send notification email to student
       sendEmail(user.getEmail());
       System.out.println(user.getName() + ", Send notification email to student");
-    }
+    } 
+    
+    // 12. Create each Jenkins Jobs
+    createJenkinsJob(name, fileType);
 
     Response response = Response.ok().build();
     // if (!isSave) {
@@ -238,10 +233,10 @@ public class ProjectService2 {
     String uploadDir = tempDir + "uploads\\" + projectName;
 
     try {
-      process = Runtime.getRuntime()
-          .exec("cmd.exe /c " + command, // path to executable
-              null, // env vars, null means pass parent env
-              new File(uploadDir));
+      process = Runtime.getRuntime().exec("cmd.exe /c " + command, // path to
+                                                                   // executable
+          null, // env vars, null means pass parent env
+          new File(uploadDir));
       BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
       String line;
       while (true) {
@@ -263,10 +258,10 @@ public class ProjectService2 {
     String uploadDir = tempDir + "uploads\\";
 
     try {
-      process = Runtime.getRuntime()
-          .exec("cmd.exe /c " + command, // path to executable
-              null, // env vars, null means pass parent env
-              new File(uploadDir));
+      process = Runtime.getRuntime().exec("cmd.exe /c " + command, // path to
+                                                                   // executable
+          null, // env vars, null means pass parent env
+          new File(uploadDir));
       BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
       String line;
       while (true) {
@@ -349,7 +344,7 @@ public class ProjectService2 {
    */
   public void sendEmail(String email) {
     final String username = "fcuselab245@gmail.com";
-//  final String password = "csclbyqwjhgogypt";// your password
+    // final String password = "csclbyqwjhgogypt";// your password
     final String password = "52005505";
 
     Properties props = new Properties();
@@ -373,19 +368,32 @@ public class ProjectService2 {
 
       Transport.send(message);
 
-      System.out.println("Mail sent succesfully!");
-
     } catch (MessagingException e) {
       throw new RuntimeException(e);
     }
   }
 
-  private void createRootJenkinsJob(String name, String fileType) {
+  private void createJenkinsJob(String name, String fileType) {
     String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername, jenkinsRootPassword);
     StringBuilder sb = zipHandler.getStringBuilder();
     jenkins.createRootJob(name, jenkinsCrumb, fileType, sb);
+
+    try {
+      List<GitlabUser> users = conn.getUsers();
+      Collections.reverse(users);
+      for (GitlabUser user : users) {
+        if (user.getId() == 1) {
+          continue;
+        }
+        jenkins.createJenkinsJob(user.getUsername(), name, jenkinsCrumb, fileType, sb);
+        jenkins.buildJob(user.getUsername(), name, jenkinsCrumb);
+      }
+    } catch (LoadConfigFailureException | IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
-  
+
   private void createStudentJenkinsJob(String userName, String name, String fileType) {
     String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername, jenkinsRootPassword);
     StringBuilder sb = zipHandler.getStringBuilder();
@@ -407,8 +415,8 @@ public class ProjectService2 {
     System.out.println("readMe : " + readMe);
 
     try {
-      writer = new BufferedWriter(new OutputStreamWriter(
-          new FileOutputStream(projectDir + "\\README.md"), "utf-8"));
+      writer = new BufferedWriter(
+          new OutputStreamWriter(new FileOutputStream(projectDir + "\\README.md"), "utf-8"));
       writer.write(readMe);
     } catch (IOException ex) {
       // report

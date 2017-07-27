@@ -185,7 +185,7 @@ public class ZipHandler {
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
       Transformer transformer = transformerFactory.newTransformer();
       DOMSource source = new DOMSource(doc);
-      StreamResult result = new StreamResult(new File(filePath + "abc"));
+      StreamResult result = new StreamResult(new File(filePath));
       transformer.transform(source, result);
     } catch (ParserConfigurationException e) {
       // TODO Auto-generated catch block
