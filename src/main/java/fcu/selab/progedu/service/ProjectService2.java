@@ -99,7 +99,6 @@ public class ProjectService2 {
       @FormDataParam("fileRadio") String fileType,
       @FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
-    int rootProjectId;
     String rootProjectUrl = null;
     String folderName = null;
     String filePath = null;
@@ -107,7 +106,6 @@ public class ProjectService2 {
 
     // 1. Create root project and get project id and url
     createRootProject(name);
-    rootProjectId = getThisProjectId(name);
     rootProjectUrl = getThisProjectUrl(name);
 
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
@@ -429,7 +427,7 @@ public class ProjectService2 {
    * @param name
    *          Project name
    * @param deadline
-   *          Project deadline  
+   *          Project deadline
    * @param readMe
    *          Project readme
    * @param fileType
