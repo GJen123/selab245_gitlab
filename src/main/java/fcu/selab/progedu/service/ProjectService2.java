@@ -176,14 +176,22 @@ public class ProjectService2 {
       if (user.getId() == 1) {
         continue;
       }
+      int id = user.getId();
+      String userName = user.getName();
+      String email = user.getEmail();
+      
+      CreateStudentProjectThread thread = 
+          new CreateStudentProjectThread(id, userName, email, name, rootProjectUrl);
+      
+      thread.start();
 
       // 10. Create student project, and import project
-      conn.createPrivateProject(user.getId(), name, rootProjectUrl);
-      System.out.println(user.getName() + ", Create student project, and import project");
+//      conn.createPrivateProject(user.getId(), name, rootProjectUrl);
+//      System.out.println(user.getName() + ", Create student project, and import project");
 
       // 11. send notification email to student
-      sendEmail(user.getEmail());
-      System.out.println(user.getName() + ", Send notification email to student");
+//      sendEmail(user.getEmail());
+//      System.out.println(user.getName() + ", Send notification email to student");
     } 
     
     // 12. Create each Jenkins Jobs
