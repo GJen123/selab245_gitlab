@@ -55,8 +55,7 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>javac src/fcu/iecs/oop/*.java
-</command>
+      <command>javac src/fcu/iecs/oop/*.java</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>

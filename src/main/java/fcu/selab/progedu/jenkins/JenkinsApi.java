@@ -36,7 +36,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
-import org.gitlab.api.models.GitlabUser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -366,51 +365,14 @@ public class JenkinsApi {
   /**
    * Get the jenkins job status color
    * 
-   * @param username
-   *          Jenkins root user name
-   * @param password
-   *          Jenkins root password
-   * @param jobUrl
-   *          Jenkins job url
-   * @return job status color
+   * @param jobApiJson
+   *          job api json
+   * @return color
    */
-  public String getJobJsonColor(String username, String password, String jobUrl) {
+  public String getJobJsonColor(String jobApiJson) {
     String color = null;
-    HttpURLConnection conn = null;
-    try {
-      if (Thread.interrupted()) {
-        throw new InterruptedException();
-      }
-
-      URL url = new URL(jobUrl);
-      conn = (HttpURLConnection) url.openConnection();
-      String input = username + ":" + password;
-      String encoding = new sun.misc.BASE64Encoder().encode(input.getBytes());
-      conn.setRequestProperty("Authorization", "Basic " + encoding);
-      conn.setReadTimeout(10000);
-      conn.setConnectTimeout(15000);
-      conn.setRequestMethod("GET");
-      conn.connect();
-      if (Thread.interrupted()) {
-        throw new InterruptedException();
-      }
-
-      BufferedReader reader = new BufferedReader(
-          new InputStreamReader(conn.getInputStream(), "UTF-8"));
-      String jsonString1 = reader.readLine();
-      reader.close();
-
-      JSONObject j1 = new JSONObject(jsonString1);
-      color = j1.getString("color");
-
-    } catch (Exception e) {
-      System.out.print("Jenkins get job status color error : ");
-      e.printStackTrace();
-    } finally {
-      if (conn != null) {
-        conn.disconnect();
-      }
-    }
+    JSONObject j1 = new JSONObject(jobApiJson);
+    color = j1.getString("color");
     return color;
   }
 
@@ -670,50 +632,16 @@ public class JenkinsApi {
   /**
    * Get last build number
    * 
-   * @param username
-   *          jenkins username
-   * @param password
-   *          jenkins password
-   * @param jobUrl
-   *          job url
+   * @param jobApiJson
+   *          api json
+   * @return url
    */
-  public String getLastBuildUrl(String username, String password, String jobUrl) {
-    String lastBuildUrl = null;
-    HttpURLConnection conn = null;
-    try {
-      if (Thread.interrupted()) {
-        throw new InterruptedException();
-      }
-
-      URL url = new URL(jobUrl);
-      conn = (HttpURLConnection) url.openConnection();
-      String input = username + ":" + password;
-      String encoding = new sun.misc.BASE64Encoder().encode(input.getBytes());
-      conn.setRequestProperty("Authorization", "Basic " + encoding);
-      conn.setReadTimeout(10000);
-      conn.setConnectTimeout(15000);
-      conn.setRequestMethod("GET");
-      conn.connect();
-      if (Thread.interrupted()) {
-        throw new InterruptedException();
-      }
-
-      BufferedReader reader = new BufferedReader(
-          new InputStreamReader(conn.getInputStream(), "UTF-8"));
-      String jsonString1 = reader.readLine();
-      reader.close();
-
-      JSONObject j1 = new JSONObject(jsonString1);
-      JSONObject j2 = j1.getJSONObject("lastBuild");
-      lastBuildUrl = j2.get("url").toString();
-    } catch (Exception e) {
-      e.printStackTrace();
-    } finally {
-      if (conn != null) {
-        conn.disconnect();
-      }
-    }
-    return lastBuildUrl;
+  public String getLastBuildUrl(String jobApiJson) {
+    String buildUrl = null;
+    JSONObject j1 = new JSONObject(jobApiJson);
+    JSONObject j2 = j1.getJSONObject("lastBuild");
+    buildUrl = j2.get("url").toString();
+    return buildUrl;
   }
 
   /**
@@ -763,5 +691,54 @@ public class JenkinsApi {
       }
     }
     return console;
+  }
+
+  /**
+   * Get Job Api Json
+   * 
+   * @param username
+   *          jenkins username
+   * @param password
+   *          jenkins password
+   * @param jobUrl
+   *          job url
+   * @return api json
+   */
+  public String getJobApiJson(String username, String password, String jobUrl) {
+    String result = null;
+    HttpURLConnection conn = null;
+    try {
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+
+      URL url = new URL(jobUrl);
+      conn = (HttpURLConnection) url.openConnection();
+      String input = username + ":" + password;
+      String encoding = new sun.misc.BASE64Encoder().encode(input.getBytes());
+      conn.setRequestProperty("Authorization", "Basic " + encoding);
+      conn.setReadTimeout(10000);
+      conn.setConnectTimeout(15000);
+      conn.setRequestMethod("GET");
+      conn.connect();
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+
+      BufferedReader reader = new BufferedReader(
+          new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      String jsonString1 = reader.readLine();
+      reader.close();
+
+      result = jsonString1;
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      if (conn != null) {
+        conn.disconnect();
+      }
+    }
+    return result;
   }
 }

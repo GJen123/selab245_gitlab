@@ -9,6 +9,7 @@
 <%@ page import="org.gitlab.api.GitlabAPI" %>
 <%@ page import="org.gitlab.api.models.*" %>
 <%@ page import="java.util.*" %>
+<%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
 
 <%
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
@@ -152,6 +153,7 @@
 													for(Project dbProject : dbProjects){
 														String proName = null;
 														String proUrl = null;
+														JobStatus jobStatus = new JobStatus();
 														String checkStyleResultUrl = null;
 														int commit_count = 0;
 														String circleColor = "circle gray";
@@ -164,9 +166,14 @@
 																commit_count = conn.getAllCommitsCounts(gitProject.getId());
 																//---Jenkins---
 																String jobName = user.getUserName() + "_" + gitProject.getName();
+																jobStatus.setName(jobName);
 																String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
-																String color = jenkins.getJobJsonColor(jenkinsData.getJenkinsRootUsername() ,jenkinsData.getJenkinsRootPassword(), jobUrl);
-																checkStyleResultUrl = jenkins.getLastBuildUrl(jenkinsData.getJenkinsRootUsername(), jenkinsData.getJenkinsRootPassword(), jobUrl);
+																jobStatus.setUrl(jobUrl);
+																// Get job status
+																jobStatus.setJobApiJson();
+																
+																String color = jenkins.getJobJsonColor(jobStatus.getJobApiJson());
+																checkStyleResultUrl = jenkins.getLastBuildUrl(jobStatus.getJobApiJson());
 																checkStyleResultUrl += "checkstyleResult";
 																if(commit_count == 1){
 																  circleColor = "circle gray";
