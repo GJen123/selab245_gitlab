@@ -52,6 +52,9 @@
 		.gray {
 			background: #878787;
 		}
+		.orange {
+			background: #FF5809;
+		}
 		.circle a {
 			color: #fff;
 		}
@@ -122,6 +125,7 @@
 						<div id="inline">
 							<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
 							<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
+							<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;">Checkstyle Error</p>
 							<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
 						</div>
 						<table class="table table-striped" style="margin-top: 20px; width: 100%">
@@ -172,9 +176,23 @@
 																// Get job status
 																jobStatus.setJobApiJson();
 																
-																String color = jenkins.getJobJsonColor(jobStatus.getJobApiJson());
-																checkStyleResultUrl = jenkins.getLastBuildUrl(jobStatus.getJobApiJson());
-																checkStyleResultUrl += "checkstyleResult";
+																String color = null;
+																int checkstyleErrorAmount = 0;
+																if(null != jobStatus.getJobApiJson()){
+																  	System.out.println("---------- " + jobStatus.getJobApiJson());
+																	color = jenkins.getJobJsonColor(jobStatus.getJobApiJson());
+																	if(color.equals("red")){
+																	  String checkstyleDes = jenkins.getCheckstyleDes(jobStatus.getJobApiJson());
+																	  checkstyleErrorAmount = jenkins.getCheckstyleErrorAmount(checkstyleDes);
+																	  if(checkstyleErrorAmount != 0){
+																	    color = "orange";
+																	  }
+																	}
+																	
+																	checkStyleResultUrl = jenkins.getLastBuildUrl(jobStatus.getJobApiJson());
+																	checkStyleResultUrl += "checkstyleResult";
+																}
+																
 																if(commit_count == 1){
 																  circleColor = "circle gray";
 																} else {

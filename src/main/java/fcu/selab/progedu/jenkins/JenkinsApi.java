@@ -741,4 +741,36 @@ public class JenkinsApi {
     }
     return result;
   }
+
+  /**
+   * Get checkstyle description
+   * 
+   * @param jobApiJson
+   *          job api json
+   * @return description
+   */
+  public String getCheckstyleDes(String jobApiJson) {
+    String description = null;
+    JSONObject jsonJobApi = new JSONObject(jobApiJson);
+    JSONArray jsonHealthReport = jsonJobApi.getJSONArray("healthReport");
+    System.out.println("jsonHealthReport : " + jsonHealthReport);
+    JSONObject jsonCheckstyle = jsonHealthReport.getJSONObject(1);
+    description = jsonCheckstyle.getString("description");
+    System.out.println("description : " + description);
+    return description;
+  }
+
+  /**
+   * Get error amount
+   * 
+   * @param checkstyleDes
+   *          description
+   * @return amount
+   */
+  public int getCheckstyleErrorAmount(String checkstyleDes) {
+    int errorAmount = 0;
+    String amount = checkstyleDes.substring(checkstyleDes.length() - 1, checkstyleDes.length());
+    errorAmount = Integer.parseInt(amount);
+    return errorAmount;
+  }
 }
