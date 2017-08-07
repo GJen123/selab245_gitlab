@@ -754,9 +754,12 @@ public class JenkinsApi {
     JSONObject jsonJobApi = new JSONObject(jobApiJson);
     JSONArray jsonHealthReport = jsonJobApi.getJSONArray("healthReport");
     System.out.println("jsonHealthReport : " + jsonHealthReport);
-    JSONObject jsonCheckstyle = jsonHealthReport.getJSONObject(1);
-    description = jsonCheckstyle.getString("description");
-    System.out.println("description : " + description);
+    System.out.println("jsonHealthReport.length() : " + jsonHealthReport.length());
+    if (jsonHealthReport.length() == 2) {
+      JSONObject jsonCheckstyle = jsonHealthReport.getJSONObject(1);
+      description = jsonCheckstyle.getString("description");
+      System.out.println("description : " + description);
+    }
     return description;
   }
 

@@ -125,7 +125,7 @@
 						<div id="inline">
 							<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
 							<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
-							<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;">Checkstyle Error</p>
+							<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_checkstyleFail"/></p>
 							<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
 						</div>
 						<table class="table table-striped" style="margin-top: 20px; width: 100%">
@@ -175,6 +175,7 @@
 																jobStatus.setUrl(jobUrl);
 																// Get job status
 																jobStatus.setJobApiJson();
+																System.out.println("jobStatus.getJobApiJson() : " + jobStatus.getJobApiJson());
 																
 																String color = null;
 																int checkstyleErrorAmount = 0;
@@ -183,6 +184,8 @@
 																	color = jenkins.getJobJsonColor(jobStatus.getJobApiJson());
 																	if(color.equals("red")){
 																	  String checkstyleDes = jenkins.getCheckstyleDes(jobStatus.getJobApiJson());
+																	  System.out.println("checkstyleDes : " + checkstyleDes);
+																	  if(null != checkstyleDes || !"".equals(checkstyleDes))
 																	  checkstyleErrorAmount = jenkins.getCheckstyleErrorAmount(checkstyleDes);
 																	  if(checkstyleErrorAmount != 0){
 																	    color = "orange";
