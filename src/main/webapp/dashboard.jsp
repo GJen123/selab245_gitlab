@@ -175,25 +175,22 @@
 																jobStatus.setUrl(jobUrl);
 																// Get job status
 																jobStatus.setJobApiJson();
-																System.out.println("jobStatus.getJobApiJson() : " + jobStatus.getJobApiJson());
 																
 																String color = null;
 																int checkstyleErrorAmount = 0;
 																if(null != jobStatus.getJobApiJson()){
-																  	System.out.println("---------- " + jobStatus.getJobApiJson());
 																	color = jenkins.getJobJsonColor(jobStatus.getJobApiJson());
 																	if(color.equals("red")){
 																	  String checkstyleDes = jenkins.getCheckstyleDes(jobStatus.getJobApiJson());
-																	  System.out.println("checkstyleDes : " + checkstyleDes);
-																	  if(null != checkstyleDes || !"".equals(checkstyleDes))
-																	  checkstyleErrorAmount = jenkins.getCheckstyleErrorAmount(checkstyleDes);
+																	  if(null != checkstyleDes && !"".equals(checkstyleDes))
+																	  	checkstyleErrorAmount = jenkins.getCheckstyleErrorAmount(checkstyleDes);
 																	  if(checkstyleErrorAmount != 0){
 																	    color = "orange";
 																	  }
 																	}
 																	
 																	checkStyleResultUrl = jenkins.getLastBuildUrl(jobStatus.getJobApiJson());
-																	checkStyleResultUrl += "checkstyleResult";
+																	checkStyleResultUrl += "violations";
 																}
 																
 																if(commit_count == 1){

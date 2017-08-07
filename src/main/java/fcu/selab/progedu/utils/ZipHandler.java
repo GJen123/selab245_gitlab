@@ -63,7 +63,13 @@ public class ZipHandler {
       throws IOException {
     String parentDir = null;
     int parDirLength = 0;
+    // -4 because .zip
     zipFolderName = zipFolderName.substring(0, zipFolderName.length() - 4);
+
+    File fileUploadDir = new File(uploadDir);
+    if (!fileUploadDir.exists()) {
+      fileUploadDir.mkdir();
+    }
 
     String destDirectory = uploadDir + projectName;
     File destDir = new File(destDirectory);

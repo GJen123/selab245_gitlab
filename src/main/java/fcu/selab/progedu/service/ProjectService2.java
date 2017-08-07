@@ -131,6 +131,7 @@ public class ProjectService2 {
         }
       } else {
         // fileType is null
+        System.out.println("FileType is null Javac");
         fileType = "Javac";
         filePath = this.getClass().getResource("JavacQuickStart.zip").getFile();
         folderName = "JavacQuickStart.zip";
@@ -169,21 +170,22 @@ public class ProjectService2 {
     //
     // // 12. send notification email to student
     // // sendEmail();
-   
+
     List<GitlabUser> users = conn.getUsers();
     Collections.reverse(users);
     for (GitlabUser user : users) {
       if (user.getId() == 1) {
         continue;
       }
-//      int id = user.getId();
-//      String userName = user.getName();
-//      String email = user.getEmail();
-//      
-//      CreateStudentProjectThread thread = 
-//          new CreateStudentProjectThread(id, userName, email, name, rootProjectUrl);
-//      
-//      thread.start();
+      // int id = user.getId();
+      // String userName = user.getName();
+      // String email = user.getEmail();
+      //
+      // CreateStudentProjectThread thread =
+      // new CreateStudentProjectThread(id, userName, email, name,
+      // rootProjectUrl);
+      //
+      // thread.start();
 
       // 10. Create student project, and import project
       conn.createPrivateProject(user.getId(), name, rootProjectUrl);
@@ -192,8 +194,8 @@ public class ProjectService2 {
       // 11. send notification email to student
       sendEmail(user.getEmail());
       System.out.println(user.getName() + ", Send notification email to student");
-    } 
-    
+    }
+
     // 12. Create each Jenkins Jobs
     createJenkinsJob(name, fileType);
 

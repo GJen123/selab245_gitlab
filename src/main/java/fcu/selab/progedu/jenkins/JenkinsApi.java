@@ -638,9 +638,10 @@ public class JenkinsApi {
    */
   public String getLastBuildUrl(String jobApiJson) {
     String buildUrl = null;
-    JSONObject j1 = new JSONObject(jobApiJson);
-    JSONObject j2 = j1.getJSONObject("lastBuild");
-    buildUrl = j2.get("url").toString();
+    JSONObject jsonJobApiJson = new JSONObject(jobApiJson);
+    JSONObject lastBuild = jsonJobApiJson.getJSONObject("lastBuild");
+    buildUrl = lastBuild.getString("url");
+
     return buildUrl;
   }
 
@@ -753,12 +754,9 @@ public class JenkinsApi {
     String description = null;
     JSONObject jsonJobApi = new JSONObject(jobApiJson);
     JSONArray jsonHealthReport = jsonJobApi.getJSONArray("healthReport");
-    System.out.println("jsonHealthReport : " + jsonHealthReport);
-    System.out.println("jsonHealthReport.length() : " + jsonHealthReport.length());
     if (jsonHealthReport.length() == 2) {
       JSONObject jsonCheckstyle = jsonHealthReport.getJSONObject(1);
       description = jsonCheckstyle.getString("description");
-      System.out.println("description : " + description);
     }
     return description;
   }
