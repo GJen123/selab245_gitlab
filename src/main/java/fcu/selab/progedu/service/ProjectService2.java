@@ -10,9 +10,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.TimeZone;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -97,6 +100,12 @@ public class ProjectService2 {
       @FormDataParam("fileRadio") String fileType,
       @FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
+    Date date = new Date();
+    SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    sdFormat.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+    String dateTime = sdFormat.format(date);
+    System.out.println("start time: " + dateTime);
+    
     String rootProjectUrl = null;
     String folderName = null;
     String filePath = null;
@@ -204,6 +213,11 @@ public class ProjectService2 {
     // response =
     // Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
     // }
+    
+    Date date1 = new Date();
+    String dateTime1 = sdFormat.format(date1);
+    System.out.println("end time: " + dateTime1);
+    
     return response;
   }
 

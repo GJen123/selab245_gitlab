@@ -55,15 +55,15 @@ public class UserDbManager {
       preStmt.executeUpdate();
       preStmt.close();
 
-      stmt = conn.createStatement();
-      ResultSet rs = stmt.executeQuery(query);
-      System.out.println("List All Students");
-      while (rs.next()) {
-        System.out.println("GitLabId: " + rs.getString("gitLabId") + ", StuId: "
-            + rs.getString("userName") + ", Name: " + rs.getString("name") + ", Email: "
-            + rs.getString("email") + ", Private_Token: " + rs.getString("privateToken")
-            + ", privateToken: " + rs.getString("privateToken"));
-      }
+//      stmt = conn.createStatement();
+//      ResultSet rs = stmt.executeQuery(query);
+//      System.out.println("List All Students");
+//      while (rs.next()) {
+//        System.out.println("GitLabId: " + rs.getString("gitLabId") + ", StuId: "
+//            + rs.getString("userName") + ", Name: " + rs.getString("name") + ", Email: "
+//            + rs.getString("email") + ", Private_Token: " + rs.getString("privateToken")
+//            + ", privateToken: " + rs.getString("privateToken"));
+//      }
     } catch (SQLException e) {
       e.printStackTrace();
     } finally {
