@@ -81,10 +81,12 @@ public class ZipHandler {
     // iterates over entries in the zip file
     while (entry != null) {
       String filePath = destDirectory + File.separator + entry.getName();
+      System.out.println("filePath : " + filePath);
+      File newFile = new File(filePath);
 
-      if (filePath.substring(filePath.length() - 7, filePath.length()).equals("pom.xml")) {
-        modifyPomXml(filePath, projectName);
-      }
+      // create all non exists folders
+      // else you will hit FileNotFoundException for compressed folder
+      new File(newFile.getParent()).mkdirs();
 
       if (filePath.substring(filePath.length() - 4).equals("src/")) {
         parentDir = getParentDir(filePath);
@@ -95,6 +97,11 @@ public class ZipHandler {
       if (!entry.isDirectory()) {
         // if the entry is a file, extracts it
         extractFile(zipIn, filePath);
+
+        // if filePath equals pom.xml, modify the project name
+        if (filePath.substring(filePath.length() - 7, filePath.length()).equals("pom.xml")) {
+          modifyPomXml(filePath, projectName);
+        }
 
         // Search the java file which jenkins java config needs.
         searchJavaFile(entryNewName);

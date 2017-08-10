@@ -159,6 +159,7 @@
 														String proUrl = null;
 														JobStatus jobStatus = new JobStatus();
 														String checkStyleResultUrl = null;
+														String projectJenkinsUrl = null;
 														int commit_count = 0;
 														String circleColor = "circle gray";
 														for(GitlabProject gitProject : gitProjects){
@@ -173,24 +174,38 @@
 																jobStatus.setName(jobName);
 																String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
 																jobStatus.setUrl(jobUrl);
+																
 																// Get job status
 																jobStatus.setJobApiJson();
+																boolean isMaven = jenkins.checkProjectIsMvn(jobStatus.getJobApiJson());
 																
 																String color = null;
 																int checkstyleErrorAmount = 0;
 																if(null != jobStatus.getJobApiJson()){
 																	color = jenkins.getJobJsonColor(jobStatus.getJobApiJson());
-																	if(color.equals("red")){
-																	  String checkstyleDes = jenkins.getCheckstyleDes(jobStatus.getJobApiJson());
-																	  if(null != checkstyleDes && !"".equals(checkstyleDes))
-																	  	checkstyleErrorAmount = jenkins.getCheckstyleErrorAmount(checkstyleDes);
-																	  if(checkstyleErrorAmount != 0){
-																	    color = "orange";
+																	if(!isMaven){
+																	  // Javac
+																	  if(color.equals("red")){
+																	    // color == red
+																	    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/consoleText";
+																	  }else{
+																	    // color != red , gray or blue
+																	    projectJenkinsUrl = "#";
+																	  }
+																	}else{
+																	  // Maven
+																	  if(color.equals("red")){
+																	    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/consoleText";
+																	 	String checkstyleDes = jenkins.getCheckstyleDes(jobStatus.getJobApiJson());
+																		if(null != checkstyleDes && !"".equals(checkstyleDes)){
+																		  checkstyleErrorAmount = jenkins.getCheckstyleErrorAmount(checkstyleDes);
+																		}
+																		if(checkstyleErrorAmount != 0){
+																		  color = "orange";
+																		  projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/violations";
+																		}
 																	  }
 																	}
-																	
-																	checkStyleResultUrl = jenkins.getLastBuildUrl(jobStatus.getJobApiJson());
-																	checkStyleResultUrl += "violations";
 																}
 																
 																if(commit_count == 1){
@@ -218,7 +233,7 @@
 															<%
 														}else{
 															%>
-																<td><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=checkStyleResultUrl  %>')"><%=commit_count %></a></p></td>
+																<td><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=projectJenkinsUrl  %>')"><%=commit_count %></a></p></td>
 
 															<%
 														}

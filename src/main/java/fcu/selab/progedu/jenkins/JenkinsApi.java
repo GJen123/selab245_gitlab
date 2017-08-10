@@ -630,22 +630,6 @@ public class JenkinsApi {
   }
 
   /**
-   * Get last build number
-   * 
-   * @param jobApiJson
-   *          api json
-   * @return url
-   */
-  public String getLastBuildUrl(String jobApiJson) {
-    String buildUrl = null;
-    JSONObject jsonJobApiJson = new JSONObject(jobApiJson);
-    JSONObject lastBuild = jsonJobApiJson.getJSONObject("lastBuild");
-    buildUrl = lastBuild.getString("url");
-
-    return buildUrl;
-  }
-
-  /**
    * Get
    * 
    * @param strUrl
@@ -773,5 +757,19 @@ public class JenkinsApi {
     String amount = checkstyleDes.substring(checkstyleDes.length() - 1, checkstyleDes.length());
     errorAmount = Integer.parseInt(amount);
     return errorAmount;
+  }
+
+  /**
+   * Check if project is Maven
+   * 
+   * @param jobApiJson
+   *          api json
+   * @return boolean
+   */
+  public Boolean checkProjectIsMvn(String jobApiJson) {
+    String checkstyleText = "checkstyle";
+    Boolean found;
+    found = jobApiJson.contains(checkstyleText);
+    return found;
   }
 }

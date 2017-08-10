@@ -14,10 +14,10 @@ public class ZipHandlerTest {
   public void unzipTest() {
     try {
       ZipHandler zip = new ZipHandler();
-      System.out.println("aaa :" + ProjectService2.class.getResource("JavacQuickStart.zip").getFile());
-      String filePath = ProjectService2.class.getResource("JavacQuickStart.zip").getFile();
-      String folderName = "JavacQuickStart";
-      String projectName = "OOP-test33";
+      System.out.println("aaa :" + ProjectService2.class.getResource("MvnQuickStart.zip").getFile());
+      String filePath = ProjectService2.class.getResource("MvnQuickStart.zip").getFile();
+      String folderName = "MvnQuickStart";
+      String projectName = "OOP-test44";
       zip.unzip(filePath, folderName, projectName);
     } catch (LoadConfigFailureException e) {
       // TODO Auto-generated catch block
