@@ -204,6 +204,8 @@
 																		  color = "orange";
 																		  projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/violations";
 																		}
+																	  }else{
+																	    projectJenkinsUrl = "#";
 																	  }
 																	}
 																}

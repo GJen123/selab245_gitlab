@@ -81,7 +81,6 @@ public class ZipHandler {
     // iterates over entries in the zip file
     while (entry != null) {
       String filePath = destDirectory + File.separator + entry.getName();
-      System.out.println("filePath : " + filePath);
       File newFile = new File(filePath);
 
       // create all non exists folders
