@@ -66,4 +66,5 @@ public class JobStatus {
   public String getJobApiJson() {
     return jobApiJson;
   }
+
 }

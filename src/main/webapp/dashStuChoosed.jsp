@@ -2,7 +2,7 @@
     pageEncoding="utf-8"%>
 <%@ page import="fcu.selab.progedu.conn.Conn,fcu.selab.progedu.conn.HttpConnect, fcu.selab.progedu.conn.StudentConn" %>
 <%@ page import="fcu.selab.progedu.jenkins.JenkinsApi, fcu.selab.progedu.conn.Language" %>
-<%@ page import="fcu.selab.progedu.config.GitlabConfig,fcu.selab.progedu.config.CourseConfig" %>
+<%@ page import="fcu.selab.progedu.config.CourseConfig" %>
 <%@ page import="fcu.selab.progedu.config.GitlabConfig" %>
 <%@ page import="fcu.selab.progedu.config.JenkinsConfig" %>
 <%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager" %>
@@ -10,6 +10,7 @@
 <%@ page import="org.gitlab.api.GitlabAPI" %>
 <%@ page import="org.gitlab.api.models.*" %>
 <%@ page import="java.util.*" %>
+<%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
 
 <%
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
@@ -32,17 +33,40 @@
 <html>
 <head>
 	<style type="text/css">
-		#inline li {
+		#inline p {
 		    display: inline;
 		}
-		#circle{
-            background: red;
-            border-radius: 200px;
-            color: white;
-            height: 200px;
+		.ovol {
+			border-radius: 50px;
+			height: 50px;
             font-weight: bold;
-            width: 200px;
-        }
+            width: 120px;
+            color: white;
+            text-align: center;
+		}
+		.circle {
+			border-radius: 30px;
+			height: 30px;
+            font-weight: bold;
+            width: 30px;
+            color: white;
+            text-align: center;
+		}
+        .red {
+			background: #e52424;
+		}
+		.blue {
+			background: #258ce8;
+		}
+		.gray {
+			background: #878787;
+		}
+		.orange {
+			background: #FF5809;
+		}
+		.circle a {
+			color: #fff;
+		}
 	</style>
 	
 	<title>ProgEdu</title>
@@ -58,9 +82,6 @@
 		
 		// db的所有users
 		List<User> users = db.listAllUsers();
-		
-		// 每個學生gitlab的projects
-		List<GitlabProject> gitProjects = new ArrayList<GitlabProject>();
 		
 		// db的所有projects
 		List<Project> dbProjects = Pdb.listAllProjects();
@@ -111,49 +132,119 @@
         		
         		String private_token = choosedUser.getPrivateToken();
             	StudentConn sConn = new StudentConn(private_token); 	
-            	List<GitlabProject> projects;
+            	List<GitlabProject> gitProjects = sConn.getProject();
             	int pro_total_commits = 0;
         		
         	%>
-        	<div class="container">
+        	<div class="container" style="margin-top: 20px;">
         	<h2 style="margin-top: 30px;"><%=choosedUser.getName() %></h2>
         		<br><br>
-        		<table class="table">
-					<thead>
-						<tr class="table-info">
-							<th width="15%">作業</th>
-							<%
-								projects = sConn.getProject();
-								Collections.reverse(projects);
-								for(GitlabProject project : projects){
-									if(courseData.getCourseName().equals(project.getName().substring(0,3))){
-										%>
-										<th><%=project.getName() %></th>
-										<%
-									}
+        		 <div class="card">
+	        		 <table class="table table-striped" style="width: 100%">
+	        		 	<div class="card-header">
+		        			<h4 id="Statistics Chart"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; 作業</h4>
+		        		</div>
+		        		<div class="card-block">
+			        		<div id="inline">
+								<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
+								<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
+								<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_checkstyleFail"/></p>
+								<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
+							</div>
+			        		<thead>
+								<tr>
+									<th width="15%">作業</th>
+									<%
+										for(Project dbProject : dbProjects){
+										  %>
+										  	<th><%=dbProject.getName() %></th>
+										  <%
+										}
+									%>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<th width="15%">Commits次數</th>
+									<%
+										for(Project dbProject : dbProjects){
+										  
+										  int commit_count = 0;
+										  JobStatus jobStatus = new JobStatus();
+										  String projectJenkinsUrl = null;
+										  String circleColor = null;
+										  
+										  for(GitlabProject gitProject : gitProjects){
+										    if(dbProject.getName().equals(gitProject.getName())){
+										      commit_count = conn.getAllCommitsCounts(gitProject.getId());
+										      //---Jenkins---
+												String jobName = choosedUser.getUserName() + "_" + gitProject.getName();
+												jobStatus.setName(jobName);
+												String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
+												jobStatus.setUrl(jobUrl);
+											  // Get job status
+												jobStatus.setJobApiJson();
+												boolean isMaven = jenkins.checkProjectIsMvn(jobStatus.getJobApiJson());
+												// --- Get job status End ---
+												String color = null;
+												int checkstyleErrorAmount = 0;
+												
+												if(null != jobStatus.getJobApiJson()){
+													color = jenkins.getJobJsonColor(jobStatus.getJobApiJson());
+													if(!isMaven){
+													  // Javac
+													  if(color.equals("red")){
+													    // color == red
+													    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/consoleText";
+													  }else{
+													    // color != red , gray or blue
+													    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+													  }
+													}else{
+													  // Maven
+													  if(color.equals("red")){
+													    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/consoleText";
+													 	String checkstyleDes = jenkins.getCheckstyleDes(jobStatus.getJobApiJson());
+														if(null != checkstyleDes && !"".equals(checkstyleDes)){
+														  checkstyleErrorAmount = jenkins.getCheckstyleErrorAmount(checkstyleDes);
+														}
+														if(checkstyleErrorAmount != 0){
+														  color = "orange";
+														  projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/violations";
+														}
+													  }else{
+													    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+													  }
+													}
+													if(commit_count == 1){
+													  circleColor = "circle gray";
+													  projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+													} else {
+													  	if(color!=null){
+													  	  circleColor = "circle " + color;
+														}else{
+														  circleColor = "circle gray";
+														}
+													}
+													//-------------
+												}
+										    }else{
+												continue;
+											}
+										    %>
+										    	<td><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=projectJenkinsUrl  %>')"><%=commit_count %></a></p></td>
+										    <%
+										  }
+										}
+									%>
 									
-								}
-							%>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<th width="15%">Commits次數</th>
-							<%
-								for(GitlabProject project : projects){
-									if(courseData.getCourseName().equals(project.getName().substring(0,3))){
-										pro_total_commits = sConn.getAllCommitsCounts(project.getId());
-										%>
-											<th><%=pro_total_commits %></th>
-										<%
-									}
-									
-								}
-							%>
-							
-						</tr>
-					</tbody>
-				</table>
+								</tr>
+							</tbody>
+		        		</div>
+						
+					</table>
+        		 </div>
+        		
 				
 				<br><br>
         		

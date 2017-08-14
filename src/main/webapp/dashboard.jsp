@@ -190,7 +190,7 @@
 																	    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/consoleText";
 																	  }else{
 																	    // color != red , gray or blue
-																	    projectJenkinsUrl = "#";
+																	    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
 																	  }
 																	}else{
 																	  // Maven
@@ -205,13 +205,14 @@
 																		  projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/violations";
 																		}
 																	  }else{
-																	    projectJenkinsUrl = "#";
+																	    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
 																	  }
 																	}
 																}
 																
 																if(commit_count == 1){
 																  circleColor = "circle gray";
+																  projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
 																} else {
 																  	if(color!=null){
 																  	  circleColor = "circle " + color;
