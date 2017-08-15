@@ -7,58 +7,65 @@
 <%@ page import="org.gitlab.api.GitlabAPI"%>
 <%@ page import="org.gitlab.api.models.*"%>
 <%@ page import="java.util.*"%>
+
+<%
+	String private_token = null;
+	if(null != session.getAttribute("private_token") && !"".equals(session.getAttribute("private_token")) ){
+	  private_token = session.getAttribute("private_token").toString();
+	}else{
+	  response.sendRedirect("index.jsp");
+	}
+%>
+
 <%@ include file="language.jsp"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
-<style type="text/css">
-#inline p {
-	display: inline;
-}
-.ovol {
-	border-radius: 50px;
-	height: 50px;
-	font-weight: bold;
-	width: 120px;
-	color: white;
-	text-align: center;
-}
-
-.circle {
-	border-radius: 30px;
-	height: 30px;
-	font-weight: bold;
-	width: 30px;
-	color: white;
-	text-align: center;
-}
-
-.red {
-	background: #e52424;
-}
-
-.blue {
-	background: #258ce8;
-}
-
-.gray {
-	background: #878787;
-}
-
-.circle a {
-	color: #fff;
-}
-#goToJenkins{
-	float: right;
-	background-color: white;
-	color: #1079c9;
-	border: 1px solid #1079c9;
-	margin-bottom: 10px;
-}
-
-</style>
+	<style type="text/css">
+		#inline p {
+			display: inline;
+		}
+		.ovol {
+			border-radius: 50px;
+			height: 50px;
+            font-weight: bold;
+            width: 120px;
+            color: white;
+            text-align: center;
+		}
+		.circle {
+			border-radius: 30px;
+			height: 30px;
+            font-weight: bold;
+            width: 30px;
+            color: white;
+            text-align: center;
+		}
+		.red {
+			background: #e52424;
+		}
+		.blue {
+			background: #258ce8;
+		}
+		.gray {
+			background: #878787;
+		}
+		.orange {
+			background: #FF5809;
+		}
+		.circle a {
+			color: #fff;
+		}
+		#goToJenkins{
+			float: right;
+			background-color: white;
+			color: #1079c9;
+			border: 1px solid #1079c9;
+			margin-bottom: 10px;
+		}
+	</style>
 <script type="text/javascript">
 		function handleClick(cb, divId){
 			var o=document.getElementById(divId);
@@ -88,13 +95,6 @@
 		JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 		Conn conn = Conn.getInstance();
 		JenkinsApi jenkins = JenkinsApi.getInstance();
-
-		String private_token = null;
-		if(!"".equals(session.getAttribute("private_token").toString()) && null != session.getAttribute("private_token").toString()){
-		  private_token = session.getAttribute("private_token").toString();
-		}else{
-		  response.sendRedirect("index.jsp");
-		}
 		
 		StudentConn sConn = new StudentConn(private_token);
 		GitlabUser user = sConn.getUser();
@@ -151,102 +151,80 @@
 					<div id="inline">
 						<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
 						<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
+						<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_checkstyleFail"/></p>
 						<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
-						<%
-							String jenkinsHostUrl = jenkinsData.getJenkinsHostUrl();
-							String jenkinsJobUrl = user.getUsername() + "_" + projectName;
-							//http://140.134.26.71:38080/job/D0239866_OOP-HelloWorld/
-						%>
-						<!-- <a href="<%=jenkinsHostUrl + "/job/" + jenkinsJobUrl%>" id="goToJenkins" class="btn btn-default"><fmt:message key="stuDashboard_card_goToJenkins"/></a>
-					 -->
 					</div>
-					<table class="table table-striped">
-						<thead style="background-color: #a3a3a3;">
+					
+					<!-- Project Table -->
+					<%
+						int pro_commit_counts = sConn.getAllCommitsCounts(projectId);
+					%>
+					<table class="table table-striped" style="margin-top: 20px; width: 100%">
+						<thead>
 							<tr>
-							<%
-							pro_total_commits = sConn.getAllCommitsCounts(projectId);
-							//pro_total_commits = 5;
-							for(int i=0; i<pro_total_commits; i++) {
-								%>
-									<td>
-										<p style="margin-bottom: 0px; margin-left: 10px;"><strong><%=i+1%></strong></p>
-									</td>
+								<th width="15%">Number</th>
 								<%
-							}
-							%>
+									for(int i=0;i<pro_commit_counts;i++){
+									  %>
+									  	<th><%=i+1 %></th>
+									  <%
+									}
+								%>
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
 							<%
-							GitlabProject project = sConn.getProjectById(projectId);
-							commits = sConn.getAllCommits(projectId);
-							Collections.reverse(commits);
-							String proUrl = project.getWebUrl();
-							String replaceProUrl = conn.getReplaceUrl(proUrl);
-							String consoleOutput = "";
-							for(int i=0; i<pro_total_commits; i++) {
-								proUrl = replaceProUrl + "/commit/" + commits.get(i).getId();
-								
-								String jobName = sConn.getUsername() + "_" + project.getName();
-								String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
-								List<Integer> numbers = jenkins.getJenkinsJobAllBuildNumber(jenkinsData.getJenkinsRootUsername() ,jenkinsData.getJenkinsRootPassword(), jobUrl);
-								String buildNumber = numbers.get(i).toString();
-								String buildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + buildNumber + "/api/json";
-								String result = jenkins.getJobBuildResult(jenkinsData.getJenkinsRootUsername() ,jenkinsData.getJenkinsRootPassword(), buildUrl);
-								String circleColor = "";
-								if(i == 0){
-									circleColor = "circle gray";
-								}
-								else {
-									if(result.equals("SUCCESS")){
-										circleColor = "circle blue";
-									}
-									if(result.equals("FAILURE")){
-										circleColor = "circle red";
-									}
-								}
-									%>
-										<td style="background-color: white;">
-											<a href="#" onclick="window.open('<%=proUrl %>')"><p class="<%=circleColor%>"></p></a>
-											<%
-											if(result.equals("FAILURE")){
-												consoleOutput = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + buildNumber + "/consoleText";
-											%>
-												<div class="form-group col-md-3">
-													<label for="checkbox">
-														<input type="checkbox" id="checkbox" onclick='handleClick(this, "console")'>查看建置結果
-													</label>
-												</div>
-											<%
-											}
-											%>
-										</td>
-									<%
-							}
+								String circleColor = null;
+								String projectJenkinsUrl = null;
 							%>
+							<tr>
+								<th>Light</th>
+								<%
+									String jobName = sConn.getUsername() + "_" + projectName;
+									String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
+									List<Integer> buildNumbers = jenkins.getJenkinsJobAllBuildNumber(jenkinsData.getJenkinsRootUsername(), jenkinsData.getJenkinsRootPassword(), jobUrl);
+									for(Integer num : buildNumbers){
+									  String buildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num + "/api/json";
+									  String buildApiJson = jenkins.getJobBuildApiJson(jenkinsData.getJenkinsRootUsername() ,jenkinsData.getJenkinsRootPassword(), buildUrl);
+									  String result = jenkins.getJobBuildResult(buildApiJson);
+									  if(result.equals("SUCCESS")){
+									    circleColor = "circle blue";
+									    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+									  }else{
+									    circleColor = "circle red";
+									    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num +"/consoleText";
+									    boolean isCheckstyleError = jenkins.checkIsCheckstyleError(buildApiJson);
+									    if(isCheckstyleError == true){
+									      circleColor = "circle orange";
+									      projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num +"/violations";
+									    }
+									  }
+									  if(num == 1){
+									    circleColor = "circle gray";
+									  }
+									  %>
+									  	<th><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=projectJenkinsUrl  %>')"></a></p></th>
+									  <%
+									}
+								%>
+								
 							</tr>
 						</tbody>
 					</table>
-					<iframe src="http://140.134.26.71:38080/job/D0239866_OOP-HelloWorld/4/consoleText"></iframe>
-					<div style="display:none" id="console">
-							<p><%=jenkins.getConsoleText(consoleOutput) %></p>
-					</div>
 				</div>
 			</div>
 			
 			<!-- iFrame -->
 			<%
-				String jobName = sConn.getUsername() + "_" + project.getName();
-				String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/console";
+				String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/consoleText";
 			%>
 			<div class="card" style="margin-top: 30px">
 				<h4 id="Student Projects" class="card-header">
 		        	<i class="fa fa-table" aria-hidden="true"></i>&nbsp; 
-		        		Jenkins
+		        		輸出
 		        </h4>
 		        <div class="card-block">
-			        <iframe src="<%=lastBuildUrl %>" width="1000px" height="500px">
+			        <iframe src="<%=lastBuildUrl %>" width="100%" height="500px">
 		  				<p>Your browser does not support iframes.</p>
 					</iframe>
 		        </div>

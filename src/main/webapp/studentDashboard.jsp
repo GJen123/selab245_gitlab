@@ -7,6 +7,7 @@
 <%@ page import="org.gitlab.api.models.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
+<%@ page import="fcu.selab.progedu.jenkins.JenkinsApi" %>
 
 <%
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
@@ -86,6 +87,8 @@
 		GitlabConfig gitData = GitlabConfig.getInstance();
 		CourseConfig courseData = CourseConfig.getInstance();
 		JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+		
+		JenkinsApi jenkins = JenkinsApi.getInstance();
 
 		String private_token = null;
 		if(!"".equals(session.getAttribute("private_token").toString()) && null != session.getAttribute("private_token").toString()){
@@ -135,14 +138,14 @@
 			<div class="card">
 		        <h4 id="Student Projects" class="card-header">
 		        	<i class="fa fa-table" aria-hidden="true"></i>&nbsp; 
-		        		<fmt:message key="stuDashboard_card_commitRecord"/>
+		        		<fmt:message key="stuDashboard_card_projects"/>
 		        </h4>
 		        <div class="card-block">
 					<div id="inline">
 						<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
-							<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
-							<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_checkstyleFail"/></p>
-							<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
+						<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
+						<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_checkstyleFail"/></p>
+						<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
 					</div>
 					<table class="table table-striped" style="margin-top: 20px; width: 100%">
 						<thead>
@@ -159,7 +162,7 @@
 						</thead>
 						<tbody>
 							<tr>
-								<th width="15%">Commits次數</th>
+								<th width="15%">Commit</th>
 								<%
 									int commit_count = 0;
 									for(GitlabProject project : projects){
@@ -169,13 +172,67 @@
 									  jobStatus.setName(jobName);
 									  String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
 									  jobStatus.setUrl(jobUrl);
-									  System.out.println("jobName : " + jobName + "\njobUrl : " + jobUrl);
 									  jobStatus.setJobApiJson();
 									  
 									  if(null != jobStatus.getJobApiJson() && !"".equals(jobStatus.getJobApiJson())){
 									    // has jenkins
+									    // Get job status
+										jobStatus.setJobApiJson();
+										boolean isMaven = jenkins.checkProjectIsMvn(jobStatus.getJobApiJson());
+										// --- Get job status End ---
+										String color = null;
+										String circleColor = null;
+										int checkstyleErrorAmount = 0;
+										String projectJenkinsUrl = null;
+										
+										if(null != jobStatus.getJobApiJson()){
+											color = jenkins.getJobJsonColor(jobStatus.getJobApiJson());
+											if(!isMaven){
+											  // Javac
+											  if(color.equals("red")){
+											    // color == red
+											    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/consoleText";
+											  }else{
+											    // color != red , gray or blue
+											    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+											  }
+											}else{
+											  // Maven
+											  if(color.equals("red")){
+											    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/consoleText";
+											 	String checkstyleDes = jenkins.getCheckstyleDes(jobStatus.getJobApiJson());
+												if(null != checkstyleDes && !"".equals(checkstyleDes)){
+												  checkstyleErrorAmount = jenkins.getCheckstyleErrorAmount(checkstyleDes);
+												}
+												if(checkstyleErrorAmount != 0){
+												  color = "orange";
+												  projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/violations";
+												}
+											  }else{
+											    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+											  }
+											}
+											
+											if(commit_count == 1){
+											  circleColor = "circle gray";
+											  projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+											} else {
+											  	if(color!=null){
+											  	  circleColor = "circle " + color;
+												}else{
+												  circleColor = "circle gray";
+												}
+											}
+											//-------------
+										}
+										%>
+											<td><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=projectJenkinsUrl  %>')"><%=commit_count %></a></p></td>
+										<%
 									  }else{
 									    // no jenkins
+									    %>
+									    	<td><%=commit_count %></td>
+									    <%
 									  }
 									}
 								%>

@@ -377,57 +377,6 @@ public class JenkinsApi {
   }
 
   /**
-   * Get the jenkins job all status color
-   * 
-   * @param username
-   *          Jenkins root user name
-   * @param password
-   *          Jenkins root password
-   * @param buildUrl
-   *          Jenkins job url
-   * @return job status color
-   */
-  public String getJobBuildResult(String username, String password, String buildUrl) {
-    String buildResult = null;
-    HttpURLConnection conn = null;
-    try {
-      if (Thread.interrupted()) {
-        throw new InterruptedException();
-      }
-
-      URL url = new URL(buildUrl);
-      conn = (HttpURLConnection) url.openConnection();
-      String input = username + ":" + password;
-      String encoding = new sun.misc.BASE64Encoder().encode(input.getBytes());
-      conn.setRequestProperty("Authorization", "Basic " + encoding);
-      conn.setReadTimeout(10000);
-      conn.setConnectTimeout(15000);
-      conn.setRequestMethod("GET");
-      conn.connect();
-      if (Thread.interrupted()) {
-        throw new InterruptedException();
-      }
-
-      BufferedReader reader = new BufferedReader(
-          new InputStreamReader(conn.getInputStream(), "UTF-8"));
-      String jsonString1 = reader.readLine();
-      reader.close();
-
-      JSONObject j1 = new JSONObject(jsonString1);
-      buildResult = j1.getString("result");
-
-    } catch (Exception e) {
-      System.out.print("Jenkins get job build result error : ");
-      e.printStackTrace();
-    } finally {
-      if (conn != null) {
-        conn.disconnect();
-      }
-    }
-    return buildResult;
-  }
-
-  /**
    * get jekins job all build number
    * 
    * @param username
@@ -771,5 +720,90 @@ public class JenkinsApi {
     Boolean found;
     found = jobApiJson.contains(checkstyleText);
     return found;
+  }
+
+  /**
+   * Get job build api json
+   * 
+   * @param username
+   *          root username
+   * @param password
+   *          root password
+   * @param buildUrl
+   *          job build url
+   * @return api json
+   */
+  public String getJobBuildApiJson(String username, String password, String buildUrl) {
+    String buildApiJson = null;
+    HttpURLConnection conn = null;
+    try {
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+
+      URL url = new URL(buildUrl);
+      conn = (HttpURLConnection) url.openConnection();
+      String input = username + ":" + password;
+      String encoding = new sun.misc.BASE64Encoder().encode(input.getBytes());
+      conn.setRequestProperty("Authorization", "Basic " + encoding);
+      conn.setReadTimeout(10000);
+      conn.setConnectTimeout(15000);
+      conn.setRequestMethod("GET");
+      conn.connect();
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+
+      BufferedReader reader = new BufferedReader(
+          new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      String jsonString1 = reader.readLine();
+      reader.close();
+
+      buildApiJson = jsonString1;
+
+    } catch (Exception e) {
+      System.out.print("Jenkins get job build result error : ");
+      e.printStackTrace();
+    } finally {
+      if (conn != null) {
+        conn.disconnect();
+      }
+    }
+    return buildApiJson;
+  }
+
+  /**
+   * Get the jenkins job all status color
+   * 
+   * @param apiJson
+   *          jenkins job api json
+   * 
+   * @return job status color
+   */
+  public String getJobBuildResult(String apiJson) {
+    String buildResult = null;
+    JSONObject jsonApiJson = new JSONObject(apiJson);
+    String result = jsonApiJson.getString("result");
+    buildResult = result;
+    return buildResult;
+  }
+
+  /**
+   * Check is checkstyle error
+   * 
+   * @param apiJson
+   *          jenkins job api json
+   * @return boolean
+   */
+  public boolean checkIsCheckstyleError(String apiJson) {
+    boolean isCheckstyleError = false;
+    String checkstyleError = "checkstyle error";
+    isCheckstyleError = apiJson.contains(checkstyleError);
+    // JSONObject jsonApiJson = new JSONObject(apiJson);
+    // String msg = jsonApiJson.getString("msg");
+    // if (checkstyleError.equals(msg)) {
+    // isCheckstyleError = true;
+    // }
+    return isCheckstyleError;
   }
 }
