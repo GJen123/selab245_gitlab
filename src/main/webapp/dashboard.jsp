@@ -10,6 +10,7 @@
 <%@ page import="org.gitlab.api.models.*" %>
 <%@ page import="java.util.*" %>
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
+<%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
 
 <%
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
@@ -144,6 +145,7 @@
 							</thead>
 							<tbody>
 								<%
+								List<JSONObject> jsons = new ArrayList<JSONObject>();
 									for(User user : users){
 										String userName = user.getUserName();
 										String personal_url = gitData.getGitlabHostUrl() + "/u/" + userName;
@@ -164,6 +166,15 @@
 														String circleColor = "circle gray";
 														for(GitlabProject gitProject : gitProjects){
 															if(dbProject.getName().equals(gitProject.getName())){
+																
+																JSONObject json = new JSONObject();
+																json.put("name", dbProject.getName());
+																int redCount = 0;
+																int blueCount = 0;
+																int grayCount = 0;
+																int orangeCount = 0;
+																int commitCount = 0;
+																		
 																proName = dbProject.getName();
 																proUrl = gitProject.getWebUrl();
 																proUrl = conn.getReplaceUrl(proUrl);
@@ -213,13 +224,31 @@
 																if(commit_count == 1){
 																  circleColor = "circle gray";
 																  projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+																  grayCount++;
 																} else {
 																  	if(color!=null){
 																  	  circleColor = "circle " + color;
+																  	  if(color.equals("red")) {
+																  		  redCount++;
+																  	  }
+																  	  if(color.equals("blue")) {
+																  		  blueCount++;
+																  	  }
+																  	  if(color.equals("orange")) {
+																  		  orangeCount++;
+																  	  }
 																	}else{
 																	  circleColor = "circle gray";
+																	  grayCount++;
 																	}
+																  	commitCount += commit_count;
 																}
+																json.put("blueCount", blueCount);
+																json.put("redCount", redCount);
+																json.put("orangeCount", orangeCount);
+																json.put("grayCount", grayCount);
+																json.put("commitCount", commitCount);
+																jsons.add(json);
 																//-------------
 																break;
 															}else{
@@ -271,32 +300,16 @@
 						  <li class="nav-item">
 						    <a class="nav-link" data-toggle="tab" href="#chart3" role="tab">Chart3</a>
 						  </li>
-						  <li class="nav-item">
-						    <a class="nav-link" data-toggle="tab" href="#chart4" role="tab">Chart4</a>
-						  </li>
 						</ul>
 		        		<!-- Tab panes -->
 						<div class="tab-content text-center" style="margin-top: 10px">
 						  <div class="tab-pane active" id="chart1" role="tabpanel">
-						  	<%
-						  		String[] projectnames = new String[20];
-						  	int i=0;
-						  	for(Project project : dbProjects) {
-						  		projectnames[i] = project.getName();
-						  		i++;
-						  	}
-						  	%>
-						  	<div id="chart1Demo" style="min-width: 310px; height: 400px; margin: 0 auto" projectNames=<%=projectnames %>></div>
-						  </div>
+						  	<div id="chart1Demo" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+						  	</div>
 						  <div class="tab-pane" id="chart2" role="tabpanel">
-						  	
-						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
+						  	<div id="chart2Demo" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 						  </div>
 						  <div class="tab-pane" id="chart3" role="tabpanel">
-						  	
-						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
-						  </div>
-						  <div class="tab-pane" id="chart4" role="tabpanel">
 						  	
 						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
 						  </div>
@@ -308,25 +321,87 @@
 <!-- ------------------------ main -------------------------------------- -->
       </div>
 </body>
+<!-- chart1 -->
 <script type="text/javascript">
-var x=document.getElementById("chart1Demo").getAttribute("projectNames")
-    var s = [{
-        name: 'Tokyo',
-        data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+<%
+	List<String> names = new ArrayList<String>();
+	List<Integer> blues = new ArrayList<Integer>();
+	List<Integer> reds = new ArrayList<Integer>();
+	List<Integer> oranges = new ArrayList<Integer>();
+	List<Integer> grays = new ArrayList<Integer>();
+	
+	for(JSONObject json : jsons) {
+		if(!names.contains(json.get("name"))) {
+			names.add(json.get("name").toString());
+			blues.add(Integer.parseInt(json.get("blueCount").toString()));
+			reds.add(Integer.parseInt(json.get("redCount").toString()));
+			oranges.add(Integer.parseInt(json.get("orangeCount").toString()));
+			grays.add(Integer.parseInt(json.get("grayCount").toString()));
+		}else {
+			int index = names.indexOf(json.get("name"));
+			int blue = blues.get(index) + Integer.parseInt(json.get("blueCount").toString());
+			int red = reds.get(index) + Integer.parseInt(json.get("redCount").toString());
+			int orange = oranges.get(index) + Integer.parseInt(json.get("orangeCount").toString());
+			int gray = grays.get(index) + Integer.parseInt(json.get("grayCount").toString());
+			
+			blues.set(index, blue);
+			reds.set(index, red);
+			oranges.set(index, orange);
+			grays.set(index, gray);
+		}
+	}
 
-    }, {
-        name: 'New York',
-        data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5, 106.6, 92.3]
-
-    }, {
-        name: 'London',
-        data: [48.9, 38.8, 39.3, 41.4, 47.0, 48.3, 59.0, 59.6, 52.4, 65.2, 59.3, 51.2]
-
-    }, {
-        name: 'Berlin',
-        data: [42.4, 33.2, 34.5, 39.7, 52.6, 75.5, 57.4, 60.4, 47.6, 39.1, 46.8, 51.1]
-
-    }]
+	String x = "var x=[";
+	int i = 0;
+	for(String name : names) {
+		x += "'" + name + "'";
+		if(i != names.size()-1) {
+			x += ",";
+		}
+		i++;
+	}
+	x += "];";
+	out.println(x);
+	
+	int j=0;
+	String s = "var s = [{ name: '建置成功', data:[";
+	for(int blue : blues) {
+		s += blue;
+		if(j != blues.size()-1) {
+			s += ", ";
+		}
+		j++;
+	}
+	s += "]}, { name: '編譯失敗', data:[";
+	j = 0;
+	for(int red : reds) {
+		s += red;
+		if(j != reds.size()-1) {
+			s += ", ";
+		}
+		j++;
+	}
+	s += "]}, { name: '未通過程式規範', data:[";
+	j = 0;
+	for(int orange : oranges) {
+		s += orange;
+		if(j != oranges.size()-1) {
+			s += ", ";
+		}
+		j++;
+	}
+	s += "]}, { name: '未建置', data:[";
+	j = 0;
+	for(int gray : grays) {
+		s += gray;
+		if(j != grays.size()-1) {
+			s += ", ";
+		}
+		j++;
+	}
+	s += "]}]";
+	out.println(s);
+%>
 Highcharts.chart('chart1Demo', {
     chart: {
         type: 'column'
@@ -350,7 +425,7 @@ Highcharts.chart('chart1Demo', {
     tooltip: {
         headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
         pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+            '<td style="padding:0"><b>{point.y}</b></td></tr>',
         footerFormat: '</table>',
         shared: true,
         useHTML: true
@@ -360,6 +435,119 @@ Highcharts.chart('chart1Demo', {
             pointPadding: 0.2,
             borderWidth: 0
         }
+    },
+    series: s
+});
+</script>
+
+<!-- chart2 -->
+<script type="text/javascript">
+<%
+List<Integer> commits = new ArrayList<Integer>();
+names = new ArrayList<String>();
+for(JSONObject json : jsons) {
+	if(!names.contains(json.get("name"))) {
+		names.add(json.get("name").toString());
+		commits.add(Integer.parseInt(json.get("commitCount").toString()));
+	}else {
+		int index = names.indexOf(json.get("name"));
+		int commit = commits.get(index) + Integer.parseInt(json.get("commitCount").toString());
+		
+		commits.set(index, commit);
+	}
+}
+j=0;
+s = "var s = [{ name: 'commit次數', type: 'column', data:[";
+j = 0;
+for(int commit : commits) {
+	s += commit;
+	if(j != commits.size()-1) {
+		s += ", ";
+	}
+	j++;
+}
+s += "]}, { name: '建置成功', type: 'spline', data:[";
+for(int blue : blues) {
+	s += blue;
+	if(j != blues.size()-1) {
+		s += ", ";
+	}
+	j++;
+}
+s += "]}, { name: '編譯失敗', type: 'spline', data:[";
+j = 0;
+for(int red : reds) {
+	s += red;
+	if(j != reds.size()-1) {
+		s += ", ";
+	}
+	j++;
+}
+s += "]}, { name: '未通過程式規範', type: 'spline', data:[";
+j = 0;
+for(int orange : oranges) {
+	s += orange;
+	if(j != oranges.size()-1) {
+		s += ", ";
+	}
+	j++;
+}
+s += "]}]";
+out.println(s);
+%>
+Highcharts.chart('chart2Demo', {
+    chart: {
+        zoomType: 'xy'
+    },
+    title: {
+        text: '各作業上傳次數及建置結果統計'
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: [{
+        categories: x,
+        crosshair: true
+    }],
+    yAxis: [{ // Primary yAxis
+        labels: {
+            format: '',
+            style: {
+                color: Highcharts.getOptions().colors[1]
+            }
+        },
+        title: {
+            text: '次數',
+            style: {
+                color: Highcharts.getOptions().colors[1]
+            }
+        }
+    }, { // Secondary yAxis blue
+        title: {
+            text: '個數',
+            style: {
+                color: Highcharts.getOptions().colors[0]
+            }
+        },
+        labels: {
+            format: '',
+            style: {
+                color: Highcharts.getOptions().colors[0]
+            }
+        },
+        opposite: true
+    }],
+    tooltip: {
+        shared: true
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'left',
+        x: 120,
+        verticalAlign: 'top',
+        y: 100,
+        floating: true,
+        backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
     },
     series: s
 });

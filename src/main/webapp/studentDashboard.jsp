@@ -8,6 +8,7 @@
 <%@ page import="java.util.*"%>
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
 <%@ page import="fcu.selab.progedu.jenkins.JenkinsApi" %>
+<%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
 
 <%
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
@@ -165,7 +166,16 @@
 								<th width="15%">Commit</th>
 								<%
 									int commit_count = 0;
+									List<JSONObject> jsons = new ArrayList<JSONObject>();
 									for(GitlabProject project : projects){
+										JSONObject json = new JSONObject();
+										json.put("name", project.getName());
+										int redCount = 0;
+										int blueCount = 0;
+										int grayCount = 0;
+										int orangeCount = 0;
+										int commitCount = 0;
+										
 									  commit_count = sConn.getAllCommitsCounts(project.getId());
 									  JobStatus jobStatus = new JobStatus();
 									  String jobName = user.getUsername() + "_" + project.getName();
@@ -216,13 +226,30 @@
 											if(commit_count == 1){
 											  circleColor = "circle gray";
 											  projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+											  grayCount++;
 											} else {
 											  	if(color!=null){
 											  	  circleColor = "circle " + color;
+											  	if(color.equals("red")) {
+											  		  redCount++;
+											  	  }
+											  	  if(color.equals("blue")) {
+											  		  blueCount++;
+											  	  }
+											  	  if(color.equals("orange")) {
+											  		  orangeCount++;
+											  	  }
 												}else{
 												  circleColor = "circle gray";
+												  grayCount++;
 												}
 											}
+											json.put("blueCount", blueCount);
+											json.put("redCount", redCount);
+											json.put("orangeCount", orangeCount);
+											json.put("grayCount", grayCount);
+											json.put("commitCount", commitCount);
+											jsons.add(json);
 											//-------------
 										}
 										%>
@@ -247,14 +274,155 @@
 		        		<fmt:message key="stuDashboard_card_statisticChart"/>
 		        </h4>
 		        <div class="card-block">
-					
-				</div>
+		        		<ul class="nav nav-tabs" role="tablist">
+						  <li class="nav-item">
+						    <a class="nav-link active" data-toggle="tab" href="#chart1" role="tab">Chart1</a>
+						  </li>
+						  <li class="nav-item">
+						    <a class="nav-link" data-toggle="tab" href="#chart2" role="tab">Chart2</a>
+						  </li>
+						  <li class="nav-item">
+						    <a class="nav-link" data-toggle="tab" href="#chart3" role="tab">Chart3</a>
+						  </li>
+						</ul>
+		        		<!-- Tab panes -->
+						<div class="tab-content text-center" style="margin-top: 10px">
+						  <div class="tab-pane active" id="chart1" role="tabpanel">
+						  	<div id="chart1Demo" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+						  	</div>
+						  <div class="tab-pane" id="chart2" role="tabpanel">
+						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
+						  </div>
+						  <div class="tab-pane" id="chart3" role="tabpanel">
+						  	
+						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
+						  </div>
+						</div>
+		        	</div>
 			</div>
 		</div>
 		</main>
 	</div>
 	<div id="gotop"><i class="fa fa-chevron-up" aria-hidden="true"></i></div>
 </body>
+<!-- chart1 -->
+<script type="text/javascript">
+<%
+	List<String> names = new ArrayList<String>();
+	List<Integer> blues = new ArrayList<Integer>();
+	List<Integer> reds = new ArrayList<Integer>();
+	List<Integer> oranges = new ArrayList<Integer>();
+	List<Integer> grays = new ArrayList<Integer>();
+	
+	for(JSONObject json : jsons) {
+		if(!names.contains(json.get("name"))) {
+			names.add(json.get("name").toString());
+			blues.add(Integer.parseInt(json.get("blueCount").toString()));
+			reds.add(Integer.parseInt(json.get("redCount").toString()));
+			oranges.add(Integer.parseInt(json.get("orangeCount").toString()));
+			grays.add(Integer.parseInt(json.get("grayCount").toString()));
+		}else {
+			int index = names.indexOf(json.get("name"));
+			int blue = blues.get(index) + Integer.parseInt(json.get("blueCount").toString());
+			int red = reds.get(index) + Integer.parseInt(json.get("redCount").toString());
+			int orange = oranges.get(index) + Integer.parseInt(json.get("orangeCount").toString());
+			int gray = grays.get(index) + Integer.parseInt(json.get("grayCount").toString());
+			
+			blues.set(index, blue);
+			reds.set(index, red);
+			oranges.set(index, orange);
+			grays.set(index, gray);
+		}
+	}
+	
+	String x = "var x=[";
+	int i = 0;
+	for(String name : names) {
+		x += "'" + name + "'";
+		if(i != names.size()-1) {
+			x += ",";
+		}
+		i++;
+	}
+	x += "];";
+	out.println(x);
+	
+	int j=0;
+	String s = "var s = [{ name: '建置成功', data:[";
+	for(int blue : blues) {
+		s += blue;
+		if(j != blues.size()-1) {
+			s += ", ";
+		}
+		j++;
+	}
+	s += "]}, { name: '編譯失敗', data:[";
+	j = 0;
+	for(int red : reds) {
+		s += red;
+		if(j != reds.size()-1) {
+			s += ", ";
+		}
+		j++;
+	}
+	s += "]}, { name: '未通過程式規範', data:[";
+	j = 0;
+	for(int orange : oranges) {
+		s += orange;
+		if(j != oranges.size()-1) {
+			s += ", ";
+		}
+		j++;
+	}
+	s += "]}, { name: '未建置', data:[";
+	j = 0;
+	for(int gray : grays) {
+		s += gray;
+		if(j != grays.size()-1) {
+			s += ", ";
+		}
+		j++;
+	}
+	s += "]}]";
+	out.println(s);
+%>
+Highcharts.chart('chart1Demo', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: '各作業建置結果統計'
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        categories: x,
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: '個數'
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y}</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series: s
+});
+</script>
 <script type="text/javascript">
 $(function(){
     $("#gotop").click(function(){

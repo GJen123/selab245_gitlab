@@ -107,6 +107,9 @@
 	<div class="row">
 		<nav class="hidden-xs-down bg-faded sidebar" id="navHeight">
 		<ul class="nav nav-pills flex-column" style="margin-top: 20px;">
+			<li class="nav-item"><font size="4"><a href="studentDashboard.jsp" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp;
+				<fmt:message key="dashboard_a_overview" /></a></font>
+			</li>
 			<li class="nav-item"><font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp;
 						<fmt:message key="stuDashboard_a_projects" /> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
 				<ul id="student" class="collapse" style="list-style: none;">
