@@ -47,7 +47,7 @@
 			background: #e52424;
 		}
 		.blue {
-			background: #258ce8;
+			background: #5fa7e8;
 		}
 		.gray {
 			background: #878787;
@@ -248,6 +248,12 @@
 		</main>
 	</div>
 </body>
+<!-- set Highchart colors -->
+<script>
+Highcharts.setOptions({
+	 colors: ['#5fa7e8', '#e52424', '#FF5809', '#878787']
+	})
+</script>
 <script>
 Highcharts.chart('hightChart', {
     chart: {

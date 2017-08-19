@@ -46,7 +46,7 @@
 			background: #e52424;
 		}
 		.blue {
-			background: #258ce8;
+			background: #5fa7e8;
 		}
 		.gray {
 			background: #878787;
@@ -291,11 +291,10 @@
 						  	<div id="chart1Demo" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 						  	</div>
 						  <div class="tab-pane" id="chart2" role="tabpanel">
-						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
+						  	<div id="chart2Demo" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 						  </div>
 						  <div class="tab-pane" id="chart3" role="tabpanel">
-						  	
-						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
+						  	<div id="chart3Demo" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 						  </div>
 						</div>
 		        	</div>
@@ -305,6 +304,12 @@
 	</div>
 	<div id="gotop"><i class="fa fa-chevron-up" aria-hidden="true"></i></div>
 </body>
+<!-- set Highchart colors -->
+<script>
+Highcharts.setOptions({
+	 colors: ['#5fa7e8', '#e52424', '#FF5809', '#878787']
+	})
+</script>
 <!-- chart1 -->
 <script type="text/javascript">
 <%
@@ -421,6 +426,101 @@ Highcharts.chart('chart1Demo', {
         }
     },
     series: s
+});
+</script>
+<!-- chart2 -->
+<script>
+Highcharts.chart('chart2Demo', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: '各作業建置結果統計'
+    },
+    xAxis: {
+        categories: x
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: '個數'
+        }
+    },
+    tooltip: {
+        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
+        shared: true
+    },
+    plotOptions: {
+        column: {
+            stacking: 'percent'
+        }
+    },
+    series: s
+});
+</script>
+<!-- chart3 -->
+<script>
+<%
+
+j=0;
+int blueTotal = 0;
+int redTotal = 0;
+int orangeTotal = 0;
+int grayTotal = 0;
+
+s = "var s = [{name: 'Brands', colorByPoint: true, data: [{ name: '建置成功', y:";
+for(int blue : blues) {
+	blueTotal += blue;
+}
+s += blueTotal;
+s += "}, { name: '編譯失敗', y:";
+j = 0;
+for(int red : reds) {
+	redTotal += red;
+}
+s += redTotal;
+s += "}, { name: '未通過程式規範', y:";
+j = 0;
+for(int orange : oranges) {
+	orangeTotal += orange;
+}
+s += orangeTotal;
+s += "}, { name: '未建置', y:";
+j = 0;
+for(int gray : grays) {
+	grayTotal += gray;
+}
+s += grayTotal;
+s += "}]}]";
+out.println(s);
+%>
+$(document).ready(function () {
+// Build the chart
+    Highcharts.chart('chart3Demo', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: '所有作業建置結果統計'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.y:.0f}</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false
+                },
+                showInLegend: true
+            }
+        },
+        series: s
+    });
 });
 </script>
 <script type="text/javascript">
