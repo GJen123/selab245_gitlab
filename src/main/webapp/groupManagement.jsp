@@ -13,7 +13,7 @@
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
 		response.sendRedirect("index.jsp");
 	}
-	session.putValue("page", "teacherManageGroup");
+	session.putValue("page", "groupManagement");
 	
 	UserDbManager uDB = UserDbManager.getInstance();
 	List<User> users = uDB.listAllUsers();

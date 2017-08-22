@@ -36,6 +36,7 @@ import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.Conn;
 import fcu.selab.progedu.data.Project;
@@ -52,6 +53,7 @@ public class ProjectService2 {
   private ZipHandler zipHandler;
   private JenkinsApi jenkins = JenkinsApi.getInstance();
 
+  private GitlabConfig gitlabData = GitlabConfig.getInstance();
   private JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
   private String jenkinsRootUsername;
@@ -105,7 +107,7 @@ public class ProjectService2 {
     sdFormat.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
     String dateTime = sdFormat.format(date);
     System.out.println("start time: " + dateTime);
-    
+
     String rootProjectUrl = null;
     String folderName = null;
     String filePath = null;
@@ -213,11 +215,11 @@ public class ProjectService2 {
     // response =
     // Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
     // }
-    
+
     Date date1 = new Date();
     String dateTime1 = sdFormat.format(date1);
     System.out.println("end time: " + dateTime1);
-    
+
     return response;
   }
 
@@ -239,13 +241,22 @@ public class ProjectService2 {
 
   private String getThisProjectUrl(String name) {
     String url = null;
+    String gitlabUrl = null;
+    try {
+      gitlabUrl = gitlabData.getGitlabRootUrl();
+    } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     List<GitlabProject> rootProjects = conn.getProject(root);
     for (GitlabProject project : rootProjects) {
       String proName = project.getName();
       if (proName.equals(name)) {
-        url = project.getWebUrl();
-        url = url.replace("0912fe2b3e43", "root:iecsfcu123456@140.134.26.71:20080");
-        url = url + ".git";
+        url = gitlabUrl + "/root/" + name;
+        // url = project.getWebUrl();
+        // url = url.replace("0912fe2b3e43",
+        // "root:iecsfcu123456@140.134.26.71:20080");
+        // url = url + ".git";
       }
     }
     return url;

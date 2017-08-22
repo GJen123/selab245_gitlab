@@ -15,6 +15,7 @@
 	}else{
 	  response.sendRedirect("index.jsp");
 	}
+	session.putValue("page", "sutdentDashboardChooseProject");
 %>
 
 <%@ include file="language.jsp"%>

@@ -16,8 +16,7 @@
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
 		response.sendRedirect("index.jsp");
 	}
-	session.putValue("page", "teacherHW");
-	String pages = "teacherHW.jsp";
+	session.putValue("page", "dashStuChoosed");
 %>
 
 <%@ include file="language.jsp" %>
@@ -80,26 +79,35 @@
 		UserDbManager db = UserDbManager.getInstance();
 		ProjectDbManager Pdb = ProjectDbManager.getInstance();
 		
-		// db的所有users
+		// Get all db users
 		List<User> users = db.listAllUsers();
 		
-		// db的所有projects
+		// Get all db projects
 		List<Project> dbProjects = Pdb.listAllProjects();
 		
-		// gitlab jenkins course的Data
+		// gitlab jenkins course data
 		GitlabConfig gitData = GitlabConfig.getInstance();
 		JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 		CourseConfig courseData = CourseConfig.getInstance();
 		
 		JenkinsApi jenkins = JenkinsApi.getInstance();
+		
+		// Get the choosed user
+		User choosedUser = new User();
+     	for(User user : users){
+     		if(studentId.equals(String.valueOf(user.getGitLabId()))){
+     			choosedUser = user;
+     		    break;
+     		}
+     	}
 	%>
       <div class="row">
         <nav class="hidden-xs-down bg-faded sidebar" id="navHeight">
           <ul class="nav nav-pills flex-column" style="margin-top: 20px;">
             <li class="nav-item">
-            	<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_overview"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+            	<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <%=choosedUser.getUserName() %> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
             	<ul id="overview" class="collapse" style="list-style: none;">
-            		<li class="nav-item"><font size="3"><a class="nav-link" href="#Student Projects"><i class="fa fa-table" aria-hidden="true"></i> <fmt:message key="dashboard_li_studentProjects"/></a></font></li>
+            		<li class="nav-item"><font size="3"><a class="nav-link" href="#Student Projects"><i class="fa fa-table" aria-hidden="true"></i> <fmt:message key="stuDashboard_li_projects"/></a></font></li>
             		<li class="nav-item"><font size="3"><a class="nav-link" href="#Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i> <fmt:message key="dashboard_li_chart"/></a></font></li>
             	</ul>
             </li>
@@ -122,14 +130,6 @@
 
         <main class="col-md-9 col-xs-11 p-l-2 p-t-2">
         	<%
-        		User choosedUser = new User();
-        		for(User user : users){
-        		  if(studentId.equals(String.valueOf(user.getGitLabId()))){
-        		    choosedUser = user;
-        		    break;
-        		  }
-        		}
-        		
         		String private_token = choosedUser.getPrivateToken();
             	StudentConn sConn = new StudentConn(private_token); 	
             	List<GitlabProject> gitProjects = sConn.getProject();

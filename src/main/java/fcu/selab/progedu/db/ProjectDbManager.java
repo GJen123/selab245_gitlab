@@ -7,18 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 import fcu.selab.progedu.data.Project;
-import fcu.selab.progedu.data.User;
 
 public class ProjectDbManager {
 
@@ -33,12 +23,14 @@ public class ProjectDbManager {
   private ProjectDbManager() {
 
   }
-  
+
   UserDbManager udb = UserDbManager.getInstance();
 
   /**
    * Add project to database
-   * @param project         Project
+   * 
+   * @param project
+   *          Project
    */
   public void addProject(Project project) {
     Connection conn = database.getConnection();
@@ -57,17 +49,17 @@ public class ProjectDbManager {
       preStmt.setString(5, project.getType());
       preStmt.executeUpdate();
       preStmt.close();
-//
-//      stmt = conn.createStatement();
-//      ResultSet rs = stmt.executeQuery(query);
-//      System.out.println("List All Projects");
-//      while (rs.next()) {
-//        System.out.println("Name: " + rs.getString("name") 
-//            + ", Deadline: " + rs.getString("deadline") 
-//            + ", Description: "  + rs.getString("description") 
-//            + ", HasTemplate: " + rs.getBoolean("hasTemplate")
-//            + ", Type: " + rs.getString("type"));
-//      }
+      //
+      // stmt = conn.createStatement();
+      // ResultSet rs = stmt.executeQuery(query);
+      // System.out.println("List All Projects");
+      // while (rs.next()) {
+      // System.out.println("Name: " + rs.getString("name")
+      // + ", Deadline: " + rs.getString("deadline")
+      // + ", Description: " + rs.getString("description")
+      // + ", HasTemplate: " + rs.getBoolean("hasTemplate")
+      // + ", Type: " + rs.getString("type"));
+      // }
     } catch (SQLException e) {
       e.printStackTrace();
     } finally {
@@ -81,6 +73,7 @@ public class ProjectDbManager {
 
   /**
    * List all the projects
+   * 
    * @return List of projects
    */
   public List<Project> listAllProjects() {
@@ -111,5 +104,26 @@ public class ProjectDbManager {
       e.printStackTrace();
     }
     return lsProjects;
+  }
+
+  /**
+   * Delete project from database
+   * 
+   * @param project
+   *          project
+   */
+  public void deleteProject(Project project) {
+    Connection conn = database.getConnection();
+    PreparedStatement preStmt = null;
+    Statement stmt = null;
+    String sql = "DELETE FROM Assignment WHERE 'name'=" + project.getName();
+    try {
+      preStmt = conn.prepareStatement(sql);
+      preStmt.executeUpdate();
+      preStmt.close();
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 }

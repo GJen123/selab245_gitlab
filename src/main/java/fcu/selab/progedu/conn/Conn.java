@@ -16,7 +16,6 @@ import org.gitlab.api.models.GitlabSession;
 import org.gitlab.api.models.GitlabUser;
 
 import fcu.selab.progedu.config.GitlabConfig;
-import fcu.selab.progedu.data.Group;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
@@ -204,10 +203,12 @@ public class Conn {
     }
     return users;
   }
-  
+
   /**
    * get Gitlab user id via sudo
-   * @param userName user name
+   * 
+   * @param userName
+   *          user name
    * @return Gitlab user
    */
   public GitlabUser getUserViaSudo(String userName) {
@@ -313,10 +314,12 @@ public class Conn {
     }
     return groupMembers;
   }
-  
+
   /**
    * get Gitlab group id with group name
-   * @param groupName group name
+   * 
+   * @param groupName
+   *          group name
    * @return group id
    */
   public GitlabGroup getGitlabGroup(String groupName) {
@@ -347,7 +350,7 @@ public class Conn {
   public boolean createPrivateProject(int userId, String proName, String proUrl) {
     try {
       GitlabProject project = gitlab.createUserProject(userId, proName, null, null, null,
-            null, null, null, null, null, null, proUrl);
+          null, null, null, null, null, null, proUrl);
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -405,10 +408,12 @@ public class Conn {
     }
     return new GitlabGroup();
   }
-  
+
   /**
    * transfer project into group
-   * @param groupName groupName
+   * 
+   * @param groupName
+   *          groupName
    */
   public void createGroupProject(String groupName) {
     createRootProject(groupName);
@@ -511,6 +516,21 @@ public class Conn {
     String oldStr = oldUrl.substring(0, 19);
     oldUrl = oldUrl.replace(oldStr, hostUrl);
     return oldUrl;
+  }
+
+  /**
+   * Delete the target user
+   * 
+   * @param userId
+   *          user id
+   */
+  public void deleteUser(int userId) {
+    try {
+      gitlab.deleteUser(userId);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
 }

@@ -14,7 +14,7 @@
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
 		response.sendRedirect("index.jsp");
 	}
-	session.putValue("page", "dashboard");
+	session.putValue("page", "sutdentDashboard");
 %>
 
 <%@ include file="language.jsp"%>
