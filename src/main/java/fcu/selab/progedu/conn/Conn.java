@@ -187,6 +187,24 @@ public class Conn {
   }
 
   /**
+   * Get a gitlab user by user id
+   * 
+   * @param userId
+   *          user id
+   * @return gitlab user
+   */
+  public GitlabUser getUserById(int userId) {
+    GitlabUser gitlabUser = new GitlabUser();
+    try {
+      gitlabUser = gitlab.getUser(userId);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return gitlabUser;
+  }
+
+  /**
    * Get all user from Gitlab
    * 
    * @return a list of users
@@ -503,6 +521,24 @@ public class Conn {
       e.printStackTrace();
     }
     return count;
+  }
+
+  /**
+   * Get project commit
+   * 
+   * @param projectId
+   *          project id
+   * @return list of commit
+   */
+  public List<GitlabCommit> getAllCommits(int projectId) {
+    List<GitlabCommit> lsCommits = new ArrayList<GitlabCommit>();
+    try {
+      lsCommits = gitlab.getAllCommits(projectId);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return lsCommits;
   }
 
   /**

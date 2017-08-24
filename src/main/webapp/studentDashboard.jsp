@@ -9,12 +9,14 @@
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
 <%@ page import="fcu.selab.progedu.jenkins.JenkinsApi" %>
 <%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
+<%@ page import="fcu.selab.progedu.db.ProjectDbManager" %>
+<%@ page import="fcu.selab.progedu.data.Project" %>   
 
 <%
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
 		response.sendRedirect("index.jsp");
 	}
-	session.putValue("page", "sutdentDashboard");
+	session.putValue("page", "studentDashboard");
 %>
 
 <%@ include file="language.jsp"%>
@@ -53,6 +55,12 @@
 		}
 		.orange {
 			background: #FF5809;
+		}
+		.green {
+			background: #32CD32;
+		}
+		.gold{
+			background: #FFD700;
 		}
 		.circle a {
 			color: #fff;
@@ -103,6 +111,9 @@
 		List<GitlabProject> projects = sConn.getProject();
 		Collections.reverse(projects);
 		
+		ProjectDbManager Pdb = ProjectDbManager.getInstance();
+		List<Project> dbProjects = Pdb.listAllProjects();
+		
 	%>
 	<div class="row">
 		<nav class="hidden-xs-down bg-faded sidebar" id="navHeight">
@@ -111,19 +122,23 @@
 						<fmt:message key="stuDashboard_a_projects" /> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
 				<ul id="student" class="collapse" style="list-style: none;">
 					<%
-						for (GitlabProject project : projects) {
-							//String projectName = project.getName();
-							String projectName = project.getNameWithNamespace();
-							String href = "\"studentDashboardChooseProject.jsp?projectId=" + project.getId() + "\"";
-					%>
-					<li class="nav-item">
-						<font size="3">
-							<a class="nav-link" href=<%=href %>>
-								<i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=projectName %>
-							</a>
-						</font>
-					</li>
-					<%
+						for(Project dbProject : dbProjects){
+							for (GitlabProject project : projects) {
+								if(dbProject.getName().equals(project.getName())){
+									String projectName = project.getName();
+									//String projectName = project.getNameWithNamespace();
+									String href = "\"studentDashboardChooseProject.jsp?projectId=" + project.getId() + "\"";
+									%>
+										<li class="nav-item">
+											<font size="3">
+												<a class="nav-link" href=<%=href %>>
+													<i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=projectName %>
+												</a>
+											</font>
+										</li>
+									<%
+								}
+							}
 						}
 					%>
 				</ul>
@@ -143,21 +158,28 @@
 		        </h4>
 		        <div class="card-block">
 					<div id="inline">
-						<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
+						<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
 						<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
 						<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_checkstyleFail"/></p>
-						<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
+						<p class="ovol green" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p>
+						<p class="ovol gold" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p>
+						<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
 					</div>
 					<table class="table table-striped" style="margin-top: 20px; width: 100%">
 						<thead>
 							<tr>
 								<th width="15%"></th>
 								<%
-									for(GitlabProject project : projects){
-									  %>
-									  	<th><%=project.getName() %></th>
-									  <%
+									for(Project dbProject : dbProjects){
+									  	for(GitlabProject project : projects){
+									  	  	if(dbProject.getName().equals(project.getName())){
+									  	  	  	%>
+												  	<th><%=project.getName() %></th>
+												<%
+									  	  	}
+										}
 									}
+									
 								%>
 							</tr>
 						</thead>
@@ -167,100 +189,105 @@
 								<%
 									int commit_count = 0;
 									List<JSONObject> jsons = new ArrayList<JSONObject>();
-									for(GitlabProject project : projects){
-										JSONObject json = new JSONObject();
-										json.put("name", project.getName());
-										int redCount = 0;
-										int blueCount = 0;
-										int grayCount = 0;
-										int orangeCount = 0;
-										int commitCount = 0;
-										
-									  commit_count = sConn.getAllCommitsCounts(project.getId());
-									  JobStatus jobStatus = new JobStatus();
-									  String jobName = user.getUsername() + "_" + project.getName();
-									  jobStatus.setName(jobName);
-									  String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
-									  jobStatus.setUrl(jobUrl);
-									  jobStatus.setJobApiJson();
-									  
-									  if(null != jobStatus.getJobApiJson() && !"".equals(jobStatus.getJobApiJson())){
-									    // has jenkins
-									    // Get job status
-										jobStatus.setJobApiJson();
-										boolean isMaven = jenkins.checkProjectIsMvn(jobStatus.getJobApiJson());
-										// --- Get job status End ---
-										String color = null;
-										String circleColor = null;
-										int checkstyleErrorAmount = 0;
-										String projectJenkinsUrl = null;
-										
-										if(null != jobStatus.getJobApiJson()){
-											color = jenkins.getJobJsonColor(jobStatus.getJobApiJson());
-											if(!isMaven){
-											  // Javac
-											  if(color.equals("red")){
-											    // color == red
-											    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/consoleText";
-											  }else{
-											    // color != red , gray or blue
-											    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
-											  }
-											}else{
-											  // Maven
-											  if(color.equals("red")){
-											    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/consoleText";
-											 	String checkstyleDes = jenkins.getCheckstyleDes(jobStatus.getJobApiJson());
-												if(null != checkstyleDes && !"".equals(checkstyleDes)){
-												  checkstyleErrorAmount = jenkins.getCheckstyleErrorAmount(checkstyleDes);
+									for(Project dbProject : dbProjects){
+										for(GitlabProject project : projects){
+										  	if(dbProject.getName().equals(project.getName())){
+										  	  	JSONObject json = new JSONObject();
+												json.put("name", project.getName());
+												int redCount = 0;
+												int blueCount = 0;
+												int grayCount = 0;
+												int orangeCount = 0;
+												int commitCount = 0;
+													
+											  	commit_count = sConn.getAllCommitsCounts(project.getId());
+											  	JobStatus jobStatus = new JobStatus();
+											  	String jobName = user.getUsername() + "_" + project.getName();
+											  	jobStatus.setName(jobName);
+											  	String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
+											  	jobStatus.setUrl(jobUrl);
+											  	jobStatus.setJobApiJson();
+											  
+											  	if(null != jobStatus.getJobApiJson() && !"".equals(jobStatus.getJobApiJson())){
+											    	// has jenkins
+											    	// Get job status
+													jobStatus.setJobApiJson();
+													boolean isMaven = jenkins.checkProjectIsMvn(jobStatus.getJobApiJson());
+													// --- Get job status End ---
+													String color = null;
+													String circleColor = null;
+													int checkstyleErrorAmount = 0;
+													String projectJenkinsUrl = null;
+												
+													if(null != jobStatus.getJobApiJson()){
+														color = jenkins.getJobJsonColor(jobStatus.getJobApiJson());
+														if(!isMaven){
+													  		// Javac
+													  		if(color.equals("red")){
+													    		// color == red
+													    		projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/consoleText";
+													  		}else{
+													    		// color != red , gray or blue
+													    		projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+													  		}
+														}else{
+													  		// Maven
+													  		if(color.equals("red")){
+													    		projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/consoleText";
+													 			String checkstyleDes = jenkins.getCheckstyleDes(jobStatus.getJobApiJson());
+																if(null != checkstyleDes && !"".equals(checkstyleDes)){
+														  			checkstyleErrorAmount = jenkins.getCheckstyleErrorAmount(checkstyleDes);
+																}
+																if(checkstyleErrorAmount != 0){
+														  		color = "orange";
+														  		projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/violations";
+																}
+													  		}else{
+													    		projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+													  		}
+														}
+													
+														if(commit_count == 1){
+													  		circleColor = "circle gray";
+													  		projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+													  		grayCount++;
+														} else {
+													  		if(color!=null){
+													  	  		circleColor = "circle " + color;
+													  			if(color.equals("red")) {
+													  		  		redCount++;
+													  	  		}
+													  	  		if(color.equals("blue")) {
+													  			  	blueCount++;
+													  	  		}
+													  	  		if(color.equals("orange")) {
+													  		  		orangeCount++;
+													  	  		}
+															}else{
+														  		circleColor = "circle gray";
+														  		grayCount++;
+															}
+														}
+														json.put("blueCount", blueCount);
+														json.put("redCount", redCount);
+														json.put("orangeCount", orangeCount);
+														json.put("grayCount", grayCount);
+														json.put("commitCount", commitCount);
+														jsons.add(json);
+													//-------------
 												}
-												if(checkstyleErrorAmount != 0){
-												  color = "orange";
-												  projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/violations";
-												}
+												%>
+													<td><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=projectJenkinsUrl  %>')"><%=commit_count %></a></p></td>
+												<%
 											  }else{
-											    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+											    // no jenkins
+											    %>
+											    	<td><%=commit_count %></td>
+											    <%
 											  }
-											}
+										  	}
 											
-											if(commit_count == 1){
-											  circleColor = "circle gray";
-											  projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
-											  grayCount++;
-											} else {
-											  	if(color!=null){
-											  	  circleColor = "circle " + color;
-											  	if(color.equals("red")) {
-											  		  redCount++;
-											  	  }
-											  	  if(color.equals("blue")) {
-											  		  blueCount++;
-											  	  }
-											  	  if(color.equals("orange")) {
-											  		  orangeCount++;
-											  	  }
-												}else{
-												  circleColor = "circle gray";
-												  grayCount++;
-												}
-											}
-											json.put("blueCount", blueCount);
-											json.put("redCount", redCount);
-											json.put("orangeCount", orangeCount);
-											json.put("grayCount", grayCount);
-											json.put("commitCount", commitCount);
-											jsons.add(json);
-											//-------------
 										}
-										%>
-											<td><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=projectJenkinsUrl  %>')"><%=commit_count %></a></p></td>
-										<%
-									  }else{
-									    // no jenkins
-									    %>
-									    	<td><%=commit_count %></td>
-									    <%
-									  }
 									}
 								%>
 							</tr>

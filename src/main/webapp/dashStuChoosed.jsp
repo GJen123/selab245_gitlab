@@ -105,11 +105,30 @@
         <nav class="hidden-xs-down bg-faded sidebar" id="navHeight">
           <ul class="nav nav-pills flex-column" style="margin-top: 20px;">
             <li class="nav-item">
-            	<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <%=choosedUser.getUserName() %> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+            	<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_overview"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
             	<ul id="overview" class="collapse" style="list-style: none;">
             		<li class="nav-item"><font size="3"><a class="nav-link" href="#Student Projects"><i class="fa fa-table" aria-hidden="true"></i> <fmt:message key="stuDashboard_li_projects"/></a></font></li>
             		<li class="nav-item"><font size="3"><a class="nav-link" href="#Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i> <fmt:message key="dashboard_li_chart"/></a></font></li>
             	</ul>
+            </li>
+            <li class="nav-item">
+            	<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#projects" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Projects <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+            	<ul id="projects" class="collapse" style="list-style: none;">
+	                    <%
+	                		List<GitlabProject> projects = conn.getProject(choosedUser);
+	                		Collections.reverse(projects);
+			            	for(GitlabProject project : projects){
+			            	  for(Project dbProject : dbProjects){
+			            	    if(project.getName().equals(dbProject.getName())){
+			            	      String href = "dashProjectChoosed.jsp?userId=" + choosedUser.getId() + "&proName=" + project.getName();
+			            	      %>
+			            	      	<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=project.getName() %></a></font></li>
+			            	      <%
+			            	    }
+			            	  }
+			            	}
+			            %>
+	            </ul>
             </li>
             <li class="nav-item">
                 <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_student"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
@@ -137,7 +156,7 @@
         		
         	%>
         	<div class="container" style="margin-top: 20px;">
-        	<h2 style="margin-top: 30px;"><%=choosedUser.getName() %></h2>
+        	<h2 style="margin-top: 30px;"><%=choosedUser.getUserName() %></h2>
         		<br><br>
         		 <div class="card">
 	        		 <table class="table table-striped" style="width: 100%">

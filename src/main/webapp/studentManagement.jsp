@@ -18,8 +18,6 @@
 </head>
 
 <body  style="background-color:#F5F5F5;">
-	<!-- 設定語言 -->
-	<fmt:setBundle basename = "<%=basename %>"/>
 	
 	<%@ include file="header.jsp" %>
 	<div>

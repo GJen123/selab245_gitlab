@@ -271,8 +271,9 @@
 																<td><%=proName %></td>
 															<%
 														}else{
+														  String href="dashProjectChoosed.jsp?userId=" + user.getGitLabId() + "&proName=" + dbProject.getName();
 															%>
-																<td><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=projectJenkinsUrl  %>')"><%=commit_count %></a></p></td>
+																<td><p class="<%=circleColor%>"><a href="<%= href%>"><%=commit_count %></a></p></td>
 
 															<%
 														}

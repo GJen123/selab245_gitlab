@@ -1,0 +1,223 @@
+<%@ page language="java" contentType="text/html; charset=BIG5"
+    pageEncoding="utf-8"%>
+<%@ page import="fcu.selab.progedu.conn.Conn,fcu.selab.progedu.conn.HttpConnect" %>
+<%@ page import="fcu.selab.progedu.jenkins.JenkinsApi, fcu.selab.progedu.conn.Language" %>
+<%@ page import="fcu.selab.progedu.config.GitlabConfig" %>
+<%@ page import="fcu.selab.progedu.config.JenkinsConfig" %>
+<%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager" %>
+<%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>   
+<%@ page import="org.gitlab.api.GitlabAPI" %>
+<%@ page import="org.gitlab.api.models.*" %>
+<%@ page import="java.util.*" %>
+<%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
+<%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+
+<%
+	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+		response.sendRedirect("index.jsp");
+	}
+	session.putValue("page", "dashboard");
+	
+	int userId = Integer.parseInt(request.getParameter("userId"));
+	String projectName = request.getParameter("proName");
+%>
+
+<%@ include file="language.jsp" %>
+    
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<style type="text/css">
+		#inline p {
+		    display: inline;
+		}
+		.ovol {
+			border-radius: 50px;
+			height: 50px;
+            font-weight: bold;
+            width: 120px;
+            color: white;
+            text-align: center;
+		}
+		.circle {
+			border-radius: 30px;
+			height: 30px;
+            font-weight: bold;
+            width: 30px;
+            color: white;
+            text-align: center;
+		}
+		.red {
+			background: #e52424;
+		}
+		.blue {
+			background: #5fa7e8;
+		}
+		.gray {
+			background: #878787;
+		}
+		.orange {
+			background: #FF5809;
+		}
+		.green {
+			background: #32CD32;
+		}
+		.gold{
+			background: #FFD700;
+		}
+		.circle a {
+			color: #fff;
+		}
+		html, body, .row, #navHeight {
+			height: 100%;
+		}
+	</style>
+	
+	<title>ProgEdu</title>
+</head>
+<body>
+	<%@ include file="header.jsp" %>
+	
+	<%
+		Conn conn = Conn.getInstance();
+	
+		UserDbManager db = UserDbManager.getInstance();
+		ProjectDbManager Pdb = ProjectDbManager.getInstance();
+		
+		List<User> users = db.listAllUsers();
+		List<Project> dbProjects = Pdb.listAllProjects();
+		
+		// gitlab jenkins course��Data
+		GitlabConfig gitData = GitlabConfig.getInstance();
+		JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+		
+		JenkinsApi jenkins = JenkinsApi.getInstance();
+		
+		GitlabUser choosedUser = conn.getUserById(userId);
+		List<GitlabProject> projects = conn.getProject(choosedUser);
+		Collections.reverse(projects);
+	%>
+      <div class="row">
+        <nav class="hidden-xs-down bg-faded sidebar" id="navHeight">
+          <ul class="nav nav-pills flex-column" style="margin-top: 20px;">
+            <li class="nav-item">
+	        	<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <%=choosedUser.getUsername() %> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+            	<ul id="overview" class="collapse" style="list-style: none;">
+	                    <%
+			            	for(GitlabProject project : projects){
+			            	  for(Project dbProject : dbProjects){
+			            	    if(project.getName().equals(dbProject.getName())){
+			            	      String href = "dashProjectChoosed.jsp?userId=" + choosedUser.getId() + "&proName=" + project.getName();
+			            	      %>
+			            	      	<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=project.getName() %></a></font></li>
+			            	      <%
+			            	    }
+			            	  }
+			            	}
+			            %>
+	            </ul>
+	        </li>
+            <li class="nav-item">
+                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_student"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+                <ul id="student" class="collapse" style="list-style: none;">
+                    <%
+		            	for(User user : users){
+		            	  String userName = user.getUserName();
+		            	  String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+		            	  %>
+		            	  	<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName %></a></font></li>
+		            	  <%
+		            	}
+		            %>
+                </ul>
+            </li>
+          </ul>
+        </nav>
+
+<!-- ------------------------ main -------------------------------------- -->
+        <main class="col-md-9 col-xs-11 p-l-2 p-t-2">
+	        <div class="container" style="margin-top: 20px;">
+	        	<h1 style="margin-top: 30px; margin-bottom: 20px;"> <%=choosedUser.getUsername() %>_ <%=projectName %> </h1>
+		        <!-- ---------------------------- Project ------------------------------- -->
+		        <div class="card">
+		        	<h4 id="Student Projects" class="card-header"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; Project</h4>
+		        	<div class="card-block">
+						<div id="inline">
+							<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
+							<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
+							<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_checkstyleFail"/></p>
+							<p class="ovol green" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p>
+							<p class="ovol gold" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p>
+							<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
+						</div>
+						<table class="table table-striped" style="margin-top: 20px; width: 100%">
+							<thead>
+								<tr>
+									<th width="10%">Commit</th>
+									<th width="10%">Light</th>
+									<th width="15%">Date</th>
+									<th>Commit Message</th>
+								</tr>
+							</thead>
+							<tbody>
+								<%
+									GitlabProject choosedProject = new GitlabProject();
+									for(GitlabProject project : projects){
+									  if(projectName.equals(project.getName())){
+									    choosedProject = project;
+									  }
+									}
+									int commit_count = conn.getAllCommitsCounts(choosedProject.getId());
+									List<GitlabCommit> commits = conn.getAllCommits(choosedProject.getId());
+									String circleColor = null;
+									String projectJenkinsUrl = null;
+									for(int num=1; num<=commit_count; num++){
+									  String jobName = choosedUser.getUsername() + "_" + projectName;
+									  String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
+									  List<Integer> buildNumbers = jenkins.getJenkinsJobAllBuildNumber(jenkinsData.getJenkinsRootUsername(), jenkinsData.getJenkinsRootPassword(), jobUrl);
+									  String buildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num + "/api/json";
+									  String buildApiJson = jenkins.getJobBuildApiJson(jenkinsData.getJenkinsRootUsername() ,jenkinsData.getJenkinsRootPassword(), buildUrl);
+									  String result = jenkins.getJobBuildResult(buildApiJson);
+									  
+									  // Get commit date
+									  Date date = commits.get(num-1).getCreatedAt();
+									  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+									  String strDate = sdf.format(date);
+									  
+									  if(result.equals("SUCCESS")){
+									    circleColor = "circle blue";
+									    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+									  }else{
+									    circleColor = "circle red";
+									    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num +"/consoleText";
+									    boolean isCheckstyleError = jenkins.checkIsCheckstyleError(buildApiJson);
+									    if(isCheckstyleError == true){
+									      circleColor = "circle orange";
+									      projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num +"/violations";
+									    }
+									  }
+									  if(num == 1){
+									    circleColor = "circle gray";
+									  }
+									  %>
+									  	<tr>
+									  		<th width="10%"><%=num %></th>
+									  		<td width="10%"><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=projectJenkinsUrl  %>')"> </a></p></td>
+									  		<td width="15%"><%=strDate %></td>
+									  		<td><%=commits.get(num-1).getMessage() %></td>
+									  	</tr>
+									  <%
+									}
+								%>
+							</tbody>
+						</table>
+		        	</div>
+		        </div>
+		        <!-- ---------------------------- Student Project ------------------------------- -->
+	        </div>
+        </main>
+<!-- ------------------------ main -------------------------------------- -->
+      </div>
+	</body>
+</html>
