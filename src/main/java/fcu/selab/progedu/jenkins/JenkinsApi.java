@@ -791,19 +791,15 @@ public class JenkinsApi {
   /**
    * Check is checkstyle error
    * 
-   * @param apiJson
-   *          jenkins job api json
+   * @param consoleText
+   *          jenkins job console text
    * @return boolean
    */
-  public boolean checkIsCheckstyleError(String apiJson) {
+  public boolean checkIsCheckstyleError(String consoleText) {
     boolean isCheckstyleError = false;
-    String checkstyleError = "checkstyle error";
-    isCheckstyleError = apiJson.contains(checkstyleError);
-    // JSONObject jsonApiJson = new JSONObject(apiJson);
-    // String msg = jsonApiJson.getString("msg");
-    // if (checkstyleError.equals(msg)) {
-    // isCheckstyleError = true;
-    // }
+    String checkstyleError = "Failed during checkstyle execution";
+    isCheckstyleError = consoleText.contains(checkstyleError);
+
     return isCheckstyleError;
   }
 }

@@ -156,10 +156,11 @@
 								
 									for(User user : users){
 										String userName = user.getUserName();
-										String personal_url = gitData.getGitlabHostUrl() + "/u/" + userName;
+										//String personal_url = gitData.getGitlabHostUrl() + "/u/" + userName;
+										String dashStuChoosedHref = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
 										%>
 											<tr>
-												<td width="10%"><a href="#" onclick="window.open('<%=personal_url %>')"><%=user.getUserName() %></a></td>
+												<td width="10%"><a href=<%=dashStuChoosedHref %>><%=user.getUserName() %></a></td>
 												<%
 													gitProjects = conn.getProject(user);
 													Collections.reverse(gitProjects);
@@ -271,9 +272,9 @@
 																<td><%=proName %></td>
 															<%
 														}else{
-														  String href="dashProjectChoosed.jsp?userId=" + user.getGitLabId() + "&proName=" + dbProject.getName();
+														  String dashProjectChoosedHref="dashProjectChoosed.jsp?userId=" + user.getGitLabId() + "&proName=" + dbProject.getName();
 															%>
-																<td><p class="<%=circleColor%>"><a href="<%= href%>"><%=commit_count %></a></p></td>
+																<td><p class="<%=circleColor%>"><a href="<%= dashProjectChoosedHref%>"><%=commit_count %></a></p></td>
 
 															<%
 														}

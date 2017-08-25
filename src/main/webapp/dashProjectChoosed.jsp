@@ -72,6 +72,10 @@
 		html, body, .row, #navHeight {
 			height: 100%;
 		}
+		#pProject a{
+			width:1px;
+			height:1px;
+		}
 	</style>
 	
 	<title>ProgEdu</title>
@@ -170,6 +174,7 @@
 									}
 									int commit_count = conn.getAllCommitsCounts(choosedProject.getId());
 									List<GitlabCommit> commits = conn.getAllCommits(choosedProject.getId());
+									Collections.reverse(commits);
 									String circleColor = null;
 									String projectJenkinsUrl = null;
 									for(int num=1; num<=commit_count; num++){
@@ -191,7 +196,10 @@
 									  }else{
 									    circleColor = "circle red";
 									    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num +"/consoleText";
-									    boolean isCheckstyleError = jenkins.checkIsCheckstyleError(buildApiJson);
+									    
+									    // check if is checkstyle error
+									    String consoleText = jenkins.getConsoleText(projectJenkinsUrl);
+									    boolean isCheckstyleError = jenkins.checkIsCheckstyleError(consoleText);
 									    if(isCheckstyleError == true){
 									      circleColor = "circle orange";
 									      projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num +"/violations";
@@ -203,7 +211,7 @@
 									  %>
 									  	<tr>
 									  		<th width="10%"><%=num %></th>
-									  		<td width="10%"><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=projectJenkinsUrl  %>')"> </a></p></td>
+									  		<td width="10%"><p class="<%=circleColor%>" id="pProject"><a href="#" onclick="window.open('<%=projectJenkinsUrl  %>')">&nbsp;</a></p></td>
 									  		<td width="15%"><%=strDate %></td>
 									  		<td><%=commits.get(num-1).getMessage() %></td>
 									  	</tr>

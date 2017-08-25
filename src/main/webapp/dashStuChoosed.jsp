@@ -24,7 +24,7 @@
 <%
 	String studentId = request.getParameter("studentId");
 	if(null == studentId){
-	  
+	  response.sendRedirect("index.jsp");
 	}
 %>
     
@@ -62,6 +62,12 @@
 		}
 		.orange {
 			background: #FF5809;
+		}
+		.green {
+			background: #32CD32;
+		}
+		.gold{
+			background: #FFD700;
 		}
 		.circle a {
 			color: #fff;
@@ -120,7 +126,7 @@
 			            	for(GitlabProject project : projects){
 			            	  for(Project dbProject : dbProjects){
 			            	    if(project.getName().equals(dbProject.getName())){
-			            	      String href = "dashProjectChoosed.jsp?userId=" + choosedUser.getId() + "&proName=" + project.getName();
+			            	      String href = "dashProjectChoosed.jsp?userId=" + choosedUser.getGitLabId() + "&proName=" + project.getName();
 			            	      %>
 			            	      	<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=project.getName() %></a></font></li>
 			            	      <%
@@ -165,10 +171,12 @@
 		        		</div>
 		        		<div class="card-block">
 			        		<div id="inline">
-								<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
+								<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
 								<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
 								<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_checkstyleFail"/></p>
-								<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
+								<p class="ovol green" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p>
+								<p class="ovol gold" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p>
+								<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
 							</div>
 			        		<thead>
 								<tr>
