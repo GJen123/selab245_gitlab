@@ -9,8 +9,8 @@
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
 <%@ page import="fcu.selab.progedu.jenkins.JenkinsApi" %>
 <%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
-<%@ page import="fcu.selab.progedu.db.ProjectDbManager" %>
-<%@ page import="fcu.selab.progedu.data.Project" %>   
+<%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager" %>
+<%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>   
 
 <%
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
@@ -308,20 +308,14 @@
 						  <li class="nav-item">
 						    <a class="nav-link" data-toggle="tab" href="#chart2" role="tab">Chart2</a>
 						  </li>
-						  <li class="nav-item">
-						    <a class="nav-link" data-toggle="tab" href="#chart3" role="tab">Chart3</a>
-						  </li>
 						</ul>
 		        		<!-- Tab panes -->
 						<div class="tab-content text-center" style="margin-top: 10px">
 						  <div class="tab-pane active" id="chart1" role="tabpanel">
 						  	<div id="chart1Demo" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-						  	</div>
+						  </div>
 						  <div class="tab-pane" id="chart2" role="tabpanel">
 						  	<div id="chart2Demo" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-						  </div>
-						  <div class="tab-pane" id="chart3" role="tabpanel">
-						  	<div id="chart3Demo" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 						  </div>
 						</div>
 		        	</div>
@@ -338,131 +332,92 @@ Highcharts.setOptions({
 	})
 </script>
 <!-- chart1 -->
-<script type="text/javascript">
+<script>
 <%
-	List<String> names = new ArrayList<String>();
-	List<Integer> blues = new ArrayList<Integer>();
-	List<Integer> reds = new ArrayList<Integer>();
-	List<Integer> oranges = new ArrayList<Integer>();
-	List<Integer> grays = new ArrayList<Integer>();
-	
-	for(JSONObject json : jsons) {
-		if(!names.contains(json.get("name"))) {
-			names.add(json.get("name").toString());
-			blues.add(Integer.parseInt(json.get("blueCount").toString()));
-			reds.add(Integer.parseInt(json.get("redCount").toString()));
-			oranges.add(Integer.parseInt(json.get("orangeCount").toString()));
-			grays.add(Integer.parseInt(json.get("grayCount").toString()));
-		}else {
-			int index = names.indexOf(json.get("name"));
-			int blue = blues.get(index) + Integer.parseInt(json.get("blueCount").toString());
-			int red = reds.get(index) + Integer.parseInt(json.get("redCount").toString());
-			int orange = oranges.get(index) + Integer.parseInt(json.get("orangeCount").toString());
-			int gray = grays.get(index) + Integer.parseInt(json.get("grayCount").toString());
-			
-			blues.set(index, blue);
-			reds.set(index, red);
-			oranges.set(index, orange);
-			grays.set(index, gray);
-		}
+List<String> names = new ArrayList<String>();
+List<Integer> blues = new ArrayList<Integer>();
+List<Integer> reds = new ArrayList<Integer>();
+List<Integer> oranges = new ArrayList<Integer>();
+List<Integer> grays = new ArrayList<Integer>();
+
+for(JSONObject json : jsons) {
+	if(!names.contains(json.get("name"))) {
+		names.add(json.get("name").toString());
+		blues.add(Integer.parseInt(json.get("blueCount").toString()));
+		reds.add(Integer.parseInt(json.get("redCount").toString()));
+		oranges.add(Integer.parseInt(json.get("orangeCount").toString()));
+		grays.add(Integer.parseInt(json.get("grayCount").toString()));
+	}else {
+		int index = names.indexOf(json.get("name"));
+		int blue = blues.get(index) + Integer.parseInt(json.get("blueCount").toString());
+		int red = reds.get(index) + Integer.parseInt(json.get("redCount").toString());
+		int orange = oranges.get(index) + Integer.parseInt(json.get("orangeCount").toString());
+		int gray = grays.get(index) + Integer.parseInt(json.get("grayCount").toString());
+		
+		blues.set(index, blue);
+		reds.set(index, red);
+		oranges.set(index, orange);
+		grays.set(index, gray);
 	}
-	
-	String x = "var x=[";
-	int i = 0;
-	for(String name : names) {
-		x += "'" + name + "'";
-		if(i != names.size()-1) {
-			x += ",";
-		}
-		i++;
+}
+
+String x = "var x=[";
+int i = 0;
+for(String name : names) {
+	x += "'" + name + "'";
+	if(i != names.size()-1) {
+		x += ",";
 	}
-	x += "];";
-	out.println(x);
-	
-	int j=0;
-	String s = "var s = [{ name: '建置成功', data:[";
-	for(int blue : blues) {
-		s += blue;
-		if(j != blues.size()-1) {
-			s += ", ";
-		}
-		j++;
+	i++;
+}
+x += "];";
+out.println(x);
+
+int j=0;
+String s = "var s = [{ name: '建置成功', data:[";
+for(int blue : blues) {
+	s += blue;
+	if(j != blues.size()-1) {
+		s += ", ";
 	}
-	s += "]}, { name: '編譯失敗', data:[";
-	j = 0;
-	for(int red : reds) {
-		s += red;
-		if(j != reds.size()-1) {
-			s += ", ";
-		}
-		j++;
+	j++;
+}
+s += "]}, { name: '編譯失敗', data:[";
+j = 0;
+for(int red : reds) {
+	s += red;
+	if(j != reds.size()-1) {
+		s += ", ";
 	}
-	s += "]}, { name: '未通過程式規範', data:[";
-	j = 0;
-	for(int orange : oranges) {
-		s += orange;
-		if(j != oranges.size()-1) {
-			s += ", ";
-		}
-		j++;
+	j++;
+}
+s += "]}, { name: '未通過程式規範', data:[";
+j = 0;
+for(int orange : oranges) {
+	s += orange;
+	if(j != oranges.size()-1) {
+		s += ", ";
 	}
-	s += "]}, { name: '未建置', data:[";
-	j = 0;
-	for(int gray : grays) {
-		s += gray;
-		if(j != grays.size()-1) {
-			s += ", ";
-		}
-		j++;
+	j++;
+}
+s += "]}, { name: '未建置', data:[";
+j = 0;
+for(int gray : grays) {
+	s += gray;
+	if(j != grays.size()-1) {
+		s += ", ";
 	}
-	s += "]}]";
-	out.println(s);
+	j++;
+}
+s += "]}]";
+out.println(s);
 %>
 Highcharts.chart('chart1Demo', {
     chart: {
         type: 'column'
     },
     title: {
-        text: '各作業建置結果統計'
-    },
-    subtitle: {
-        text: ''
-    },
-    xAxis: {
-        categories: x,
-        crosshair: true
-    },
-    yAxis: {
-        min: 0,
-        title: {
-            text: '個數'
-        }
-    },
-    tooltip: {
-        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y}</b></td></tr>',
-        footerFormat: '</table>',
-        shared: true,
-        useHTML: true
-    },
-    plotOptions: {
-        column: {
-            pointPadding: 0.2,
-            borderWidth: 0
-        }
-    },
-    series: s
-});
-</script>
-<!-- chart2 -->
-<script>
-Highcharts.chart('chart2Demo', {
-    chart: {
-        type: 'column'
-    },
-    title: {
-        text: '各作業建置結果統計'
+        text: '各作業建置結果統計表'
     },
     xAxis: {
         categories: x
@@ -471,21 +426,43 @@ Highcharts.chart('chart2Demo', {
         min: 0,
         title: {
             text: '個數'
+        },
+        stackLabels: {
+            enabled: true,
+            style: {
+                fontWeight: 'bold',
+                color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+            }
         }
     },
+    legend: {
+        align: 'right',
+        x: -30,
+        verticalAlign: 'top',
+        y: 25,
+        floating: true,
+        backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+        borderColor: '#CCC',
+        borderWidth: 1,
+        shadow: false
+    },
     tooltip: {
-        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
-        shared: true
+        headerFormat: '<b>{point.x}</b><br/>',
+        pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
     },
     plotOptions: {
         column: {
-            stacking: 'percent'
+            stacking: 'normal',
+            dataLabels: {
+                enabled: true,
+                color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+            }
         }
     },
     series: s
 });
 </script>
-<!-- chart3 -->
+<!-- chart2 -->
 <script>
 <%
 
@@ -523,7 +500,7 @@ out.println(s);
 %>
 $(document).ready(function () {
 // Build the chart
-    Highcharts.chart('chart3Demo', {
+    Highcharts.chart('chart2Demo', {
         chart: {
             plotBackgroundColor: null,
             plotBorderWidth: null,
@@ -566,4 +543,73 @@ $(function(){
     });
 });
 </script>
+<%
+HttpConnect httpConn = HttpConnect.getInstance();
+Conn conn = Conn.getInstance();
+
+UserDbManager db = UserDbManager.getInstance();
+List<User> users = db.listAllUsers();
+List<GitlabProject> gitProjects = new ArrayList<GitlabProject>();
+dbProjects = Pdb.listAllProjects();
+
+jsons = new ArrayList<JSONObject>();
+
+for(User eachuser : users){
+	String userName = eachuser.getUserName();
+	gitProjects = conn.getAllProjects();
+	Collections.reverse(gitProjects);
+	for(Project dbProject : dbProjects){
+		JobStatus jobStatus = new JobStatus();
+		commit_count = 0;
+		String circleColor = "circle gray";
+		for(GitlabProject gitProject : gitProjects){
+			String fullName = eachuser.getName() + " / " + dbProject.getName();
+			if(fullName.equals(gitProject.getNameWithNamespace())){
+				JSONObject json = new JSONObject();
+				json.put("name", dbProject.getName());
+				int notCommitCount = 0;
+				int commitCount = 0;
+							
+				commit_count = conn.getAllCommitsCounts(gitProject.getId());
+				//---Jenkins---
+				String jobName = eachuser.getUserName() + "_" + gitProject.getName();
+				jobStatus.setName(jobName);
+				String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
+				jobStatus.setUrl(jobUrl);
+				
+				// Get job status
+				jobStatus.setJobApiJson();
+				
+				String color = null;
+				if(null != jobStatus.getJobApiJson()){
+					color = jenkins.getJobJsonColor(jobStatus.getJobApiJson());
+				}
+					
+				if(commit_count == 1){
+					circleColor = "circle gray";
+					notCommitCount++;
+				} else {
+					if(color!=null){
+						circleColor = "circle " + color;
+					  	if(color.equals("red") || color.equals("blue") || color.equals("orange")) {
+					  		commitCount++;
+					  	}
+					}else{
+						circleColor = "circle gray";
+						notCommitCount++;
+					}
+				}
+
+				json.put("commitCount", commitCount);
+				json.put("notCommitCount", notCommitCount);
+				jsons.add(json);
+				//-------------
+				break;
+			}
+		}
+	}
+}
+
+session.putValue("allProjectData", jsons);
+%>
 </html>

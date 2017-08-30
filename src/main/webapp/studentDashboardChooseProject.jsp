@@ -7,6 +7,10 @@
 <%@ page import="org.gitlab.api.GitlabAPI"%>
 <%@ page import="org.gitlab.api.models.*"%>
 <%@ page import="java.util.*"%>
+<%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
+<%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager" %>
+<%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>
+<%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
 
 <%
 	String private_token = null;
@@ -114,7 +118,7 @@
 					<%
 						for (GitlabProject project : projects) {
 							//String projectName = project.getName();
-							String projectName = project.getNameWithNamespace();
+							String projectName = project.getName();
 							String href = "\"studentDashboardChooseProject.jsp?projectId=" + project.getId() + "\"";
 					%>
 					<li class="nav-item">
@@ -228,7 +232,7 @@
 		        		<fmt:message key="stuDashboard_card_statisticChart"/>
 		        </h4>
 		        <div class="card-block">
-					<div id="hightChart" style="min-width: 310px; height: 350px; max-width: 525px; margin: 0 auto"></div>
+					<div id="chart1Demo" style="min-width: 310px; height: 350px; max-width: 525px; margin: 0 auto"></div>
 				</div>
 			</div>
 		</div>
@@ -238,11 +242,59 @@
 <!-- set Highchart colors -->
 <script>
 Highcharts.setOptions({
-	 colors: ['#5fa7e8', '#e52424', '#FF5809', '#878787']
+	 colors: ['#5fa7e8', '#878787']
 	})
 </script>
+<!-- chart1 -->
 <script>
-Highcharts.chart('hightChart', {
+<%
+String jsonString = session.getAttribute("allProjectData").toString();
+JSONArray jasonArray = new JSONArray(jsonString);
+List<JSONObject> jsons = new ArrayList<JSONObject>();
+for (int i=0; i< jasonArray.length(); i++) {
+	JSONObject json = jasonArray.getJSONObject(i);
+	jsons.add(json);
+}
+
+List<String> names = new ArrayList<String>();
+List<Integer> allCommits = new ArrayList<Integer>();
+List<Integer> allNotCommits = new ArrayList<Integer>();
+
+for(JSONObject json : jsons) {
+	if(json.get("name").equals(projectName)) {
+		if(!names.contains(json.get("name"))) {
+			names.add(json.get("name").toString());
+			allCommits.add(Integer.parseInt(json.get("commitCount").toString()));
+			allNotCommits.add(Integer.parseInt(json.get("notCommitCount").toString()));
+		}else {
+			int index = names.indexOf(json.get("name"));
+			int allCommit = allCommits.get(index) + Integer.parseInt(json.get("commitCount").toString());
+			int allNotCommit = allNotCommits.get(index) + Integer.parseInt(json.get("notCommitCount").toString());
+			
+			allCommits.set(index, allCommit);
+			allNotCommits.set(index, allNotCommit);
+		}
+	}
+}
+int j=0;
+int commitTotal = 0;
+int notCommitTotal = 0;
+
+String s = "var s = [{name: 'Brands', colorByPoint: true, data: [{ name: '已繳交', y:";
+for(int allCommit : allCommits) {
+	commitTotal += allCommit;
+}
+s += commitTotal;
+s += "}, { name: '未繳交', y:";
+j = 0;
+for(int allNotCommit : allNotCommits) {
+	notCommitTotal += allNotCommit;
+}
+s += notCommitTotal;
+s += "}]}]";
+out.println(s);
+%>
+Highcharts.chart('chart1Demo', {
     chart: {
         plotBackgroundColor: null,
         plotBorderWidth: null,
@@ -253,7 +305,7 @@ Highcharts.chart('hightChart', {
         text: ''
     },
     tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        pointFormat: '{series.name}: <b>{point.y}</b>'
     },
     plotOptions: {
         pie: {
@@ -261,26 +313,14 @@ Highcharts.chart('hightChart', {
             cursor: 'pointer',
             dataLabels: {
                 enabled: true,
-                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                format: '<b>{point.name}</b>: {point.y}',
                 style: {
                     color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
                 }
             }
         }
     },
-    series: [{
-        name: 'Brands',
-        colorByPoint: true,
-        data: [{
-            name: '未繳交',
-            y: 77,
-            sliced: true,
-            selected: true
-        }, {
-            name: '已繳交',
-            y: 23
-        }]
-    }]
+    series: s
 });
 </script>
 </html>

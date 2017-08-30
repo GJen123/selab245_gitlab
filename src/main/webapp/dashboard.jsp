@@ -257,6 +257,12 @@
 																json.put("grayCount", grayCount);
 																json.put("commitCount", commitCount);
 																jsons.add(json);
+																System.out.println(userName);
+																System.out.println(proName);
+																System.out.println(circleColor);
+																System.out.println(gitProject.getId());
+																System.out.println(commit_count);
+																System.out.println("----------------------------------");
 																//-------------
 																break;
 															}else{
@@ -306,9 +312,6 @@
 						  <li class="nav-item">
 						    <a class="nav-link" data-toggle="tab" href="#chart2" role="tab">Chart2</a>
 						  </li>
-						  <li class="nav-item">
-						    <a class="nav-link" data-toggle="tab" href="#chart3" role="tab">Chart3</a>
-						  </li>
 						</ul>
 		        		<!-- Tab panes -->
 						<div class="tab-content text-center" style="margin-top: 10px">
@@ -317,10 +320,6 @@
 						  	</div>
 						  <div class="tab-pane" id="chart2" role="tabpanel">
 						  	<div id="chart2Demo" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-						  </div>
-						  <div class="tab-pane" id="chart3" role="tabpanel">
-						  	
-						  	<img src="img/commitStiuation.png" alt="Smiley face" height="435" width="850">
 						  </div>
 						</div>
 		        	</div>
