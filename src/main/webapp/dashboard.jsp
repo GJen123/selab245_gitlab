@@ -79,16 +79,16 @@
 		UserDbManager db = UserDbManager.getInstance();
 		ProjectDbManager Pdb = ProjectDbManager.getInstance();
 		
-		// db������users
+		// db users
 		List<User> users = db.listAllUsers();
 		
-		// 瘥���摮貊��gitlab��projects
+		// gitlab projects
 		List<GitlabProject> gitProjects = new ArrayList<GitlabProject>();
 		
-		// db������projects
+		// db projects
 		List<Project> dbProjects = Pdb.listAllProjects();
 		
-		// gitlab jenkins course��Data
+		// gitlab jenkins courseData
 		GitlabConfig gitData = GitlabConfig.getInstance();
 		JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 		
@@ -257,12 +257,6 @@
 																json.put("grayCount", grayCount);
 																json.put("commitCount", commitCount);
 																jsons.add(json);
-																System.out.println(userName);
-																System.out.println(proName);
-																System.out.println(circleColor);
-																System.out.println(gitProject.getId());
-																System.out.println(commit_count);
-																System.out.println("----------------------------------");
 																//-------------
 																break;
 															}else{

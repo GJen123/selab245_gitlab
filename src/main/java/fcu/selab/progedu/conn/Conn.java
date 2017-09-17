@@ -151,6 +151,22 @@ public class Conn {
 
     return projects;
   }
+  
+  /**
+   * get project all commit information
+   * @param projectId project id
+   * @return commits list
+   */
+  public List<GitlabCommit> getProjectCommits(int projectId) {
+    List<GitlabCommit> commits = new ArrayList<GitlabCommit>();
+    try {
+      commits = gitlab.getAllCommits(projectId);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return commits;
+  }
 
   /**
    * Get all user's list of projects

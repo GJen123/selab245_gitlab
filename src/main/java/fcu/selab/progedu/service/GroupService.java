@@ -175,11 +175,6 @@ public class GroupService {
       }
     }
     for (Group g : groups) {
-//      System.out.println("Group name: " + g.getGroupName());
-//      System.out.println("Group master: " + g.getMaster());
-//      for (String c : g.getContributor()) {
-//        System.out.println("Group member: " + c);
-//      }
       if (g.getGroupName().equals("")) {
         continue;
       }
