@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="utf-8"%>
  	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+ 	
+ 	<!-- 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
@@ -10,10 +12,19 @@
 	<script src="https://code.highcharts.com/highcharts.js"></script>
 	<script src="https://code.highcharts.com/modules/data.js"></script>
 	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	 -->
+	 
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+	
+	<link rel="stylesheet"
+	  href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	 
 	<style>
 		body{
-			padding-top: 50px;
-			overflow-x: hidden;
+			padding-top: 68px;
 		}
 		.container{
 			padding-bottom: 30px;
@@ -22,27 +33,30 @@
 			font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 		}
 	</style>
-	<nav class="navbar fixed-top navbar-toggleable-md navbar-inverse bg-inverse">
-	  	<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-	    	<span class="navbar-toggler-icon"></span>
-	  	</button>
-	  	<a class="navbar-brand" href="studentDashboard.jsp">ProgEdu</a>
-	  	<div class="collapse navbar-collapse" id="navbarNavDropdown">
-		    <ul class="navbar-nav">
-		      	<li class="nav-item"><a class="nav-link" href="studentDashboard.jsp"><fmt:message key="top_navbar_dashboard"/></a></li>
-		    </ul>
-		    
-		    	<ul class="navbar-nav navbar-toggler-right">
-		    		<li class="nav-item dropdown">
-		        		<a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		          			<fmt:message key="top_navbar_language"/>
-		        		</a>
-		        		<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-		        			<a class="dropdown-item" href="ChooseLanguage?language=zh"><fmt:message key="top_navbar_lanChinese"/></a>
-		          			<a class="dropdown-item" href="ChooseLanguage?language=en"><fmt:message key="top_navbar_lanEnglish"/></a>
-		        		</div>
-		      		</li>
-		    		<li class="nav-item"><a class="nav-link" href="memberLogOut.jsp" id="loginLink"><fmt:message key="top_navbar_signOut"/> <i class="fa fa-sign-out" aria-hidden="true"></i></a></li>
-		    	</ul>
-	  	</div>
-	</nav>
+	
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="studentDashboard.jsp">ProgEdu</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse"
+      data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active"><a class="nav-link" href="studentDashboard.jsp"><fmt:message key="top_navbar_dashboard"/> <span
+            class="sr-only">(current)</span></a>
+        </li>
+      </ul>
+      <ul class="navbar-nav navbar-toggler-right">
+        <li class="nav-item dropdown active"><a class="nav-link dropdown-toggle" href=""
+          id="language" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-language" aria-hidden="true"></i>&nbsp;<fmt:message key="top_navbar_language"/></a>
+          <div class="dropdown-menu" aria-labelledby="language">
+            <a class="dropdown-item" href="ChooseLanguage?language=zh"><i class="fa fa-globe" aria-hidden="true"></i><fmt:message key="top_navbar_lanChinese"/></a>
+          	<a class="dropdown-item" href="ChooseLanguage?language=en"><i class="fa fa-globe" aria-hidden="true"></i><fmt:message key="top_navbar_lanEnglish"/></a>
+          </div></li>
+        <li class="nav-item active"><a class="nav-link" href="memberLogOut.jsp"> <fmt:message key="top_navbar_signOut"/> <i
+            class="fa fa-sign-out" aria-hidden="true"></i></a></li>
+      </ul>
+    </div>
+  </nav>

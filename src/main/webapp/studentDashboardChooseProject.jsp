@@ -231,8 +231,10 @@
 							<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
 							<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
 							<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_checkstyleFail"/></p>
+							<!-- 
 							<p class="ovol green" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p>
 							<p class="ovol gold" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p>
+							 -->
 							<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
 						</div>
 						<table class="table table-striped" style="margin-top: 20px; width: 100%">
@@ -295,6 +297,8 @@
 		        </div>
 		        </div>
 		    </div>
+		    
+		    <!-- iFrame -->
 			<%
 				jobName = sConn.getUsername() + "_" + projectName;
 				String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/consoleText";
@@ -310,155 +314,9 @@
 					</iframe>
 		        </div>
 			</div>
-			
 			<!-- iFrame -->
-			
-			<div class="card" style="margin-top: 30px">
-		        <h4 id="Student Projects" class="card-header">
-		        	<i class="fa fa-table" aria-hidden="true"></i>&nbsp; 
-		        		<fmt:message key="stuDashboard_card_statisticChart"/>
-		        </h4>
-		        <div class="card-block">
-					<div id="chart1Demo" style="min-width: 310px; height: 350px; max-width: 525px; margin: 0 auto"></div>
-				</div>
-			</div>
 		</div>
 		</main>
 	</div>
 </body>
-<!-- set Highchart colors -->
-<script>
-Highcharts.setOptions({
-	 colors: ['#5fa7e8', '#878787']
-	})
-</script>
-<!-- chart1 -->
-<script>
-<%
-UserDbManager db = UserDbManager.getInstance();
-ProjectDbManager pDb = ProjectDbManager.getInstance();
-List<User> users = db.listAllUsers();
-List<GitlabProject> gitProjects = conn.getAllProjects();
-List<Project> dbProjects = pDb.listAllProjects();
-
-List<JSONObject> jsons = new ArrayList<JSONObject>();
-
-for(User eachuser : users){
-	String userName = eachuser.getUserName();
-	Collections.reverse(gitProjects);
-	//for(Project dbProject : dbProjects){
-		JobStatus jobStatus = new JobStatus();
-		commit_count = 0;
-		for(GitlabProject gitProject : gitProjects){
-			String fullName = eachuser.getName() + " / " + projectName;
-			if(fullName.equals(gitProject.getNameWithNamespace())){
-				JSONObject json = new JSONObject();
-				json.put("name", projectName);
-				int notCommitCount = 0;
-				int commitCount = 0;
-							
-				commit_count = conn.getAllCommitsCounts(gitProject.getId());
-				//---Jenkins---
-				jobName = eachuser.getUserName() + "_" + gitProject.getName();
-				jobStatus.setName(jobName);
-				jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
-				jobStatus.setUrl(jobUrl);
-				
-				// Get job status
-				jobStatus.setJobApiJson();
-				
-				String color = null;
-				if(null != jobStatus.getJobApiJson()){
-					color = jenkins.getJobJsonColor(jobStatus.getJobApiJson());
-				}
-					
-				if(commit_count == 1){
-					notCommitCount++;
-				} else {
-					if(color!=null){
-					  	if(color.equals("red") || color.equals("blue") || color.equals("orange")) {
-					  		commitCount++;
-					  	}
-					}else{
-						notCommitCount++;
-					}
-				}
-
-				json.put("commitCount", commitCount);
-				json.put("notCommitCount", notCommitCount);
-				jsons.add(json);
-				//-------------
-				break;
-			}
-		}
-	//}
-}
-
-List<String> names = new ArrayList<String>();
-List<Integer> allCommits = new ArrayList<Integer>();
-List<Integer> allNotCommits = new ArrayList<Integer>();
-
-for(JSONObject json : jsons) {
-	if(json.get("name").equals(projectName)) {
-		if(!names.contains(json.get("name"))) {
-			names.add(json.get("name").toString());
-			allCommits.add(Integer.parseInt(json.get("commitCount").toString()));
-			allNotCommits.add(Integer.parseInt(json.get("notCommitCount").toString()));
-		}else {
-			int index = names.indexOf(json.get("name"));
-			int allCommit = allCommits.get(index) + Integer.parseInt(json.get("commitCount").toString());
-			int allNotCommit = allNotCommits.get(index) + Integer.parseInt(json.get("notCommitCount").toString());
-			
-			allCommits.set(index, allCommit);
-			allNotCommits.set(index, allNotCommit);
-		}
-	}
-}
-int j=0;
-int commitTotal = 0;
-int notCommitTotal = 0;
-
-String s = "var s = [{name: 'Brands', colorByPoint: true, data: [{ name: '已繳交', y:";
-for(int allCommit : allCommits) {
-	commitTotal += allCommit;
-}
-s += commitTotal;
-s += "}, { name: '未繳交', y:";
-j = 0;
-for(int allNotCommit : allNotCommits) {
-	notCommitTotal += allNotCommit;
-}
-s += notCommitTotal;
-s += "}]}]";
-out.println(s);
-%>
-Highcharts.chart('chart1Demo', {
-    chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie'
-    },
-    title: {
-        text: ''
-    },
-    tooltip: {
-        pointFormat: '{series.name}: <b>{point.y}</b>'
-    },
-    plotOptions: {
-        pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-                enabled: true,
-                format: '<b>{point.name}</b>: {point.y}',
-                style: {
-                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                }
-            }
-        }
-    },
-    series: s
-});
-</script>
 </html>

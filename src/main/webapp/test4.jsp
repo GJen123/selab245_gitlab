@@ -34,7 +34,7 @@
 <body style="padding-top: 56px;">
 
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="#">ProgEdu</a>
+    <a class="navbar-brand" href="studentDashboard.jsp">ProgEdu</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse"
       data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
       aria-expanded="false" aria-label="Toggle navigation">
@@ -43,7 +43,7 @@
 
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item active"><a class="nav-link" href="#">Dashboard <span
+        <li class="nav-item active"><a class="nav-link" href="studentDashboard.jsp"><fmt:message key="top_navbar_dashboard"/> <span
             class="sr-only">(current)</span></a></li>
         <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href=""
           id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Setting</a>
@@ -54,12 +54,12 @@
       </ul>
       <ul class="navbar-nav navbar-toggler-right">
         <li class="nav-item dropdown active"><a class="nav-link dropdown-toggle" href=""
-          id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Language</a>
+          id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><fmt:message key="top_navbar_language"/></a>
           <div class="dropdown-menu" aria-labelledby="dropdown01">
-            <a class="dropdown-item" href="#">Students</a> <a class="dropdown-item" href="#">Teams</a>
-            <a class="dropdown-item" href="#">Assignments</a>
+            <a class="dropdown-item" href="ChooseLanguage?language=zh"><fmt:message key="top_navbar_lanChinese"/></a>
+          	<a class="dropdown-item" href="ChooseLanguage?language=en"><fmt:message key="top_navbar_lanEnglish"/></a>
           </div></li>
-        <li class="nav-item active"><a class="nav-link" href="#"> Sign Out <i
+        <li class="nav-item active"><a class="nav-link" href="memberLogOut.jsp"> <fmt:message key="top_navbar_signOut"/> <i
             class="fa fa-sign-out" aria-hidden="true"></i></a></li>
       </ul>
     </div>

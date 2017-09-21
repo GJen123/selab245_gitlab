@@ -3,6 +3,7 @@ package fcu.selab.progedu.conn;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -111,6 +112,8 @@ public class AfterEnter extends HttpServlet {
         } else {
           session.setAttribute("page", "studentDashboard.jsp");
           session.setAttribute("private_token", privateToken);
+          Cookie cookie = new Cookie("private_token", privateToken);
+          response.addCookie(cookie);
           session.setAttribute("username", username);
           response.sendRedirect("studentDashboard.jsp");
         }
