@@ -25,6 +25,9 @@
 <html>
 <head>
 	<style type="text/css">
+		#allProject {
+		 padding: 10px 0px 0px 0px;
+		}
 		#inline p {
 		    display: inline;
 		}
@@ -37,7 +40,7 @@
             text-align: center;
 		}
 		.circle {
-			border-radius: 30px;
+			border-radius: 10px;
 			height: 30px;
             font-weight: bold;
             width: 30px;
@@ -140,11 +143,11 @@
 						<table class="table table-striped" style="margin-top: 20px; width: 100%">
 							<thead>
 								<tr>
-									<th><fmt:message key="dashboard_th_studentId"/></th>
+									<th style="font-weight: 900; font-size: 18px"><fmt:message key="dashboard_th_studentId"/></th>
 									<%
 										for(Project project : dbProjects){
 											%>
-												<th><%=project.getName() %></th>
+												<th style="font-weight: 900; font-size: 18px"><%=project.getName() %></th>
 											<%
 										}
 									%>
@@ -159,8 +162,8 @@
 										//String personal_url = gitData.getGitlabHostUrl() + "/u/" + userName;
 										String dashStuChoosedHref = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
 										%>
-											<tr>
-												<td width="10%"><a href=<%=dashStuChoosedHref %>><%=user.getUserName() %></a></td>
+											<tr id="allProject">
+												<td width="10%" id="allProject"><a href=<%=dashStuChoosedHref %>><%=user.getUserName() %></a></td>
 												<%
 													gitProjects = conn.getProject(user);
 													Collections.reverse(gitProjects);
@@ -269,12 +272,12 @@
 																proName = "N/A";
 															}
 															%>
-																<td><%=proName %></td>
+																<td style="margin: 10px 0px 0px 10px;"><%=proName %></td>
 															<%
 														}else{
 														  String dashProjectChoosedHref="dashProjectChoosed.jsp?userId=" + user.getGitLabId() + "&proName=" + dbProject.getName();
 															%>
-																<td><p class="<%=circleColor%>"><a href="<%= dashProjectChoosedHref%>"><%=commit_count %></a></p></td>
+																<td style="padding: 10px 0px 0px 30px;"><p class="<%=circleColor%>"><a href="<%= dashProjectChoosedHref%>"><%=commit_count %></a></p></td>
 
 															<%
 														}

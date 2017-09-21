@@ -42,7 +42,7 @@ public class CreateStudentProjectThread extends Thread {
     conn.createPrivateProject(id, projectName, rootProjectUrl);
     System.out.println(userName + ", Create student project, and import project");
     
-    projectService.sendEmail(email);
+    projectService.sendEmail(email, projectName);
     System.out.println(userName + ", Send notification email to student");
   }
 

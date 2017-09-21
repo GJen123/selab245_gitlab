@@ -543,7 +543,7 @@ $(function(){
     });
 });
 </script>
-<%
+<%/*
 HttpConnect httpConn = HttpConnect.getInstance();
 Conn conn = Conn.getInstance();
 
@@ -610,6 +610,6 @@ for(User eachuser : users){
 	}
 }
 
-session.putValue("allProjectData", jsons);
+session.putValue("allProjectData", jsons);*/
 %>
 </html>

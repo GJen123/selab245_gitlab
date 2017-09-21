@@ -10,7 +10,7 @@
 <%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
 <%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager" %>
 <%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>
-<%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
+<%@ page import="fcu.selab.progedu.jenkins.JobStatus, java.text.SimpleDateFormat" %>
 
 <%
 	String private_token = null;
@@ -48,6 +48,19 @@
             color: white;
             text-align: center;
 		}
+		.bigcircle {
+			border-radius: 10px;
+			height: 60px;
+            font-weight: bold;
+            width: 60px;
+            color: white;
+            text-align: center;
+		    position: absolute;
+    		top: 100%;
+    		left: 45%;
+    		margin-right: -50%;
+    		transform: translate(-50%, -50%)
+		}
 		.red {
 			background: #e52424;
 		}
@@ -60,8 +73,11 @@
 		.orange {
 			background: #FF5809;
 		}
-		.circle a {
-			color: #fff;
+		.green {
+			background: #32CD32;
+		}
+		.gold{
+			background: #FFD700;
 		}
 		#goToJenkins{
 			float: right;
@@ -69,6 +85,11 @@
 			color: #1079c9;
 			border: 1px solid #1079c9;
 			margin-bottom: 10px;
+		}
+		.center-justified {
+    		text-align: justify;
+    		-moz-text-align-last: center;
+    		text-align-last: center;
 		}
 	</style>
 <script type="text/javascript">
@@ -139,55 +160,117 @@
 		<!-- ------------------------ main -------------------------------------- -->
 		<%
 		String projectName = "";
+		String projectUrl = "";
 		if(projectId != -1){
 			GitlabProject project = sConn.getProjectById(projectId);
 			projectName = project.getName();
+			projectUrl = project.getHttpUrl();
+			projectUrl = projectUrl.replace("0912fe2b3e43", "140.134.26.71:20080");
 		}
+		GitlabProject choosedProject = new GitlabProject();
+		for(GitlabProject project : projects){
+		  if(projectName.equals(project.getName())){
+		    choosedProject = project;
+		  }
+		}
+		int commit_count = conn.getAllCommitsCounts(choosedProject.getId());
+		commits = conn.getAllCommits(choosedProject.getId());
+		Collections.reverse(commits);
 		%>
 		<main class="col-md-9 col-xs-11 p-l-2 p-t-2">
 		<div class="container" style="margin-top: 30px;">
-			<h2>Hello!&nbsp; <%=user.getName()%></h2>
-			<div class="card">
-		        <h4 id="Student Projects" class="card-header">
-		        	<i class="fa fa-table" aria-hidden="true"></i>&nbsp; 
-		        		<%=projectName %><fmt:message key="stuDashboard_card_commitRecord"/>
-		        </h4>
-		        <div class="card-block">
-					<div id="inline">
-						<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
-						<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
-						<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_checkstyleFail"/></p>
-						<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
-					</div>
+			<h2><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=projectName%></h2>
+			<p>Git Repository</p>
+			<p style="border: 1px solid gray; background-color: white; border-radius: 5px; padding: 5px 0px 5px 10px; color: gray"><%=projectUrl %></p>
+			<p>Please clone this repository to your local workspace.</p>
+			<!-- ---------------------------- Project ------------------------------- -->
+		      <div class="row">  
+		      <div class="col-3">
+		        <div class="card" style="background: none; border: none">
+		        	<h4 id="Student Projects" class="card-header" style="font-weight: bold; background:none">Code Analysis Results</h4>
+		       		<div class="card-block center-justified">
+		        	<%
+						String projectJenkinsUrl = null;
+		        		String jobName = user.getUsername() + "_" + projectName;
+		        		String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
+						List<Integer> buildNumbers = jenkins.getJenkinsJobAllBuildNumber(jenkinsData.getJenkinsRootUsername(), jenkinsData.getJenkinsRootPassword(), jobUrl);
+						String buildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + commit_count + "/api/json";
+						String buildApiJson = jenkins.getJobBuildApiJson(jenkinsData.getJenkinsRootUsername() ,jenkinsData.getJenkinsRootPassword(), buildUrl);
+						String result = jenkins.getJobBuildResult(buildApiJson);
+						String circleColor = null;
 					
-					<!-- Project Table -->
-					<%
-						int pro_commit_counts = sConn.getAllCommitsCounts(projectId);
-					%>
-					<table class="table table-striped" style="margin-top: 20px; width: 100%">
-
-						<tbody>
-							<%
-								String circleColor = null;
-								String projectJenkinsUrl = null;
-							%>
-							<tr>
-								<th width="10%">Commit</th>
+						if(result.equals("SUCCESS")){
+							circleColor = "bigcircle blue";
+							projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
+						}else{
+							circleColor = "bigcircle red";
+							projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + commit_count +"/consoleText";
+									    
+							// check if is checkstyle error
+							String consoleText = jenkins.getConsoleText(projectJenkinsUrl);
+							boolean isCheckstyleError = jenkins.checkIsCheckstyleError(consoleText);
+							if(isCheckstyleError == true){
+								circleColor = "bigcircle orange";
+								projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + commit_count +"/violations";
+							}
+						}
+						if(commit_count == 1){
+						 	circleColor = "bigcircle gray";
+						}
+						%>
+						<p class="<%=circleColor%>"><a style="font-size: 40px"><%=commit_count %></a></p>
+					</div>
+		        </div>
+		        </div>
+		        <!-- ------------------------------------------------------------------------------------------------------------------- -->
+		        <div class="col-9">
+		        <div class="card" style="border:none">
+		        	<h4 id="Student Projects" class="card-header" style="font-weight: bold">Programming History</h4>
+		        	<div class="card-block">
+						<div id="inline">
+							<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
+							<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
+							<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_checkstyleFail"/></p>
+							<p class="ovol green" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p>
+							<p class="ovol gold" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p>
+							<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
+						</div>
+						<table class="table table-striped" style="margin-top: 20px; width: 100%">
+							<thead>
+								<tr>
+									<th width="10%" style="font-weight: bold">#</th>
+									<th width="10%" style="font-weight: bold">Status</th>
+									<th width="20%" style="font-weight: bold">Date</th>
+									<th style="font-weight: bold">Comment</th>
+								</tr>
+							</thead>
+							<tbody>
 								<%
-									String jobName = sConn.getUsername() + "_" + projectName;
-									String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
-									List<Integer> buildNumbers = jenkins.getJenkinsJobAllBuildNumber(jenkinsData.getJenkinsRootUsername(), jenkinsData.getJenkinsRootPassword(), jobUrl);
-									for(Integer num : buildNumbers){
-									  String buildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num + "/api/json";
-									  String buildApiJson = jenkins.getJobBuildApiJson(jenkinsData.getJenkinsRootUsername() ,jenkinsData.getJenkinsRootPassword(), buildUrl);
-									  String result = jenkins.getJobBuildResult(buildApiJson);
+									circleColor = null;
+									projectJenkinsUrl = null;
+									for(int num=1; num<=commit_count; num++){
+									  jobName = user.getUsername() + "_" + projectName;
+									  jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
+									  buildNumbers = jenkins.getJenkinsJobAllBuildNumber(jenkinsData.getJenkinsRootUsername(), jenkinsData.getJenkinsRootPassword(), jobUrl);
+									  buildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num + "/api/json";
+									  buildApiJson = jenkins.getJobBuildApiJson(jenkinsData.getJenkinsRootUsername() ,jenkinsData.getJenkinsRootPassword(), buildUrl);
+									  result = jenkins.getJobBuildResult(buildApiJson);
+									  
+									  // Get commit date
+									  Date date = commits.get(num-1).getCreatedAt();
+									  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+									  String strDate = sdf.format(date);
+									  
 									  if(result.equals("SUCCESS")){
 									    circleColor = "circle blue";
 									    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
 									  }else{
 									    circleColor = "circle red";
 									    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num +"/consoleText";
-									    boolean isCheckstyleError = jenkins.checkIsCheckstyleError(buildApiJson);
+									    
+									    // check if is checkstyle error
+									    String consoleText = jenkins.getConsoleText(projectJenkinsUrl);
+									    boolean isCheckstyleError = jenkins.checkIsCheckstyleError(consoleText);
 									    if(isCheckstyleError == true){
 									      circleColor = "circle orange";
 									      projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num +"/violations";
@@ -197,19 +280,23 @@
 									    circleColor = "circle gray";
 									  }
 									  %>
-									  	<th><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=projectJenkinsUrl  %>')"></a><%=num %></p></th>
+									  	<tr>
+									  		<th width="10%"><%=num %></th>
+									  		<td width="10%"><p class="<%=circleColor%>" id="pProject"></p></td>
+									  		<td width="15%"><%=strDate %></td>
+									  		<td><%=commits.get(num-1).getMessage() %></td>
+									  	</tr>
 									  <%
 									}
 								%>
-								
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-			
-			<!-- iFrame -->
+							</tbody>
+						</table>
+		        	</div>
+		        </div>
+		        </div>
+		    </div>
 			<%
+				jobName = sConn.getUsername() + "_" + projectName;
 				String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/consoleText";
 			%>
 			<div class="card" style="margin-top: 30px">
@@ -248,12 +335,63 @@ Highcharts.setOptions({
 <!-- chart1 -->
 <script>
 <%
-String jsonString = session.getAttribute("allProjectData").toString();
-JSONArray jasonArray = new JSONArray(jsonString);
+UserDbManager db = UserDbManager.getInstance();
+ProjectDbManager pDb = ProjectDbManager.getInstance();
+List<User> users = db.listAllUsers();
+List<GitlabProject> gitProjects = conn.getAllProjects();
+List<Project> dbProjects = pDb.listAllProjects();
+
 List<JSONObject> jsons = new ArrayList<JSONObject>();
-for (int i=0; i< jasonArray.length(); i++) {
-	JSONObject json = jasonArray.getJSONObject(i);
-	jsons.add(json);
+
+for(User eachuser : users){
+	String userName = eachuser.getUserName();
+	Collections.reverse(gitProjects);
+	//for(Project dbProject : dbProjects){
+		JobStatus jobStatus = new JobStatus();
+		commit_count = 0;
+		for(GitlabProject gitProject : gitProjects){
+			String fullName = eachuser.getName() + " / " + projectName;
+			if(fullName.equals(gitProject.getNameWithNamespace())){
+				JSONObject json = new JSONObject();
+				json.put("name", projectName);
+				int notCommitCount = 0;
+				int commitCount = 0;
+							
+				commit_count = conn.getAllCommitsCounts(gitProject.getId());
+				//---Jenkins---
+				jobName = eachuser.getUserName() + "_" + gitProject.getName();
+				jobStatus.setName(jobName);
+				jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
+				jobStatus.setUrl(jobUrl);
+				
+				// Get job status
+				jobStatus.setJobApiJson();
+				
+				String color = null;
+				if(null != jobStatus.getJobApiJson()){
+					color = jenkins.getJobJsonColor(jobStatus.getJobApiJson());
+				}
+					
+				if(commit_count == 1){
+					notCommitCount++;
+				} else {
+					if(color!=null){
+					  	if(color.equals("red") || color.equals("blue") || color.equals("orange")) {
+					  		commitCount++;
+					  	}
+					}else{
+						notCommitCount++;
+					}
+				}
+
+				json.put("commitCount", commitCount);
+				json.put("notCommitCount", notCommitCount);
+				jsons.add(json);
+				//-------------
+				break;
+			}
+		}
+	//}
 }
 
 List<String> names = new ArrayList<String>();

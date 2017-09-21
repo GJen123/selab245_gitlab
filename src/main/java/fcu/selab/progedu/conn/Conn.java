@@ -584,5 +584,20 @@ public class Conn {
       e.printStackTrace();
     }
   }
+  
+  /**
+   * delete all gitlab projects
+   */
+  public void deleteProjects() {
+    List<GitlabProject> projects = getAllProjects();
+    for (GitlabProject project : projects) {
+      try {
+        gitlab.deleteProject(project.getId());
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+  }
 
 }

@@ -30,6 +30,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
@@ -188,33 +189,23 @@ public class ProjectService2 {
       if (user.getId() == 1) {
         continue;
       }
-      // int id = user.getId();
-      // String userName = user.getName();
-      // String email = user.getEmail();
-      //
-      // CreateStudentProjectThread thread =
-      // new CreateStudentProjectThread(id, userName, email, name,
-      // rootProjectUrl);
-      //
-      // thread.start();
 
       // 10. Create student project, and import project
       conn.createPrivateProject(user.getId(), name, rootProjectUrl);
-      System.out.println(user.getName() + ", Create student project, and import project");
+//      System.out.println(user.getName() + ", Create student project, and import project");
 
       // 11. send notification email to student
-      sendEmail(user.getEmail());
-      System.out.println(user.getName() + ", Send notification email to student");
+      sendEmail(user.getEmail(), name);
+//      System.out.println(user.getName() + ", Send notification email to student");
     }
 
     // 12. Create each Jenkins Jobs
     createJenkinsJob(name, fileType);
 
     Response response = Response.ok().build();
-    // if (!isSave) {
-    // response =
-    // Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
-    // }
+    if (!isSave) {
+      response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
+    }
 
     Date date1 = new Date();
     String dateTime1 = sdFormat.format(date1);
@@ -291,6 +282,11 @@ public class ProjectService2 {
     Process process;
     String tempDir = System.getProperty("java.io.tmpdir");
     String uploadDir = tempDir + "uploads\\";
+    
+    File fileUploadDir = new File(uploadDir);
+    if (!fileUploadDir.exists()) {
+      fileUploadDir.mkdir();
+    }
 
     try {
       process = Runtime.getRuntime().exec("cmd.exe /c " + command, // path to
@@ -377,7 +373,7 @@ public class ProjectService2 {
    * Send the notification email to student
    *
    */
-  public void sendEmail(String email) {
+  public void sendEmail(String email, String name) {
     final String username = "fcuselab245@gmail.com";
     // final String password = "csclbyqwjhgogypt";// your password
     final String password = "52005505";
@@ -394,7 +390,7 @@ public class ProjectService2 {
     });
 
     try {
-      String content = "You have a new assignment!";
+      String content = "You have a new assignment \"" + name + "\" !";
       MimeMessage message = new MimeMessage(session);
       message.setFrom(new InternetAddress(username));
       message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));

@@ -548,16 +548,16 @@ public class JenkinsApi {
    * @param jobName
    *          Jenkins job name
    */
-  public void deleteJob(String jobName) {
+  public void deleteJob(String jobName, String crumb) {
     HttpClient client = new DefaultHttpClient();
 
-    String url = "http://GJen:02031fefb728e700973b6f3e5023a64c@140.134.26.71:38080/job/" + jobName
-        + "/doDelete";
     try {
+      String url = jenkinsData.getJenkinsRootUrl() + "/job/" + jobName
+          + "/doDelete";
       HttpPost post = new HttpPost(url);
 
       post.addHeader("Content-Type", "application/x-www-form-urlencoded");
-      post.addHeader("Jenkins-Crumb", "e390d46093102dac6c0ec903b77af0a0");
+      post.addHeader("Jenkins-Crumb", crumb);
 
       HttpResponse response = client.execute(post);
       HttpEntity resEntity = response.getEntity();

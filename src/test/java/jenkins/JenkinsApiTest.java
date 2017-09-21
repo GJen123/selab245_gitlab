@@ -18,7 +18,7 @@ public class JenkinsApiTest {
   public void testDeleteJenkinsJob() {
     for (GitlabUser user : users) {
       String jobName = user.getUsername() + "_OOP-HelloWorld";
-      jenkins.deleteJob(jobName);
+//      jenkins.deleteJob(jobName);
     }
   }
 
