@@ -595,7 +595,8 @@ public class JenkinsApi {
       }
       URL url = new URL(strUrl);
       conn = (HttpURLConnection) url.openConnection();
-      String input = "GJen:zxcv1234";
+      String input = jenkinsData.getJenkinsRootUsername()
+          + ":" + jenkinsData.getJenkinsRootPassword();
       BASE64Encoder enc = new BASE64Encoder();
       String encoding = enc.encode(input.getBytes());
       conn.setRequestProperty("Authorization", "Basic " + encoding);

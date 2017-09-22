@@ -52,8 +52,8 @@
         <li class="nav-item dropdown active"><a class="nav-link dropdown-toggle" href=""
           id="language" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-language" aria-hidden="true"></i>&nbsp;<fmt:message key="top_navbar_language"/></a>
           <div class="dropdown-menu" aria-labelledby="language">
-            <a class="dropdown-item" href="ChooseLanguage?language=zh"><i class="fa fa-globe" aria-hidden="true"></i><fmt:message key="top_navbar_lanChinese"/></a>
-          	<a class="dropdown-item" href="ChooseLanguage?language=en"><i class="fa fa-globe" aria-hidden="true"></i><fmt:message key="top_navbar_lanEnglish"/></a>
+            <a class="dropdown-item" href="ChooseLanguage?language=zh"><i class="fa fa-globe" aria-hidden="true"></i>&nbsp;<fmt:message key="top_navbar_lanChinese"/></a>
+          	<a class="dropdown-item" href="ChooseLanguage?language=en"><i class="fa fa-globe" aria-hidden="true"></i>&nbsp;<fmt:message key="top_navbar_lanEnglish"/></a>
           </div></li>
         <li class="nav-item active"><a class="nav-link" href="memberLogOut.jsp"> <fmt:message key="top_navbar_signOut"/> <i
             class="fa fa-sign-out" aria-hidden="true"></i></a></li>

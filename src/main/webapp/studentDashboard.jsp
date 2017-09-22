@@ -22,11 +22,12 @@
 	// Set the student private_token
 	String private_token = null;
 	
-	/*if(session.getAttribute("private_token").toString() != null && !session.getAttribute("private_token").toString().equals("")){
+	if(session.getAttribute("private_token").toString() != null && !session.getAttribute("private_token").toString().equals("")){
 	  private_token = session.getAttribute("private_token").toString();
 	}else{
 	  response.sendRedirect("index.jsp");
-	}*/
+	}
+	
 	Cookie[] cookies = request.getCookies();
 	Cookie cookie = null;
 	if(cookies != null){
@@ -136,24 +137,16 @@
 	<%@ include file="studentHeader.jsp"%>
 
 	<%
-		// Get all config data
-		GitlabConfig gitData = GitlabConfig.getInstance();
-		CourseConfig courseData = CourseConfig.getInstance();
-		JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-		
-		// Set jenkins api
-		JenkinsApi jenkins = JenkinsApi.getInstance();
-		
+		// Get the user in Gitlab
 		StudentConn sConn = new StudentConn(private_token);
 		GitlabUser user = sConn.getUser();
-		List<GitlabProject> projects = sConn.getProject();
-		Collections.reverse(projects);
-		
-		ProjectDbManager Pdb = ProjectDbManager.getInstance();
-		List<Project> dbProjects = Pdb.listAllProjects();
 		
 		// To display the under html code (about some if-else)
 		StudentDash stuDash = new StudentDash(private_token);
+		
+		// Get the user's Gitlab project
+  		List<GitlabProject> stuProjects = stuDash.getStuProject();
+  		Collections.reverse(stuProjects);
 	%>
 	
 	<table style="width: 100%; height: 100%;">
@@ -169,8 +162,6 @@
 					    <a><i class="fa fa-minus-square-o" aria-hidden="true"> &nbsp;<fmt:message key="stuDashboard_li_assignments"/></i></a>
 					  </li>
 					  <%
-						  	List<GitlabProject> stuProjects = stuDash.getStuProject();
-						  	Collections.reverse(stuProjects);
 						  	for(GitlabProject stuProject : stuProjects){
 						  	  String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
 						  	  %>
@@ -218,8 +209,8 @@
 							<tr>
 								<td><%=user.getUsername() %></td>
 								<%
-									List<String> jobColors = stuDash.getMainTableJobColor(projects);
-									List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(projects);
+									List<String> jobColors = stuDash.getMainTableJobColor(stuProjects);
+									List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
 									for(GitlabProject stuProject : stuProjects){
 									  	int i = 0;
 									  	String color = "circle " + jobColors.get(i);
