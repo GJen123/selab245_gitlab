@@ -12,6 +12,8 @@
 <%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager" %>
 <%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>  
 <%@ page import="fcu.selab.progedu.conn.StudentDash" %> 
+<%@ page import="fcu.selab.progedu.conn.Language" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
@@ -41,6 +43,15 @@
 	if(cookie != null){
 	  private_token = cookie.getValue();
 	}
+	
+	/*Language language = new Language();
+	String lan = request.getParameter("language");
+	String basename = null;
+	if(null != lan && !"".equals(lan)){
+	  basename = language.getBaseName(lan);
+	}
+	System.out.println("lan : " + lan);
+	System.out.println("basename : " + basename);*/
 %>
 
 <%@ include file="language.jsp"%>
@@ -49,6 +60,9 @@
 <html>
 <head>
 	<style type="text/css">
+		html, body {
+			height: 100%;
+		}
 		#mainTable {
 			width: 100%;
 			height: 100%;
@@ -57,6 +71,7 @@
 			height: 100%;
 			background-color: #444;
 			color: white; 
+			margin: -1px;
 		}
 		.nav-link {
 			color: white; 
@@ -65,8 +80,8 @@
 			color: #33CCFF;
 		}
 		#main {
-			background-color: #f5f5f5;
 			height: 100%;
+			margin-top: 20px;
 		}
 		
 		#inline p {
@@ -126,9 +141,6 @@
 		    color: white;
 		    cursor: pointer;
 		}
-		body, html, .row, #navHeight{
-					height:100%;
-				}
 	</style>
 
 <title>ProgEdu</title>
@@ -175,7 +187,7 @@
 				</div>
 				<!-- -----sidebar----- -->
 			</td>
-			<td>
+			<td style="background-color: #f5f5f5;">
 				<!-- -----main----- -->
 				<div class="container-fluid" id="main">
 	            	<h2>
@@ -192,10 +204,10 @@
 						<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
 					</div>
 					<!-- -----table----- -->
-					<table class="table table-striped" style="margin-top: 15px;">
+					<table class="table table-striped" style="margin-top: 20px;">
 						<thead>
 							<tr>
-								<th width="15%">Student Id</th>
+								<th width="10%"><fmt:message key="stuDashboard_th_studentId"/></th>
 								<%
 									for(GitlabProject stuProject : stuProjects){
 										%>

@@ -3,6 +3,7 @@
 <%@ page import="fcu.selab.progedu.conn.Language" %>
 <%@ page import="java.util.Locale" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
 <%
 	//*****
 	// ***選擇語言
@@ -12,18 +13,25 @@
 	
 	String finalLan = localLan;
 	String reqLan = request.getParameter("lang");  // request Language
-	String sesLan = null;  // session Language
+	Cookie lanCookie = null;
 	
 	String non = "";
 	if(null != reqLan && !non.equals(reqLan)){
-		finalLan = reqLan;
-		session.setAttribute("language", reqLan);
+      finalLan = reqLan;
+      lanCookie = new Cookie("lang", finalLan);
+  	  response.addCookie(lanCookie);
 	}else{
-		if(null != session.getAttribute("language") && !non.equals(session.getAttribute("language"))){
-			sesLan = session.getAttribute("language").toString();
-			finalLan = sesLan;
-		}else{
-			finalLan = localLan;
+	  Cookie[] lanCookies = request.getCookies();
+		if(lanCookies != null){
+		  for(Cookie c : lanCookies){
+		    if(c.getName().equals("lang")){
+		      lanCookie = c;
+		      break;
+		    }
+		  }
+		}
+		if(lanCookie != null){
+		  finalLan = lanCookie.getValue();
 		}
 	}
 	
