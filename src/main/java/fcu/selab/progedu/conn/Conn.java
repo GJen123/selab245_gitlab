@@ -151,10 +151,12 @@ public class Conn {
 
     return projects;
   }
-  
+
   /**
    * get project all commit information
-   * @param projectId project id
+   * 
+   * @param projectId
+   *          project id
    * @return commits list
    */
   public List<GitlabCommit> getProjectCommits(int projectId) {
@@ -584,7 +586,7 @@ public class Conn {
       e.printStackTrace();
     }
   }
-  
+
   /**
    * delete all gitlab projects
    */
@@ -600,4 +602,22 @@ public class Conn {
     }
   }
 
+  /**
+   * Update user password
+   * 
+   * @param password
+   *          user new password
+   */
+  public void updateUserPassword(int userId, String password) {
+    GitlabUser stuUser = new GitlabUser();
+    try {
+      stuUser = gitlab.getUser(userId);
+      gitlab.updateUser(stuUser.getId(), stuUser.getEmail(), password,
+          stuUser.getUsername(), stuUser.getName(),
+          null, null, null, null, 20, null, null, null, false, true);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
 }

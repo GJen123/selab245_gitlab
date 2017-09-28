@@ -44,8 +44,15 @@
             <a class="dropdown-item" href="studentDashboard.jsp?lang=zh"><i class="fa fa-globe" aria-hidden="true"></i>&nbsp;<fmt:message key="top_navbar_lanChinese"/></a>
           	<a class="dropdown-item" href="studentDashboard.jsp?lang=en"><i class="fa fa-globe" aria-hidden="true"></i>&nbsp;<fmt:message key="top_navbar_lanEnglish"/></a>
           </div></li>
+        <li class="nav-item dropdown active"><a class="nav-link dropdown-toggle" href=""
+          id="setting" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Setting</a>
+          <div class="dropdown-menu" aria-labelledby="setting">
+            <a class="dropdown-item" href="#"> 修改密碼</a>
+          	<a class="dropdown-item" href="#"> 登出</a>
+          </div></li>
         <li class="nav-item active"><a class="nav-link" href="memberLogOut.jsp"> <fmt:message key="top_navbar_signOut"/> <i
             class="fa fa-sign-out" aria-hidden="true"></i></a></li>
       </ul>
     </div>
   </nav>
+  

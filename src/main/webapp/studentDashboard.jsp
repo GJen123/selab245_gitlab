@@ -146,8 +146,6 @@
 <title>ProgEdu</title>
 </head>
 <body>
-	<%@ include file="studentHeader.jsp"%>
-
 	<%
 		// Get the user in Gitlab
 		StudentConn sConn = new StudentConn(private_token);
@@ -160,6 +158,8 @@
   		List<GitlabProject> stuProjects = stuDash.getStuProject();
   		Collections.reverse(stuProjects);
 	%>
+	
+	<%@ include file="studentHeader.jsp"%>
 	
 	<table style="width: 100%; height: 100%;">
 		<tr>

@@ -51,7 +51,7 @@ public class StudentConn {
 
   /**
    * get gitlab user
-   *  
+   * 
    * @return gitlab user
    */
   public GitlabUser getUser() {
@@ -89,7 +89,8 @@ public class StudentConn {
   /**
    * get gitlab project by project id
    * 
-   * @param projectId gitlab project id
+   * @param projectId
+   *          gitlab project id
    * @return gitlab project
    */
   public GitlabProject getProjectById(int projectId) {
