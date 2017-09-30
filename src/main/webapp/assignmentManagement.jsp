@@ -128,7 +128,7 @@
 				<div class="card">
 					<h4 class="card-header"><strong><fmt:message key="teacherManageHW_h3_distributeHW"/></strong></h4>
 	
-					<div class="card-block">
+					<div class="card-block" style="padding: 20px 20px 20px 20px;">
 						<div class="col-md-4">
 							<div class="form-group">
 								<label for="Hw_Name"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwName"/></h4></label>
@@ -170,7 +170,7 @@
 							</div>
 							
 							<div class="form-group">
-								<button type="submit" class="btn btn-secondary" style="background-color:#F5F5F5;" onclick="load();nicEditors.findEditor('Hw_README').saveContent();"><fmt:message key="teacherManageHW_button_send"/></button>
+								<button type="submit" class="btn btn-default" style="background-color:#F5F5F5; color: #292b2c; border-color: #ccc" onclick="load();nicEditors.findEditor('Hw_README').saveContent();"><fmt:message key="teacherManageHW_button_send"/></button>
 							</div>
 						</div>
 					</div>

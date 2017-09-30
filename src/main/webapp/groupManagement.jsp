@@ -86,8 +86,8 @@
 			<div class="card-header">
 				<h4 ><strong><fmt:message key="teacherManageGroup_h3_newGroup"/></strong></h4>
 			</div>
-  			<div class="card-block">
-    			 <a href="webapi/group/export" class="btn btn-secondary" style="background-color:#F5F5F5;">
+  			<div class="card-block" style="padding: 20px 20px 20px 20px;">
+    			 <a href="webapi/group/export" class="btn btn-default" style="background-color:#F5F5F5; color: #292b2c; border-color: #ccc">
     			 	<i class="fa fa-download" aria-hidden="true"></i>
     			 	<fmt:message key="teacherManageGroup_a_exportStudent"/>
     			 </a>
@@ -131,7 +131,7 @@
 			<div class="card-header">
 				<h4 ><strong><fmt:message key="teacherManageGroup_addMember"/></strong></h4>
 			</div>
-  			<div class="card-block">
+  			<div class="card-block" style="padding: 20px 20px 20px 20px;">
     			<form id="addMember" name="select">
 					<table>
 						<tr>

@@ -13,10 +13,13 @@
 	<script src="https://code.highcharts.com/highcharts.js"></script>
 	<script src="https://code.highcharts.com/modules/data.js"></script>
 	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	<link rel="stylesheet"
+	  href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	<style>
 		body{
 			padding-top: 50px;
 			overflow-x: hidden;
+			font-family: Microsoft JhengHei;
 		}
 		.container{
 			padding-bottom: 30px;
@@ -36,39 +39,47 @@
     cursor: pointer;
 }
 	</style>
-	<nav class="navbar fixed-top navbar-toggleable-md navbar-inverse bg-inverse">
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
 	  		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
 	    		<span class="navbar-toggler-icon"></span>
 	  		</button>
 	  		<a class="navbar-brand" href="dashboard.jsp">ProgEdu</a>
-	  		<div class="collapse navbar-collapse" id="navbarNavDropdown">
-		    	<ul class="navbar-nav">
-		      		<li class="nav-item"><a class="nav-link" href="dashboard.jsp"><fmt:message key="top_navbar_dashboard"/></a></li>
-		      		<li class="nav-item"><a class="nav-link" href="teacherGroup.jsp"><fmt:message key="top_navbar_groupProject"/></a></li>
-		      		<li class="nav-item dropdown">
-		        		<a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		          			<fmt:message key="top_navbar_manage"/>
-		        		</a>
-		        		<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-		          			<a class="dropdown-item" href="studentManagement.jsp"><i class="fa fa-user-plus" aria-hidden="true"></i> <fmt:message key="top_navbar_manageStudent"/></a>
-		          			<a class="dropdown-item" href="assignmentManagement.jsp"><i class="fa fa-pencil-square" aria-hidden="true" style="margin-right: 5px;"></i> <fmt:message key="top_navbar_manageHW"/></a>
-		          			<a class="dropdown-item" href="groupManagement.jsp"><i class="fa fa-users" aria-hidden="true" style="margin-right: 2px;"></i> <fmt:message key="top_navbar_manageGroup"/></a>
-		        		</div>
-		      		</li>
-		    	</ul>
-		    	<ul class="navbar-nav navbar-toggler-right">
-		    		<li class="nav-item dropdown">
-		        		<a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		          			<fmt:message key="top_navbar_language"/>
-		        		</a>
-		        		<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-		        			<a class="dropdown-item" href="ChooseLanguage?language=zh"><fmt:message key="top_navbar_lanChinese"/></a>
-		          			<a class="dropdown-item" href="ChooseLanguage?language=en"><fmt:message key="top_navbar_lanEnglish"/></a>
-		        		</div>
-		      		</li>
-		    		<li class="nav-item"><a class="nav-link" href="memberLogOut.jsp" id="loginLink"><fmt:message key="top_navbar_signOut"/> <i class="fa fa-sign-out" aria-hidden="true"></i></a></li>
-		    	</ul>
-	  		</div>
+	  		<button class="navbar-toggler" type="button" data-toggle="collapse"
+      			data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
+      			aria-expanded="false" aria-label="Toggle navigation">
+      			<span class="navbar-toggler-icon"></span>
+    		</button>
+    		
+		    	<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+      				<ul class="navbar-nav mr-auto">
+        				<li class="nav-item"><a class="nav-link" href="dashboard.jsp"><fmt:message key="top_navbar_dashboard"/> <span
+            				class="sr-only">(current)</span></a>
+        				</li>
+        				<li class="nav-item"><a class="nav-link" href="teacherGroup.jsp"><fmt:message key="top_navbar_groupProject"/></a></li>
+		      			<li class="nav-item dropdown">
+		        			<a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		          				<fmt:message key="top_navbar_manage"/>
+		        			</a>
+		        			<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+		          				<a class="dropdown-item" href="studentManagement.jsp"><i class="fa fa-user-plus" aria-hidden="true"></i> <fmt:message key="top_navbar_manageStudent"/></a>
+		          				<a class="dropdown-item" href="assignmentManagement.jsp"><i class="fa fa-pencil-square" aria-hidden="true" style="margin-right: 5px;"></i> <fmt:message key="top_navbar_manageHW"/></a>
+		          				<a class="dropdown-item" href="groupManagement.jsp"><i class="fa fa-users" aria-hidden="true" style="margin-right: 2px;"></i> <fmt:message key="top_navbar_manageGroup"/></a>
+		        			</div>
+		      			</li>
+      				</ul>
+      				<ul class="navbar-nav navbar-toggler-right">
+       				 	<li class="nav-item dropdown active"><a class="nav-link dropdown-toggle" href=""
+          					id="language" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-language" aria-hidden="true"></i>&nbsp;<fmt:message key="top_navbar_language"/></a>
+          					<div class="dropdown-menu" aria-labelledby="language">
+            					<a class="dropdown-item" href="studentDashboard.jsp?lang=zh"><i class="fa fa-globe" aria-hidden="true"></i>&nbsp;<fmt:message key="top_navbar_lanChinese"/></a>
+          						<a class="dropdown-item" href="studentDashboard.jsp?lang=en"><i class="fa fa-globe" aria-hidden="true"></i>&nbsp;<fmt:message key="top_navbar_lanEnglish"/></a>
+          					</div>
+        				</li>
+        				<li class="nav-item active"><a class="nav-link" href="memberLogOut.jsp"> <fmt:message key="top_navbar_signOut"/> <i
+            				class="fa fa-sign-out" aria-hidden="true"></i></a>
+        				</li>
+      				</ul>
+    			</div>
 	  	<div id="gotop"><i class="fa fa-chevron-up" aria-hidden="true"></i></div>
 	</nav>
 	<script type="text/javascript">

@@ -28,11 +28,16 @@
 		#allProject {
 		 padding: 10px 0px 0px 0px;
 		}
+		
+		#inline {
+		    margin: 20px;
+		}
+		
 		#inline p {
 		    display: inline;
 		}
 		.ovol {
-			border-radius: 50px;
+			border-radius: 5px;
 			height: 50px;
             font-weight: bold;
             width: 120px;
@@ -40,7 +45,7 @@
             text-align: center;
 		}
 		.circle {
-			border-radius: 10px;
+			border-radius: 30px;
 			height: 30px;
             font-weight: bold;
             width: 30px;
@@ -73,8 +78,6 @@
 	<title>ProgEdu</title>
 </head>
 <body>
-	<%@ include file="header.jsp" %>
-	
 	<%
 		Conn conn = Conn.getInstance();
 		HttpConnect httpConn = HttpConnect.getInstance();
@@ -97,6 +100,9 @@
 		
 		JenkinsApi jenkins = JenkinsApi.getInstance();
 	%>
+	<%@ include file="header.jsp" %>
+	
+	<div class="container-fluid" id="main">
       <div class="row">
         <nav class="hidden-xs-down bg-faded sidebar" id="navHeight">
           <ul class="nav nav-pills flex-column" style="margin-top: 20px;">
@@ -136,8 +142,8 @@
 							<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
 							<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
 							<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_checkstyleFail"/></p>
-							<p class="ovol green" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p>
-							<p class="ovol gold" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p>
+							<!-- <p class="ovol green" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p>
+							<p class="ovol gold" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p> -->
 							<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
 						</div>
 						<table class="table table-striped" style="margin-top: 20px; width: 100%">

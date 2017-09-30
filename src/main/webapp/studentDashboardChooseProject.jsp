@@ -11,7 +11,7 @@
 <%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager" %>
 <%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus, java.text.SimpleDateFormat" %>
-<%@ page import="fcu.selab.progedu.conn.StudentDash" %> 
+<%@ page import="fcu.selab.progedu.conn.StudentDash" %>
 <%@ page import="fcu.selab.progedu.conn.StudentDashChoosePro" %> 
 
 <%

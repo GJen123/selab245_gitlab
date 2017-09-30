@@ -104,13 +104,13 @@
 	<div id="loader" style="display: none"></div>
 	
 	<div>
-		<div class="container" style="margin-top: 20px; width: 1140px;">
+		<div class="container-fluid" style="margin-top: 20px; width: 1140px;">
 			<br>
 			<div>
 				<div class="card">
 					<h4 class="card-header"><strong><fmt:message key="teacherManageStudent_h3_newAllStudent"/></strong></h4>
 	
-					<div class="card-block">
+					<div class="card-block" style="padding: 20px 20px 20px 20px;">
 						<div class="form-group">
 							<form>
 								<h5><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageStudent_h4_uploadStudent"/></h5>
