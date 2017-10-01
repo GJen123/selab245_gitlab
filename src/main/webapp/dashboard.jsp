@@ -26,7 +26,7 @@
 <head>
 	<style type="text/css">
 		#allProject {
-		 padding: 10px 0px 0px 0px;
+		 margin: 10px 0px 0px 0px;
 		}
 		
 		#inline {

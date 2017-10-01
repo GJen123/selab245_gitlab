@@ -184,19 +184,19 @@
 				<td style="width: 250px;">
 					<!-- -----sidebar----- -->
 					<div id="sidebar">
-						<ul class="nav flex-column">
+						<ul class="nav flex-column" style="padding-top: 20px;">
 						  <li class="nav-item" style="margin: 10px 0px 0px 15px; color: burlywood;">
-						    <i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="stuDashboard_li_overview"/>
+						    <font size="4"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="stuDashboard_li_overview"/></font>
 						  </li>
 						  <li class="nav-item" style="margin: 10px 0px 0px 15px;">
-						    <a><i class="fa fa-minus-square-o" aria-hidden="true"> &nbsp;<fmt:message key="stuDashboard_li_assignments"/></i></a>
+						    <font size="4"><a><i class="fa fa-minus-square-o fa-lg" aria-hidden="true"></i>&nbsp; <fmt:message key="stuDashboard_li_assignments"/></a></font>
 						  </li>
 						  <%
 							  	for(GitlabProject stuProject : stuProjects){
 							  	  String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
 							  	  %>
 							  	  	<li class="nav-item" style="margin:0px 0px 0px 30px">
-									  <a class="nav-link" href=<%=href %>><i class="fa fa-pencil-square-o" aria-hidden="true"><%=stuProject.getName() %></i></a>
+									  <font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-pencil-square-o" aria-hidden="true"><%=stuProject.getName() %></i></a></font>
 									</li>
 							  	  <%
 							  	}
@@ -212,13 +212,14 @@
 						String projectUrl = stuDashChoPro.getChoosedProjectUrl(choosedProject);
 						List<String> jobColors = stuDash.getMainTableJobColor(stuProjects);
 						List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
+						projectUrl = projectUrl.replace("f05f585bd8c9", "140.134.26.72:10080");
 					%>
-					<div style="margin: 10px 0px 10px 10px;">
+					<div style="margin: 10px 10px 10px 10px;">
 						<h2><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=projectName%></h2>
 						
 						<p><fmt:message key="stuDashChooseProject_p_gitRepo"/></p>
 						<div id="inline">
-							<p id="copyTarget"><%=projectUrl %></p>
+							<p id="copyTarget" style="padding-right: 10px;"><%=projectUrl %></p>
 							<button id="copyButton" class="btn btn-dark"><i class="fa fa-clipboard" aria-hidden="true"></i></button>
 						</div>
 						<p><fmt:message key="stuDashChooseProject_p_cloneUrl"/></p>

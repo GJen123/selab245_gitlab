@@ -147,8 +147,8 @@
 							</div>
 							<div style="display:none" id="example">
 								<div class = "form-group">
-									<a href="MvnQuickStart.zip" class="btn btn-secondary" style="background-color:#F5F5F5;" id="mvn_download"><fmt:message key="teacherManageHW_a_downloadMaven"/></a>
-									<a href="JavacQuickStart.zip" class="btn btn-secondary" style="background-color:#F5F5F5;" id="java_download"><fmt:message key="teacherManageHW_a_downloadJavac"/></a>
+									<a href="MvnQuickStart.zip" class="btn btn-default" style="background-color:#F5F5F5; color: #292b2c; border-color: #ccc" id="mvn_download"><fmt:message key="teacherManageHW_a_downloadMaven"/></a>
+									<a href="JavacQuickStart.zip" class="btn btn-default" style="background-color:#F5F5F5; color: #292b2c; border-color: #ccc" id="java_download"><fmt:message key="teacherManageHW_a_downloadJavac"/></a>
 								</div>
 								<div class="form-group">
 									<label for="fileRadio"><fmt:message key="teacherManageHW_label_zipradio"/></label>

@@ -60,6 +60,9 @@
 <html>
 <head>
 	<style type="text/css">
+		html, body {
+			height: 100%;
+		}
 		#mainTable {
 			width: 100%;
 			height: 100%;
@@ -157,87 +160,88 @@
 	
 	<%@ include file="studentHeader.jsp"%>
 	
-	<div class="container-fluid" id="main">
-      <div class="row">
-        <nav class="hidden-xs-down bg-faded sidebar" id="navHeight">
-			<ul class="nav flex-column" style="padding-top: 20px;">
-				<li class="nav-item" style="margin: 10px 0px 0px 15px; color: burlywood;">
-					<font size="4"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="stuDashboard_li_overview"/></font>
-				</li>
-				<li class="nav-item" style="margin: 10px 0px 0px 15px;">
-					<font size="4"><a><i class="fa fa-minus-square-o" aria-hidden="true"> &nbsp;<fmt:message key="stuDashboard_li_assignments"/></i></a></font>
-				</li>
-				<%
-					for(GitlabProject stuProject : stuProjects){
-						 String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
-				%>
-						 <li class="nav-item" style="margin:0px 0px 0px 30px">
-						 	<a class="nav-link" href=<%=href %>><i class="fa fa-pencil-square-o" aria-hidden="true"><%=stuProject.getName() %></i></a>
-						 </li>
-				<%
-					}
-				%>
-			</ul>
-		</nav>
-		<!-- -----sidebar----- -->
-		<!-- -----main----- -->
-		<main class="col-md-9 col-xs-11 p-l-2 p-t-2">
-			<div class="container" style="padding-top: 20px;">
-	            <h2>
-	              	<i class="fa fa-bar-chart" aria-hidden="true"></i> <fmt:message key="stuDashboard_h2_overviewOfAssignments"/>
-	            </h2>
-	            <div class="card">
-		        	<div class="card-block">
-	            		<div id="inline" style="margin-top: 20px;">
-							<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
-							<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
-							<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_checkstyleFail"/></p>
-							<!-- 
-							<p class="ovol green" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p>
-							<p class="ovol gold" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p>
-							-->
-							<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
-						</div>
-						<!-- -----table----- -->
-						<table class="table table-striped" style="margin-top: 20px;">
-							<thead>
-								<tr>
-									<%
-										for(GitlabProject stuProject : stuProjects){
-											%>
-												<th><%=stuProject.getName() %></th>
-											<%
-										}
-									%>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<%
-										List<String> jobColors = stuDash.getMainTableJobColor(stuProjects);
-										List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
-										for(GitlabProject stuProject : stuProjects){
-											  int i = 0;
-											  String color = "circle " + jobColors.get(i);
-											  String commitCount = jobCommitCounts.get(i);
-											  String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
-											  %>
-											  	<td><p class="<%=color%>"><a href=<%=href %>><%=commitCount %></a></p></td>
-											  <%
-											  i++;
-										}
-									%>
-								</tr>
-							</tbody>
-						</table>
-						<!-- -----table----- -->
-						</div>
-		        	</div>
-		        </div>
-		</main>
-		<!-- -----main----- -->
-		</div>
-	</div>
+	<table style="width: 100%; height: 100%;">
+		<tr>
+			<td style="width:250px;">
+				<!-- -----sidebar----- -->
+				<div id="sidebar">
+					<ul class="nav flex-column" style="padding-top: 20px;">
+					  <li class="nav-item" style="margin: 10px 0px 0px 15px; color: burlywood;">
+					    <font size="4"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="stuDashboard_li_overview"/></font>
+					  </li>
+					  <li class="nav-item" style="margin: 10px 0px 0px 15px;">
+					    <font size="4"><a><i class="fa fa-minus-square-o" aria-hidden="true"> &nbsp;<fmt:message key="stuDashboard_li_assignments"/></i></a></font>
+					  </li>
+					  <%
+						  	for(GitlabProject stuProject : stuProjects){
+						  	  String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
+						  	  %>
+						  	  	<li class="nav-item" style="margin:0px 0px 0px 30px">
+								  <font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-pencil-square-o" aria-hidden="true"><%=stuProject.getName() %></i></a></font>
+								</li>
+						  	  <%
+						  	}
+					  %>
+					</ul>
+				</div>
+				<!-- -----sidebar----- -->
+			</td>
+			<td style="background-color: #f5f5f5; padding-top: 20px;">
+				<!-- -----main----- -->
+				<div class="container-fluid" id="main">
+	            	<h2>
+	              		<i class="fa fa-bar-chart" aria-hidden="true"></i> <fmt:message key="stuDashboard_h2_overviewOfAssignments"/>
+	            	</h2>
+	            	<div id="inline" style="margin-top: 20px;">
+						<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
+						<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
+						<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_checkstyleFail"/></p>
+						<!-- 
+						<p class="ovol green" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p>
+						<p class="ovol gold" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p>
+						 -->
+						<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
+					</div>
+					<!-- -----table----- -->
+					<table class="table table-striped" style="margin-top: 20px;">
+						<thead>
+							<tr>
+								<th width="10%"><fmt:message key="stuDashboard_th_studentId"/></th>
+								<%
+									for(GitlabProject stuProject : stuProjects){
+										%>
+											<th><%=stuProject.getName() %></th>
+										<%
+									}
+								%>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><%=user.getUsername() %></td>
+								<%
+									List<String> jobColors = stuDash.getMainTableJobColor(stuProjects);
+									List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
+									for(GitlabProject stuProject : stuProjects){
+									  	int i = 0;
+									  	String color = "circle " + jobColors.get(i);
+									  	String commitCount = jobCommitCounts.get(i);
+									  	String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
+									  	%>
+									  		<td><p class="<%=color%>"><a href=<%=href %>><%=commitCount %></a></p></td>
+									  	<%
+									  	i++;
+									}
+								%>
+							</tr>
+						</tbody>
+					</table>
+					<!-- -----table----- -->
+				</div>
+				<!-- -----main----- -->
+			</td>
+		</tr>
+	</table>
 	<div id="gotop"><i class="fa fa-chevron-up" aria-hidden="true"></i></div>
 </body>
 </html>

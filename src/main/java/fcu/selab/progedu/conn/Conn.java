@@ -415,7 +415,7 @@ public class Conn {
     GitlabUser user = new GitlabUser();
     try {
       user = gitlab.createUser(email, password, userName, fullName,
-          "", "", "", "", 10, "", "", "", false, true, null);
+          "", "", "", "", 10, null, null, "", false, true, null);
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
