@@ -100,6 +100,67 @@ public class UserDbManager {
     
     return hashtext;
   }
+  
+  /**
+   * get user password
+   * @param userName user stu id
+   * @return password
+   */
+  public String getPassword(String userName) {
+    String password = "";
+    Connection conn = database.getConnection();
+    String query = "SELECT * FROM User WHERE userName = ?";
+    PreparedStatement preStmt = null;
+
+    try {
+      preStmt = conn.prepareStatement(query);
+      preStmt.setString(1, userName);
+      ResultSet rs = preStmt.executeQuery();
+      while (rs.next()) {
+        password = rs.getString("password");
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return password;
+  }
+  
+  /**
+   * update user db password
+   * @param userName user stu id
+   * @param password user new password
+   */ 
+  public void modifiedUserPassword(String userName, String password) {
+    Connection conn = database.getConnection();
+    String query = "UPDATE User SET password=? WHERE userName = ?";
+    PreparedStatement preStmt = null;
+
+    try {
+      String newPass = passwordMD5(password) + userName;
+      preStmt = conn.prepareStatement(query);
+      preStmt.setString(1, newPass);
+      preStmt.setString(2, userName);
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+  
+  /**
+   * check old password
+   * @param userName user stu id
+   * @param password user old password
+   * @return T or F
+   */
+  public boolean checkPassword(String userName, String password) {
+    String currPassword = getPassword(userName);
+    String newPassword = passwordMD5(password) + userName;
+    boolean check = false;
+    if (currPassword.equals(newPassword)) {
+      check = true;
+    }
+    return check;
+  }
 
   /**
    * Get user from database

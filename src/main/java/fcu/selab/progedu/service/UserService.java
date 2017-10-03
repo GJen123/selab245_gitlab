@@ -23,6 +23,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.conn.Conn;
 import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 @Path("user/")
@@ -31,6 +32,8 @@ public class UserService {
   Conn userConn = Conn.getInstance();
 
   CourseConfig course = CourseConfig.getInstance();
+  
+  private static UserDbManager dbManager = UserDbManager.getInstance();
 
   /**
    * Upload a csv file for student batch registration
@@ -213,24 +216,17 @@ public class UserService {
     System.out.println("newPwd : " + newPwd);
     System.out.println("checkPwd : " + checkPwd);
     System.out.println("userId : " + userId);
-
-    // *************************
-    // check db the old password with new password
-
-    // *************************
-
-    if (!oldPwd.equals(newPwd)) {
-      // if old password doesn't equal new password
-
-      if (newPwd.equals(checkPwd)) {
-        // if new password equals check password
-        // userConn.updateUserPassword(userId, newPwd);
-      } else {
-        // new password doesn't equals check password
-      }
+    
+    String userName = userConn.getUserById(userId).getUsername();
+    boolean check = dbManager.checkPassword(userName, oldPwd);
+    if (!check) {
+      Response response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
+      return response;
     } else {
-      // old password equals new password
+      dbManager.modifiedUserPassword(userName, newPwd);
+      userConn.updateUserPassword(userId, newPwd);
     }
+    
     Response response = Response.ok().build();
     return response;
 

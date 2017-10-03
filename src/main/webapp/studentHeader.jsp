@@ -13,7 +13,7 @@
 	 
 	<style>
 		body{
-			padding-top: 50px;
+			padding-top: 45px;
 			font-family: Microsoft JhengHei;
 		}
 		.container{
@@ -46,23 +46,36 @@
 		$("form").submit(function(evt) {
 			evt.preventDefault();
 			var formData = new FormData($(this)[0]);
-			$.ajax({
-				url : 'webapi/user/changePwd',
-				type : 'POST',
-				data : formData,
-				async : true,
-				cache : false,
-				contentType : false,
-				enctype : 'multipart/form-data',
-				processData : false,
-				success : function(response) {
-					alert("uploaded!");
-					top.location.href = "../ProgEdu/studentDashboard.jsp";
-				}, 
-				error : function(response) {
-					alert("failed!");
-				}
-			});
+			var oldPwd = document.getElementById("oldPwd").value;
+			var newPwd = document.getElementById("newPwd").value;
+			var checkPwd = document.getElementById("checkPwd").value;
+			console.log(oldPwd);
+			console.log(newPwd);
+			console.log(checkPwd);
+			if(oldPwd===newPwd){
+				alert("Do not use old passwords!");
+			}
+			else if(newPwd!==checkPwd) {
+				alert("The password does not match!");
+			}else {
+				$.ajax({
+					url : 'webapi/user/changePwd',
+					type : 'POST',
+					data : formData,
+					async : true,
+					cache : false,
+					contentType : false,
+					enctype : 'multipart/form-data',
+					processData : false,
+					success : function(response) {
+						alert("Updated!");
+						top.location.href = "../ProgEdu/studentDashboard.jsp";
+					}, 
+					error : function(response) {
+						alert("Failed! Please try again.");
+					}
+				});
+			}
 			return false;
 		});
 	});
@@ -114,14 +127,14 @@
 	      
 	      <div class="modal-body">
 		      <div class="form-group">
-				  <h5>原始密碼</h5>
-				  	<input type="password" class="form-control" id="oldPwd" name="oldPwd" placeholder="Old Password">
+				  <h5>目前密碼</h5>
+				  	<input type="password" class="form-control" id="oldPwd" name="oldPwd" placeholder="Current password" required>
 				  <hr>
 				  <h5>新密碼</h5>
-				  <input type="password" class="form-control" id="newPwd" name="newPwd" placeholder="New Password">
+				  <input type="password" class="form-control" id="newPwd" name="newPwd" placeholder="New password" required>
 				  <hr>
 				  <h5>確認新密碼</h5>
-				  <input type="password" class="form-control" id="checkPwd" name="checkPwd" placeholder="Check New Password">
+				  <input type="password" class="form-control" id="checkPwd" name="checkPwd" placeholder="Password confirmation" required>
 				  <input type="hidden" id="userId" name="userId" value="<%=userId%>">
 		      </div>
 		  </div>
