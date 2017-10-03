@@ -803,4 +803,16 @@ public class JenkinsApi {
 
     return isCheckstyleError;
   }
+  
+  /**
+   * Get job build commit counts
+   * 
+   */
+  public Integer getJobBuildCommit(String apiJson) {
+    int jobCommits = 0;
+    JSONObject jsonApiJson = new JSONObject(apiJson);
+    JSONArray jsonBuilds = jsonApiJson.getJSONArray("builds");
+    jobCommits = jsonBuilds.length();
+    return jobCommits;
+  }
 }

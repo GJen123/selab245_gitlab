@@ -155,7 +155,6 @@
 		
 		// Get the user's Gitlab project
   		List<GitlabProject> stuProjects = stuDash.getStuProject();
-  		Collections.reverse(stuProjects);
 	%>
 	
 	<%@ include file="studentHeader.jsp"%>
@@ -221,12 +220,17 @@
 								<td><%=user.getUsername() %></td>
 								<%
 									List<String> jobColors = stuDash.getMainTableJobColor(stuProjects);
-									List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
+								
+									List<JobStatus> jobStatusis = stuDash.getJobStatusList(stuProjects, user);
+									List<Integer> jobCommitCounts = stuDash.getJobCommits(jobStatusis);
+									int i = 0;
 									for(GitlabProject stuProject : stuProjects){
-									  	int i = 0;
 									  	String color = "circle " + jobColors.get(i);
-									  	String commitCount = jobCommitCounts.get(i);
+									  	int commitCount = jobCommitCounts.get(i);
 									  	String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
+									  	if(commitCount == 1){
+									  		color = "circle gray";
+									  	}
 									  	%>
 									  		<td><p class="<%=color%>"><a href=<%=href %>><%=commitCount %></a></p></td>
 									  	<%

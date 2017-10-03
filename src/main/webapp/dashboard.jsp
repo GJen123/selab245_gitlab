@@ -196,7 +196,7 @@
 																proUrl = gitProject.getWebUrl();
 																proUrl = conn.getReplaceUrl(proUrl);
 																proUrl += "/commits/master"; 
-																commit_count = conn.getAllCommitsCounts(gitProject.getId());
+																
 																//---Jenkins---
 																String jobName = user.getUserName() + "_" + gitProject.getName();
 																jobStatus.setName(jobName);
@@ -206,6 +206,7 @@
 																// Get job status
 																jobStatus.setJobApiJson();
 																boolean isMaven = jenkins.checkProjectIsMvn(jobStatus.getJobApiJson());
+																commit_count = jenkins.getJobBuildCommit(jobStatus.getJobApiJson());
 																
 																String color = null;
 																int checkstyleErrorAmount = 0;
@@ -456,7 +457,11 @@ Highcharts.chart('chart1Demo', {
     series: s
 });
 </script>
-
+<script>
+Highcharts.setOptions({
+	 colors: ['#878787', '#5fa7e8', '#e52424', '#FF5809']
+	})
+</script>
 <!-- chart2 -->
 <script type="text/javascript">
 <%

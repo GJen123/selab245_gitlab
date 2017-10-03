@@ -9,6 +9,7 @@ import org.gitlab.api.models.GitlabUser;
 
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.data.Project;
+import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
@@ -112,6 +113,59 @@ public class StudentDash {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
+    }
+    return commitCounts;
+  }
+  
+  /**
+   * get jenkins job status
+   * @param jobName job's name
+   * @param jobUrl job's jenkins url
+   * @return status
+   */
+  public JobStatus getJobStatus(String jobName, String jobUrl) {
+    JobStatus jobStatus = new JobStatus();
+    jobStatus.setName(jobName);
+    jobStatus.setUrl(jobUrl);
+    jobStatus.setJobApiJson();
+    return jobStatus;
+  }
+  
+  /**
+   * Get user job status list
+   * 
+   * @param projects gitlab project list
+   * @param user user
+   * @return job status list
+   */
+  public List<JobStatus> getJobStatusList(List<GitlabProject> projects, GitlabUser user) {
+    List<JobStatus> jobStatusList = new ArrayList<JobStatus>();
+    for (GitlabProject project : projects) {
+      String jobName = user.getUsername() + "_" + project.getName();
+      String jobUrl = null;
+      try {
+        jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
+      } catch (LoadConfigFailureException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      JobStatus jobStatus = getJobStatus(jobName, jobUrl);
+      jobStatusList.add(jobStatus);
+    }
+    return jobStatusList;
+  }
+  
+  /**
+   * Get job commit counts
+   * 
+   * @param jobStatusis job status
+   * @return commit counts list
+   */
+  public List<Integer> getJobCommits(List<JobStatus> jobStatusis) {
+    List<Integer> commitCounts = new ArrayList<Integer>();
+    for (JobStatus jobStatus : jobStatusis) {
+      int count = jenkins.getJobBuildCommit(jobStatus.getJobApiJson());
+      commitCounts.add(count);
     }
     return commitCounts;
   }

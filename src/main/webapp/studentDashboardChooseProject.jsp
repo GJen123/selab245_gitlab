@@ -157,7 +157,6 @@
 			
 			// Get the user's Gitlab project
 			List<GitlabProject> stuProjects = stuDash.getStuProject();
-			Collections.reverse(stuProjects);
 		
 			String strProjectId = request.getParameter("projectId");
 			
@@ -238,7 +237,7 @@
 								%>
 								<div style="margin: 10px; text-align: center">
 	                    			<div style="padding: 5px;">
-										<p class="<%=lastBuildColor%>"><a style="font-size: 40px"><%=lastBuildNum %>  </a></p>
+										<p class="<%=lastBuildColor%>"><font size=40><%=lastBuildNum %></font></p>
 									</div>
 								</div>
 							</div>
