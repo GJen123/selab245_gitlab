@@ -235,11 +235,11 @@
 									lastBuildColor = "bigcircle2 " + lastBuildColor;
 									String lastBuildNum = stuDashChoPro.getLastBuildNum(user.getUsername(), projectName);
 								%>
-								<div style="margin: 10px; text-align: center">
-	                    			<div style="padding: 5px;">
-										<p class="<%=lastBuildColor%>"><font size=40><%=lastBuildNum %></font></p>
-									</div>
-								</div>
+                   				<div style="margin: 20px; text-align: center">
+				                	<div style="padding: 5px;">
+				                		<h3 class="<%=lastBuildColor%>" style="width: 90px; margin: 0 auto; padding: 20px; color: white;"><a><%=lastBuildNum %></a></h3>
+				                    </div>
+				                </div>
 							</div>
 							
 							<div class="col-9">
@@ -265,12 +265,16 @@
 											  	color = "circle " + color;
 											  	Date date = commits.get(num-1).getCreatedAt();
 											  	String strDate = stuDashChoPro.getCommitDate(date);
+											  	String commitMessage = commits.get(num-1).getMessage();
+											  	if(commitMessage.equals("")){
+											  	  commitMessage = "N/A";
+											  	}
 											  	%>
 											  	<tr id="<%=num %>" onClick="changeIframe(this)">
 											  		<td><%=num %></td>
 											  		<td><p class="<%=color%>" id="pProject"></p></td>
 											  		<td><%=strDate %></td>
-											  		<td><%=commits.get(num-1).getMessage() %></td>
+											  		<td><%=commitMessage %></td>
 											  	</tr>
 											  	<%
 											}

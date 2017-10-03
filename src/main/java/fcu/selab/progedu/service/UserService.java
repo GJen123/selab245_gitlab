@@ -189,4 +189,50 @@ public class UserService {
     users = userConn.getUsers();
     return users;
   }
+
+  /**
+   * Change user password
+   * 
+   * @param oldPwd
+   *          old password
+   * @param newPwd
+   *          new password
+   * @param checkPwd
+   *          check new password
+   * @return true false
+   */
+  @POST
+  @Path("changePwd")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  public Response changePassword(@FormDataParam("oldPwd") String oldPwd,
+      @FormDataParam("newPwd") String newPwd,
+      @FormDataParam("checkPwd") String checkPwd,
+      @FormDataParam("userId") Integer userId) {
+
+    System.out.println("oldPwd : " + oldPwd);
+    System.out.println("newPwd : " + newPwd);
+    System.out.println("checkPwd : " + checkPwd);
+    System.out.println("userId : " + userId);
+
+    // *************************
+    // check db the old password with new password
+
+    // *************************
+
+    if (!oldPwd.equals(newPwd)) {
+      // if old password doesn't equal new password
+
+      if (newPwd.equals(checkPwd)) {
+        // if new password equals check password
+        // userConn.updateUserPassword(userId, newPwd);
+      } else {
+        // new password doesn't equals check password
+      }
+    } else {
+      // old password equals new password
+    }
+    Response response = Response.ok().build();
+    return response;
+
+  }
 }

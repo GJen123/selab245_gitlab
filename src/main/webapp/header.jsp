@@ -52,12 +52,12 @@
     		
 		    	<div class="collapse navbar-collapse" id="navbarsExampleDefault">
       				<ul class="navbar-nav mr-auto">
-        				<li class="nav-item"><a class="nav-link" href="dashboard.jsp"><fmt:message key="top_navbar_dashboard"/> <span
+        				<li class="nav-item active"><a class="nav-link" href="dashboard.jsp"><fmt:message key="top_navbar_dashboard"/> <span
             				class="sr-only">(current)</span></a>
         				</li>
-        				<li class="nav-item"><a class="nav-link" href="teacherGroup.jsp"><fmt:message key="top_navbar_groupProject"/></a></li>
-		      			<li class="nav-item dropdown">
-		        			<a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        				<li class="nav-item active"><a class="nav-link" href="teacherGroup.jsp"><fmt:message key="top_navbar_groupProject"/></a></li>
+		      			<li class="nav-item dropdown active">
+		        			<a class="nav-link active dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		          				<fmt:message key="top_navbar_manage"/>
 		        			</a>
 		        			<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">

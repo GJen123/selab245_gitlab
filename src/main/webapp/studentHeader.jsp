@@ -24,6 +24,50 @@
 		}
 	</style>
 	
+	<%
+		int userId = 0;
+		Cookie[] cookiesUserId = request.getCookies();
+		Cookie cooUserId = null;
+		if(cookiesUserId != null){
+		  for(Cookie c : cookiesUserId){
+		    if(c.getName().equals("userId")){
+		      cooUserId = c;
+		      break;
+		    }
+		  }
+		}
+		if(cooUserId != null){
+		  userId = Integer.valueOf(cooUserId.getValue());
+		}
+	%>
+	
+	<script>
+	$(document).ready(function() {
+		$("form").submit(function(evt) {
+			evt.preventDefault();
+			var formData = new FormData($(this)[0]);
+			$.ajax({
+				url : 'webapi/user/changePwd',
+				type : 'POST',
+				data : formData,
+				async : true,
+				cache : false,
+				contentType : false,
+				enctype : 'multipart/form-data',
+				processData : false,
+				success : function(response) {
+					alert("uploaded!");
+					top.location.href = "../ProgEdu/studentDashboard.jsp";
+				}, 
+				error : function(response) {
+					alert("failed!");
+				}
+			});
+			return false;
+		});
+	});
+	</script>
+	
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
     <a class="navbar-brand" href="studentDashboard.jsp">ProgEdu</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -34,8 +78,7 @@
 
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item active"><a class="nav-link" href="studentDashboard.jsp"><fmt:message key="top_navbar_dashboard"/> <span
-            class="sr-only">(current)</span></a>
+        <li class="nav-item active"><a class="nav-link" href="studentDashboard.jsp"><fmt:message key="top_navbar_dashboard"/></a>
         </li>
       </ul>
       <ul class="navbar-nav navbar-toggler-right">
@@ -44,15 +87,55 @@
           <div class="dropdown-menu" aria-labelledby="language">
             <a class="dropdown-item" href="studentDashboard.jsp?lang=zh"><i class="fa fa-globe" aria-hidden="true"></i>&nbsp;<fmt:message key="top_navbar_lanChinese"/></a>
           	<a class="dropdown-item" href="studentDashboard.jsp?lang=en"><i class="fa fa-globe" aria-hidden="true"></i>&nbsp;<fmt:message key="top_navbar_lanEnglish"/></a>
-          </div></li>
-        <li class="nav-item dropdown active"><a class="nav-link dropdown-toggle" href=""
-          id="setting" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <fmt:message key="top_navbar_Setting"/></a>
-          <div class="dropdown-menu" aria-labelledby="setting">
-            <a class="dropdown-item" href="#"> 修改密碼</a>
-          	<a class="dropdown-item" href="#"> 登出</a>
-          </div></li>
-        <li class="nav-item active"><a class="nav-link" href="memberLogOut.jsp"> <fmt:message key="top_navbar_signOut"/> <i
-            class="fa fa-sign-out" aria-hidden="true"></i></a></li>
+          </div>
+        </li>
+        <li class="nav-item active">
+        	<a class="nav-link" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-key" aria-hidden="true"></i> <fmt:message key="top_navbar_changePassword"/></a>
+        </li>
+
+        <li class="nav-item active">
+        	<a class="nav-link" href="memberLogOut.jsp"><i class="fa fa-sign-out" aria-hidden="true"></i> <fmt:message key="top_navbar_signOut"/> </a>
+        </li>
       </ul>
     </div>
   </nav>
+  <form id="changePwd" name="upload" style="margin-top: 10px;">
+  <!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	    
+	      <div class="modal-header">
+	        <h4 class="modal-title" id="exampleModalLabel">修改密碼</h4>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      
+	      <div class="modal-body">
+		      <div class="form-group">
+				  <h5>原始密碼</h5>
+				  	<input type="password" class="form-control" id="oldPwd" name="oldPwd" placeholder="Old Password">
+				  <hr>
+				  <h5>新密碼</h5>
+				  <input type="password" class="form-control" id="newPwd" name="newPwd" placeholder="New Password">
+				  <hr>
+				  <h5>確認新密碼</h5>
+				  <input type="password" class="form-control" id="checkPwd" name="checkPwd" placeholder="Check New Password">
+				  <input type="hidden" id="userId" name="userId" value="<%=userId%>">
+		      </div>
+		  </div>
+		  
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+				<fmt:message key="teacherManageGroup_button_close"/>
+			</button>
+			<button type="submit" class="btn btn-primary">
+				<fmt:message key="teacherManageGroup_button_send"/>
+			</button>
+	      </div>
+	      
+	    </div>
+	  </div>
+	</div>
+  </form>

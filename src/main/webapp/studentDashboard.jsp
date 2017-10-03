@@ -13,6 +13,7 @@
 <%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>  
 <%@ page import="fcu.selab.progedu.conn.StudentDash" %> 
 <%@ page import="fcu.selab.progedu.conn.Language" %>
+<%@ page import="javax.servlet.http.Cookie" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%
@@ -23,12 +24,6 @@
 	
 	// Set the student private_token
 	String private_token = null;
-	
-	if(session.getAttribute("private_token").toString() != null && !session.getAttribute("private_token").toString().equals("")){
-	  private_token = session.getAttribute("private_token").toString();
-	}else{
-	  response.sendRedirect("index.jsp");
-	}
 	
 	Cookie[] cookies = request.getCookies();
 	Cookie cookie = null;
@@ -149,6 +144,9 @@
 		// Get the user in Gitlab
 		StudentConn sConn = new StudentConn(private_token);
 		GitlabUser user = sConn.getUser();
+		
+		Cookie cookieUserId = new Cookie("userId", String.valueOf(user.getId()));
+    	response.addCookie(cookieUserId);
 		
 		// To display the under html code (about some if-else)
 		StudentDash stuDash = new StudentDash(private_token);
