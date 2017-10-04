@@ -15,12 +15,12 @@ public class deleteAllProjects {
   public static void main(String[] args) {
     // TODO Auto-generated method stub
 
-//    conn.deleteProjects();
-//    String crumb = jenkins.getCrumb("root", "zxcv1234");
-//    for (GitlabUser user : users) {
-//      String jobName = user.getUsername() + "_OOP-HW1";
-//      jenkins.deleteJob(jobName, crumb);
-//    }
+    conn.deleteProjects();
+    String crumb = jenkins.getCrumb("root", "zxcv1234");
+    for (GitlabUser user : users) {
+      String jobName = user.getUsername() + "_OOP-HW1";
+      jenkins.deleteJob(jobName, crumb);
+    }
   }
 
 }

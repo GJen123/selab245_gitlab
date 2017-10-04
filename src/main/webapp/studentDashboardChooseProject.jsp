@@ -243,6 +243,9 @@
 									String lastBuildColor = stuDashChoPro.getLastColor(user.getUsername(), projectName);
 									lastBuildColor = "bigcircle2 " + lastBuildColor;
 									String lastBuildNum = stuDashChoPro.getLastBuildNum(user.getUsername(), projectName);
+									if(lastBuildNum.equals(String.valueOf(1))){
+									  lastBuildColor = "bigcircle2 gray";
+									}
 								%>
                    				<div style="margin: 20px; text-align: center">
 				                	<div style="padding: 5px;">
@@ -272,6 +275,9 @@
 											for(Integer num : buildNum){
 											  	String color = stuDashChoPro.getCommitColor(num, user.getUsername(), projectName);
 											  	color = "circle " + color;
+											  	if(num == 1) {
+											  	  color = "circle gray";
+											  	}
 											  	Date date = commits.get(num-1).getCreatedAt();
 											  	String strDate = stuDashChoPro.getCommitDate(date);
 											  	String commitMessage = commits.get(num-1).getMessage();

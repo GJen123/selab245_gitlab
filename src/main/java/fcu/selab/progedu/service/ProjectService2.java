@@ -64,6 +64,9 @@ public class ProjectService2 {
 
   private ProjectDbManager dbManager = ProjectDbManager.getInstance();
 
+  private static final String tempDir = System.getProperty("java.io.tmpdir");
+  private static String uploadDir = tempDir + "/uploads/";
+
   boolean isSave = true;
 
   /**
@@ -120,6 +123,13 @@ public class ProjectService2 {
 
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
     String cloneCommand = "git clone " + rootProjectUrl;
+    // String cloneCommand = "git clone " + rootProjectUrl + ".git " + uploadDir
+    // + name;
+    // String cloneCommand = "git clone
+    // http://root:iecsfcu123456@140.134.26.72:10080/root/oop-hw1.git
+    // /usr/local/tomcat/temp/uploads/root_oop-hw1";
+    // execLinuxCommand(cloneCommand);
+    System.out.println("cloneCommand : " + cloneCommand);
     execCmdInUploads(cloneCommand);
 
     // 3. Store Zip File to folder if file is not empty
@@ -159,6 +169,8 @@ public class ProjectService2 {
       createReadmeFile(readMe, name);
     }
 
+    uploadDir += name;
+
     // 6. Cmd gitlab add
     String addCommand = "git add .";
     execCmd(addCommand, name);
@@ -192,11 +204,14 @@ public class ProjectService2 {
 
       // 10. Create student project, and import project
       conn.createPrivateProject(user.getId(), name, rootProjectUrl);
-//      System.out.println(user.getName() + ", Create student project, and import project");
+
+      // System.out.println(user.getName() + ", Create student project, and
+      // import project");
 
       // 11. send notification email to student
-      sendEmail(user.getEmail(), name);
-//      System.out.println(user.getName() + ", Send notification email to student");
+      // sendEmail(user.getEmail(), name);
+      // System.out.println(user.getName() + ", Send notification email to
+      // student");
     }
 
     // 12. Create each Jenkins Jobs
@@ -244,10 +259,6 @@ public class ProjectService2 {
       String proName = project.getName();
       if (proName.equals(name)) {
         url = gitlabUrl + "/root/" + name;
-        // url = project.getWebUrl();
-        // url = url.replace("0912fe2b3e43",
-        // "root:iecsfcu123456@140.134.26.71:20080");
-        // url = url + ".git";
       }
     }
     return url;
@@ -255,12 +266,10 @@ public class ProjectService2 {
 
   private void execCmd(String command, String projectName) {
     Process process;
-    String tempDir = System.getProperty("java.io.tmpdir");
-    String uploadDir = tempDir + "uploads\\" + projectName;
 
     try {
-      process = Runtime.getRuntime().exec("cmd.exe /c " + command, // path to
-                                                                   // executable
+      process = Runtime.getRuntime().exec(command, // path to
+                                                   // executable
           null, // env vars, null means pass parent env
           new File(uploadDir));
       BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -278,11 +287,30 @@ public class ProjectService2 {
     }
   }
 
+  private void execLinuxCommand(String command) {
+    Process process;
+
+    try {
+      process = Runtime.getRuntime().exec(command);
+      BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+      String line;
+      while (true) {
+        line = br.readLine();
+        if (line == null) {
+          break;
+        }
+        System.out.println(line);
+      }
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+  }
+
   private void execCmdInUploads(String command) {
     Process process;
-    String tempDir = System.getProperty("java.io.tmpdir");
-    String uploadDir = tempDir + "/uploads/";
-    
+
     File fileUploadDir = new File(uploadDir);
     if (!fileUploadDir.exists()) {
       fileUploadDir.mkdir();
@@ -290,7 +318,7 @@ public class ProjectService2 {
 
     try {
       process = Runtime.getRuntime().exec(command, // path to
-                                                                   // executable
+                                                   // executable
           null, // env vars, null means pass parent env
           new File(uploadDir));
       BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -309,8 +337,6 @@ public class ProjectService2 {
   }
 
   private String storeFileToTemp(String fileName, InputStream uploadedInputStream) {
-    String tempDir = System.getProperty("java.io.tmpdir");
-    String uploadDir = tempDir + "uploads\\";
     try {
       createFolderIfNotExists(uploadDir);
     } catch (SecurityException se) {
@@ -438,8 +464,6 @@ public class ProjectService2 {
   }
 
   private void createReadmeFile(String readMe, String projectName) {
-    String tempDir = System.getProperty("java.io.tmpdir");
-    String uploadDir = tempDir + "/uploads/";
     String projectDir = uploadDir + projectName;
 
     Writer writer = null;
@@ -447,7 +471,7 @@ public class ProjectService2 {
 
     try {
       writer = new BufferedWriter(
-          new OutputStreamWriter(new FileOutputStream(projectDir + "\\README.md"), "utf-8"));
+          new OutputStreamWriter(new FileOutputStream(projectDir + "/README.md"), "utf-8"));
       writer.write(readMe);
     } catch (IOException ex) {
       // report
