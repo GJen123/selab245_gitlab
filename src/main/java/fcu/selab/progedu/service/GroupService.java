@@ -58,7 +58,7 @@ public class GroupService {
 
     String tempDir = System.getProperty("java.io.tmpdir");
 
-    String uploadDir = tempDir + "uploads/";
+    String uploadDir = tempDir + "/uploads/";
 
     File fileUploadDir = new File(uploadDir);
     if (!fileUploadDir.exists()) {
@@ -264,7 +264,7 @@ public class GroupService {
 
     String tempDir = System.getProperty("java.io.tmpdir");
 
-    String downloadDir = tempDir + "downloads/";
+    String downloadDir = tempDir + "/downloads/";
 
     File fileUploadDir = new File(downloadDir);
     if (!fileUploadDir.exists()) {

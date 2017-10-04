@@ -281,7 +281,7 @@ public class ProjectService2 {
   private void execCmdInUploads(String command) {
     Process process;
     String tempDir = System.getProperty("java.io.tmpdir");
-    String uploadDir = tempDir + "uploads\\";
+    String uploadDir = tempDir + "/uploads/";
     
     File fileUploadDir = new File(uploadDir);
     if (!fileUploadDir.exists()) {
@@ -289,7 +289,7 @@ public class ProjectService2 {
     }
 
     try {
-      process = Runtime.getRuntime().exec("cmd.exe /c " + command, // path to
+      process = Runtime.getRuntime().exec(command, // path to
                                                                    // executable
           null, // env vars, null means pass parent env
           new File(uploadDir));
@@ -439,7 +439,7 @@ public class ProjectService2 {
 
   private void createReadmeFile(String readMe, String projectName) {
     String tempDir = System.getProperty("java.io.tmpdir");
-    String uploadDir = tempDir + "uploads\\";
+    String uploadDir = tempDir + "/uploads/";
     String projectDir = uploadDir + projectName;
 
     Writer writer = null;

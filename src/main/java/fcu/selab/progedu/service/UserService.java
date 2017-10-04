@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -53,7 +55,7 @@ public class UserService {
 
     String tempDir = System.getProperty("java.io.tmpdir");
 
-    String uploadDir = tempDir + "uploads\\";
+    String uploadDir = tempDir + "/uploads/";
 
     File fileUploadDir = new File(uploadDir);
     if (!fileUploadDir.exists()) {
@@ -64,6 +66,9 @@ public class UserService {
     System.out.println("uploadDir : " + uploadDir);
     System.out.println("fileName : " + fileName);
     System.out.println("uploadedFileLocation : " + uploadedFileLocation);
+    Logger.getLogger(UserService.class.getName()).log(Level.ALL, uploadDir);
+    Logger.getLogger(UserService.class.getName()).log(Level.ALL, fileName);
+    Logger.getLogger(UserService.class.getName()).log(Level.ALL, uploadedFileLocation);
     List<String> studentList = new ArrayList<String>();
 
     try {
