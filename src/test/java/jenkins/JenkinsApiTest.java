@@ -14,7 +14,6 @@ public class JenkinsApiTest {
   Conn conn = Conn.getInstance();
   List<GitlabUser> users = conn.getUsers();
 
-  @Test
   public void testDeleteJenkinsJob() {
     for (GitlabUser user : users) {
       String jobName = user.getUsername() + "_OOP-HelloWorld";

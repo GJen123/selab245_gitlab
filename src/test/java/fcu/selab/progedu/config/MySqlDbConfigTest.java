@@ -7,7 +7,6 @@ import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 public class MySqlDbConfigTest {
 
-  @Test
   public void testGetDbConnectionString() {
     MySqlDbConfig config = MySqlDbConfig.getInstance();
     try {
@@ -18,7 +17,6 @@ public class MySqlDbConfigTest {
     }
   }
 
-  @Test
   public void testGetDbUser() {
     MySqlDbConfig config = MySqlDbConfig.getInstance();
     try {
@@ -29,7 +27,6 @@ public class MySqlDbConfigTest {
     }
   }
 
-  @Test
   public void testGetDbPassword() {
     MySqlDbConfig config = MySqlDbConfig.getInstance();
     try {

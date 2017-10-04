@@ -8,7 +8,6 @@ import fcu.selab.progedu.conn.Conn;
 
 public class TestGetSession {
 
-  @Test
   public void testSession() {
     Conn conn = Conn.getInstance();
     String username = "root";
