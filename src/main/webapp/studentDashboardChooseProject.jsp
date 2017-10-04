@@ -152,6 +152,8 @@
 				}
 		</script>
 	
+	<link rel="shortcut icon" href="img/favicon.ico"/>
+	<link rel="bookmark" href="img/favicon.ico"/>
 	<title>ProgEdu</title>
 	</head>
 	<body>

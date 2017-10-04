@@ -29,6 +29,16 @@
 		 margin: 10px 0px 0px 0px;
 		}
 		
+		#sidebar {
+			height: 100%;
+			background-color: #444;
+			color: white;
+			margin: -1px;
+		}
+		#sidebar a{
+			color: white;
+		}
+		
 		#inline {
 		    margin: 20px;
 		}
@@ -74,7 +84,9 @@
 			color: #fff;
 		}
 	</style>
-	
+
+	<link rel="shortcut icon" href="img/favicon.ico"/>
+	<link rel="bookmark" href="img/favicon.ico"/>
 	<title>ProgEdu</title>
 </head>
 <body>
@@ -102,37 +114,39 @@
 	%>
 	<%@ include file="header.jsp" %>
 	
-	<div class="container-fluid" id="main">
-      <div class="row">
-        <nav class="hidden-xs-down bg-faded sidebar" id="navHeight">
-          <ul class="nav nav-pills flex-column" style="margin-top: 20px;">
-            <li class="nav-item">
-            	<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_overview"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
-            	<ul id="overview" class="collapse" style="list-style: none;">
-            		<li class="nav-item"><font size="3"><a class="nav-link" href="#Student Projects"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_studentProjects"/></a></font></li>
-            		<li class="nav-item"><font size="3"><a class="nav-link" href="#Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_chart"/></a></font></li>
-            	</ul>
-            </li>
-            <li class="nav-item">
-                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_student"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
-                <ul id="student" class="collapse" style="list-style: none;">
-                    <%
-		            	for(User user : users){
-		            	  String userName = user.getUserName();
-		            	  String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
-		            	  %>
-		            	  	<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName %></a></font></li>
-		            	  <%
-		            	}
-		            %>
-                </ul>
-            </li>
-          </ul>
-        </nav>
-
-<!-- ------------------------ main -------------------------------------- -->
-        <main class="col-md-9 col-xs-11 p-l-2 p-t-2">
-	        <div class="container" style="margin-top: 20px;">
+	<table style="width: 100%; height: 100%;">
+		<tr>
+			<td style="width:250px;">
+				<!-- -----sidebar----- -->
+				<div id="sidebar">
+					<ul class="nav flex-column" style="padding-top: 20px;">
+            			<li class="nav-item">
+            				<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_overview"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+            				<ul id="overview" class="collapse" style="list-style: none;">
+            					<li class="nav-item"><font size="3"><a class="nav-link" href="#Student Projects"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_studentProjects"/></a></font></li>
+         			   			<li class="nav-item"><font size="3"><a class="nav-link" href="#Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_chart"/></a></font></li>
+         			   		</ul>
+        			    </li>
+        			    <li class="nav-item">
+       			         <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_student"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+       			         <ul id="student" class="collapse" style="list-style: none;">
+        			            <%
+		 			           	for(User user : users){
+					            	  String userName = user.getUserName();
+					            	  String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+					            	  %>
+		 			           	  	<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName %></a></font></li>
+		 			           	  <%
+		  			          	}
+		  			          %>
+         			       </ul>
+         			   </li>
+        			  </ul>
+				</div>
+				<!-- -----sidebar----- -->
+			</td>
+			<td style="background-color: #f5f5f5;">
+	        <div class="container-fluid" style="margin-top: 20px;">
 	        <h1 style="margin-top: 30px; margin-bottom: 20px;"><fmt:message key="dashboard_a_overview"/></h1>
 		        <!-- ---------------------------- Student Project ------------------------------- -->
 		        <div class="card">
@@ -329,9 +343,10 @@
 		        	</div>
 		        </div>	
 	        </div>
-        </main>
+        </td>
 <!-- ------------------------ main -------------------------------------- -->
-      </div>
+      </tr>
+     </table>
 </body>
 <!-- set Highchart colors -->
 <script>

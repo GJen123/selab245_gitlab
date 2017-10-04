@@ -29,8 +29,23 @@
 <html>
 <head>
 	<style type="text/css">
+		html, body{
+			height: 100%;
+		}
 		#inline p {
 		    display: inline;
+		}
+		#inline{
+			margin: 20px;
+		}
+		#sidebar {
+			height: 100%;
+			background-color: #444;
+			color: white;
+			margin: -1px;
+		}
+		#sidebar a{
+			color: white;
 		}
 		.ovol {
 			border-radius: 50px;
@@ -78,10 +93,11 @@
 		}
 	</style>
 	
+	<link rel="shortcut icon" href="img/favicon.ico"/>
+	<link rel="bookmark" href="img/favicon.ico"/>
 	<title>ProgEdu</title>
 </head>
 <body>
-	<%@ include file="header.jsp" %>
 	
 	<%
 		Conn conn = Conn.getInstance();
@@ -102,46 +118,50 @@
 		List<GitlabProject> projects = conn.getProject(choosedUser);
 		Collections.reverse(projects);
 	%>
-      <div class="row">
-        <nav class="hidden-xs-down bg-faded sidebar" id="navHeight">
-          <ul class="nav nav-pills flex-column" style="margin-top: 20px;">
-            <li class="nav-item">
-	        	<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <%=choosedUser.getUsername() %> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
-            	<ul id="overview" class="collapse" style="list-style: none;">
-	                    <%
-			            	for(GitlabProject project : projects){
-			            	  for(Project dbProject : dbProjects){
-			            	    if(project.getName().equals(dbProject.getName())){
-			            	      String href = "dashProjectChoosed.jsp?userId=" + choosedUser.getId() + "&proName=" + project.getName();
+	<%@ include file="header.jsp" %>
+	<table style="width: 100%; height: 100%;">
+		<tr>
+			<td style="width:250px;">
+				<!-- -----sidebar----- -->
+				<div id="sidebar">
+					<ul class="nav flex-column" style="padding-top: 20px;">
+            			<li class="nav-item">
+	        				<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <%=choosedUser.getUsername() %> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+            				<ul id="overview" class="collapse" style="list-style: none;">
+	          			          <%
+			 			           	for(GitlabProject project : projects){
+			    			        	  for(Project dbProject : dbProjects){
+			            	   			  if(project.getName().equals(dbProject.getName())){
+			            	      			String href = "dashProjectChoosed.jsp?userId=" + choosedUser.getId() + "&proName=" + project.getName();
 			            	      %>
-			            	      	<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=project.getName() %></a></font></li>
+			            	      				<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=project.getName() %></a></font></li>
 			            	      <%
-			            	    }
-			            	  }
-			            	}
-			            %>
-	            </ul>
-	        </li>
-            <li class="nav-item">
-                <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_student"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
-                <ul id="student" class="collapse" style="list-style: none;">
-                    <%
-		            	for(User user : users){
-		            	  String userName = user.getUserName();
-		            	  String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
-		            	  %>
-		            	  	<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName %></a></font></li>
-		            	  <%
-		            	}
-		            %>
-                </ul>
-            </li>
-          </ul>
-        </nav>
-
-<!-- ------------------------ main -------------------------------------- -->
-        <main class="col-md-9 col-xs-11 p-l-2 p-t-2">
-	        <div class="container" style="margin-top: 20px;">
+			            	    			}
+			            	  			}
+			            			}
+			            		%>
+	            			</ul>
+	        			</li>
+            			<li class="nav-item">
+                			<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_student"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+                			<ul id="student" class="collapse" style="list-style: none;">
+                    			<%
+		            				for(User user : users){
+		            	  			String userName = user.getUserName();
+		            	  			String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+		            	  		%>
+		            	  			<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName %></a></font></li>
+		            	 		 <%
+		            				}
+		            			%>
+                			</ul>
+            			</li>
+          			</ul>
+				</div>
+				<!-- -----sidebar----- -->
+			</td>
+			<td style="background-color: #f5f5f5;position:fixed; width: 87%;">
+	        <div class="container-fluid" style="margin-top: 20px;">
 	        	<h1 style="margin-top: 30px; margin-bottom: 20px;"> <%=choosedUser.getUsername() %>_ <%=projectName %> </h1>
 		        <!-- ---------------------------- Project ------------------------------- -->
 		        <div class="card">
@@ -151,8 +171,8 @@
 							<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
 							<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
 							<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_checkstyleFail"/></p>
-							<p class="ovol green" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p>
-							<p class="ovol gold" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p>
+							<!-- <p class="ovol green" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p>
+							<p class="ovol gold" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p> -->
 							<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
 						</div>
 						<table class="table table-striped" style="margin-top: 20px; width: 100%">
@@ -224,8 +244,9 @@
 		        </div>
 		        <!-- ---------------------------- Student Project ------------------------------- -->
 	        </div>
-        </main>
+	      </td>
 <!-- ------------------------ main -------------------------------------- -->
-      </div>
+      </tr>
+     </table>
 	</body>
 </html>

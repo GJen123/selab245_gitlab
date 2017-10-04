@@ -20,6 +20,7 @@
 			padding-top: 50px;
 			overflow-x: hidden;
 			font-family: Microsoft JhengHei;
+			height: 100%;
 		}
 		.container{
 			padding-bottom: 30px;

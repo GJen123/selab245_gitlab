@@ -81,6 +81,8 @@
   				to{ bottom:0; opacity:1 }
 			}
 	</style>
+	<link rel="shortcut icon" href="img/favicon.ico"/>
+	<link rel="bookmark" href="img/favicon.ico"/>
 	<title>ProgEdu</title>
 	
 </head>
