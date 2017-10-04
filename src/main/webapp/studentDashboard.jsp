@@ -74,6 +74,12 @@
 		.nav-link:hover{
 			color: #33CCFF;
 		}
+		#overview {
+			color: white;
+		}
+		#overview:hover{
+			color: #33CCFF;
+		}
 		#main {
 			height: 100%;
 		}
@@ -163,8 +169,8 @@
 				<!-- -----sidebar----- -->
 				<div id="sidebar">
 					<ul class="nav flex-column" style="padding-top: 20px;">
-					  <li class="nav-item" style="margin: 10px 0px 0px 15px; color: burlywood;">
-					    <font size="4"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="stuDashboard_li_overview"/></font>
+					  <li class="nav-item" style="margin: 10px 0px 0px 15px; color: white;">
+					    <font size="4"><a href="studentDashboard.jsp" id="overview"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="stuDashboard_li_overview"/></a></font>
 					  </li>
 					  <li class="nav-item" style="margin: 10px 0px 0px 15px;">
 					    <font size="4"><a><i class="fa fa-minus-square-o" aria-hidden="true"> &nbsp;<fmt:message key="stuDashboard_li_assignments"/></i></a></font>

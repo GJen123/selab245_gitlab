@@ -39,11 +39,18 @@
 				height: 100%;
 				background-color: #444;
 				color: white; 
+				margin: -1px;
 			}
 			.nav-link {
 				color: white; 
 			}
 			.nav-link:hover{
+				color: #33CCFF;
+			}
+			#overview {
+			color: white;
+			}
+			#overview:hover{
 				color: #33CCFF;
 			}
 			#main {
@@ -185,10 +192,10 @@
 					<div id="sidebar">
 						<ul class="nav flex-column" style="padding-top: 20px;">
 						  <li class="nav-item" style="margin: 10px 0px 0px 15px; color: burlywood;">
-						    <font size="4"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="stuDashboard_li_overview"/></font>
+						    <font size="4"><a href="studentDashboard.jsp" id="overview"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="stuDashboard_li_overview"/></a></font>
 						  </li>
 						  <li class="nav-item" style="margin: 10px 0px 0px 15px;">
-						    <font size="4"><a><i class="fa fa-minus-square-o fa-lg" aria-hidden="true"></i>&nbsp; <fmt:message key="stuDashboard_li_assignments"/></a></font>
+						    <font size="4"><a><i class="fa fa-minus-square-o" aria-hidden="true"> &nbsp;<fmt:message key="stuDashboard_li_assignments"/></i></a></font>
 						  </li>
 						  <%
 							  	for(GitlabProject stuProject : stuProjects){
