@@ -7,7 +7,7 @@ import fcu.selab.progedu.conn.Conn;
 public class TestUpdatePassword {
   @Test
   public void testUpdatePassword() {
-    Conn conn = Conn.getInstance();
-    conn.updateUserPassword(289, "D0240522");
+//    Conn conn = Conn.getInstance();
+//    conn.updateUserPassword(289, "D0240522");
   }
 }

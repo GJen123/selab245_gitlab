@@ -10,7 +10,6 @@ import fcu.selab.progedu.utils.ZipHandler;
 
 public class ZipHandlerTest {
 
-  @Test
   public void unzipTest() {
     try {
       ZipHandler zip = new ZipHandler();

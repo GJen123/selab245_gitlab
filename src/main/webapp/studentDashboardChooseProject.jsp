@@ -211,7 +211,7 @@
 						String projectUrl = stuDashChoPro.getChoosedProjectUrl(choosedProject);
 						List<String> jobColors = stuDash.getMainTableJobColor(stuProjects);
 						List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
-						projectUrl = projectUrl.replace("f05f585bd8c9", "140.134.26.72:10080");
+						projectUrl = projectUrl.replace("f05f585bd8c9", "mselab.iecs.fcu.edu.tw:10080");
 					%>
 					<div style="margin: 10px 10px 10px 10px;">
 						<h2><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=projectName%></h2>
