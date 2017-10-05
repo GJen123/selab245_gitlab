@@ -28,7 +28,7 @@ import fcu.selab.progedu.exception.LoadConfigFailureException;
 public class ZipHandler {
   HttpConnect httpConn = new HttpConnect();
   private static final String tempDir = System.getProperty("java.io.tmpdir");
-  private static final String uploadDir = tempDir + "uploads\\";
+  private static final String uploadDir = tempDir + "/uploads/";
 
   GitlabConfig gitData = GitlabConfig.getInstance();
 
