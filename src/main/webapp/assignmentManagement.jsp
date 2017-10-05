@@ -138,7 +138,7 @@
 							</div>
 							<div class="form-group">
 								<label for="Hw_Deadline"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwDeadline"/></h4></label>
-								<input id="Hw_Deadline" type="text" class="form-control" name="Hw_Deadline" required="required" placeholder="eg. 2017/01/01 23:59"/>
+								<input id="Hw_Deadline" type="datetime-local" class="form-control" name="Hw_Deadline" required="required" placeholder="eg. 2017/01/01 23:59"/>
 							</div>				
 							
 							<!-- ------------------------checkbox display------------------------------- -->

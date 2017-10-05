@@ -70,6 +70,46 @@ public class ProjectDbManager {
       }
     }
   }
+  
+  /**
+   * get project info by project name
+   * @param name project name
+   * @return project
+   */
+  public Project getProjectByName(String name) {
+    Project project = new Project();
+    Connection conn = database.getConnection();
+    String sql = "SELECT * FROM Assignment WHERE name = ?";
+    PreparedStatement stmt = null;
+
+    try {
+      stmt = conn.prepareStatement(sql);
+      stmt.setString(1, name);
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        String deadline = rs.getString("deadline").replace("T", " ");
+        String description = rs.getString("description");
+        boolean hasTemplate = rs.getBoolean("hasTemplate");
+        String type = rs.getString("type");
+
+        project.setName(name);
+        project.setDescription(description);
+        project.setHasTemplate(hasTemplate);
+        project.setType(type);
+        project.setDeadline(deadline);
+
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+    return project;
+  }
 
   /**
    * List all the projects
@@ -102,6 +142,12 @@ public class ProjectDbManager {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
     }
     return lsProjects;
   }
@@ -124,6 +170,12 @@ public class ProjectDbManager {
     } catch (SQLException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
     }
   }
 }

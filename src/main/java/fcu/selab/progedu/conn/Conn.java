@@ -590,11 +590,13 @@ public class Conn {
   /**
    * delete all gitlab projects
    */
-  public void deleteProjects() {
+  public void deleteProjects(String name) {
     List<GitlabProject> projects = getAllProjects();
     for (GitlabProject project : projects) {
       try {
-        gitlab.deleteProject(project.getId());
+        if (project.getName().equals(name)) {
+          gitlab.deleteProject(project.getId());
+        }
       } catch (IOException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();

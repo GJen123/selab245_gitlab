@@ -195,7 +195,7 @@ public class ProjectService2 {
 //      System.out.println(user.getName() + ", Create student project, and import project");
 
       // 11. send notification email to student
-      sendEmail(user.getEmail(), name);
+      // sendEmail(user.getEmail(), name);
 //      System.out.println(user.getName() + ", Send notification email to student");
     }
 
@@ -259,7 +259,7 @@ public class ProjectService2 {
     String uploadDir = tempDir + "uploads\\" + projectName;
 
     try {
-      process = Runtime.getRuntime().exec("cmd.exe /c " + command, // path to
+      process = Runtime.getRuntime().exec("cmd.exe /c" + command, // path to
                                                                    // executable
           null, // env vars, null means pass parent env
           new File(uploadDir));
@@ -281,7 +281,7 @@ public class ProjectService2 {
   private void execCmdInUploads(String command) {
     Process process;
     String tempDir = System.getProperty("java.io.tmpdir");
-    String uploadDir = tempDir + "/uploads/";
+    String uploadDir = tempDir + "uploads\\";
     
     File fileUploadDir = new File(uploadDir);
     if (!fileUploadDir.exists()) {
@@ -439,7 +439,7 @@ public class ProjectService2 {
 
   private void createReadmeFile(String readMe, String projectName) {
     String tempDir = System.getProperty("java.io.tmpdir");
-    String uploadDir = tempDir + "/uploads/";
+    String uploadDir = tempDir + "uploads\\";
     String projectDir = uploadDir + projectName;
 
     Writer writer = null;

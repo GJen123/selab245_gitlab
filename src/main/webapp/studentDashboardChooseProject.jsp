@@ -221,16 +221,24 @@
 						List<String> jobColors = stuDash.getMainTableJobColor(stuProjects);
 						List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
 						projectUrl = projectUrl.replace("f05f585bd8c9", "mselab.iecs.fcu.edu.tw:10080");
+						ProjectDbManager pDb = ProjectDbManager.getInstance();
+						Project project = pDb.getProjectByName(projectName);
 					%>
 					<div style="margin: 10px 10px 10px 10px;">
 						<h2><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=projectName%></h2>
-						
-						<p><fmt:message key="stuDashChooseProject_p_gitRepo"/></p>
+						<br>
+						<h5 style="font-weight: 700"><fmt:message key="stuDashChooseProject_p_gitRepo"/></h5>
 						<div id="inline">
 							<p id="copyTarget" style="padding-right: 10px;"><%=projectUrl %></p>
 							<button id="copyButton" class="btn btn-dark"><i class="fa fa-clipboard" aria-hidden="true"></i></button>
 						</div>
 						<p><fmt:message key="stuDashChooseProject_p_cloneUrl"/></p>
+						<hr>
+						<h5 style="font-weight: 700"><fmt:message key="stuDashChooseProject_p_assignmentContent"/></h5>
+						<%=project.getDescription() %>
+						<hr>
+						<h5 style="font-weight: 700"><fmt:message key="stuDashChooseProject_p_deadline"/></h5>
+						<p><%=project.getDeadline() %></p>
 					</div>
 					
 					<hr>
