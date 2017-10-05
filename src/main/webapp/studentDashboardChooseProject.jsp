@@ -272,6 +272,12 @@
 											int commit_count = conn.getAllCommitsCounts(choosedProject.getId());
 											commits = conn.getAllCommits(choosedProject.getId());
 											Collections.reverse(commits);
+											int j=1;
+											System.out.println(commits.size());
+											for(GitlabCommit commit : commits){
+											  System.out.println(commits.get(j-1).getMessage());
+											  j++;
+											}
 											for(Integer num : buildNum){
 											  	String color = stuDashChoPro.getCommitColor(num, user.getUsername(), projectName);
 											  	color = "circle " + color;
