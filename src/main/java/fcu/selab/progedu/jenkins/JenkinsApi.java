@@ -62,6 +62,7 @@ public class JenkinsApi {
   JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
   private String jenkinsRootUrl;
+  private String jenkinsHostUrl;
   private String jenkinsRootUsername;
   private String jenkinsRootPassword;
   private String jenkinsApiToken;
@@ -78,6 +79,7 @@ public class JenkinsApi {
       gitlabUsername = gitData.getGitlabRootUsername();
       gitlabPassword = gitData.getGitlabRootPassword();
       jenkinsRootUrl = jenkinsData.getJenkinsRootUrl();
+      jenkinsHostUrl = jenkinsData.getJenkinsHostUrl();
       jenkinsRootUsername = jenkinsData.getJenkinsRootUsername();
       jenkinsRootPassword = jenkinsData.getJenkinsRootPassword();
       jenkinsApiToken = jenkinsData.getJenkinsApiToken();
@@ -109,6 +111,7 @@ public class JenkinsApi {
     // ---Create Jenkins Job---
     String jobName = "root_" + proName;
     String proUrl = gitlabHostUrl + "/root/" + proName + ".git";
+    System.out.println("proUrl : " + proUrl);
     postCreateJob(jobName, proUrl, jenkinsCrumb, fileType, sb);
     // ------------------------
   }
@@ -130,11 +133,11 @@ public class JenkinsApi {
    *           on gitlab getuser call error
    */
   public void createJenkinsJob(String userName, String proName, String jenkinsCrumb,
-      String fileType, StringBuilder sb) throws LoadConfigFailureException, IOException {
+      String fileType, StringBuilder sb) {
 
     // ---Create Jenkins Job---
     String jobName = userName + "_" + proName;
-    String proUrl = gitData.getGitlabHostUrl() + "/" + userName + "/" + proName + ".git";
+    String proUrl = gitlabHostUrl + "/" + userName + "/" + proName + ".git";
     postCreateJob(jobName, proUrl, jenkinsCrumb, fileType, sb);
     // ------------------------
   }
@@ -164,18 +167,11 @@ public class JenkinsApi {
       post.addHeader("Content-Type", "application/xml");
       post.addHeader("Jenkins-Crumb", jenkinsCrumb);
       String filePath = null;
-      if (fileType != null) {
-        if (fileType.equals("Maven")) {
-          filePath = this.getClass().getResource("config_maven.xml").getFile();
-        } else if (fileType.equals("Javac")) {
-          filePath = this.getClass().getResource("config_javac.xml").getFile();
-        } else {
-          filePath = this.getClass().getResource("config_maven.xml").getFile();
-        }
-      } else {
-        filePath = this.getClass().getResource("config_javac.xml").getFile();
-      }
+      String configType = getConfigType(fileType);
+      filePath = this.getClass().getResource("/jenkins/" + configType).getPath();
 
+      // proUrl project name toLowerCase
+      proUrl = proUrl.toLowerCase();
       modifyXmlFileUrl(filePath, proUrl);
       if ("Javac".equals(fileType)) {
         modifyXmlFileCommand(filePath, sb);
@@ -444,7 +440,7 @@ public class JenkinsApi {
    * @throws IOException
    *           on gitlab getuser call error
    */
-  public void buildJob(String userName, String proName, String jenkinsCrumb) throws IOException {
+  public void buildJob(String userName, String proName, String jenkinsCrumb) {
     String jobName = null;
     jobName = userName + "_" + proName;
     postBuildJob(jobName, jenkinsCrumb);
@@ -803,7 +799,7 @@ public class JenkinsApi {
 
     return isCheckstyleError;
   }
-  
+
   /**
    * Get job build commit counts
    * 
@@ -814,5 +810,21 @@ public class JenkinsApi {
     JSONArray jsonBuilds = jsonApiJson.getJSONArray("builds");
     jobCommits = jsonBuilds.length();
     return jobCommits;
+  }
+
+  private String getConfigType(String fileType) {
+    String configType = null;
+    if (fileType != null) {
+      if (fileType.equals("Maven")) {
+        configType = "config_maven.xml";
+      } else if (fileType.equals("Javac")) {
+        configType = "config_javac.xml";
+      } else {
+        configType = "config_maven.xml";
+      }
+    } else {
+      configType = "config_javac.xml";
+    }
+    return configType;
   }
 }

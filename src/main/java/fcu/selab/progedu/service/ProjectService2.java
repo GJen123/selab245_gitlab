@@ -166,7 +166,7 @@ public class ProjectService2 {
       createReadmeFile(readMe, name);
     }
 
- // 6. Cmd gitlab add
+    // 6. Cmd gitlab add
     String addCommand = "git add .";
     execLinuxCommandInFile(addCommand, cloneFilePath);
     // execCmd(addCommand, name);
@@ -184,33 +184,21 @@ public class ProjectService2 {
     // 9. Add project to database
     addProject(name, deadline, readMe, fileType, hasTemplate);
 
-    // // 10. Create student project, and import project
-    // conn.createPrivateProject(name, rootProjectUrl);
-    //
-    // // 11. Create each Jenkins Jobs
-    // createJenkinsJob(name, fileType);
-    //
-    // // 12. send notification email to student
-    // // sendEmail();
-
     List<GitlabUser> users = conn.getUsers();
     Collections.reverse(users);
     for (GitlabUser user : users) {
       if (user.getId() == 1) {
         continue;
       }
-      if (user.getUsername().equals("M0605103")) {
-        conn.createPrivateProject(user.getId(), name, rootProjectUrl);
-      }
 
       // 10. Create student project, and import project
-//      conn.createPrivateProject(user.getId(), name, rootProjectUrl);
+      conn.createPrivateProject(user.getId(), name, rootProjectUrl);
 
       // System.out.println(user.getName() + ", Create student project, and
       // import project");
 
       // 11. send notification email to student
-      // sendEmail(user.getEmail(), name);
+      sendEmail(user.getEmail(), name);
       // System.out.println(user.getName() + ", Send notification email to
       // student");
     }
@@ -266,7 +254,7 @@ public class ProjectService2 {
 
     try {
       process = Runtime.getRuntime().exec(command, // path to
-                                                                   // executable
+                                                   // executable
           null, // env vars, null means pass parent env
           new File(uploadDir));
       BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -332,7 +320,7 @@ public class ProjectService2 {
       e.printStackTrace();
     }
   }
-  
+
   /**
    * 123123
    * 
@@ -460,35 +448,16 @@ public class ProjectService2 {
     String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername, jenkinsRootPassword);
     StringBuilder sb = zipHandler.getStringBuilder();
     jenkins.createRootJob(name, jenkinsCrumb, fileType, sb);
-
-    try {
-      List<GitlabUser> users = conn.getUsers();
-      Collections.reverse(users);
-      for (GitlabUser user : users) {
-        if (user.getId() == 1) {
-          continue;
-        }
-        if (user.getUsername().equals("M0605103")) {
-          jenkins.createJenkinsJob(user.getUsername(), name, jenkinsCrumb, fileType, sb);
-          jenkins.buildJob(user.getUsername(), name, jenkinsCrumb);
-        }
+    List<GitlabUser> users = conn.getUsers();
+    Collections.reverse(users);
+    for (GitlabUser user : users) {
+      if (user.getId() == 1) {
+        continue;
       }
-    } catch (LoadConfigFailureException | IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      jenkins.createJenkinsJob(user.getUsername(), name, jenkinsCrumb, fileType, sb);
+      jenkins.buildJob(user.getUsername(), name, jenkinsCrumb);
     }
-  }
 
-  private void createStudentJenkinsJob(String userName, String name, String fileType) {
-    String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername, jenkinsRootPassword);
-    StringBuilder sb = zipHandler.getStringBuilder();
-    try {
-      jenkins.createJenkinsJob(userName, name, jenkinsCrumb, fileType, sb);
-      jenkins.buildJob(userName, name, jenkinsCrumb);
-    } catch (LoadConfigFailureException | IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
   }
 
   private void createReadmeFile(String readMe, String projectName) {

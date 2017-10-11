@@ -1,7 +1,6 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<project>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project>
   <actions/>
-  <description></description>
+  <description/>
   <keepDependencies>false</keepDependencies>
   <properties>
     <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.4.3">
@@ -12,7 +11,7 @@
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <url>http://140.134.26.71:5487/D0323500/OOP-HW1.git</url>
+        <url>http://140.134.26.71:20080/m0602765/oop-hw1.git</url>
         <credentialsId>b418c20c-ac40-49ce-b27f-e3c796837ce6</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
@@ -32,7 +31,7 @@
   <authToken>02031fefb728e700973b6f3e5023a64c</authToken>
   <triggers>
     <com.dabsquared.gitlabjenkins.GitLabPushTrigger plugin="gitlab-plugin@1.4.3">
-      <spec></spec>
+      <spec/>
       <triggerOnPush>true</triggerOnPush>
       <triggerOnMergeRequest>true</triggerOnMergeRequest>
       <triggerOpenMergeRequestOnPush>never</triggerOpenMergeRequestOnPush>
@@ -42,9 +41,9 @@
       <skipWorkInProgressMergeRequest>true</skipWorkInProgressMergeRequest>
       <setBuildDescription>true</setBuildDescription>
       <branchFilterType>All</branchFilterType>
-      <includeBranchesSpec></includeBranchesSpec>
-      <excludeBranchesSpec></excludeBranchesSpec>
-      <targetBranchRegex></targetBranchRegex>
+      <includeBranchesSpec/>
+      <excludeBranchesSpec/>
+      <targetBranchRegex/>
       <secretToken>e2p05zNL5GQgsbZnVcGlCQ==</secretToken>
     </com.dabsquared.gitlabjenkins.GitLabPushTrigger>
     <hudson.triggers.SCMTrigger>
@@ -55,7 +54,7 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>javac src/fcu/iecs/oop/*.java</command>
+      <command>javac src/*.java</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>
