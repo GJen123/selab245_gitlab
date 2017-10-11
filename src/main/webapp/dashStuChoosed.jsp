@@ -130,13 +130,6 @@
 				<!-- -----sidebar----- -->
 				<div id="sidebar">
 					<ul class="nav flex-column" style="padding-top: 20px;">
-            			<li class="nav-item">
-            				<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_overview"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
-            				<ul id="overview" class="collapse" style="list-style: none;">
-            					<li class="nav-item"><font size="3"><a class="nav-link" href="#Student Projects"><i class="fa fa-table" aria-hidden="true"></i> <fmt:message key="stuDashboard_li_projects"/></a></font></li>
-            					<li class="nav-item"><font size="3"><a class="nav-link" href="#Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i> <fmt:message key="dashboard_li_chart"/></a></font></li>
-            				</ul>
-          			  </li>
           			  <li class="nav-item">
             				<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#projects" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Projects <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
             				<ul id="projects" class="collapse" style="list-style: none;">

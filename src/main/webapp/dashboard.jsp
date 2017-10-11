@@ -38,6 +38,10 @@
 		#sidebar a{
 			color: white;
 		}
+		#sidebar button{
+			color: white;
+			background: none;
+		}
 		
 		#inline {
 		    margin: 20px;
@@ -124,7 +128,10 @@
             				<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_overview"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
             				<ul id="overview" class="collapse" style="list-style: none;">
             					<li class="nav-item"><font size="3"><a class="nav-link" href="#Student Projects"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_studentProjects"/></a></font></li>
-         			   			<li class="nav-item"><font size="3"><a class="nav-link" href="#Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_chart"/></a></font></li>
+         			   			<li class="nav-item"><font size="3">
+         			   				<button type="button" class="btn btn-default" data-toggle="modal" data-target="#exampleModal">
+         			   					<i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_chart"/>
+									</button></font></li>
          			   		</ul>
         			    </li>
         			    <li class="nav-item">
@@ -315,33 +322,42 @@
 		        <!-- ---------------------------- Student Project ------------------------------- -->
 		        
 				<br><br>
-		        
-		        <!-- Nav tabs -->
-		        <div class="card">
-		        	<div class="card-header">
-		        		<h4 id="Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_chart"/></h4>
-		        	</div>
-		        	
-		        	<div class="card-block">
-		        		<ul class="nav nav-tabs" role="tablist">
-						  <li class="nav-item">
-						    <a class="nav-link active" data-toggle="tab" href="#chart1" role="tab">Chart1</a>
-						  </li>
-						  <li class="nav-item">
-						    <a class="nav-link" data-toggle="tab" href="#chart2" role="tab">Chart2</a>
-						  </li>
-						</ul>
-		        		<!-- Tab panes -->
-						<div class="tab-content text-center" style="margin-top: 10px">
-						  <div class="tab-pane active" id="chart1" role="tabpanel">
-						  	<div id="chart1Demo" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-						  	</div>
-						  <div class="tab-pane" id="chart2" role="tabpanel">
-						  	<div id="chart2Demo" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-						  </div>
-						</div>
-		        	</div>
-		        </div>	
+				
+				<!-- Modal -->
+				<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  					<div class="modal-dialog" role="document">
+    					<div class="modal-content">
+      						<div class="modal-header">
+        						<h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_chart"/></h5>
+        						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+         							<span aria-hidden="true">&times;</span>
+        						</button>
+      						</div>
+      						<div class="modal-body">
+      							<ul class="nav nav-tabs" role="tablist">
+						  			<li class="nav-item">
+						    			<a class="nav-link active" data-toggle="tab" href="#chart1" role="tab">Chart1</a>
+						  			</li>
+						  			<li class="nav-item">
+						    			<a class="nav-link" data-toggle="tab" href="#chart2" role="tab">Chart2</a>
+						  			</li>
+								</ul>
+		        				<!-- Tab panes -->
+								<div class="tab-content text-center" style="margin-top: 10px">
+						  			<div class="tab-pane active" id="chart1" role="tabpanel">
+						  				<div id="chart1Demo" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+						  			</div>
+						  			<div class="tab-pane" id="chart2" role="tabpanel">
+						  				<div id="chart2Demo" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+						  			</div>
+								</div>
+      						</div>
+     		 				<div class="modal-footer">
+        						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      						</div>
+    					</div>
+  					</div>
+				</div>
 	        </div>
         </td>
 <!-- ------------------------ main -------------------------------------- -->
