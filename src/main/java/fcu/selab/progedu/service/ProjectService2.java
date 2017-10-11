@@ -122,15 +122,12 @@ public class ProjectService2 {
     rootProjectUrl = getThisProjectUrl(name);
 
     // 2. Clone the project to C:\\Users\\users\\AppData\\Temp\\uploads
-    String cloneCommand = "git clone " + rootProjectUrl;
-    // String cloneCommand = "git clone " + rootProjectUrl + ".git " + uploadDir
-    // + name;
-    // String cloneCommand = "git clone
-    // http://root:iecsfcu123456@140.134.26.72:10080/root/oop-hw1.git
-    // /usr/local/tomcat/temp/uploads/root_oop-hw1";
-    // execLinuxCommand(cloneCommand);
+    // String cloneCommand = "git clone " + rootProjectUrl;
+    String cloneFilePath = uploadDir + name;
+    String cloneCommand = "git clone " + rootProjectUrl + " " + cloneFilePath;
+    execLinuxCommand(cloneCommand);
+    // execCmdInUploads(cloneCommand);
     System.out.println("cloneCommand : " + cloneCommand);
-    execCmdInUploads(cloneCommand);
 
     // 3. Store Zip File to folder if file is not empty
     if (!fileDetail.getFileName().isEmpty()) {
@@ -169,19 +166,20 @@ public class ProjectService2 {
       createReadmeFile(readMe, name);
     }
 
-    uploadDir += name;
-
-    // 6. Cmd gitlab add
+ // 6. Cmd gitlab add
     String addCommand = "git add .";
-    execCmd(addCommand, name);
+    execLinuxCommandInFile(addCommand, cloneFilePath);
+    // execCmd(addCommand, name);
 
     // 7. Cmd gitlab commit
-    String commitCommand = "git commit -m \"Teacher commit \"";
-    execCmd(commitCommand, name);
+    String commitCommand = "git commit -m \"Instructor&nbsp;Commit\"";
+    execLinuxCommandInFile(commitCommand, cloneFilePath);
+    // execCmd(commitCommand, name);
 
     // 8. Cmd gitlab push
     String pushCommand = "git push";
-    execCmd(pushCommand, name);
+    execLinuxCommandInFile(pushCommand, cloneFilePath);
+    // execCmd(pushCommand, name);
 
     // 9. Add project to database
     addProject(name, deadline, readMe, fileType, hasTemplate);
@@ -201,9 +199,12 @@ public class ProjectService2 {
       if (user.getId() == 1) {
         continue;
       }
+      if (user.getUsername().equals("M0605103")) {
+        conn.createPrivateProject(user.getId(), name, rootProjectUrl);
+      }
 
       // 10. Create student project, and import project
-      conn.createPrivateProject(user.getId(), name, rootProjectUrl);
+//      conn.createPrivateProject(user.getId(), name, rootProjectUrl);
 
       // System.out.println(user.getName() + ", Create student project, and
       // import project");
@@ -221,10 +222,6 @@ public class ProjectService2 {
     if (!isSave) {
       response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
     }
-
-    Date date1 = new Date();
-    String dateTime1 = sdFormat.format(date1);
-    System.out.println("end time: " + dateTime1);
 
     return response;
   }
@@ -268,7 +265,7 @@ public class ProjectService2 {
     Process process;
 
     try {
-      process = Runtime.getRuntime().exec("cmd.exe /c" + command, // path to
+      process = Runtime.getRuntime().exec(command, // path to
                                                                    // executable
           null, // env vars, null means pass parent env
           new File(uploadDir));
@@ -310,9 +307,7 @@ public class ProjectService2 {
 
   private void execCmdInUploads(String command) {
     Process process;
-    String tempDir = System.getProperty("java.io.tmpdir");
-    String uploadDir = tempDir + "uploads\\";
-    
+
     File fileUploadDir = new File(uploadDir);
     if (!fileUploadDir.exists()) {
       fileUploadDir.mkdir();
@@ -334,6 +329,35 @@ public class ProjectService2 {
       }
     } catch (IOException e) {
       // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+  
+  /**
+   * 123123
+   * 
+   * @param command
+   *          123
+   * @param filePath
+   *          123
+   */
+  public void execLinuxCommandInFile(String command, String filePath) {
+    Process process;
+    String line;
+    try {
+      process = Runtime.getRuntime().exec(command,
+          null,
+          new File(filePath));
+      BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+      while (true) {
+        // command output
+        line = br.readLine();
+        if (line == null) {
+          break;
+        }
+      }
+    } catch (IOException e) {
       e.printStackTrace();
     }
   }
@@ -444,8 +468,10 @@ public class ProjectService2 {
         if (user.getId() == 1) {
           continue;
         }
-        jenkins.createJenkinsJob(user.getUsername(), name, jenkinsCrumb, fileType, sb);
-        jenkins.buildJob(user.getUsername(), name, jenkinsCrumb);
+        if (user.getUsername().equals("M0605103")) {
+          jenkins.createJenkinsJob(user.getUsername(), name, jenkinsCrumb, fileType, sb);
+          jenkins.buildJob(user.getUsername(), name, jenkinsCrumb);
+        }
       }
     } catch (LoadConfigFailureException | IOException e) {
       // TODO Auto-generated catch block
@@ -466,8 +492,6 @@ public class ProjectService2 {
   }
 
   private void createReadmeFile(String readMe, String projectName) {
-    String tempDir = System.getProperty("java.io.tmpdir");
-    String uploadDir = tempDir + "uploads\\";
     String projectDir = uploadDir + projectName;
 
     Writer writer = null;
