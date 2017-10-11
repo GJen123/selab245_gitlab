@@ -208,6 +208,7 @@
 									  // Get commit date
 									  Date date = commits.get(num-1).getCreatedAt();
 									  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+									  sdf.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
 									  String strDate = sdf.format(date);
 									  
 									  if(result.equals("SUCCESS")){

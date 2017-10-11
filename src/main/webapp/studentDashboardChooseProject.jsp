@@ -281,22 +281,25 @@
 											commits = conn.getAllCommits(choosedProject.getId());
 											Collections.reverse(commits);
 											int j=1;
-											System.out.println(commits.size());
-											for(GitlabCommit commit : commits){
-											  System.out.println(commits.get(j-1).getMessage());
-											  j++;
-											}
+											
 											for(Integer num : buildNum){
 											  	String color = stuDashChoPro.getCommitColor(num, user.getUsername(), projectName);
 											  	color = "circle " + color;
 											  	if(num == 1) {
 											  	  color = "circle gray";
 											  	}
-											  	Date date = commits.get(num-1).getCreatedAt();
-											  	String strDate = stuDashChoPro.getCommitDate(date);
-											  	String commitMessage = commits.get(num-1).getMessage();
-											  	if(commitMessage.equals("")){
-											  	  commitMessage = "N/A";
+											  	Date date = new Date();
+											  	String strDate = "";
+											  	String commitMessage = "";
+											  	if(num<=commits.size()) {
+												  	date = commits.get(num-1).getCreatedAt();
+												  	strDate = stuDashChoPro.getCommitDate(date);
+												  	commitMessage = commits.get(num-1).getMessage();
+												  	if(commitMessage.equals("")){
+													  	  commitMessage = "N/A";
+													}
+											  	}else {
+											  		continue;
 											  	}
 											  	%>
 											  	<tr id="<%=num %>" onClick="changeIframe(this)">
