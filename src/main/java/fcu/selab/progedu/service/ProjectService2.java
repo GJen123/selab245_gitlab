@@ -181,6 +181,10 @@ public class ProjectService2 {
     execLinuxCommandInFile(pushCommand, cloneFilePath);
     // execCmd(pushCommand, name);
 
+    // remove project file in linux
+    String removeFileCommand = "rm -rf " + name;
+    execLinuxCommandInFile(removeFileCommand, uploadDir);
+
     // 9. Add project to database
     addProject(name, deadline, readMe, fileType, hasTemplate);
 
@@ -198,7 +202,7 @@ public class ProjectService2 {
       // import project");
 
       // 11. send notification email to student
-      sendEmail(user.getEmail(), name);
+      // sendEmail(user.getEmail(), name);
       // System.out.println(user.getName() + ", Send notification email to
       // student");
     }
@@ -452,6 +456,7 @@ public class ProjectService2 {
     Collections.reverse(users);
     for (GitlabUser user : users) {
       if (user.getId() == 1) {
+        jenkins.buildJob(user.getUsername(), name, jenkinsCrumb);
         continue;
       }
       jenkins.createJenkinsJob(user.getUsername(), name, jenkinsCrumb, fileType, sb);
