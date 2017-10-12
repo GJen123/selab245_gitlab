@@ -14,7 +14,6 @@ public class deleteAllProjects {
 
   public static void main(String[] args) {
     // TODO Auto-generated method stub
-
 //    conn.deleteProjects("OOP-HW1");
     String crumb = jenkins.getCrumb("root", "zxcv1234");
     for (GitlabUser user : users) {
