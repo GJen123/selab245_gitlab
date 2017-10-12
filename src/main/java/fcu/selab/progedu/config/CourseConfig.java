@@ -56,4 +56,19 @@ public class CourseConfig {
     String exception = "Unable to get config of COURSE connection string from file;";
     throw new LoadConfigFailureException(exception + PROPERTY_FILE);
   }
+
+  /**
+   * Get course full name
+   * 
+   * @return course fill name
+   * @throws LoadConfigFailureException
+   *           when property file is not found, the exception is thrown
+   */
+  public String getCourseFullName() throws LoadConfigFailureException {
+    if (props != null) {
+      return props.getProperty("COURSE_FULL_NAME");
+    }
+    String exception = "Unable to get config of COURSE connection string from file;";
+    throw new LoadConfigFailureException(exception + PROPERTY_FILE);
+  }
 }
