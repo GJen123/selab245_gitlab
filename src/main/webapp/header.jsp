@@ -64,6 +64,7 @@
 		        			<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 		          				<a class="dropdown-item" href="studentManagement.jsp"><i class="fa fa-user-plus" aria-hidden="true"></i> <fmt:message key="top_navbar_manageStudent"/></a>
 		          				<a class="dropdown-item" href="assignmentManagement.jsp"><i class="fa fa-pencil-square" aria-hidden="true" style="margin-right: 5px;"></i> <fmt:message key="top_navbar_manageHW"/></a>
+		          				<a class="dropdown-item" href="deleteAssignment.jsp"><i class="fa fa-times" aria-hidden="true" style="margin-right: 5px;"></i> <fmt:message key="top_navbar_deleteAssignment"/></a>
 		          				<a class="dropdown-item" href="groupManagement.jsp"><i class="fa fa-users" aria-hidden="true" style="margin-right: 2px;"></i> <fmt:message key="top_navbar_manageGroup"/></a>
 		        			</div>
 		      			</li>

@@ -182,8 +182,8 @@ public class ProjectService2 {
     // execCmd(pushCommand, name);
 
     // remove project file in linux
-    String removeFileCommand = "rm -rf " + name;
-    execLinuxCommandInFile(removeFileCommand, uploadDir);
+    String removeFileCommand = "rm -rf uploads/";
+    execLinuxCommandInFile(removeFileCommand, tempDir);
 
     // 9. Add project to database
     addProject(name, deadline, readMe, fileType, hasTemplate);
@@ -512,5 +512,37 @@ public class ProjectService2 {
 
     dbManager.addProject(project);
   }
-
+  
+  /**
+   * delete projects
+   * @param name project name
+   * @return response
+   */
+  @POST
+  @Path("delete")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response deleteProject(@FormDataParam("Hw_Name") String name) {
+    List<GitlabUser> users = conn.getUsers();
+    
+    //delete db
+    dbManager.deleteProject(name);
+    
+    //delete gitlab
+    conn.deleteProjects(name);
+    String crumb = jenkins.getCrumb("root", "zxcv1234");
+    
+    //delete Jenkins
+    for (GitlabUser user : users) {
+      String jobName = user.getUsername() + "_" + name;
+      jenkins.deleteJob(jobName, crumb);
+    }
+    
+    Response response = Response.ok().build();
+    if (!isSave) {
+      response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+    
+    return response;
+  }
 }

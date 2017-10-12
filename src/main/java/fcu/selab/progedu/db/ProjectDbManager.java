@@ -155,14 +155,13 @@ public class ProjectDbManager {
   /**
    * Delete project from database
    * 
-   * @param project
-   *          project
+   * @param name
+   *          project name
    */
-  public void deleteProject(Project project) {
+  public void deleteProject(String name) {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
-    Statement stmt = null;
-    String sql = "DELETE FROM Assignment WHERE 'name'=" + project.getName();
+    String sql = "DELETE FROM Assignment WHERE name='" + name + "'";
     try {
       preStmt = conn.prepareStatement(sql);
       preStmt.executeUpdate();
