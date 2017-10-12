@@ -141,9 +141,9 @@
 		 			           	for(User user : users){
 					            	  String userName = user.getUserName();
 					            	  String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
-					            %>
+					            	  %>
 		 			           	  	<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName %></a></font></li>
-		 			           	<%
+		 			           	  <%
 		  			          	}
 		  			          %>
          			       </ul>

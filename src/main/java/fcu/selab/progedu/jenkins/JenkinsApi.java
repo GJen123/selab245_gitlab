@@ -84,7 +84,6 @@ public class JenkinsApi {
       jenkinsRootPassword = jenkinsData.getJenkinsRootPassword();
       jenkinsApiToken = jenkinsData.getJenkinsApiToken();
     } catch (LoadConfigFailureException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }
@@ -268,13 +267,10 @@ public class JenkinsApi {
         sb.append("\n");
       }
     } catch (FileNotFoundException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (UnsupportedEncodingException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     return sb;
@@ -305,16 +301,12 @@ public class JenkinsApi {
       StreamResult result = new StreamResult(new File(filepath));
       transformer.transform(source, result);
     } catch (ParserConfigurationException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (TransformerException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (SAXException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }
@@ -344,16 +336,12 @@ public class JenkinsApi {
       StreamResult result = new StreamResult(new File(filepath));
       transformer.transform(source, result);
     } catch (ParserConfigurationException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (TransformerException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (SAXException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }
@@ -699,9 +687,16 @@ public class JenkinsApi {
    * @return amount
    */
   public int getCheckstyleErrorAmount(String checkstyleDes) {
+    // TODO Auto-generated catch block
+    // "healthReport":[{"description":"No xml report files found for
+    // checkstyle",
     int errorAmount = 0;
-    String amount = checkstyleDes.substring(checkstyleDes.length() - 1, checkstyleDes.length());
-    errorAmount = Integer.parseInt(amount);
+    // if (!checkstyleDes.equals("No xml report files found for checkstyle")) {
+    // String amount = checkstyleDes.substring(checkstyleDes.length() - 1,
+    // checkstyleDes.length());
+    // System.out.println("amount : " + amount);
+    // errorAmount = Integer.parseInt(amount);
+    // }
     return errorAmount;
   }
 
