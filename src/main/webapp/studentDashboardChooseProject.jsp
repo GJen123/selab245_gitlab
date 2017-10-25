@@ -250,8 +250,9 @@
 								<%
 									String lastBuildColor = stuDashChoPro.getLastColor(user.getUsername(), projectName);
 									lastBuildColor = "bigcircle2 " + lastBuildColor;
-									String lastBuildNum = stuDashChoPro.getLastBuildNum(user.getUsername(), projectName);
-									if(lastBuildNum.equals(String.valueOf(1))){
+									List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(user.getUsername(), projectName);
+									int lastBuildNum = buildNum.size();
+									if(lastBuildNum==1){
 									  lastBuildColor = "bigcircle2 gray";
 									}
 								%>
@@ -274,43 +275,32 @@
 					                    </tr>
 									</thead>
 									<tbody>
-										<%
-											List<Integer> buildNum = stuDashChoPro.getBuildNumbers(user.getUsername(), projectName);
-											List<GitlabCommit> commits;
-											int commit_count = conn.getAllCommitsCounts(choosedProject.getId());
-											commits = conn.getAllCommits(choosedProject.getId());
-											Collections.reverse(commits);
-											int j=1;
-											
-											for(Integer num : buildNum){
-											  	String color = stuDashChoPro.getCommitColor(num, user.getUsername(), projectName);
-											  	color = "circle " + color;
-											  	if(num == 1) {
-											  	  color = "circle gray";
-											  	}
-											  	Date date = new Date();
-											  	String strDate = "";
-											  	String commitMessage = "";
-											  	if(num<=commits.size()) {
-												  	date = commits.get(num-1).getCreatedAt();
-												  	strDate = stuDashChoPro.getCommitDate(date);
-												  	commitMessage = commits.get(num-1).getMessage();
-												  	if(commitMessage.equals("")){
-													  	  commitMessage = "N/A";
-													}
-											  	}else {
-											  		continue;
-											  	}
-											  	%>
-											  	<tr id="<%=num %>" onClick="changeIframe(this)">
-											  		<td><%=num %></td>
-											  		<td><p class="<%=color%>" id="pProject"></p></td>
-											  		<td><%=strDate %></td>
-											  		<td><%=commitMessage %></td>
-											  	</tr>
-											  	<%
-											}
-										%>
+									<%
+										int commit_count = buildNum.size();
+										int i=1;
+										for(Integer num : buildNum){
+										  	String buildApiJson = stuDashChoPro.getBuildApiJson(num, user.getUsername(), projectName);
+										  	String strDate = stuDashChoPro.getCommitTime(buildApiJson);
+										  	String commitMessage = stuDashChoPro.getCommitMessage(num, user.getUsername(), projectName);
+										  	commitMessage = commitMessage.replace("Commit message: ", "");
+										  	commitMessage = commitMessage.substring(1, commitMessage.length()-1);
+										  	
+											String color = stuDashChoPro.getCommitColor(num, user.getUsername(), projectName, buildApiJson);
+											color = "circle " + color;
+										  	if(num == 1) {
+										  	  color = "circle gray";
+										  	}
+										  	%>
+										  	<tr id="<%=num %>" onClick="changeIframe(this)">
+										  		<td><%=i %></td>
+										  		<td><p class="<%=color%>" id="pProject"></p></td>
+										  		<td><%=strDate %></td>
+										  		<td><%=commitMessage %></td>
+										  	</tr>
+										  	<%
+										  	i++;
+										}
+									%>
 									</tbody>
 								</table>
 							</div>
@@ -319,7 +309,7 @@
 					
 					<hr>
 	
-	          		<h4 id="iFrameTitle">Feedback Information (#1)</h4>
+	          		<h4 id="iFrameTitle">Feedback Information</h4>
 	          				
 	        		<!-- iFrame -->
 					<%
@@ -400,7 +390,6 @@
 		function changeIframe(tr){
 			var u = '<%=url%>' + tr.id + '/consoleText';
 			$('#jenkinsOutput').attr('src',u);
-			$('#iFrameTitle').text('Feedback Information (#'+ tr.id +')');
 		}
 	</script>
 </html>

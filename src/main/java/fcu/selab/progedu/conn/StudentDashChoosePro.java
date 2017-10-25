@@ -1,18 +1,23 @@
 package fcu.selab.progedu.conn;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.gitlab.api.models.GitlabProject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
+import fcu.selab.progedu.jenkins.JobStatus;
 
 public class StudentDashChoosePro {
   JenkinsConfig jenkinsData;
   JenkinsApi jenkins;
+  JobStatus jobStatus = new JobStatus();
 
   public StudentDashChoosePro() {
     jenkinsData = JenkinsConfig.getInstance();
@@ -67,15 +72,58 @@ public class StudentDashChoosePro {
     List<Integer> buildNumbers = null;
     try {
       jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
-      buildNumbers = jenkins.getJenkinsJobAllBuildNumber(
-          jenkinsData.getJenkinsRootUsername(),
-          jenkinsData.getJenkinsRootPassword(),
-          jobUrl);
+      buildNumbers = jenkins.getJenkinsJobAllBuildNumber(jenkinsData.getJenkinsRootUsername(),
+          jenkinsData.getJenkinsRootPassword(), jobUrl);
     } catch (LoadConfigFailureException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
     return buildNumbers;
+  }
+
+  /**
+   * count for SCM build
+   * 
+   * @param username
+   *          student name
+   * @param projectName
+   *          project name
+   * @return count
+   */
+  public List<Integer> getScmBuildCounts(String username, String projectName) {
+    String jobName = username + "_" + projectName;
+    jobStatus.setName(jobName);
+    String jobUrl = "";
+    List<Integer> numbers = new ArrayList<Integer>();
+    List<Integer> counts = new ArrayList<Integer>();
+    String jenkinsHostUrl = "";
+    try {
+      jenkinsHostUrl = jenkinsData.getJenkinsHostUrl();
+      jobUrl = jenkinsHostUrl + "/job/" + jobName + "/api/json";
+      numbers = jenkins.getJenkinsJobAllBuildNumber(jenkinsData.getJenkinsRootUsername(),
+          jenkinsData.getJenkinsRootPassword(), jobUrl);
+    } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    for (int i : numbers) {
+      jobStatus.setUrl(jenkinsHostUrl + "/job/" + jobName + "/" + i + "/api/json");
+      // Get job status
+      jobStatus.setJobApiJson();
+      String apiJson = jobStatus.getJobApiJson();
+      JSONObject json = new JSONObject(apiJson);
+      JSONArray actions = json.getJSONArray("actions");
+      JSONArray causes = actions.getJSONObject(0).getJSONArray("causes");
+      String shortDescription = causes.getJSONObject(0).optString("shortDescription");
+      if ("Started by an SCM change".equals(shortDescription)) {
+        counts.add(i);
+      } else {
+        if (i == 1) { // teacher commit
+          counts.add(i);
+        }
+      }
+    }
+    return counts;
   }
 
   /**
@@ -93,8 +141,7 @@ public class StudentDashChoosePro {
     try {
       List<Integer> buildNumbers = getBuildNumbers(username, projectName);
 
-      String buildUrl = jenkinsData.getJenkinsHostUrl()
-          + "/job/" + jobName + "/"
+      String buildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/"
           + buildNumbers.get(buildNumbers.size() - 1) + "/api/json";
 
       String buildApiJson = jenkins.getJobBuildApiJson(jenkinsData.getJenkinsRootUsername(),
@@ -102,8 +149,7 @@ public class StudentDashChoosePro {
 
       String result = jenkins.getJobBuildResult(buildApiJson);
 
-      String projectJenkinsUrl = jenkinsData.getJenkinsHostUrl()
-          + "/job/" + jobName + "/"
+      String projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/"
           + buildNumbers.get(buildNumbers.size() - 1) + "/consoleText";
 
       color = checkColor(result, projectJenkinsUrl);
@@ -158,23 +204,14 @@ public class StudentDashChoosePro {
    *          project name
    * @return color
    */
-  public String getCommitColor(int num, String username, String projectName) {
+  public String getCommitColor(int num, String username, String projectName, String apiJson) {
     String color = null;
     String jobName = username + "_" + projectName;
     try {
+      String result = jenkins.getJobBuildResult(apiJson);
 
-      String buildUrl = jenkinsData.getJenkinsHostUrl()
-          + "/job/" + jobName + "/"
-          + num + "/api/json";
-
-      String buildApiJson = jenkins.getJobBuildApiJson(jenkinsData.getJenkinsRootUsername(),
-          jenkinsData.getJenkinsRootPassword(), buildUrl);
-
-      String result = jenkins.getJobBuildResult(buildApiJson);
-
-      String projectJenkinsUrl = jenkinsData.getJenkinsHostUrl()
-          + "/job/" + jobName + "/"
-          + num + "/consoleText";
+      String projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num
+          + "/consoleText";
 
       color = checkColor(result, projectJenkinsUrl);
     } catch (LoadConfigFailureException e) {
@@ -182,6 +219,73 @@ public class StudentDashChoosePro {
       e.printStackTrace();
     }
     return color;
+  }
+
+  /**
+   * get
+   * 
+   * @param num
+   *          buuild num
+   * @param username
+   *          student name
+   * @param projectName
+   *          project name
+   * @return commit message
+   */
+  public String getCommitMessage(int num, String username, String projectName) {
+    String jobName = username + "_" + projectName;
+    String console = "";
+    try {
+      String projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num
+          + "/consoleText";
+      console = jenkins.getConsoleTextCommitMessage(projectJenkinsUrl);
+    } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return console;
+  }
+
+  /**
+   * get job build time
+   * 
+   * @param apiJson
+   *          build api json
+   * @return date
+   */
+  public String getCommitTime(String apiJson) {
+    JSONObject json = new JSONObject(apiJson);
+    long timestamp = json.getLong("timestamp");
+    Date date = new Date(timestamp);
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    String strDate = sdf.format(date);
+    return strDate;
+  }
+
+  /**
+   * get job build api json
+   * 
+   * @param num
+   *          build num
+   * @param username
+   *          student name
+   * @param projectName
+   *          project name
+   * @return json string
+   */
+  public String getBuildApiJson(int num, String username, String projectName) {
+    String jobName = username + "_" + projectName;
+    String buildUrl;
+    String buildApiJson = "";
+    try {
+      buildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num + "/api/json";
+      buildApiJson = jenkins.getJobBuildApiJson(jenkinsData.getJenkinsRootUsername(),
+          jenkinsData.getJenkinsRootPassword(), buildUrl);
+    } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return buildApiJson;
   }
 
   /**

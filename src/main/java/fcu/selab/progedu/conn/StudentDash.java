@@ -6,10 +6,11 @@ import java.util.List;
 
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.data.Project;
-import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
@@ -24,6 +25,7 @@ public class StudentDash {
   List<GitlabProject> gitProjects;
   JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
   JenkinsApi jenkins = JenkinsApi.getInstance();
+  JobStatus jobStatus = new JobStatus();
 
   /**
    * Constructor
@@ -83,7 +85,7 @@ public class StudentDash {
         String jobApiJson = jobStatus.getJobApiJson();
         boolean isMaven = jenkins.checkProjectIsMvn(jobApiJson);
         String color = jenkins.getJobJsonColor(jobApiJson);
-        String checkstyleDes = jenkins.getCheckstyleDes(jobApiJson);
+        JSONObject checkstyleDes = jenkins.getCheckstyleDes(jobApiJson);
         if (null != checkstyleDes && !"".equals(checkstyleDes)) {
           checkstyleErrorAmount = jenkins.getCheckstyleErrorAmount(checkstyleDes);
         }
@@ -116,11 +118,14 @@ public class StudentDash {
     }
     return commitCounts;
   }
-  
+
   /**
    * get jenkins job status
-   * @param jobName job's name
-   * @param jobUrl job's jenkins url
+   * 
+   * @param jobName
+   *          job's name
+   * @param jobUrl
+   *          job's jenkins url
    * @return status
    */
   public JobStatus getJobStatus(String jobName, String jobUrl) {
@@ -130,12 +135,14 @@ public class StudentDash {
     jobStatus.setJobApiJson();
     return jobStatus;
   }
-  
+
   /**
    * Get user job status list
    * 
-   * @param projects gitlab project list
-   * @param user user
+   * @param projects
+   *          gitlab project list
+   * @param user
+   *          user
    * @return job status list
    */
   public List<JobStatus> getJobStatusList(List<GitlabProject> projects, GitlabUser user) {
@@ -154,11 +161,12 @@ public class StudentDash {
     }
     return jobStatusList;
   }
-  
+
   /**
    * Get job commit counts
    * 
-   * @param jobStatusis job status
+   * @param jobStatusis
+   *          job status
    * @return commit counts list
    */
   public List<Integer> getJobCommits(List<JobStatus> jobStatusis) {
@@ -168,5 +176,50 @@ public class StudentDash {
       commitCounts.add(count);
     }
     return commitCounts;
+  }
+
+  /**
+   * get student project scm commit count
+   * 
+   * @param userName
+   *          student name
+   * @param gitProject
+   *          gitlab project
+   * @return count
+   */
+  public int getScmCommit(String userName, GitlabProject gitProject) {
+    String jobName = userName + "_" + gitProject.getName();
+    jobStatus.setName(jobName);
+    String jobUrl = "";
+    List<Integer> numbers = new ArrayList<Integer>();
+    String jenkinsHostUrl = "";
+    try {
+      jenkinsHostUrl = jenkinsData.getJenkinsHostUrl();
+      jobUrl = jenkinsHostUrl + "/job/" + jobName + "/api/json";
+      numbers = jenkins.getJenkinsJobAllBuildNumber(jenkinsData.getJenkinsRootUsername(),
+          jenkinsData.getJenkinsRootPassword(), jobUrl);
+    } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    int commitCount = 0;
+    for (int i : numbers) {
+      jobStatus.setUrl(jenkinsHostUrl + "/job/" + jobName + "/" + i + "/api/json");
+      // Get job status
+      jobStatus.setJobApiJson();
+      String apiJson = jobStatus.getJobApiJson();
+      JSONObject json = new JSONObject(apiJson);
+      JSONArray actions = json.getJSONArray("actions");
+      JSONArray causes = actions.getJSONObject(0).getJSONArray("causes");
+      String shortDescription = causes.getJSONObject(0).optString("shortDescription");
+      if ("Started by an SCM change".equals(shortDescription)) {
+        commitCount++;
+      } else {
+        if (i == 1) { // teacher commit
+          commitCount++;
+        }
+      }
+    }
+    return commitCount;
   }
 }

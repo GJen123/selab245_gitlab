@@ -8,7 +8,7 @@
 <%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>   
 <%@ page import="org.gitlab.api.GitlabAPI" %>
 <%@ page import="org.gitlab.api.models.*" %>
-<%@ page import="java.util.*" %>
+<%@ page import="java.util.*, fcu.selab.progedu.conn.Dash" %>
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
 <%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
 
@@ -87,6 +87,9 @@
 		.circle a {
 			color: #fff;
 		}
+		.highcharts-container {
+			text-align: center;
+		}
 	</style>
 
 	<link rel="shortcut icon" href="img/favicon.ico"/>
@@ -96,6 +99,7 @@
 <body>
 	<%
 		Conn conn = Conn.getInstance();
+		
 		HttpConnect httpConn = HttpConnect.getInstance();
 	
 		UserDbManager db = UserDbManager.getInstance();
@@ -131,7 +135,8 @@
          			   			<li class="nav-item"><font size="3">
          			   				<button type="button" class="btn btn-default" data-toggle="modal" data-target="#exampleModal">
          			   					<i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_chart"/>
-									</button></font></li>
+									</button></font>
+								</li>
          			   		</ul>
         			    </li>
         			    <li class="nav-item">
@@ -141,9 +146,9 @@
 		 			           	for(User user : users){
 					            	  String userName = user.getUserName();
 					            	  String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
-					            	  %>
+					            %>
 		 			           	  	<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName %></a></font></li>
-		 			           	  <%
+		 			           	<%
 		  			          	}
 		  			          %>
          			       </ul>
@@ -186,8 +191,8 @@
 								
 									for(User user : users){
 										String userName = user.getUserName();
-										//String personal_url = gitData.getGitlabHostUrl() + "/u/" + userName;
 										String dashStuChoosedHref = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+										Dash dash = new Dash(user);
 										%>
 											<tr id="allProject">
 												<td width="10%" id="allProject"><a href=<%=dashStuChoosedHref %>><%=user.getUserName() %></a></td>
@@ -196,92 +201,46 @@
 													Collections.reverse(gitProjects);
 													for(Project dbProject : dbProjects){
 														String proName = null;
-														String proUrl = null;
-														JobStatus jobStatus = new JobStatus();
-														String checkStyleResultUrl = null;
-														String projectJenkinsUrl = null;
-														int commit_count = 0;
 														String circleColor = "circle gray";
+														int commit_count = 0;
+														int redCount = 0;
+														int blueCount = 0;
+														int grayCount = 0;
+														int orangeCount = 0;
+														int commitCount = 0;
 														for(GitlabProject gitProject : gitProjects){
 															if(dbProject.getName().equals(gitProject.getName())){
 																
 																JSONObject json = new JSONObject();
 																json.put("name", dbProject.getName());
-																int redCount = 0;
-																int blueCount = 0;
-																int grayCount = 0;
-																int orangeCount = 0;
-																int commitCount = 0;
 																		
-																proName = dbProject.getName();
-																proUrl = gitProject.getWebUrl();
-																proUrl = conn.getReplaceUrl(proUrl);
-																proUrl += "/commits/master"; 
+																proName = dbProject.getName(); 
 																
-																//---Jenkins---
-																String jobName = user.getUserName() + "_" + gitProject.getName();
-																jobStatus.setName(jobName);
-																String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
-																jobStatus.setUrl(jobUrl);
-																
-																// Get job status
-																jobStatus.setJobApiJson();
-																boolean isMaven = jenkins.checkProjectIsMvn(jobStatus.getJobApiJson());
-																commit_count = jenkins.getJobBuildCommit(jobStatus.getJobApiJson());
-																
-																String color = null;
-																int checkstyleErrorAmount = 0;
-																if(null != jobStatus.getJobApiJson()){
-																	color = jenkins.getJobJsonColor(jobStatus.getJobApiJson());
-																	if(!isMaven){
-																	  // Javac
-																	  if(color.equals("red")){
-																	    // color == red
-																	    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/consoleText";
-																	  }else{
-																	    // color != red , gray or blue
-																	    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
-																	  }
-																	}else{
-																	  // Maven
-																	  if(color.equals("red")){
-																	    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/consoleText";
-																	 	String checkstyleDes = jenkins.getCheckstyleDes(jobStatus.getJobApiJson());
-																		if(null != checkstyleDes && !"".equals(checkstyleDes)){
-																		  checkstyleErrorAmount = jenkins.getCheckstyleErrorAmount(checkstyleDes);
-																		}
-																		if(checkstyleErrorAmount != 0){
-																		  color = "orange";
-																		  projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/violations";
-																		}
-																	  }else{
-																	    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
-																	  }
-																	}
+																circleColor = dash.getMainTableColor(gitProject);
+																String buildResult = circleColor.replace("color ", "");
+																switch (buildResult) {
+																case "red":
+																	redCount++;
+																	
+																	break;
+																case "blue":
+																	blueCount++;
+																	break;
+																case "orange":
+																	orangeCount++;
+																	break;
+																case "gray":
+																	grayCount++;
+																	break;
+																default:
+																	break;
+																}
+
+																commit_count = dash.getProjectCommitCount(gitProject);
+																if(commit_count != 1) {
+																	commitCount += commit_count;
 																}
 																
-																if(commit_count == 1){
-																  circleColor = "circle gray";
-																  projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
-																  grayCount++;
-																} else {
-																  	if(color!=null){
-																  	  circleColor = "circle " + color;
-																  	  if(color.equals("red")) {
-																  		  redCount++;
-																  	  }
-																  	  if(color.equals("blue")) {
-																  		  blueCount++;
-																  	  }
-																  	  if(color.equals("orange")) {
-																  		  orangeCount++;
-																  	  }
-																	}else{
-																	  circleColor = "circle gray";
-																	  grayCount++;
-																	}
-																  	commitCount += commit_count;
-																}
 																json.put("blueCount", blueCount);
 																json.put("redCount", redCount);
 																json.put("orangeCount", orangeCount);
@@ -298,7 +257,7 @@
 														if("N/A".equals(proName) || "".equals(proName) || null == proName){
 															if(proName == null) {
 																proName = "N/A";
-															}
+														}
 															%>
 																<td style="margin: 10px 0px 0px 10px;"><%=proName %></td>
 															<%
@@ -325,7 +284,7 @@
 				
 				<!-- Modal -->
 				<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  					<div class="modal-dialog" role="document">
+  					<div class="modal-dialog" role="document" style="max-width: 800px;">
     					<div class="modal-content">
       						<div class="modal-header">
         						<h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_chart"/></h5>

@@ -228,11 +228,10 @@
 									List<String> jobColors = stuDash.getMainTableJobColor(stuProjects);
 								
 									List<JobStatus> jobStatusis = stuDash.getJobStatusList(stuProjects, user);
-									List<Integer> jobCommitCounts = stuDash.getJobCommits(jobStatusis);
 									int i = 0;
 									for(GitlabProject stuProject : stuProjects){
 									  	String color = "circle " + jobColors.get(i);
-									  	int commitCount = jobCommitCounts.get(i);
+									  	int commitCount = stuDash.getScmCommit(user.getUsername(), stuProject);
 									  	String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
 									  	if(commitCount == 1){
 									  		color = "circle gray";

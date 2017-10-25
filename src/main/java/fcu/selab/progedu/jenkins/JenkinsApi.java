@@ -84,6 +84,7 @@ public class JenkinsApi {
       jenkinsRootPassword = jenkinsData.getJenkinsRootPassword();
       jenkinsApiToken = jenkinsData.getJenkinsApiToken();
     } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }
@@ -267,10 +268,13 @@ public class JenkinsApi {
         sb.append("\n");
       }
     } catch (FileNotFoundException e) {
+      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (UnsupportedEncodingException e) {
+      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (IOException e) {
+      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     return sb;
@@ -301,12 +305,16 @@ public class JenkinsApi {
       StreamResult result = new StreamResult(new File(filepath));
       transformer.transform(source, result);
     } catch (ParserConfigurationException e) {
+      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (TransformerException e) {
+      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (SAXException e) {
+      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (IOException e) {
+      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }
@@ -336,12 +344,16 @@ public class JenkinsApi {
       StreamResult result = new StreamResult(new File(filepath));
       transformer.transform(source, result);
     } catch (ParserConfigurationException e) {
+      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (TransformerException e) {
+      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (SAXException e) {
+      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (IOException e) {
+      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }
@@ -536,8 +548,7 @@ public class JenkinsApi {
     HttpClient client = new DefaultHttpClient();
 
     try {
-      String url = jenkinsData.getJenkinsRootUrl() + "/job/" + jobName
-          + "/doDelete";
+      String url = jenkinsData.getJenkinsRootUrl() + "/job/" + jobName + "/doDelete";
       HttpPost post = new HttpPost(url);
 
       post.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -579,8 +590,8 @@ public class JenkinsApi {
       }
       URL url = new URL(strUrl);
       conn = (HttpURLConnection) url.openConnection();
-      String input = jenkinsData.getJenkinsRootUsername()
-          + ":" + jenkinsData.getJenkinsRootPassword();
+      String input = jenkinsData.getJenkinsRootUsername() + ":"
+          + jenkinsData.getJenkinsRootPassword();
       BASE64Encoder enc = new BASE64Encoder();
       String encoding = enc.encode(input.getBytes());
       conn.setRequestProperty("Authorization", "Basic " + encoding);
@@ -601,6 +612,57 @@ public class JenkinsApi {
       }
       br.close();
       console = sb.toString();
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      if (conn != null) {
+        conn.disconnect();
+      }
+    }
+    return console;
+  }
+
+  /**
+   * Get
+   * 
+   * @param strUrl
+   *          strUrl
+   * @return console
+   */
+  public String getConsoleTextCommitMessage(String strUrl) {
+    String console = "";
+    HttpURLConnection conn = null;
+
+    try {
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+      URL url = new URL(strUrl);
+      conn = (HttpURLConnection) url.openConnection();
+      String input = jenkinsData.getJenkinsRootUsername() + ":"
+          + jenkinsData.getJenkinsRootPassword();
+      BASE64Encoder enc = new BASE64Encoder();
+      String encoding = enc.encode(input.getBytes());
+      conn.setRequestProperty("Authorization", "Basic " + encoding);
+      conn.setReadTimeout(10000);
+      conn.setConnectTimeout(15000);
+      conn.setRequestMethod("GET");
+      conn.connect();
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+
+      BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      String str = "";
+      StringBuffer sb = new StringBuffer();
+      while (null != ((str = br.readLine()))) {
+        if (str.contains("Commit message:")) {
+          console = str;
+          break;
+        }
+      }
+      br.close();
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -668,15 +730,15 @@ public class JenkinsApi {
    *          job api json
    * @return description
    */
-  public String getCheckstyleDes(String jobApiJson) {
-    String description = null;
+  public JSONObject getCheckstyleDes(String jobApiJson) {
+    JSONObject jsonCheckstyle = null;
     JSONObject jsonJobApi = new JSONObject(jobApiJson);
     JSONArray jsonHealthReport = jsonJobApi.getJSONArray("healthReport");
     if (jsonHealthReport.length() == 2) {
-      JSONObject jsonCheckstyle = jsonHealthReport.getJSONObject(1);
-      description = jsonCheckstyle.getString("description");
+      jsonCheckstyle = jsonHealthReport.getJSONObject(1);
+      // description = jsonCheckstyle.getString("description");
     }
-    return description;
+    return jsonCheckstyle;
   }
 
   /**
@@ -686,18 +748,66 @@ public class JenkinsApi {
    *          description
    * @return amount
    */
-  public int getCheckstyleErrorAmount(String checkstyleDes) {
-    // TODO Auto-generated catch block
-    // "healthReport":[{"description":"No xml report files found for
-    // checkstyle",
-    int errorAmount = 0;
-    // if (!checkstyleDes.equals("No xml report files found for checkstyle")) {
-    // String amount = checkstyleDes.substring(checkstyleDes.length() - 1,
-    // checkstyleDes.length());
-    // System.out.println("amount : " + amount);
-    // errorAmount = Integer.parseInt(amount);
-    // }
-    return errorAmount;
+  public int getCheckstyleErrorAmount(JSONObject checkstyleDes) {
+    String description = checkstyleDes.optString("description");
+    int amount = 0;
+    String num = description.substring(description.length() - 1, description.length());
+    int index = 0;
+    switch (num) {
+      case "0":
+        index = description.indexOf("is") + 3;
+        num = description.substring(index, description.length());
+        amount = Integer.valueOf(num);
+        break;
+      case "1":
+        index = description.indexOf("is") + 3;
+        num = description.substring(index, description.length());
+        amount = Integer.valueOf(num);
+        break;
+      case "2":
+        index = description.indexOf("is") + 3;
+        num = description.substring(index, description.length());
+        amount = Integer.valueOf(num);
+        break;
+      case "3":
+        index = description.indexOf("is") + 3;
+        num = description.substring(index, description.length());
+        amount = Integer.valueOf(num);
+        break;
+      case "4":
+        index = description.indexOf("is") + 3;
+        num = description.substring(index, description.length());
+        amount = Integer.valueOf(num);
+        break;
+      case "5":
+        index = description.indexOf("is") + 3;
+        num = description.substring(index, description.length());
+        amount = Integer.valueOf(num);
+        break;
+      case "6":
+        index = description.indexOf("is") + 3;
+        num = description.substring(index, description.length());
+        amount = Integer.valueOf(num);
+        break;
+      case "7":
+        index = description.indexOf("is") + 3;
+        num = description.substring(index, description.length());
+        amount = Integer.valueOf(num);
+        break;
+      case "8":
+        index = description.indexOf("is") + 3;
+        num = description.substring(index, description.length());
+        amount = Integer.valueOf(num);
+        break;
+      case "9":
+        index = description.indexOf("is") + 3;
+        num = description.substring(index, description.length());
+        amount = Integer.valueOf(num);
+        break;
+      default:
+        break;
+    }
+    return amount;
   }
 
   /**

@@ -8,7 +8,7 @@
 <%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>   
 <%@ page import="org.gitlab.api.GitlabAPI" %>
 <%@ page import="org.gitlab.api.models.*" %>
-<%@ page import="java.util.*" %>
+<%@ page import="java.util.*, fcu.selab.progedu.conn.Dash" %>
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
 <%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
 <%@ page import="java.text.SimpleDateFormat" %>
@@ -144,13 +144,17 @@
 	        			</li>
             			<li class="nav-item">
                 			<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_student"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
-                			<ul id="student" class="collapse" style="list-style: none;">
+                			<ul id="student" class="collapse show" style="list-style: none;">
                     			<%
 		            				for(User user : users){
-		            	  			String userName = user.getUserName();
-		            	  			String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+		            					String style = "color: white;";
+			            	  			String userName = user.getUserName();
+			            	  			String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+			            	  			if(choosedUser.getUsername().equals(user.getUserName())) {
+			            	 				style = "color: burlywood;";
+			            	 			}
 		            	  		%>
-		            	  			<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName %></a></font></li>
+		            	  			<li class="nav-item"><font size="3"><a style="<%=style%>" class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName %></a></font></li>
 		            	 		 <%
 		            				}
 		            			%>
@@ -221,7 +225,7 @@
 									    // check if is checkstyle error
 									    String consoleText = jenkins.getConsoleText(projectJenkinsUrl);
 									    boolean isCheckstyleError = jenkins.checkIsCheckstyleError(consoleText);
-									    if(isCheckstyleError == true){
+									    if(isCheckstyleError){
 									      circleColor = "circle orange";
 									      projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num +"/violations";
 									    }

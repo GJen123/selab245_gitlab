@@ -9,7 +9,7 @@
 <%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>   
 <%@ page import="org.gitlab.api.GitlabAPI" %>
 <%@ page import="org.gitlab.api.models.*" %>
-<%@ page import="java.util.*" %>
+<%@ page import="java.util.*, fcu.selab.progedu.conn.Dash" %>
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
 
 <%
@@ -46,9 +46,6 @@
 			background-color: #444;
 			color: white;
 			margin: -1px;
-		}
-		#sidebar a{
-			color: white;
 		}
 		.ovol {
 			border-radius: 5px;
@@ -131,7 +128,7 @@
 				<div id="sidebar">
 					<ul class="nav flex-column" style="padding-top: 20px;">
           			  <li class="nav-item">
-            				<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#projects" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; Projects <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+            				<font size="4"><a style="color: white;" href="javascript:;" data-toggle="collapse" data-target="#projects" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <%=choosedUser.getUserName() %> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
             				<ul id="projects" class="collapse" style="list-style: none;">
 	        			            <%
 	        			        		List<GitlabProject> projects = conn.getProject(choosedUser);
@@ -141,7 +138,7 @@
 						            	    if(project.getName().equals(dbProject.getName())){
 						            	      String href = "dashProjectChoosed.jsp?userId=" + choosedUser.getGitLabId() + "&proName=" + project.getName();
 						            	      %>
-						            	      	<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=project.getName() %></a></font></li>
+						            	      	<li class="nav-item"><font size="3"><a style="color: white;" class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=project.getName() %></a></font></li>
 						            	      <%
 						            	    }
 						            	  }
@@ -150,14 +147,18 @@
 	    			        </ul>
          			   </li>
          			   <li class="nav-item">
-         			       <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_student"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
-        			        <ul id="student" class="collapse" style="list-style: none;">
+         			       <font size="4"><a style="color: white;" href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_student"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+        			        <ul id="student" class="collapse show" style="list-style: none;">
         			            <%
 		  				          	for(User user : users){
-		  			          	    String userName = user.getUserName();
-		            	 			String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+		        			            String style = "color: white;";
+			  			          	    String userName = user.getUserName();
+			            	 			String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+			            	 			if(choosedUser.getUserName().equals(user.getUserName())) {
+			            	 				style = "color: burlywood;";
+			            	 			}
 		            	 		 %>
-		            	  				<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><%=userName %></a></font></li>
+		            	  				<li class="nav-item"><font size="3"><a style="<%=style%>" class="nav-link active" href=<%=href %>><%=userName %></a></font></li>
 		            	  			<%
 		            				}
 		            			%>
@@ -205,72 +206,27 @@
 							</thead>
 							<tbody>
 								<tr>
-									<th width="15%">Commits次數</th>
+									<th width="15%">Commits</th>
 									<%
 										for(Project dbProject : dbProjects){
 										  
 										  int commit_count = 0;
 										  JobStatus jobStatus = new JobStatus();
-										  String projectJenkinsUrl = null;
 										  String circleColor = null;
+										  String projectJenkinsUrl = "";
+										  String buildResult = "";
 										  
 										  for(GitlabProject gitProject : gitProjects){
 										    if(dbProject.getName().equals(gitProject.getName())){
-										      commit_count = conn.getAllCommitsCounts(gitProject.getId());
-										      //---Jenkins---
-												String jobName = choosedUser.getUserName() + "_" + gitProject.getName();
-												jobStatus.setName(jobName);
-												String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
-												jobStatus.setUrl(jobUrl);
-											  // Get job status
-												jobStatus.setJobApiJson();
-												boolean isMaven = jenkins.checkProjectIsMvn(jobStatus.getJobApiJson());
-												// --- Get job status End ---
-												String color = null;
-												int checkstyleErrorAmount = 0;
-												
-												if(null != jobStatus.getJobApiJson()){
-													color = jenkins.getJobJsonColor(jobStatus.getJobApiJson());
-													if(!isMaven){
-													  // Javac
-													  if(color.equals("red")){
-													    // color == red
-													    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/consoleText";
-													  }else{
-													    // color != red , gray or blue
-													    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
-													  }
-													}else{
-													  // Maven
-													  if(color.equals("red")){
-													    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/lastBuild/consoleText";
-													 	String checkstyleDes = jenkins.getCheckstyleDes(jobStatus.getJobApiJson());
-														if(null != checkstyleDes && !"".equals(checkstyleDes)){
-														  checkstyleErrorAmount = jenkins.getCheckstyleErrorAmount(checkstyleDes);
-														}
-														if(checkstyleErrorAmount != 0){
-														  color = "orange";
-														  projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/violations";
-														}
-													  }else{
-													    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
-													  }
-													}
-													if(commit_count == 1){
-													  circleColor = "circle gray";
-													  projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
-													} else {
-													  	if(color!=null){
-													  	  circleColor = "circle " + color;
-														}else{
-														  circleColor = "circle gray";
-														}
-													}
-													//-------------
-												}
+											  projectJenkinsUrl = "dashProjectChoosed.jsp?userId=" + choosedUser.getGitLabId() + "&proName=" + gitProject.getName();
+										      Dash dash = new Dash(choosedUser);
+										      commit_count = dash.getProjectCommitCount(gitProject);
+										      String color = dash.getMainTableColor(gitProject);
+										      buildResult = color.replace("color ", "");
 										    }else{
 												continue;
 											}
+										    circleColor = "circle " + buildResult;
 										    %>
 										    	<td><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=projectJenkinsUrl  %>')"><%=commit_count %></a></p></td>
 										    <%
