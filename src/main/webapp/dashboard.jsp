@@ -25,20 +25,22 @@
 <html>
 <head>
 	<style type="text/css">
+		body, html, .container-fluid {
+			height: 100%;
+		}
 		#allProject {
 		 margin: 10px 0px 0px 0px;
 		}
 		
-		#sidebar {
-			height: 100%;
+		.sidebar {
 			background-color: #444;
 			color: white;
 			margin: -1px;
 		}
-		#sidebar a{
+		.sidebar a{
 			color: white;
 		}
-		#sidebar button{
+		.sidebar button{
 			color: white;
 			background: none;
 		}
@@ -121,12 +123,10 @@
 		JenkinsApi jenkins = JenkinsApi.getInstance();
 	%>
 	<%@ include file="header.jsp" %>
-	
-	<table style="width: 100%; height: 100%;">
-		<tr>
-			<td style="width:250px;">
+	<div class="container-fluid">
+		<div class="row">
 				<!-- -----sidebar----- -->
-				<div id="sidebar">
+				<nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
 					<ul class="nav flex-column" style="padding-top: 20px;">
             			<li class="nav-item">
             				<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_overview"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
@@ -153,11 +153,10 @@
 		  			          %>
          			       </ul>
          			   </li>
-        			  </ul>
-				</div>
+        			</ul>
+        		</nav>
 				<!-- -----sidebar----- -->
-			</td>
-			<td style="background-color: #f5f5f5;">
+		<main class="col bg-faded py-3">
 	        <div class="container-fluid" style="margin-top: 20px;">
 	        <h1 style="margin-top: 30px; margin-bottom: 20px;"><fmt:message key="dashboard_a_overview"/></h1>
 		        <!-- ---------------------------- Student Project ------------------------------- -->
@@ -217,11 +216,10 @@
 																proName = dbProject.getName(); 
 																
 																circleColor = dash.getMainTableColor(gitProject);
-																String buildResult = circleColor.replace("color ", "");
+																String buildResult = circleColor.replace("circle ", "");
 																switch (buildResult) {
 																case "red":
 																	redCount++;
-																	
 																	break;
 																case "blue":
 																	blueCount++;
@@ -318,10 +316,9 @@
   					</div>
 				</div>
 	        </div>
-        </td>
-<!-- ------------------------ main -------------------------------------- -->
-      </tr>
-     </table>
+	       </main>
+	     </div>
+    </div>
 </body>
 <!-- set Highchart colors -->
 <script>

@@ -41,8 +41,7 @@
 		#inline{
 			margin: 20px;
 		}
-		#sidebar {
-			height: 100%;
+		.sidebar {
 			background-color: #444;
 			color: white;
 			margin: -1px;
@@ -121,11 +120,10 @@
      	}
 	%>
 	<%@ include file="header.jsp" %>
-	<table style="width: 100%; height: 100%;">
-		<tr>
-			<td style="width:250px;">
+	<div class="container-fluid">
+		<div class="row">
 				<!-- -----sidebar----- -->
-				<div id="sidebar">
+				<nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
 					<ul class="nav flex-column" style="padding-top: 20px;">
           			  <li class="nav-item">
             				<font size="4"><a style="color: white;" href="javascript:;" data-toggle="collapse" data-target="#projects" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <%=choosedUser.getUserName() %> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
@@ -165,10 +163,9 @@
                 			</ul>
             			</li>
           			</ul>
-				</div>
+				</nav>
 				<!-- -----sidebar----- -->
-			</td>
-			<td style="background-color: #f5f5f5;position:fixed; width: 87%;">
+		<main class="col bg-faded py-3">
         	<%
         		String private_token = choosedUser.getPrivateToken();
             	StudentConn sConn = new StudentConn(private_token); 	
@@ -240,8 +237,8 @@
 		        	</div>
         		 </div>				
         	</div>
-        </td>
-      </tr>
-   </table>
+        </main>
+      </div>
+   </div>
 </body>
 </html>

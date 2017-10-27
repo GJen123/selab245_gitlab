@@ -29,7 +29,7 @@
 <html>
 <head>
 	<style type="text/css">
-		html, body{
+		body, html {
 			height: 100%;
 		}
 		#inline p {
@@ -38,13 +38,12 @@
 		#inline{
 			margin: 20px;
 		}
-		#sidebar {
-			height: 100%;
+		.sidebar {
 			background-color: #444;
 			color: white;
 			margin: -1px;
 		}
-		#sidebar a{
+		.sidebar a{
 			color: white;
 		}
 		.ovol {
@@ -119,11 +118,10 @@
 		Collections.reverse(projects);
 	%>
 	<%@ include file="header.jsp" %>
-	<table style="width: 100%; height: 100%;">
-		<tr>
-			<td style="width:250px;">
+	<div class="container-fluid">
+		<div class="row">
 				<!-- -----sidebar----- -->
-				<div id="sidebar">
+				<nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
 					<ul class="nav flex-column" style="padding-top: 20px;">
             			<li class="nav-item">
 	        				<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <%=choosedUser.getUsername() %> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
@@ -161,10 +159,9 @@
                 			</ul>
             			</li>
           			</ul>
-				</div>
 				<!-- -----sidebar----- -->
-			</td>
-			<td style="background-color: #f5f5f5;position:fixed; width: 87%;">
+			</nav>
+		<main class="col bg-faded py-3">
 	        <div class="container-fluid" style="margin-top: 20px;">
 	        	<h1 style="margin-top: 30px; margin-bottom: 20px;"> <%=choosedUser.getUsername() %>_ <%=projectName %> </h1>
 		        <!-- ---------------------------- Project ------------------------------- -->
@@ -249,9 +246,8 @@
 		        </div>
 		        <!-- ---------------------------- Student Project ------------------------------- -->
 	        </div>
-	      </td>
+	      </main>
 <!-- ------------------------ main -------------------------------------- -->
-      </tr>
-     </table>
+		</div>
 	</body>
 </html>
