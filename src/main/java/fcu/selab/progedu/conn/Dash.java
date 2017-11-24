@@ -75,7 +75,7 @@ public class Dash {
         circleColor = "circle gray";
       }
     }
-    return circleColor;
+    return circleColor + "," + commitCount;
   }
 
   /**

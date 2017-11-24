@@ -97,6 +97,7 @@
 	<link rel="shortcut icon" href="img/favicon.ico"/>
 	<link rel="bookmark" href="img/favicon.ico"/>
 	<title>ProgEdu</title>
+	<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="PUBLIC">
 </head>
 <body>
 	<%
@@ -123,7 +124,7 @@
 		JenkinsApi jenkins = JenkinsApi.getInstance();
 	%>
 	<%@ include file="header.jsp" %>
-	<div class="container-fluid">
+	<div class="container-fluid col-md-12">
 		<div class="row">
 				<!-- -----sidebar----- -->
 				<nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
@@ -133,9 +134,9 @@
             				<ul id="overview" class="collapse" style="list-style: none;">
             					<li class="nav-item"><font size="3"><a class="nav-link" href="#Student Projects"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_studentProjects"/></a></font></li>
          			   			<li class="nav-item"><font size="3">
-         			   				<button type="button" class="btn btn-default" data-toggle="modal" data-target="#exampleModal">
+         			   				<a class="nav-link" href="dashboardChart.jsp">
          			   					<i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_chart"/>
-									</button></font>
+									</a></font>
 								</li>
          			   		</ul>
         			    </li>
@@ -186,12 +187,9 @@
 							</thead>
 							<tbody>
 								<%
-								List<JSONObject> jsons = new ArrayList<JSONObject>();
-								
 									for(User user : users){
 										String userName = user.getUserName();
 										String dashStuChoosedHref = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
-										Dash dash = new Dash(user);
 										%>
 											<tr id="allProject">
 												<td width="10%" id="allProject"><a href=<%=dashStuChoosedHref %>><%=user.getUserName() %></a></td>
@@ -201,51 +199,9 @@
 													for(Project dbProject : dbProjects){
 														String proName = null;
 														String circleColor = "circle gray";
-														int commit_count = 0;
-														int redCount = 0;
-														int blueCount = 0;
-														int grayCount = 0;
-														int orangeCount = 0;
-														int commitCount = 0;
 														for(GitlabProject gitProject : gitProjects){
 															if(dbProject.getName().equals(gitProject.getName())){
-																
-																JSONObject json = new JSONObject();
-																json.put("name", dbProject.getName());
-																		
 																proName = dbProject.getName(); 
-																
-																circleColor = dash.getMainTableColor(gitProject);
-																String buildResult = circleColor.replace("circle ", "");
-																switch (buildResult) {
-																case "red":
-																	redCount++;
-																	break;
-																case "blue":
-																	blueCount++;
-																	break;
-																case "orange":
-																	orangeCount++;
-																	break;
-																case "gray":
-																	grayCount++;
-																	break;
-																default:
-																	break;
-																}
-
-																commit_count = dash.getProjectCommitCount(gitProject);
-																if(commit_count != 1) {
-																	commitCount += commit_count;
-																}
-																
-																json.put("blueCount", blueCount);
-																json.put("redCount", redCount);
-																json.put("orangeCount", orangeCount);
-																json.put("grayCount", grayCount);
-																json.put("commitCount", commitCount);
-																jsons.add(json);
-																//-------------
 																break;
 															}else{
 																proName = "N/A";
@@ -262,8 +218,39 @@
 														}else{
 														  String dashProjectChoosedHref="dashProjectChoosed.jsp?userId=" + user.getGitLabId() + "&proName=" + dbProject.getName();
 															%>
-																<td style="padding: 10px 0px 0px 30px;"><p class="<%=circleColor%>"><a href="<%= dashProjectChoosedHref%>"><%=commit_count %></a></p></td>
-
+																<td style="padding: 10px 0px 0px 30px;">
+																	<p id=<%= user.getUserName() + "_" + dbProject.getName()%> class="">
+																		<a id=<%= user.getUserName() + "_" + dbProject.getName() + "_commit"%> href="<%=dashProjectChoosedHref%>"> </a>
+																	</p>
+																</td>
+																
+																<script type="text/javascript">
+																	var userName = <%="'" + user.getUserName() + "'"%>
+																	var proName = <%="'" + dbProject.getName() + "'"%>
+																	$.ajax({
+																		url : 'webapi/jenkins/color',
+																		type : 'GET',
+																		data: {
+																			"proName" : proName,
+																			"userName" : userName
+																		}, 
+																		async : true,
+																		cache : true,
+																		contentType: 'application/json; charset=UTF-8',
+																		success : function(responseText) {
+																			var result = responseText.split(",");
+																			if(result.length >= 3) {
+																				var d = document.getElementById(result[0]);
+																				d.className = result[1];
+																				var a = document.getElementById(result[0] + "_commit");
+																				a.textContent = result[2];
+																			}
+																		}, 
+																		error : function(responseText) {
+																			console.log("False!");
+																		}
+																	});
+																</script>
 															<%
 														}
 													}
@@ -320,245 +307,4 @@
 	     </div>
     </div>
 </body>
-<!-- set Highchart colors -->
-<script>
-Highcharts.setOptions({
-	 colors: ['#5fa7e8', '#e52424', '#FF5809', '#878787']
-	})
-</script>
-<!-- chart1 -->
-<script type="text/javascript">
-<%
-	List<String> names = new ArrayList<String>();
-	List<Integer> blues = new ArrayList<Integer>();
-	List<Integer> reds = new ArrayList<Integer>();
-	List<Integer> oranges = new ArrayList<Integer>();
-	List<Integer> grays = new ArrayList<Integer>();
-	
-	for(JSONObject json : jsons) {
-		if(!names.contains(json.get("name"))) {
-			names.add(json.get("name").toString());
-			blues.add(Integer.parseInt(json.get("blueCount").toString()));
-			reds.add(Integer.parseInt(json.get("redCount").toString()));
-			oranges.add(Integer.parseInt(json.get("orangeCount").toString()));
-			grays.add(Integer.parseInt(json.get("grayCount").toString()));
-		}else {
-			int index = names.indexOf(json.get("name"));
-			int blue = blues.get(index) + Integer.parseInt(json.get("blueCount").toString());
-			int red = reds.get(index) + Integer.parseInt(json.get("redCount").toString());
-			int orange = oranges.get(index) + Integer.parseInt(json.get("orangeCount").toString());
-			int gray = grays.get(index) + Integer.parseInt(json.get("grayCount").toString());
-			
-			blues.set(index, blue);
-			reds.set(index, red);
-			oranges.set(index, orange);
-			grays.set(index, gray);
-		}
-	}
-
-	String x = "var x=[";
-	int i = 0;
-	for(String name : names) {
-		x += "'" + name + "'";
-		if(i != names.size()-1) {
-			x += ",";
-		}
-		i++;
-	}
-	x += "];";
-	out.println(x);
-	
-	int j=0;
-	String s = "var s = [{ name: '建置成功', data:[";
-	for(int blue : blues) {
-		s += blue;
-		if(j != blues.size()-1) {
-			s += ", ";
-		}
-		j++;
-	}
-	s += "]}, { name: '編譯失敗', data:[";
-	j = 0;
-	for(int red : reds) {
-		s += red;
-		if(j != reds.size()-1) {
-			s += ", ";
-		}
-		j++;
-	}
-	s += "]}, { name: '未通過程式規範', data:[";
-	j = 0;
-	for(int orange : oranges) {
-		s += orange;
-		if(j != oranges.size()-1) {
-			s += ", ";
-		}
-		j++;
-	}
-	s += "]}, { name: '未建置', data:[";
-	j = 0;
-	for(int gray : grays) {
-		s += gray;
-		if(j != grays.size()-1) {
-			s += ", ";
-		}
-		j++;
-	}
-	s += "]}]";
-	out.println(s);
-%>
-Highcharts.chart('chart1Demo', {
-    chart: {
-        type: 'column'
-    },
-    title: {
-        text: '各作業建置結果統計'
-    },
-    subtitle: {
-        text: ''
-    },
-    xAxis: {
-        categories: x,
-        crosshair: true
-    },
-    yAxis: {
-        min: 0,
-        title: {
-            text: '個數'
-        }
-    },
-    tooltip: {
-        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y}</b></td></tr>',
-        footerFormat: '</table>',
-        shared: true,
-        useHTML: true
-    },
-    plotOptions: {
-        column: {
-            pointPadding: 0.2,
-            borderWidth: 0
-        }
-    },
-    series: s
-});
-</script>
-<script>
-Highcharts.setOptions({
-	 colors: ['#878787', '#5fa7e8', '#e52424', '#FF5809']
-	})
-</script>
-<!-- chart2 -->
-<script type="text/javascript">
-<%
-List<Integer> commits = new ArrayList<Integer>();
-names = new ArrayList<String>();
-for(JSONObject json : jsons) {
-	if(!names.contains(json.get("name"))) {
-		names.add(json.get("name").toString());
-		commits.add(Integer.parseInt(json.get("commitCount").toString()));
-	}else {
-		int index = names.indexOf(json.get("name"));
-		int commit = commits.get(index) + Integer.parseInt(json.get("commitCount").toString());
-		
-		commits.set(index, commit);
-	}
-}
-j=0;
-s = "var s = [{ name: 'commit次數', type: 'column', data:[";
-j = 0;
-for(int commit : commits) {
-	s += commit;
-	if(j != commits.size()-1) {
-		s += ", ";
-	}
-	j++;
-}
-s += "]}, { name: '建置成功', type: 'spline', data:[";
-for(int blue : blues) {
-	s += blue;
-	if(j != blues.size()-1) {
-		s += ", ";
-	}
-	j++;
-}
-s += "]}, { name: '編譯失敗', type: 'spline', data:[";
-j = 0;
-for(int red : reds) {
-	s += red;
-	if(j != reds.size()-1) {
-		s += ", ";
-	}
-	j++;
-}
-s += "]}, { name: '未通過程式規範', type: 'spline', data:[";
-j = 0;
-for(int orange : oranges) {
-	s += orange;
-	if(j != oranges.size()-1) {
-		s += ", ";
-	}
-	j++;
-}
-s += "]}]";
-out.println(s);
-%>
-Highcharts.chart('chart2Demo', {
-    chart: {
-        zoomType: 'xy'
-    },
-    title: {
-        text: '各作業上傳次數及建置結果統計'
-    },
-    subtitle: {
-        text: ''
-    },
-    xAxis: [{
-        categories: x,
-        crosshair: true
-    }],
-    yAxis: [{ // Primary yAxis
-        labels: {
-            format: '',
-            style: {
-                color: Highcharts.getOptions().colors[1]
-            }
-        },
-        title: {
-            text: '次數',
-            style: {
-                color: Highcharts.getOptions().colors[1]
-            }
-        }
-    }, { // Secondary yAxis blue
-        title: {
-            text: '個數',
-            style: {
-                color: Highcharts.getOptions().colors[0]
-            }
-        },
-        labels: {
-            format: '',
-            style: {
-                color: Highcharts.getOptions().colors[0]
-            }
-        },
-        opposite: true
-    }],
-    tooltip: {
-        shared: true
-    },
-    legend: {
-        layout: 'vertical',
-        align: 'left',
-        x: 120,
-        verticalAlign: 'top',
-        y: 100,
-        floating: true,
-        backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
-    },
-    series: s
-});
-</script>
 </html>

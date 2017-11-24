@@ -70,10 +70,12 @@ public class ProjectDbManager {
       }
     }
   }
-  
+
   /**
    * get project info by project name
-   * @param name project name
+   * 
+   * @param name
+   *          project name
    * @return project
    */
   public Project getProjectByName(String name) {
@@ -150,6 +152,40 @@ public class ProjectDbManager {
       }
     }
     return lsProjects;
+  }
+
+  /**
+   * list all project names;
+   * 
+   * @return all names
+   */
+  public List<String> listAllProjectNames() {
+    List<String> lsNames = new ArrayList<String>();
+
+    Connection conn = database.getConnection();
+    String sql = "SELECT * FROM Assignment";
+    Statement stmt = null;
+
+    try {
+      stmt = conn.createStatement();
+      ResultSet rs = stmt.executeQuery(sql);
+      while (rs.next()) {
+        String name = "\"";
+        name += rs.getString("name");
+        name = name.replace("OOP-", "");
+        name += "\"";
+        lsNames.add(name);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+    return lsNames;
   }
 
   /**

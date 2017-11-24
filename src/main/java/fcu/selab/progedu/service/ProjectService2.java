@@ -222,6 +222,10 @@ public class ProjectService2 {
     conn.createRootProject(name);
   }
 
+  public List<String> getAllProjectNames() {
+    return dbManager.listAllProjectNames();
+  }
+
   private int getThisProjectId(String name) {
     Integer id = null;
     List<GitlabProject> rootProjects = conn.getProject(root);
@@ -337,9 +341,7 @@ public class ProjectService2 {
     Process process;
     String line;
     try {
-      process = Runtime.getRuntime().exec(command,
-          null,
-          new File(filePath));
+      process = Runtime.getRuntime().exec(command, null, new File(filePath));
       BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
       while (true) {
@@ -512,10 +514,12 @@ public class ProjectService2 {
 
     dbManager.addProject(project);
   }
-  
+
   /**
    * delete projects
-   * @param name project name
+   * 
+   * @param name
+   *          project name
    * @return response
    */
   @POST
@@ -524,25 +528,25 @@ public class ProjectService2 {
   @Produces(MediaType.APPLICATION_JSON)
   public Response deleteProject(@FormDataParam("Hw_Name") String name) {
     List<GitlabUser> users = conn.getUsers();
-    
-    //delete db
+
+    // delete db
     dbManager.deleteProject(name);
-    
-    //delete gitlab
+
+    // delete gitlab
     conn.deleteProjects(name);
     String crumb = jenkins.getCrumb("root", "zxcv1234");
-    
-    //delete Jenkins
+
+    // delete Jenkins
     for (GitlabUser user : users) {
       String jobName = user.getUsername() + "_" + name;
       jenkins.deleteJob(jobName, crumb);
     }
-    
+
     Response response = Response.ok().build();
     if (!isSave) {
       response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
     }
-    
+
     return response;
   }
 }

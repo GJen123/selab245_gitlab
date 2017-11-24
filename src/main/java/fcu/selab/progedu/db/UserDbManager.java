@@ -31,15 +31,16 @@ public class UserDbManager {
 
   /**
    * Add gitlab user to database
-   * @param user    The gitlab user
+   * 
+   * @param user
+   *          The gitlab user
    */
   public void addUser(GitlabUser user) {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
     Statement stmt = null;
-    String sql = "INSERT INTO "
-                 + "User(gitLabId, userName, name, password, email, privateToken)  "
-                 + "VALUES(?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO " + "User(gitLabId, userName, name, password, email, privateToken)  "
+        + "VALUES(?, ?, ?, ?, ?, ?)";
     String query = "SELECT * FROM User";
 
     try {
@@ -55,15 +56,18 @@ public class UserDbManager {
       preStmt.executeUpdate();
       preStmt.close();
 
-//      stmt = conn.createStatement();
-//      ResultSet rs = stmt.executeQuery(query);
-//      System.out.println("List All Students");
-//      while (rs.next()) {
-//        System.out.println("GitLabId: " + rs.getString("gitLabId") + ", StuId: "
-//            + rs.getString("userName") + ", Name: " + rs.getString("name") + ", Email: "
-//            + rs.getString("email") + ", Private_Token: " + rs.getString("privateToken")
-//            + ", privateToken: " + rs.getString("privateToken"));
-//      }
+      // stmt = conn.createStatement();
+      // ResultSet rs = stmt.executeQuery(query);
+      // System.out.println("List All Students");
+      // while (rs.next()) {
+      // System.out.println("GitLabId: " + rs.getString("gitLabId") + ", StuId:
+      // "
+      // + rs.getString("userName") + ", Name: " + rs.getString("name") + ",
+      // Email: "
+      // + rs.getString("email") + ", Private_Token: " +
+      // rs.getString("privateToken")
+      // + ", privateToken: " + rs.getString("privateToken"));
+      // }
     } catch (SQLException e) {
       e.printStackTrace();
     } finally {
@@ -74,12 +78,15 @@ public class UserDbManager {
       }
     }
   }
-  
+
   /**
-   * encrypt the user password  
-   * @param password   The user's password
+   * encrypt the user password
+   * 
+   * @param password
+   *          The user's password
    * @return MD5 string
-   * @throws NoSuchAlgorithmException on security api call error
+   * @throws NoSuchAlgorithmException
+   *           on security api call error
    */
   public String passwordMD5(String password) {
     String hashtext = "";
@@ -89,7 +96,7 @@ public class UserDbManager {
       byte[] messageDigest = md.digest(msg.getBytes());
       BigInteger number = new BigInteger(1, messageDigest);
       hashtext = number.toString(16);
-        
+
       while (hashtext.length() < 32) {
         hashtext = "0" + hashtext;
       }
@@ -97,13 +104,15 @@ public class UserDbManager {
     } catch (NoSuchAlgorithmException e) {
       e.printStackTrace();
     }
-    
+
     return hashtext;
   }
-  
+
   /**
    * get user password
-   * @param userName user stu id
+   * 
+   * @param userName
+   *          user stu id
    * @return password
    */
   public String getPassword(String userName) {
@@ -124,12 +133,15 @@ public class UserDbManager {
     }
     return password;
   }
-  
+
   /**
    * update user db password
-   * @param userName user stu id
-   * @param password user new password
-   */ 
+   * 
+   * @param userName
+   *          user stu id
+   * @param password
+   *          user new password
+   */
   public void modifiedUserPassword(String userName, String password) {
     Connection conn = database.getConnection();
     String query = "UPDATE User SET password=? WHERE userName = ?";
@@ -145,11 +157,14 @@ public class UserDbManager {
       e.printStackTrace();
     }
   }
-  
+
   /**
    * check old password
-   * @param userName user stu id
-   * @param password user old password
+   * 
+   * @param userName
+   *          user stu id
+   * @param password
+   *          user old password
    * @return T or F
    */
   public boolean checkPassword(String userName, String password) {
@@ -164,7 +179,9 @@ public class UserDbManager {
 
   /**
    * Get user from database
-   * @param userName      The gitlab user name
+   * 
+   * @param userName
+   *          The gitlab user name
    * @return user
    */
   public User getUser(String userName) {
@@ -199,10 +216,12 @@ public class UserDbManager {
     }
     return user;
   }
-  
+
   /**
    * Get user from database
-   * @param userId      The db user id
+   * 
+   * @param userId
+   *          The db user id
    * @return user
    */
   public String getName(int userId) {
@@ -223,11 +242,12 @@ public class UserDbManager {
     }
     return name;
   }
-  
+
   /**
-   * user name to find userId  in db
+   * user name to find userId in db
    * 
-   * @param name user's name
+   * @param name
+   *          user's name
    * @return id
    */
   public int getUserId(String name) {
@@ -251,6 +271,7 @@ public class UserDbManager {
 
   /**
    * List all the database user
+   * 
    * @return list of user
    */
   public List<User> listAllUsers() {
@@ -264,6 +285,7 @@ public class UserDbManager {
       stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(sql);
       while (rs.next()) {
+        int id = rs.getInt("id");
         int gitLabId = rs.getInt("gitLabId");
         String stuId = rs.getString("userName");
         String name = rs.getString("name");
@@ -272,6 +294,7 @@ public class UserDbManager {
         String privateToken = rs.getString("privateToken");
 
         User user = new User();
+        user.setId(id);
         user.setGitLabId(gitLabId);
         user.setUserName(stuId);
         user.setName(name);

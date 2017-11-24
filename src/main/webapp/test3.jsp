@@ -394,8 +394,7 @@
       var z = d3.scaleOrdinal().range(
           [ "#98abc5", "#6b486b", "#d0743c"]);
 
-      d3
-          .csv("data2.csv", function(d, i, columns) {
+      d3.csv("data2.csv", function(d, i, columns) {
             for (var i = 1, n = columns.length; i < n; ++i)
               d[columns[i]] = +d[columns[i]];
             return d;
