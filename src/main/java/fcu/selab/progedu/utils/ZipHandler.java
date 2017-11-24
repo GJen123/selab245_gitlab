@@ -29,6 +29,7 @@ public class ZipHandler {
   HttpConnect httpConn = new HttpConnect();
   private static final String tempDir = System.getProperty("java.io.tmpdir");
   private static final String uploadDir = tempDir + "/uploads/";
+  private static final String testDir = tempDir + "/tests/";
 
   GitlabConfig gitData = GitlabConfig.getInstance();
 
@@ -76,6 +77,13 @@ public class ZipHandler {
     if (!destDir.exists()) {
       destDir.mkdir();
     }
+
+    String testDirectory = testDir + projectName;
+    File testDir = new File(testDirectory);
+    if (!testDir.exists()) {
+      testDir.mkdir();
+    }
+
     ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
     ZipEntry entry = zipIn.getNextEntry();
     // iterates over entries in the zip file
@@ -101,6 +109,10 @@ public class ZipHandler {
         if (filePath.substring(filePath.length() - 7, filePath.length()).equals("pom.xml")) {
           modifyPomXml(filePath, projectName);
         }
+
+        // Get the test folder
+        String testFilePath = testDirectory + File.separator + entry.getName();
+        copyTestFileToFolder(testFilePath, zipIn);
 
         // Search the java file which jenkins java config needs.
         searchJavaFile(entryNewName);
@@ -211,6 +223,19 @@ public class ZipHandler {
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
+    }
+  }
+
+  private void copyTestFileToFolder(String testFilePath, ZipInputStream zipIn) {
+    if (testFilePath.contains("src/test")) {
+      File testNewFile = new File(testFilePath);
+      new File(testNewFile.getParent()).mkdirs();
+      try {
+        extractFile(zipIn, testFilePath);
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
     }
   }
 
