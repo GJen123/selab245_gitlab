@@ -71,4 +71,19 @@ public class CourseConfig {
     String exception = "Unable to get config of COURSE connection string from file;";
     throw new LoadConfigFailureException(exception + PROPERTY_FILE);
   }
+
+  /**
+   * Get tomcat server ip
+   * 
+   * @return tomcat server ip
+   * @throws LoadConfigFailureException
+   *           when property file is not found, the exception is thrown
+   */
+  public String getTomcatServerIp() throws LoadConfigFailureException {
+    if (props != null) {
+      return props.getProperty("COURSE_TOMCAT_SERVER_IP");
+    }
+    String exception = "Unable to get config of COURSE connection string from file;";
+    throw new LoadConfigFailureException(exception + PROPERTY_FILE);
+  }
 }

@@ -60,14 +60,15 @@ public class ProjectService2 {
   private String jenkinsRootUsername;
   private String jenkinsRootPassword;
 
-  private StringBuilder javacSb;
-
   private ProjectDbManager dbManager = ProjectDbManager.getInstance();
 
   private static final String tempDir = System.getProperty("java.io.tmpdir");
   private static String uploadDir = tempDir + "/uploads/";
 
   boolean isSave = true;
+
+  private long testZipChecksum = 0;
+  private String testZipUrl = "";
 
   /**
    * Constuctor
@@ -410,6 +411,7 @@ public class ProjectService2 {
     try {
       // unzip file
       zipHandler.unzip(filePath, folderName, projectName);
+      setTestFileInfo();
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -548,5 +550,10 @@ public class ProjectService2 {
     }
 
     return response;
+  }
+
+  public void setTestFileInfo() {
+    testZipChecksum = zipHandler.getChecksum();
+    testZipUrl = zipHandler.getUrlForJenkinsDownloadTestFile();
   }
 }

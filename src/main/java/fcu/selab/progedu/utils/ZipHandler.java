@@ -5,8 +5,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,10 +22,12 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.conn.HttpConnect;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
@@ -29,9 +36,15 @@ public class ZipHandler {
   HttpConnect httpConn = new HttpConnect();
   private static final String tempDir = System.getProperty("java.io.tmpdir");
   private static final String uploadDir = tempDir + "/uploads/";
-  private static final String testDir = tempDir + "/tests/";
+  private static final String testDir = uploadDir + "/tests/";
+
+  private final List<File> fileList;
+  private List<String> paths;
 
   GitlabConfig gitData = GitlabConfig.getInstance();
+  CourseConfig courseData = CourseConfig.getInstance();
+
+  private String serverIp;
 
   private String hostUrl;
 
@@ -39,9 +52,21 @@ public class ZipHandler {
 
   StringBuilder sb = new StringBuilder();
 
+  List<String> filesListInDir = new ArrayList<String>();
+
+  long checksum = 0;
+
+  String urlForJenkinsDownloadTestFile = "";
+
+  /**
+   * Constructor.
+   */
   public ZipHandler() throws LoadConfigFailureException {
     hostUrl = gitData.getGitlabHostUrl();
     token = gitData.getGitlabApiToken();
+    fileList = new ArrayList<>();
+    paths = new ArrayList<>(25);
+    serverIp = courseData.getTomcatServerIp();
   }
 
   /**
@@ -111,8 +136,10 @@ public class ZipHandler {
         }
 
         // Get the test folder
-        String testFilePath = testDirectory + File.separator + entry.getName();
-        copyTestFileToFolder(testFilePath, zipIn);
+        searchTestFile(entryNewName, testDirectory + "/" + entry.getName());
+        // String testFilePath = testDirectory + File.separator +
+        // entry.getName();
+        // copyTestFileToFolder(testFilePath, projectName);
 
         // Search the java file which jenkins java config needs.
         searchJavaFile(entryNewName);
@@ -123,6 +150,13 @@ public class ZipHandler {
       }
       zipIn.closeEntry();
       entry = zipIn.getNextEntry();
+    }
+    File testFile = new File(testDirectory);
+    if (testFile.exists()) {
+      zipTestFolder(testDirectory);
+
+      setUrlForJenkinsDownloadTestFile(serverIp + "/ProgEdu/webapi/jenkins/getTestFile?filePath="
+          + testDir + projectName + ".zip");
     }
     zipIn.close();
   }
@@ -175,7 +209,7 @@ public class ZipHandler {
     for (int i = 0; i < entryName.length() - 3; i++) {
       if (entryName.substring(i, i + 3).equals("src")) {
         fileName = entryName.substring(i);
-        System.out.println("fileName : " + fileName);
+        System.out.println("Search java file fileName : " + fileName);
         if (last.equals(".java")) {
           sb.append("javac " + fileName + "\n");
           setStringBuilder(sb);
@@ -226,17 +260,88 @@ public class ZipHandler {
     }
   }
 
-  private void copyTestFileToFolder(String testFilePath, ZipInputStream zipIn) {
-    if (testFilePath.contains("src/test")) {
-      File testNewFile = new File(testFilePath);
-      new File(testNewFile.getParent()).mkdirs();
+  private void zipTestFolder(String testFilePath) {
+    File testFile = new File(testFilePath);
+    // File testZipFile = new File(testFilePath + ".zip");
+    // zipIt(testFile, testZipFile);
+    zipDirectory(testFile, testFilePath + ".zip");
+  }
+
+  private void zipDirectory(File dir, String zipDirName) {
+    try {
+      populateFilesList(dir);
+      // now zip files one by one
+      // create ZipOutputStream to write to the zip file
+      FileOutputStream fos = new FileOutputStream(zipDirName);
+      CheckedOutputStream checksum = new CheckedOutputStream(fos, new CRC32());
+
+      ZipOutputStream zos = new ZipOutputStream(checksum);
+      for (String filePath : filesListInDir) {
+        System.out.println("Zipping " + filePath);
+        // for ZipEntry we need to keep only relative file path, so we used
+        // substring on absolute path
+        ZipEntry ze = new ZipEntry(
+            filePath.substring(dir.getAbsolutePath().length() + 1, filePath.length()));
+        zos.putNextEntry(ze);
+        // read the file and write to ZipOutputStream
+        FileInputStream fis = new FileInputStream(filePath);
+        byte[] buffer = new byte[1024];
+        int len;
+        while ((len = fis.read(buffer)) > 0) {
+          zos.write(buffer, 0, len);
+        }
+        zos.closeEntry();
+        fis.close();
+      }
+      zos.close();
+      fos.close();
+      System.out.println("Checksum : " + checksum.getChecksum().getValue());
+      setChecksum(checksum.getChecksum().getValue());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void populateFilesList(File dir) throws IOException {
+    File[] files = dir.listFiles();
+    for (File file : files) {
+      if (file.isFile()) {
+        filesListInDir.add(file.getAbsolutePath());
+      } else {
+        populateFilesList(file);
+      }
+
+    }
+  }
+
+  private void searchTestFile(String entryName, String testDirectory) {
+    if (entryName.contains("src/test")) {
+      System.out.println("searchTestFile : " + entryName);
+      File dataFile = new File(entryName);
+      File targetFile = new File(testDirectory);
       try {
-        extractFile(zipIn, testFilePath);
+        FileUtils.copyFile(dataFile, targetFile);
       } catch (IOException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
     }
+  }
+
+  public void setChecksum(long checksum) {
+    this.checksum = checksum;
+  }
+
+  public long getChecksum() {
+    return checksum;
+  }
+
+  public void setUrlForJenkinsDownloadTestFile(String urlForJenkinsDownloadTestFile) {
+    this.urlForJenkinsDownloadTestFile = urlForJenkinsDownloadTestFile;
+  }
+
+  public String getUrlForJenkinsDownloadTestFile() {
+    return urlForJenkinsDownloadTestFile;
   }
 
 }
