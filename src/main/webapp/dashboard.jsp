@@ -100,6 +100,7 @@
 		}
 		.circle a {
 			color: #fff;
+			line-height: 30px;
 		}
 		.highcharts-container {
 			text-align: center;

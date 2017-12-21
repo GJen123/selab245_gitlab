@@ -159,7 +159,7 @@
                 			<ul id="student" class="collapse show" style="list-style: none;">
                     			<%
 		            				for(User user : users){
-		            					String style = "color: white;";
+		            					String style = "";
 			            	  			String userName = user.getUserName();
 			            	  			String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
 			            	  			if(choosedUser.getUsername().equals(user.getUserName())) {
@@ -191,10 +191,10 @@
 							<p class="ovol gold" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p> -->
 							<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
 						</div>
-						<table class="table table-striped" style="margin-top: 20px; width: 100%">
+						<table class="table table-striped" style="margin-top: 20px; width: 100%; margin-bottom: 0px;">
 							<thead>
 								<tr>
-									<th width="10%">Commit</th>
+									<th width="10%" class="text-center">Commit</th>
 									<th width="10%">Light</th>
 									<th width="15%">Date</th>
 									<th>Commit Message</th>
@@ -247,7 +247,7 @@
 									  }
 									  %>
 									  	<tr>
-									  		<th width="10%"><%=num %></th>
+									  		<th width="10%" class="text-center"><%=num %></th>
 									  		<td width="10%"><p class="<%=circleColor%>" id="pProject"><a href="#" onclick="window.open('<%=projectJenkinsUrl  %>')">&nbsp;</a></p></td>
 									  		<td width="15%"><%=strDate %></td>
 									  		<td><%=commits.get(num-1).getMessage() %></td>

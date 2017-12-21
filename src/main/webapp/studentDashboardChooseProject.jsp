@@ -22,6 +22,27 @@
 	  response.sendRedirect("index.jsp");
 	}
 	session.putValue("page", "studentDashboardChooseProject");
+	
+	// Set the student private_token
+	
+	Cookie[] cookies = request.getCookies();
+	Cookie cookie = null;
+	if(cookies != null){
+	  for(Cookie c : cookies){
+	    if(c.getName().equals("private_token")){
+	      cookie = c;
+	      break;
+	    }
+	  }
+	}else {
+		response.sendRedirect("index.jsp");
+	}
+	if(cookie != null){
+	  private_token = cookie.getValue();
+	}else {
+		response.sendRedirect("index.jsp");
+	}
+	
 %>
 
 <%@ include file="language.jsp"%>
@@ -78,6 +99,9 @@
 	            color: white;
 	            text-align: center;
 	            margin: 0 auto;
+			}
+			.bigcircle2 a{
+				line-height: 40px;
 			}
 			
 			#inline p {
@@ -282,23 +306,48 @@
 										int i=1;
 										int lastBuildMessageNum = 0;
 										for(Integer num : buildNum){
-										  	String buildApiJson = stuDashChoPro.getBuildApiJson(num, user.getUsername(), projectName);
-										  	String strDate = stuDashChoPro.getCommitTime(buildApiJson);
-										  	String commitMessage = stuDashChoPro.getCommitMessage(num, user.getUsername(), projectName);
-										  	commitMessage = commitMessage.replace("Commit message: ", "");
-										  	commitMessage = commitMessage.substring(1, commitMessage.length()-1);
-										  	
-											String color = stuDashChoPro.getCommitColor(num, user.getUsername(), projectName, buildApiJson);
-											color = "circle " + color;
-										  	if(num == 1) {
-										  	  color = "circle gray";
-										  	}
 										  	%>
+										  	<script type="text/javascript">
+												var userName = <%="'" + user.getUsername() + "'"%>
+												var proName = <%="'" + projectName + "'"%>
+												var date, color, message, num
+												$.ajax({
+													url : 'webapi/jenkins/buildDetail',
+													type : 'GET',
+													data: {
+														"num": <%=num%>,
+														"proName" : proName,
+														"userName" : userName
+													}, 
+													async : true,
+													cache : true,
+													contentType: 'application/json; charset=UTF-8',
+													success : function(responseText) {
+														var str = JSON.stringify(responseText);
+														var obj = JSON.parse(str);
+														date = obj.date;
+														color = obj.color;
+														message = obj.message;
+														num = obj.num;
+														
+														td_color = document.getElementById("color" + num);
+														td_date = document.getElementById("date" + num);
+														td_message = document.getElementById("message" + num);
+														
+														td_color.className=color;
+														td_date.textContent = date;
+														td_message.textContent = message;
+													}, 
+													error : function(responseText) {
+														console.log("False!");
+													}
+												});
+											</script>
 										  	<tr id="<%=num %>" onClick="changeIframe(this)">
 										  		<td><%=i %></td>
-										  		<td><p class="<%=color%>" id="pProject"></p></td>
-										  		<td><%=strDate %></td>
-										  		<td><%=commitMessage %></td>
+										  		<td><p class="" id=<%="color" + num %>></p></td>
+										  		<td id=<%="date" + num %>>></td>
+										  		<td id=<%="message" + num %>></td>
 										  	</tr>
 										  	<%
 										  	i++;

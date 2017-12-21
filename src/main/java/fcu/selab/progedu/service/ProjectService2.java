@@ -69,7 +69,7 @@ public class ProjectService2 {
 
   boolean isSave = true;
 
-  private long testZipChecksum = 0;
+  private String testZipChecksum = "";
   private String testZipUrl = "";
 
   /**
@@ -507,7 +507,7 @@ public class ProjectService2 {
    *          Has template
    */
   public void addProject(String name, String deadline, String readMe, String fileType,
-      boolean hasTemplate, long testZipChecksum, String testZipUrl) {
+      boolean hasTemplate, String testZipChecksum, String testZipUrl) {
     Project project = new Project();
 
     project.setName(name);
@@ -574,7 +574,7 @@ public class ProjectService2 {
   }
 
   public void setTestFileInfo() {
-    testZipChecksum = zipHandler.getChecksum();
+    testZipChecksum = String.valueOf(zipHandler.getChecksum());
     testZipUrl = zipHandler.getUrlForJenkinsDownloadTestFile();
   }
 }

@@ -16,7 +16,7 @@ public class Project {
 
   private String jenkinsUrl = "";
 
-  private long testZipChecksum = -1;
+  private String testZipChecksum = "";
 
   private String testZipUrl = "";
 
@@ -76,11 +76,11 @@ public class Project {
     this.jenkinsUrl = jenkinsUrl;
   }
 
-  public long getTestZipChecksum() {
+  public String getTestZipChecksum() {
     return testZipChecksum;
   }
 
-  public void setTestZipChecksum(long testZipChecksum) {
+  public void setTestZipChecksum(String testZipChecksum) {
     this.testZipChecksum = testZipChecksum;
   }
 

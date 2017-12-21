@@ -1,6 +1,12 @@
 package fcu.selab.progedu.service;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fcu.selab.progedu.config.JenkinsConfig;
+import fcu.selab.progedu.conn.StudentDashChoosePro;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.jenkins.JobStatus;
@@ -208,6 +215,105 @@ public class JenkinsService {
       }
     }
     return commitCount;
+  }
+
+  /**
+   * get student build detail info
+   * 
+   * @param num
+   *          build num
+   * @param userName
+   *          student id
+   * @param proName
+   *          project name
+   * @return build detail
+   */
+  @GET
+  @Path("buildDetail")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getBuildDetail(@QueryParam("num") int num,
+      @QueryParam("userName") String userName, @QueryParam("proName") String proName) {
+    StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+    String buildApiJson = stuDashChoPro.getBuildApiJson(num, userName, proName);
+    final String strDate = stuDashChoPro.getCommitTime(buildApiJson);
+    String commitMessage = stuDashChoPro.getCommitMessage(num, userName, proName);
+    commitMessage = commitMessage.replace("Commit message: ", "");
+    commitMessage = commitMessage.substring(1, commitMessage.length() - 1);
+
+    String color = stuDashChoPro.getCommitColor(num, userName, proName, buildApiJson);
+    if (num == 1) {
+      color = "gray";
+    }
+    if (color.equals("red")) {
+      String style = checkErrorStyle(jenkinsData, userName, proName, num);
+      boolean ifCheckStyle = style.contains("Checkstyle violation");
+      if (ifCheckStyle) {
+        color = "orange";
+        // System.out.println(userName + "," + proName + ", " + num);
+      }
+    }
+    color = "circle " + color;
+
+    JSONObject ob = new JSONObject();
+    ob.put("num", num);
+    ob.put("color", color);
+    ob.put("date", strDate);
+    ob.put("message", commitMessage);
+    Response response = Response.ok().entity(ob.toString()).build();
+    return response;
+  }
+
+  /**
+   * get build error type
+   * 
+   * @param jenkinsData
+   *          connect to jenkins
+   * @param userName
+   *          student id
+   * @param proName
+   *          project name
+   * @param num
+   *          build num
+   * @return type
+   */
+  public static String checkErrorStyle(JenkinsConfig jenkinsData, String userName, String proName,
+      int num) {
+    String jsonString = "";
+    try {
+      HttpURLConnection connUrl = null;
+      String consoleUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + userName + "_" + proName + "/"
+          + num + "/consoleText";
+      URL url = new URL(consoleUrl);
+      connUrl = (HttpURLConnection) url.openConnection();
+      connUrl.setReadTimeout(10000);
+      connUrl.setConnectTimeout(15000);
+      connUrl.setRequestMethod("GET");
+      connUrl.connect();
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
+
+      BufferedReader reader = new BufferedReader(
+          new InputStreamReader(connUrl.getInputStream(), "UTF-8"));
+      String line = "";
+      while ((line = reader.readLine()) != null) {
+        jsonString += line;
+      }
+      reader.close();
+    } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (MalformedURLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return jsonString;
   }
 
   /**

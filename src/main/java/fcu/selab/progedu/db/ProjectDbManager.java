@@ -46,7 +46,7 @@ public class ProjectDbManager {
       preStmt.setString(3, project.getDescription());
       preStmt.setBoolean(4, project.isHasTemplate());
       preStmt.setString(5, project.getType());
-      preStmt.setLong(6, project.getTestZipChecksum());
+      preStmt.setString(6, project.getTestZipChecksum());
       preStmt.setString(7, project.getTestZipUrl());
       preStmt.executeUpdate();
       preStmt.close();
@@ -83,7 +83,7 @@ public class ProjectDbManager {
         String description = rs.getString("description");
         boolean hasTemplate = rs.getBoolean("hasTemplate");
         String type = rs.getString("type");
-        long checksum = rs.getLong("zipChecksum");
+        String checksum = rs.getString("zipChecksum");
         String zipUrl = rs.getString("zipUrl");
 
         project.setName(name);
@@ -127,7 +127,7 @@ public class ProjectDbManager {
         String description = rs.getString("description");
         boolean hasTemplate = rs.getBoolean("hasTemplate");
         String type = rs.getString("type");
-        long checksum = rs.getLong("zipChecksum");
+        String checksum = rs.getString("zipChecksum");
         String zipUrl = rs.getString("zipUrl");
 
         Project project = new Project();

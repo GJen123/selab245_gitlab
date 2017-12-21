@@ -97,6 +97,7 @@
 		}
 		.circle a {
 			color: #fff;
+			line-height: 30px;
 		}
 		
 	</style>
@@ -166,7 +167,7 @@
         			        <ul id="student" class="collapse show" style="list-style: none;">
         			            <%
 		  				          	for(User user : users){
-		        			            String style = "color: white;";
+		        			            String style = "";
 			  			          	    String userName = user.getUserName();
 			            	 			String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
 			            	 			if(choosedUser.getUserName().equals(user.getUserName())) {
@@ -206,7 +207,7 @@
 								<p class="ovol gold" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p> -->
 								<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
 							</div>
-	        		 	<table class="table table-striped" style="width: 100%">
+	        		 	<table class="table table-striped" style="width: 100%; margin-bottom: 0px;">
 			        		<thead>
 								<tr>
 									<th>作業</th>
@@ -226,25 +227,49 @@
 										for(Project dbProject : dbProjects){
 										  
 										  int commit_count = 0;
-										  JobStatus jobStatus = new JobStatus();
-										  String circleColor = null;
 										  String projectJenkinsUrl = "";
-										  String buildResult = "";
 										  
 										  for(GitlabProject gitProject : gitProjects){
 										    if(dbProject.getName().equals(gitProject.getName())){
 											  projectJenkinsUrl = "dashProjectChoosed.jsp?userId=" + choosedUser.getGitLabId() + "&proName=" + gitProject.getName();
 										      Dash dash = new Dash(choosedUser);
 										      commit_count = dash.getProjectCommitCount(gitProject);
-										      String color = dash.getMainTableColor(gitProject);
-										      buildResult = color.replace("color ", "");
-										      String[] results = buildResult.split(",");
-										      circleColor = results[0];
+										      %>
+										      <script type="text/javascript">
+												var userName = <%="'" + choosedUser.getUserName() + "'"%>
+												var proName = <%="'" + gitProject.getName() + "'"%>
+												$.ajax({
+													url : 'webapi/jenkins/color',
+													type : 'GET',
+													data: {
+														"proName" : proName,
+														"userName" : userName
+													}, 
+													async : true,
+													cache : true,
+													contentType: 'application/json; charset=UTF-8',
+													success : function(responseText) {
+														var result = responseText.split(",");
+														if(result.length >= 3) {
+															var d = document.getElementById(result[0]);
+															d.className = result[1];
+															var a = document.getElementById(result[0] + "_commit");
+															a.textContent = result[2];
+														}
+													}, 
+													error : function(responseText) {
+														console.log("False!");
+													}
+												});
+											</script>
+											<%
 										    }else{
 												continue;
 											}
 										    %>
-										    	<td><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=projectJenkinsUrl  %>')"><%=commit_count %></a></p></td>
+										    	<td><p class="" id=<%= choosedUser.getUserName() + "_" + dbProject.getName()%>>
+										    		<a href="#" onclick="window.open('<%=projectJenkinsUrl%>')" id=<%= choosedUser.getUserName() + "_" + dbProject.getName() + "_commit"%>><%=commit_count %></a>
+										    	</p></td>
 										    <%
 										  }
 										}

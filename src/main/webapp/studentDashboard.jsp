@@ -17,7 +17,7 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%
-	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
+	if(null == session.getAttribute("username") || ("").equals(session.getAttribute("username").toString())){
 		response.sendRedirect("index.jsp");
 	}
 	session.putValue("page", "studentDashboard");
@@ -34,9 +34,13 @@
 	      break;
 	    }
 	  }
+	}else {
+		response.sendRedirect("index.jsp");
 	}
 	if(cookie != null){
 	  private_token = cookie.getValue();
+	}else {
+		response.sendRedirect("index.jsp");
 	}
 	
 	/*Language language = new Language();
@@ -125,6 +129,7 @@
 		}
 		.circle a {
 			color: #fff;
+			line-height: 30px;
 		}
 		#goToJenkins{
 			float: right;
@@ -227,19 +232,44 @@
 							<tr>
 								<td><%=user.getUsername() %></td>
 								<%
-									List<String> jobColors = stuDash.getMainTableJobColor(stuProjects);
-								
-									List<JobStatus> jobStatusis = stuDash.getJobStatusList(stuProjects, user);
+									List<JobStatus> jobStatus = stuDash.getJobStatusList(stuProjects, user);
 									int i = 0;
 									for(GitlabProject stuProject : stuProjects){
-									  	String color = "circle " + jobColors.get(i);
 									  	int commitCount = stuDash.getScmCommit(user.getUsername(), stuProject);
 									  	String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
-									  	if(commitCount == 1){
-									  		color = "circle gray";
-									  	}
 									  	%>
-									  		<td><p class="<%=color%>"><a href=<%=href %>><%=commitCount %></a></p></td>
+									      <script type="text/javascript">
+											var userName = <%="'" + user.getUsername() + "'"%>
+											var proName = <%="'" + stuProject.getName() + "'"%>
+											$.ajax({
+												url : 'webapi/jenkins/color',
+												type : 'GET',
+												data: {
+													"proName" : proName,
+													"userName" : userName
+												}, 
+												async : true,
+												cache : true,
+												contentType: 'application/json; charset=UTF-8',
+												success : function(responseText) {
+													var result = responseText.split(",");
+													if(result.length >= 3) {
+														var d = document.getElementById(result[0]);
+														d.className = result[1];
+														var a = document.getElementById(result[0] + "_commit");
+														a.textContent = result[2];
+													}
+												}, 
+												error : function(responseText) {
+													console.log("False!");
+												}
+											});
+										</script>
+										<%
+									  	%>
+									  		<td><p class="" id=<%= user.getUsername() + "_" + stuProject.getName()%>>
+									  			<a href=<%=href %> id=<%= user.getUsername() + "_" + stuProject.getName() + "_commit"%>><%=commitCount %></a>
+									  		</p></td>
 									  	<%
 									  	i++;
 									}

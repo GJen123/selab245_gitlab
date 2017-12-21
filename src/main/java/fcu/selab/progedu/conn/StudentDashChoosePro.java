@@ -169,9 +169,15 @@ public class StudentDashChoosePro {
       color = "red";
       // check if is checkstyle error
       String consoleText = jenkins.getConsoleText(projectJenkinsUrl);
-      boolean isCheckstyleError = jenkins.checkIsCheckstyleError(consoleText);
-      if (isCheckstyleError == true) {
+      // boolean isCheckstyleError =
+      // jenkins.checkIsCheckstyleError(consoleText);
+      // if (isCheckstyleError == true) {
+      // color = "orange";
+      // }
+      boolean ifCheckStyle = consoleText.contains("Checkstyle violation");
+      if (ifCheckStyle) {
         color = "orange";
+        // System.out.println(userName + "," + proName + ", " + num);
       }
     }
     return color;

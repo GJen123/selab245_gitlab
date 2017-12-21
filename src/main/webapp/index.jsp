@@ -75,14 +75,10 @@ form[role=login]>div {
   var Msg ='<%=session.getAttribute("enterError")%>';
   if (Msg != "null") {
     function alertName() {
-      alert(Your username or password is incorrect!");
+      alert("Your username or password is incorrect!");
     }
   }
 </script>
-
-<script type="text/javascript">
-  window.onload = alertName;
-</script> 
 </head>
 
 <body>
