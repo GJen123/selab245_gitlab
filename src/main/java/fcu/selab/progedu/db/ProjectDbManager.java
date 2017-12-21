@@ -36,9 +36,8 @@ public class ProjectDbManager {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
     Statement stmt = null;
-    String sql = "INSERT INTO Assignment(name, deadline, description, hasTemplate, type)"
-        + "  VALUES(?, ?, ?, ?, ?)";
-    String query = "SELECT * FROM Assignment";
+    String sql = "INSERT INTO Assignment(name, deadline, description, hasTemplate, type,"
+        + " zipChecksum, zipUrl)  VALUES(?, ?, ?, ?, ?, ?, ?)";
 
     try {
       preStmt = conn.prepareStatement(sql);
@@ -47,19 +46,10 @@ public class ProjectDbManager {
       preStmt.setString(3, project.getDescription());
       preStmt.setBoolean(4, project.isHasTemplate());
       preStmt.setString(5, project.getType());
+      preStmt.setLong(6, project.getTestZipChecksum());
+      preStmt.setString(7, project.getTestZipUrl());
       preStmt.executeUpdate();
       preStmt.close();
-      //
-      // stmt = conn.createStatement();
-      // ResultSet rs = stmt.executeQuery(query);
-      // System.out.println("List All Projects");
-      // while (rs.next()) {
-      // System.out.println("Name: " + rs.getString("name")
-      // + ", Deadline: " + rs.getString("deadline")
-      // + ", Description: " + rs.getString("description")
-      // + ", HasTemplate: " + rs.getBoolean("hasTemplate")
-      // + ", Type: " + rs.getString("type"));
-      // }
     } catch (SQLException e) {
       e.printStackTrace();
     } finally {
@@ -93,12 +83,16 @@ public class ProjectDbManager {
         String description = rs.getString("description");
         boolean hasTemplate = rs.getBoolean("hasTemplate");
         String type = rs.getString("type");
+        long checksum = rs.getLong("zipChecksum");
+        String zipUrl = rs.getString("zipUrl");
 
         project.setName(name);
         project.setDescription(description);
         project.setHasTemplate(hasTemplate);
         project.setType(type);
         project.setDeadline(deadline);
+        project.setTestZipChecksum(checksum);
+        project.setTestZipUrl(zipUrl);
 
       }
     } catch (SQLException e) {
@@ -133,12 +127,16 @@ public class ProjectDbManager {
         String description = rs.getString("description");
         boolean hasTemplate = rs.getBoolean("hasTemplate");
         String type = rs.getString("type");
+        long checksum = rs.getLong("zipChecksum");
+        String zipUrl = rs.getString("zipUrl");
 
         Project project = new Project();
         project.setName(name);
         project.setDescription(description);
         project.setHasTemplate(hasTemplate);
         project.setType(type);
+        project.setTestZipChecksum(checksum);
+        project.setTestZipUrl(zipUrl);
 
         lsProjects.add(project);
       }

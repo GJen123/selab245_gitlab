@@ -3,7 +3,7 @@ package fcu.selab.progedu.data;
 public class Project {
 
   private String name = "";
-  
+
   private String deadline = "";
 
   private String description = "";
@@ -15,6 +15,10 @@ public class Project {
   private String gitLabUrl = "";
 
   private String jenkinsUrl = "";
+
+  private long testZipChecksum = -1;
+
+  private String testZipUrl = "";
 
   public String getName() {
     return name;
@@ -70,5 +74,21 @@ public class Project {
 
   public void setJenkinsUrl(String jenkinsUrl) {
     this.jenkinsUrl = jenkinsUrl;
+  }
+
+  public long getTestZipChecksum() {
+    return testZipChecksum;
+  }
+
+  public void setTestZipChecksum(long testZipChecksum) {
+    this.testZipChecksum = testZipChecksum;
+  }
+
+  public String getTestZipUrl() {
+    return testZipUrl;
+  }
+
+  public void setTestZipUrl(String testZipUrl) {
+    this.testZipUrl = testZipUrl;
   }
 }

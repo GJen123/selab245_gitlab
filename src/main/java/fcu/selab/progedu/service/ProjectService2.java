@@ -25,9 +25,11 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -46,7 +48,7 @@ import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.utils.ZipHandler;
 
-@Path("project2/")
+@Path("project/")
 public class ProjectService2 {
 
   private Conn conn = Conn.getInstance();
@@ -187,7 +189,7 @@ public class ProjectService2 {
     execLinuxCommandInFile(removeFileCommand, tempDir);
 
     // 9. Add project to database
-    addProject(name, deadline, readMe, fileType, hasTemplate);
+    addProject(name, deadline, readMe, fileType, hasTemplate, testZipChecksum, testZipUrl);
 
     List<GitlabUser> users = conn.getUsers();
     Collections.reverse(users);
@@ -505,7 +507,7 @@ public class ProjectService2 {
    *          Has template
    */
   public void addProject(String name, String deadline, String readMe, String fileType,
-      boolean hasTemplate) {
+      boolean hasTemplate, long testZipChecksum, String testZipUrl) {
     Project project = new Project();
 
     project.setName(name);
@@ -513,6 +515,8 @@ public class ProjectService2 {
     project.setDescription(readMe);
     project.setType(fileType);
     project.setHasTemplate(hasTemplate);
+    project.setTestZipChecksum(testZipChecksum);
+    project.setTestZipUrl(testZipUrl);
 
     dbManager.addProject(project);
   }
@@ -549,6 +553,23 @@ public class ProjectService2 {
       response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
     }
 
+    return response;
+  }
+
+  /**
+   * get project checksum
+   * 
+   * @param projectName
+   *          project name
+   * @return checksum
+   */
+  @GET
+  @Path("checksum")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getProjectChecksum(@QueryParam("proName") String projectName) {
+    Project project = new Project();
+    project = dbManager.getProjectByName(projectName);
+    Response response = Response.ok().entity(project).build();
     return response;
   }
 
