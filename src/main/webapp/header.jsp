@@ -13,8 +13,7 @@
 	<script src="https://code.highcharts.com/highcharts.js"></script>
 	<script src="https://code.highcharts.com/modules/data.js"></script>
 	<script src="https://code.highcharts.com/modules/exporting.js"></script>
-	<link rel="stylesheet"
-	  href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	<style>
 		body{
 			padding-top: 50px;

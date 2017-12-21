@@ -40,6 +40,8 @@
 				background-color: #444;
 				color: white; 
 				margin: -1px;
+				position: fixed; /* Set the navbar to fixed position */
+    			top: 0;
 			}
 			.nav-link {
 				color: white; 
@@ -189,7 +191,7 @@
 		
 		<table style="width: 100%; height: 100%">
 			<tr>
-				<td style="width: 250px;">
+				<td style="width: 200px;">
 					<!-- -----sidebar----- -->
 					<div id="sidebar">
 						<ul class="nav flex-column" style="padding-top: 20px;">
@@ -204,7 +206,7 @@
 							  	  String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
 							  	  %>
 							  	  	<li class="nav-item" style="margin:0px 0px 0px 30px">
-									  <font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-pencil-square-o" aria-hidden="true"><%=stuProject.getName() %></i></a></font>
+									  <font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=stuProject.getName() %></a></font>
 									</li>
 							  	  <%
 							  	}
@@ -278,6 +280,7 @@
 									<%
 										int commit_count = buildNum.size();
 										int i=1;
+										int lastBuildMessageNum = 0;
 										for(Integer num : buildNum){
 										  	String buildApiJson = stuDashChoPro.getBuildApiJson(num, user.getUsername(), projectName);
 										  	String strDate = stuDashChoPro.getCommitTime(buildApiJson);
@@ -299,6 +302,7 @@
 										  	</tr>
 										  	<%
 										  	i++;
+										  	lastBuildMessageNum = num;
 										}
 									%>
 									</tbody>
@@ -313,7 +317,7 @@
 	          				
 	        		<!-- iFrame -->
 					<%
-						int num = 1;
+						int num = lastBuildMessageNum;
 						String jobName = user.getUsername() + "_" + projectName;
 						String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" +  num + "/consoleText";
 						String url = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/";

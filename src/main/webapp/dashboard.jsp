@@ -33,16 +33,28 @@
 		}
 		
 		.sidebar {
+			height: 100%;
 			background-color: #444;
-			color: white;
+			color: white; 
 			margin: -1px;
+			position: fixed; /* Set the navbar to fixed position */
+   			top: 0;
+   			padding-top: 50px;
+   		 	overflow-x:hidden;
 		}
 		.sidebar a{
 			color: white;
 		}
+		.sidebar a:hover{
+			color: orange;
+		}
 		.sidebar button{
 			color: white;
 			background: none;
+		}
+		
+		#main {
+			height: 100%;
 		}
 		
 		#inline {
@@ -124,10 +136,11 @@
 		JenkinsApi jenkins = JenkinsApi.getInstance();
 	%>
 	<%@ include file="header.jsp" %>
-	<div class="container-fluid col-md-12">
-		<div class="row">
+	<table style="width: 100%; height: 100%;">
+		<tr>
+			<td style="width:200px">
 				<!-- -----sidebar----- -->
-				<nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+				<div class="sidebar" style="width:200px">
 					<ul class="nav flex-column" style="padding-top: 20px;">
             			<li class="nav-item">
             				<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_overview"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
@@ -155,10 +168,11 @@
          			       </ul>
          			   </li>
         			</ul>
-        		</nav>
+        		</div>
 				<!-- -----sidebar----- -->
-		<main class="col bg-faded py-3">
-	        <div class="container-fluid" style="margin-top: 20px;">
+			</td>
+		<td>
+	        <div class="container-fluid" id="main" style="margin-top: 20px;">
 	        <h1 style="margin-top: 30px; margin-bottom: 20px;"><fmt:message key="dashboard_a_overview"/></h1>
 		        <!-- ---------------------------- Student Project ------------------------------- -->
 		        <div class="card">
@@ -303,8 +317,8 @@
   					</div>
 				</div>
 	        </div>
-	       </main>
-	     </div>
-    </div>
+	       </td>
+       </tr>
+   </table>
 </body>
 </html>

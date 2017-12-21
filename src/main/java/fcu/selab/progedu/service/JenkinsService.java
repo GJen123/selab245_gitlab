@@ -1,5 +1,6 @@
 package fcu.selab.progedu.service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -206,5 +208,23 @@ public class JenkinsService {
       }
     }
     return commitCount;
+  }
+
+  /**
+   * get test folder
+   * 
+   * @param filePath
+   *          folder directory
+   * @return zip file
+   */
+  @GET
+  @Path("getTestFile")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getTestFile(@QueryParam("filePath") String filePath) {
+    File file = new File(filePath);
+
+    ResponseBuilder response = Response.ok((Object) file);
+    response.header("Content-Disposition", "attachment;filename=");
+    return response.build();
   }
 }

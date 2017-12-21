@@ -71,6 +71,8 @@
 			background-color: #444;
 			color: white;
 			margin: -1px;
+			position: fixed; /* Set the navbar to fixed position */
+   			top: 0;
 		}
 		#sidebar a{
 			color: white;

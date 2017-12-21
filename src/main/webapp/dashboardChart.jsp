@@ -32,16 +32,22 @@ body, html, .container-fluid {
 }
 
 .sidebar {
+	height: 100%;
 	background-color: #444;
-	color: white;
+	color: white; 
 	margin: -1px;
+	position: fixed; /* Set the navbar to fixed position */
+	top: 0;
+	padding-top: 50px;
+ 	overflow-x:hidden;
 }
-
-.sidebar a {
+.sidebar a{
 	color: white;
 }
-
-.sidebar button {
+.sidebar a:hover{
+	color: orange;
+}
+.sidebar button{
 	color: white;
 	background: none;
 }
@@ -133,52 +139,54 @@ body, html, .container-fluid {
 
 	%>
 	<%@ include file="header.jsp"%>
-	<div class="container-fluid">
-		<div class="row">
+	<table style="width: 100%; height: 100%;">
+		<tr>
+			<td style="width:200px">
+				<!-- -----sidebar----- -->
+				<div class="sidebar" style="width:200px">
+				<ul class="nav flex-column" style="padding-top: 20px;">
+					<li class="nav-item"><font size="4"><a
+							href="javascript:;" data-toggle="collapse" data-target="#overview"
+							class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp;
+								<fmt:message key="dashboard_a_overview" /> <i
+								class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+						<ul id="overview" class="collapse" style="list-style: none;">
+							<li class="nav-item"><font size="3"><a
+									class="nav-link" href="#Student Projects"><i
+										class="fa fa-table" aria-hidden="true"></i>&nbsp; <fmt:message
+											key="dashboard_li_studentProjects" /></a></font></li>
+							<li class="nav-item"><font size="3">
+									<button type="button" class="btn btn-default"
+										data-toggle="modal" data-target="#exampleModal">
+										<i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp;
+										<fmt:message key="dashboard_li_chart" />
+									</button>
+							</font></li>
+						</ul></li>
+					<li class="nav-item"><font size="4"><a
+							href="javascript:;" data-toggle="collapse" data-target="#student"
+							class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp;
+								<fmt:message key="dashboard_a_student" /> <i
+								class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+						<ul id="student" class="collapse" style="list-style: none;">
+							<%
+								for (User user : users) {
+									String userName = user.getUserName();
+									String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+							%>
+							<li class="nav-item"><font size="3"><a
+									class="nav-link" href=<%=href%>><i
+										class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName%></a></font></li>
+							<%
+								}
+							%>
+						</ul></li>
+				</ul>
+			</div>
 			<!-- -----sidebar----- -->
-			<nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
-			<ul class="nav flex-column" style="padding-top: 20px;">
-				<li class="nav-item"><font size="4"><a
-						href="javascript:;" data-toggle="collapse" data-target="#overview"
-						class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp;
-							<fmt:message key="dashboard_a_overview" /> <i
-							class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
-					<ul id="overview" class="collapse" style="list-style: none;">
-						<li class="nav-item"><font size="3"><a
-								class="nav-link" href="#Student Projects"><i
-									class="fa fa-table" aria-hidden="true"></i>&nbsp; <fmt:message
-										key="dashboard_li_studentProjects" /></a></font></li>
-						<li class="nav-item"><font size="3">
-								<button type="button" class="btn btn-default"
-									data-toggle="modal" data-target="#exampleModal">
-									<i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp;
-									<fmt:message key="dashboard_li_chart" />
-								</button>
-						</font></li>
-					</ul></li>
-				<li class="nav-item"><font size="4"><a
-						href="javascript:;" data-toggle="collapse" data-target="#student"
-						class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp;
-							<fmt:message key="dashboard_a_student" /> <i
-							class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
-					<ul id="student" class="collapse" style="list-style: none;">
-						<%
-							for (User user : users) {
-								String userName = user.getUserName();
-								String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
-						%>
-						<li class="nav-item"><font size="3"><a
-								class="nav-link" href=<%=href%>><i
-									class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName%></a></font></li>
-						<%
-							}
-						%>
-					</ul></li>
-			</ul>
-			</nav>
-			<!-- -----sidebar----- -->
-			<main class="col bg-faded py-3 col-md-10">
-			<div class="container-fluid col-md-12" style="margin-top: 20px;">
+			</td>
+			<td>
+			<div class="container-fluid" id="main" style="margin-top: 60px;">
 				<h1 style="margin-top: 30px; margin-bottom: 20px;">
 					<fmt:message key="dashboard_a_overview" />
 				</h1>
@@ -194,6 +202,8 @@ body, html, .container-fluid {
 								data-toggle="tab" href="#chart1" role="tab">Chart1</a></li>
 							<li class="nav-item"><a class="nav-link" data-toggle="tab"
 								href="#chart2" role="tab">Chart2</a></li>
+							<li class="nav-item"><a class="nav-link" data-toggle="tab"
+								href="#chart3" role="tab">Chart3</a></li>
 						</ul>
 						<!-- Tab panes -->
 						<div class="tab-content text-center" style="margin-top: 10px">
@@ -203,6 +213,10 @@ body, html, .container-fluid {
 							</div>
 							<div class="tab-pane col-md-12" id="chart2" role="tabpanel">
 								<div class="col-md-12" id="chart2Demo"
+									style="min-width: 310px; max-width: 1200px; height: 400px; margin: 0 auto"></div>
+							</div>
+							<div class="tab-pane col-md-12" id="chart3" role="tabpanel">
+								<div class="col-md-12" id="chart3Demo"
 									style="min-width: 310px; max-width: 1200px; height: 400px; margin: 0 auto"></div>
 							</div>
 						</div>
@@ -287,11 +301,32 @@ body, html, .container-fluid {
 					<%
 						}
 					%>
+					<script type="text/javascript">
+						var chart3;
+						$.ajax({
+							url : 'webapi/commits/record/records',
+							type : 'GET',
+							data: {
+								"hw" : '1'
+							}, 
+							async : false,
+							cache : true,
+							contentType: 'application/json; charset=UTF-8',
+							success : function(responseText) {
+								var str = JSON.stringify(responseText);
+								chart3 = JSON.parse(str);
+							}, 
+							error : function(responseText,A,B) {
+								console.log(responseText,A,B);
+							}
+						 });
+					</script>
 				</div>
 			</div>
 			</main>
-		</div>
-	</div>
+		</td>
+	</tr>
+</table>
 </body>
 <!-- set Highchart colors -->
 <script>
@@ -404,5 +439,4 @@ Highcharts.chart('chart2Demo', {
     series: chart2Array
 });
 </script>
-
 </html>

@@ -38,13 +38,26 @@
 		#inline{
 			margin: 20px;
 		}
+		
 		.sidebar {
+			height: 100%;
 			background-color: #444;
-			color: white;
+			color: white; 
 			margin: -1px;
+			position: fixed; /* Set the navbar to fixed position */
+   			top: 0;
+   			padding-top: 50px;
+   		 	overflow-x:hidden;
 		}
 		.sidebar a{
 			color: white;
+		}
+		.sidebar a:hover{
+			color: orange;
+		}
+		.sidebar button{
+			color: white;
+			background: none;
 		}
 		.ovol {
 			border-radius: 50px;
@@ -118,10 +131,11 @@
 		Collections.reverse(projects);
 	%>
 	<%@ include file="header.jsp" %>
-	<div class="container-fluid">
-		<div class="row">
+	<table style="width: 100%; height: 100%;">
+		<tr>
+			<td style="width:200px">
 				<!-- -----sidebar----- -->
-				<nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+				<div class="sidebar" style="width:200px">
 					<ul class="nav flex-column" style="padding-top: 20px;">
             			<li class="nav-item">
 	        				<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <%=choosedUser.getUsername() %> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
@@ -160,13 +174,14 @@
             			</li>
           			</ul>
 				<!-- -----sidebar----- -->
-			</nav>
-		<main class="col bg-faded py-3">
-	        <div class="container-fluid" style="margin-top: 20px;">
-	        	<h1 style="margin-top: 30px; margin-bottom: 20px;"> <%=choosedUser.getUsername() %>_ <%=projectName %> </h1>
+			</div>
+		</td>
+		<td style="padding-top: 20px; padding-left: 0px; position: fixed; top: 0x;" class="col-md-10">
+			<div class="container-fluid col-md-12" id="main" style="margin-top: 0px;">
+	        	<h1 style="margin-bottom: 20px;"> <%=choosedUser.getUsername() %>_ <%=projectName %> </h1>
 		        <!-- ---------------------------- Project ------------------------------- -->
-		        <div class="card">
-		        	<h4 id="Student Projects" class="card-header"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; Project</h4>
+		        <div class="card col-md-12" style="padding:0;">
+		        	<h4 id="Student Projects" class="card-header"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; Records</h4>
 		        	<div class="card-block">
 						<div id="inline">
 							<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
@@ -246,8 +261,9 @@
 		        </div>
 		        <!-- ---------------------------- Student Project ------------------------------- -->
 	        </div>
-	      </main>
 <!-- ------------------------ main -------------------------------------- -->
-		</div>
+			</td>
+		</tr>
+		</table>
 	</body>
 </html>

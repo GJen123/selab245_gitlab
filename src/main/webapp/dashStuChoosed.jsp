@@ -42,9 +42,24 @@
 			margin: 20px;
 		}
 		.sidebar {
+			height: 100%;
 			background-color: #444;
-			color: white;
+			color: white; 
 			margin: -1px;
+			position: fixed; /* Set the navbar to fixed position */
+   			top: 0;
+   			padding-top: 0px;
+   		 	overflow-x:hidden;
+		}
+		.sidebar a{
+			color: white;
+		}
+		.sidebar a:hover{
+			color: orange;
+		}
+		.sidebar button{
+			color: white;
+			background: none;
 		}
 		.ovol {
 			border-radius: 5px;
@@ -83,6 +98,7 @@
 		.circle a {
 			color: #fff;
 		}
+		
 	</style>
 	
 	<link rel="shortcut icon" href="img/favicon.ico"/>
@@ -120,11 +136,12 @@
      	}
 	%>
 	<%@ include file="header.jsp" %>
-	<div class="container-fluid">
-		<div class="row">
+	<table style="width: 100%; height: 100%;">
+		<tr>
+			<td style="width:200px">
 				<!-- -----sidebar----- -->
-				<nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
-					<ul class="nav flex-column" style="padding-top: 20px;">
+				<div class="sidebar" style="width:200px">
+					<ul class="nav flex-column" style="padding-top: 70px;">
           			  <li class="nav-item">
             				<font size="4"><a style="color: white;" href="javascript:;" data-toggle="collapse" data-target="#projects" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <%=choosedUser.getUserName() %> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
             				<ul id="projects" class="collapse" style="list-style: none;">
@@ -163,9 +180,10 @@
                 			</ul>
             			</li>
           			</ul>
-				</nav>
+				</div>
 				<!-- -----sidebar----- -->
-		<main class="col bg-faded py-3">
+			</td>
+		<td style="padding-top: 20px; padding-left: 0px; position: fixed; top: 0x;" class="col-md-10">
         	<%
         		String private_token = choosedUser.getPrivateToken();
             	StudentConn sConn = new StudentConn(private_token); 	
@@ -173,7 +191,7 @@
             	int pro_total_commits = 0;
         		
         	%>
-        	<div class="container-fluid" style="margin-top: 20px">
+        	<div class="container-fluid" id="main" style="margin-top: 0px;">
         		<h2><%=choosedUser.getUserName() %></h2>
         		 <div class="card">
 	        		 	<div class="card-header">
@@ -191,7 +209,7 @@
 	        		 	<table class="table table-striped" style="width: 100%">
 			        		<thead>
 								<tr>
-									<th width="15%">作業</th>
+									<th>作業</th>
 									<%
 										for(Project dbProject : dbProjects){
 										  %>
@@ -203,7 +221,7 @@
 							</thead>
 							<tbody>
 								<tr>
-									<th width="15%">Commits</th>
+									<th>Commits</th>
 									<%
 										for(Project dbProject : dbProjects){
 										  
@@ -220,10 +238,11 @@
 										      commit_count = dash.getProjectCommitCount(gitProject);
 										      String color = dash.getMainTableColor(gitProject);
 										      buildResult = color.replace("color ", "");
+										      String[] results = buildResult.split(",");
+										      circleColor = results[0];
 										    }else{
 												continue;
 											}
-										    circleColor = "circle " + buildResult;
 										    %>
 										    	<td><p class="<%=circleColor%>"><a href="#" onclick="window.open('<%=projectJenkinsUrl  %>')"><%=commit_count %></a></p></td>
 										    <%
@@ -237,8 +256,8 @@
 		        	</div>
         		 </div>				
         	</div>
-        </main>
-      </div>
-   </div>
+       	</td>
+   	</tr>
+</table>
 </body>
 </html>
