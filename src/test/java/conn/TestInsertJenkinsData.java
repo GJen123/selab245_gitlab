@@ -9,6 +9,7 @@ import java.util.List;
 import org.gitlab.api.models.GitlabProject;
 
 import fcu.selab.progedu.conn.Conn;
+import fcu.selab.progedu.conn.StudentDashChoosePro;
 import fcu.selab.progedu.data.Project;
 import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.CommitResultDbManager;
@@ -38,6 +39,7 @@ public class TestInsertJenkinsData {
       String userName = user.getUserName();
       gitProjects = conn.getProject(user);
       Collections.reverse(gitProjects);
+      StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
       for (Project dbProject : dbProjects) {
         String proName = null;
         for (GitlabProject gitProject : gitProjects) {
@@ -54,17 +56,36 @@ public class TestInsertJenkinsData {
             proName = "N/A";
           }
         } else {
+          if (!proName.equals("OOP-HW8") && !proName.equals("OOP-HW9")
+              && !proName.equals("OOP-HW10")) {
+            continue;
+          }
           String[] result = jenkins.getColor(proName, userName).split(",");
           String color = result[0].replace("circle ", "");
           int commit = Integer.valueOf(result[1]) - 1;
           String hw = proName.replace("OOP-HW", "");
-          // System.out.println(user.getId() + ", " + hw + ", " + color + ", " +
-          // commit);
-          boolean check = commitDb.updateJenkinsCommitCount(connection, user.getId(), hw, commit,
-              color);
+
+          List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(userName, proName);
+          int num = 0;
+          if (buildNum.size() > 1) {
+            num = buildNum.size() - 1;
+          }
+
+          String buildApiJson = stuDashChoPro.getBuildApiJson(buildNum.get(num), userName, proName);
+          String strDate = stuDashChoPro.getCommitTime(buildApiJson);
+          int id = db.getUser(userName).getId();
+
+          boolean check = commitDb.checkJenkinsJobTimestamp(connection, user.getId(), hw);
           if (check) {
+            commitDb.updateJenkinsCommitCount(connection, id, hw, commit, color);
+            commitDb.updateJenkinsJobTimestamp(connection, id, hw, strDate);
             System.out
-                .println("success, " + user.getId() + ", " + hw + ", " + commit + ", " + color);
+                .println("update, " + user.getId() + ", " + hw + ", " + commit + ", " + color);
+          } else {
+            commitDb.insertJenkinsCommitCount(connection, id, hw, commit, color);
+            commitDb.updateJenkinsJobTimestamp(connection, id, hw, strDate);
+            System.out
+                .println("insert, " + user.getId() + ", " + hw + ", " + commit + ", " + color);
           }
         }
       }

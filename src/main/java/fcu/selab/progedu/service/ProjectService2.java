@@ -109,11 +109,6 @@ public class ProjectService2 {
       @FormDataParam("fileRadio") String fileType,
       @FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
-    Date date = new Date();
-    SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-    sdFormat.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
-    String dateTime = sdFormat.format(date);
-    System.out.println("start time: " + dateTime);
 
     String rootProjectUrl = null;
     String folderName = null;
@@ -189,7 +184,12 @@ public class ProjectService2 {
     execLinuxCommandInFile(removeFileCommand, tempDir);
 
     // 9. Add project to database
-    addProject(name, deadline, readMe, fileType, hasTemplate, testZipChecksum, testZipUrl);
+    Date date = new Date();
+    SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    sdFormat.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+    String dateTime = sdFormat.format(date);
+    addProject(name, dateTime, deadline, readMe, fileType, hasTemplate, testZipChecksum,
+        testZipUrl);
 
     List<GitlabUser> users = conn.getUsers();
     Collections.reverse(users);
@@ -200,14 +200,6 @@ public class ProjectService2 {
 
       // 10. Create student project, and import project
       conn.createPrivateProject(user.getId(), name, rootProjectUrl);
-
-      // System.out.println(user.getName() + ", Create student project, and
-      // import project");
-
-      // 11. send notification email to student
-      // sendEmail(user.getEmail(), name);
-      // System.out.println(user.getName() + ", Send notification email to
-      // student");
     }
 
     // 12. Create each Jenkins Jobs
@@ -506,11 +498,12 @@ public class ProjectService2 {
    * @param hasTemplate
    *          Has template
    */
-  public void addProject(String name, String deadline, String readMe, String fileType,
-      boolean hasTemplate, String testZipChecksum, String testZipUrl) {
+  public void addProject(String name, String createTime, String deadline, String readMe,
+      String fileType, boolean hasTemplate, String testZipChecksum, String testZipUrl) {
     Project project = new Project();
 
     project.setName(name);
+    project.setCreateTime(createTime);
     project.setDeadline(deadline);
     project.setDescription(readMe);
     project.setType(fileType);
@@ -557,6 +550,40 @@ public class ProjectService2 {
   }
 
   /**
+   * edit projects
+   * 
+   * @param name
+   *          project name
+   * @return response
+   */
+  @POST
+  @Path("edit")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response editProject(@FormDataParam("Edit_Hw_Name") String name,
+      @FormDataParam("Hw_Deadline") String deadline, @FormDataParam("Hw_README") String readMe) {
+    System.out.println("name: " + name);
+    if (!deadline.equals("") && !readMe.equals("<br>")) { // has deadline readMe
+      System.out.println("deadline: " + deadline);
+      System.out.println("readMe: " + readMe);
+      dbManager.editProject(deadline, readMe, name);
+    } else if (!readMe.equals("<br>") && deadline.equals("")) { // no deadline
+      System.out.println("readMe: " + readMe);
+      dbManager.editProjectReadMe(readMe, name);
+    } else if (readMe.equals("<br>") && !deadline.equals("")) { // no ReadMe
+      System.out.println("deadline: " + deadline);
+      dbManager.editProjectDeadline(deadline, name);
+    }
+
+    Response response = Response.ok().build();
+    if (!isSave) {
+      response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+
+    return response;
+  }
+
+  /**
    * get project checksum
    * 
    * @param projectName
@@ -566,7 +593,7 @@ public class ProjectService2 {
   @GET
   @Path("checksum")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getProjectChecksum(@QueryParam("proName") String projectName) {
+  public Response getProject(@QueryParam("proName") String projectName) {
     Project project = new Project();
     project = dbManager.getProjectByName(projectName);
     Response response = Response.ok().entity(project).build();

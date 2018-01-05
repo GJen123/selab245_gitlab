@@ -71,8 +71,11 @@
 			background-color: #444;
 			color: white; 
 			margin: -1px;
-			position: fixed; /* Set the navbar to fixed position */
-   			top: 0;
+			width: 200px;
+			position: fixed;
+			top: 0;
+			left: 0;
+			z-index: 100;
 		}
 		.nav-link {
 			color: white; 
@@ -88,6 +91,10 @@
 		}
 		#main {
 			height: 100%;
+			margin-left: 200px;
+			overflow-x: scroll;
+			padding-top: 20px;
+			width: auto;
 		}
 		
 		#inline p {
@@ -119,7 +126,7 @@
 			background: #878787;
 		}
 		.orange {
-			background: #FF5809;
+			background: gold;
 		}
 		.green {
 			background: #32CD32;
@@ -172,38 +179,35 @@
 	
 	<%@ include file="studentHeader.jsp"%>
 	
-	<table style="width: 100%; height: 100%;">
-		<tr>
-			<td style="width:200px">
-				<!-- -----sidebar----- -->
-				<div id="sidebar">
-					<ul class="nav flex-column" style="padding-top: 20px;">
-					  <li class="nav-item" style="margin: 10px 0px 0px 15px; color: white;">
-					    <font size="4"><a href="studentDashboard.jsp" id="overview"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="stuDashboard_li_overview"/></a></font>
-					  </li>
-					  <li class="nav-item" style="margin: 10px 0px 0px 15px;">
-					    <font size="4"><a><i class="fa fa-minus-square-o" aria-hidden="true"> &nbsp;<fmt:message key="stuDashboard_li_assignments"/></i></a></font>
-					  </li>
-					  <%
-						  	for(GitlabProject stuProject : stuProjects){
-						  	  String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
-						  	  %>
-						  	  	<li class="nav-item" style="margin:0px 0px 0px 30px">
-								  <font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=stuProject.getName() %></a></font>
-								</li>
-						  	  <%
-						  	}
-					  %>
-					</ul>
-				</div>
-				<!-- -----sidebar----- -->
-			</td>
-			<td style="background-color: #f5f5f5; padding-top: 20px;">
-				<!-- -----main----- -->
-				<div class="container-fluid" id="main">
-	            	<h2>
-	              		<i class="fa fa-bar-chart" aria-hidden="true"></i> <fmt:message key="stuDashboard_h2_overviewOfAssignments"/>
-	            	</h2>
+		<!-- -----sidebar----- -->
+		<div id="sidebar">
+			<ul class="nav flex-column" style="padding-top: 20px;">
+			  <li class="nav-item" style="margin: 10px 0px 0px 15px; color: white;">
+			    <font size="4"><a href="studentDashboard.jsp" id="overview"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="stuDashboard_li_overview"/></a></font>
+			  </li>
+			  <li class="nav-item" style="margin: 10px 0px 0px 15px;">
+			    <font size="4"><a><i class="fa fa-minus-square-o" aria-hidden="true"> &nbsp;<fmt:message key="stuDashboard_li_assignments"/></i></a></font>
+			  </li>
+			  <%
+				  	for(GitlabProject stuProject : stuProjects){
+				  	  String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
+				  	  %>
+				  	  	<li class="nav-item" style="margin:0px 0px 0px 30px">
+						  <font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=stuProject.getName() %></a></font>
+						</li>
+				  	  <%
+				  	}
+			  %>
+			</ul>
+		</div>
+		<!-- -----sidebar----- -->
+		<!-- -----main----- -->
+		<div class="container-fluid" id="main">
+           	<div class="card" style="width: fit-content;">
+	        	<h2 class="card-header">
+              		<i class="fa fa-bar-chart" aria-hidden="true"></i> <fmt:message key="stuDashboard_h2_overviewOfAssignments"/>
+            	</h2>
+            	<div class="card-block">
 	            	<div id="inline" style="margin-top: 20px;">
 						<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
 						<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
@@ -215,10 +219,10 @@
 						<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
 					</div>
 					<!-- -----table----- -->
-					<table class="table table-striped" style="margin-top: 20px;">
+					<table class="table table-striped" style="margin-top: 20px; margin-bottom: 0px; width: max-content;">
 						<thead>
 							<tr>
-								<th width="10%"><fmt:message key="stuDashboard_th_studentId"/></th>
+								<th><fmt:message key="stuDashboard_th_studentId"/></th>
 								<%
 									for(GitlabProject stuProject : stuProjects){
 										%>
@@ -279,10 +283,9 @@
 					</table>
 					<!-- -----table----- -->
 				</div>
-				<!-- -----main----- -->
-			</td>
-		</tr>
-	</table>
+			</div>
+		</div>
+		<!-- -----main----- -->
 	<div id="gotop"><i class="fa fa-chevron-up" aria-hidden="true"></i></div>
 </body>
 </html>

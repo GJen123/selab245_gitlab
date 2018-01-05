@@ -17,7 +17,6 @@
 	<style>
 		body{
 			padding-top: 50px;
-			overflow-x: hidden;
 			font-family: Microsoft JhengHei;
 			height: 100%;
 		}
@@ -28,21 +27,18 @@
 			font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 		}
 		#gotop {
-    display: none;
-    position: fixed;
-    right: 20px;
-    bottom: 20px;    
-    padding: 10px 15px;    
-    font-size: 20px;
-    background: #777;
-    color: white;
-    cursor: pointer;
-}
+		    display: none;
+		    position: fixed;
+		    right: 20px;
+		    bottom: 20px;    
+		    padding: 10px 15px;    
+		    font-size: 20px;
+		    background: #777;
+		    color: white;
+		    cursor: pointer;
+		}
 	</style>
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-	  		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-	    		<span class="navbar-toggler-icon"></span>
-	  		</button>
 	  		<a class="navbar-brand" href="dashboard.jsp">ProgEdu</a>
 	  		<button class="navbar-toggler" type="button" data-toggle="collapse"
       			data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
@@ -63,7 +59,6 @@
 		        			<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 		          				<a class="dropdown-item" href="studentManagement.jsp"><i class="fa fa-user-plus" aria-hidden="true"></i> <fmt:message key="top_navbar_manageStudent"/></a>
 		          				<a class="dropdown-item" href="assignmentManagement.jsp"><i class="fa fa-pencil-square" aria-hidden="true" style="margin-right: 5px;"></i> <fmt:message key="top_navbar_manageHW"/></a>
-		          				<a class="dropdown-item" href="deleteAssignment.jsp"><i class="fa fa-times" aria-hidden="true" style="margin-right: 5px;"></i> <fmt:message key="top_navbar_deleteAssignment"/></a>
 		          				<a class="dropdown-item" href="groupManagement.jsp"><i class="fa fa-users" aria-hidden="true" style="margin-right: 2px;"></i> <fmt:message key="top_navbar_manageGroup"/></a>
 		        			</div>
 		      			</li>

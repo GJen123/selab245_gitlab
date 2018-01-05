@@ -52,6 +52,12 @@
 		<script src="https://code.highcharts.com/highcharts.js"></script>
 		<script src="https://code.highcharts.com/modules/exporting.js"></script>
 		<style type="text/css">
+			body{
+				overflow-x: hidden;
+			}
+			p {
+				white-space: nowrap;
+			}
 			#mainTable {
 				width: 100%;
 				height: 100%;
@@ -63,6 +69,7 @@
 				margin: -1px;
 				position: fixed; /* Set the navbar to fixed position */
     			top: 0;
+    			z-index: 100;
 			}
 			.nav-link {
 				color: white; 
@@ -75,10 +82,6 @@
 			}
 			#overview:hover{
 				color: #33CCFF;
-			}
-			#main {
-				background-color: #f5f5f5;
-				height: 100%;
 			}
 			#copyTarget {
 				border: 1px solid gray; 
@@ -106,6 +109,14 @@
 			
 			#inline p {
 				display: inline;
+			}
+			#main {
+				background-color: #f5f5f5;
+				height: 100%;
+				margin-left: 200px;
+				overflow-x: scroll;
+				padding-top: 20px;
+				width: auto;
 			}
 			.ovol {
 				border-radius: 50px;
@@ -146,13 +157,7 @@
 				background: #878787;
 			}
 			.orange {
-				background: #FF5809;
-			}
-			.green {
-				background: #32CD32;
-			}
-			.gold{
-				background: #FFD700;
+				background: gold;
 			}
 			#goToJenkins{
 				float: right;
@@ -213,182 +218,170 @@
 			Collections.reverse(projects);
 		%>
 		
-		<table style="width: 100%; height: 100%">
-			<tr>
-				<td style="width: 200px;">
-					<!-- -----sidebar----- -->
-					<div id="sidebar">
-						<ul class="nav flex-column" style="padding-top: 20px;">
-						  <li class="nav-item" style="margin: 10px 0px 0px 15px; color: burlywood;">
-						    <font size="4"><a href="studentDashboard.jsp" id="overview"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="stuDashboard_li_overview"/></a></font>
-						  </li>
-						  <li class="nav-item" style="margin: 10px 0px 0px 15px;">
-						    <font size="4"><a><i class="fa fa-minus-square-o" aria-hidden="true"> &nbsp;<fmt:message key="stuDashboard_li_assignments"/></i></a></font>
-						  </li>
-						  <%
-							  	for(GitlabProject stuProject : stuProjects){
-							  	  String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
-							  	  %>
-							  	  	<li class="nav-item" style="margin:0px 0px 0px 30px">
-									  <font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=stuProject.getName() %></a></font>
-									</li>
-							  	  <%
-							  	}
-						  %>
-						</ul>
-					</div>
-					<!-- -----sidebar----- -->
-				</td>
-				<td style="padding:10px; background-color: #f5f5f5;">
-					<!-- -----main----- -->
-					<%
-						String projectName = choosedProject.getName();
-						String projectUrl = stuDashChoPro.getChoosedProjectUrl(choosedProject);
-						List<String> jobColors = stuDash.getMainTableJobColor(stuProjects);
-						List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
-						projectUrl = projectUrl.replace("f05f585bd8c9", "mselab.iecs.fcu.edu.tw:10080");
-						ProjectDbManager pDb = ProjectDbManager.getInstance();
-						Project project = pDb.getProjectByName(projectName);
-					%>
-					<div style="margin: 10px 10px 10px 10px;">
-						<h2><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=projectName%></h2>
-						<br>
-						<h5 style="font-weight: 700"><fmt:message key="stuDashChooseProject_p_gitRepo"/></h5>
-						<div id="inline">
-							<p id="copyTarget" style="padding-right: 10px;"><%=projectUrl %></p>
-							<button id="copyButton" class="btn btn-dark"><i class="fa fa-clipboard" aria-hidden="true"></i></button>
-						</div>
-						<p><fmt:message key="stuDashChooseProject_p_cloneUrl"/></p>
-						<hr>
-						<h5 style="font-weight: 700"><fmt:message key="stuDashChooseProject_p_assignmentContent"/></h5>
-						<%=project.getDescription() %>
-						<hr>
-						<h5 style="font-weight: 700"><fmt:message key="stuDashChooseProject_p_deadline"/></h5>
-						<p><%=project.getDeadline() %></p>
-					</div>
-					
-					<hr>
-					
-					<div class="container" style="margin: 25px 0px;">
-						<div class="row">
-							<div class="col-3">
-								<h4 style="text-align: center"><fmt:message key="stuDashChooseProject_h4_codeAnalysisResult"/></h4>
-								<%
-									String lastBuildColor = stuDashChoPro.getLastColor(user.getUsername(), projectName);
-									lastBuildColor = "bigcircle2 " + lastBuildColor;
-									List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(user.getUsername(), projectName);
-									int lastBuildNum = buildNum.size();
-									if(lastBuildNum==1){
-									  lastBuildColor = "bigcircle2 gray";
-									}
-								%>
-                   				<div style="margin: 20px; text-align: center">
-				                	<div style="padding: 5px;">
-				                		<h3 class="<%=lastBuildColor%>" style="width: 90px; margin: 0 auto; padding: 20px; color: white;"><a><%=lastBuildNum %></a></h3>
-				                    </div>
-				                </div>
-							</div>
-							
-							<div class="col-9">
-								<h4><fmt:message key="stuDashChooseProject_h4_programHistory"/></h4>
-								<table class="table table-hover" style="background-color: white" id="projectList">
-									<thead>
-										<tr>
-					                    	<th>#</th>
-					                    	<th><fmt:message key="stuDashChooseProject_th_status"/></th>
-					                    	<th><fmt:message key="stuDashChooseProject_th_date"/></th>
-					                    	<th><fmt:message key="stuDashChooseProject_th_comment"/></th>
-					                    </tr>
-									</thead>
-									<tbody>
-									<%
-										int commit_count = buildNum.size();
-										int i=1;
-										int lastBuildMessageNum = 0;
-										for(Integer num : buildNum){
-										  	%>
-										  	<script type="text/javascript">
-												var userName = <%="'" + user.getUsername() + "'"%>
-												var proName = <%="'" + projectName + "'"%>
-												var date, color, message, num
-												$.ajax({
-													url : 'webapi/jenkins/buildDetail',
-													type : 'GET',
-													data: {
-														"num": <%=num%>,
-														"proName" : proName,
-														"userName" : userName
-													}, 
-													async : true,
-													cache : true,
-													contentType: 'application/json; charset=UTF-8',
-													success : function(responseText) {
-														var str = JSON.stringify(responseText);
-														var obj = JSON.parse(str);
-														date = obj.date;
-														color = obj.color;
-														message = obj.message;
-														num = obj.num;
-														
-														td_color = document.getElementById("color" + num);
-														td_date = document.getElementById("date" + num);
-														td_message = document.getElementById("message" + num);
-														
-														td_color.className=color;
-														td_date.textContent = date;
-														td_message.textContent = message;
-													}, 
-													error : function(responseText) {
-														console.log("False!");
-													}
-												});
-											</script>
-										  	<tr id="<%=num %>" onClick="changeIframe(this)">
-										  		<td><%=i %></td>
-										  		<td><p class="" id=<%="color" + num %>></p></td>
-										  		<td id=<%="date" + num %>>></td>
-										  		<td id=<%="message" + num %>></td>
-										  	</tr>
-										  	<%
-										  	i++;
-										  	lastBuildMessageNum = num;
-										}
-									%>
-									</tbody>
-								</table>
-							</div>
-						</div>
+		<!-- -----sidebar----- -->
+		<div id="sidebar">
+			<ul class="nav flex-column" style="padding-top: 20px;">
+			  <li class="nav-item" style="margin: 10px 0px 0px 15px; color: burlywood;">
+			    <font size="4"><a href="studentDashboard.jsp" id="overview"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="stuDashboard_li_overview"/></a></font>
+			  </li>
+			  <li class="nav-item" style="margin: 10px 0px 0px 15px;">
+			    <font size="4"><a><i class="fa fa-minus-square-o" aria-hidden="true"> &nbsp;<fmt:message key="stuDashboard_li_assignments"/></i></a></font>
+			  </li>
+			  <%
+				  	for(GitlabProject stuProject : stuProjects){
+				  	  String href = "\"studentDashboardChooseProject.jsp?projectId=" + stuProject.getId() + "\"";
+				  	  %>
+				  	  	<li class="nav-item" style="margin:0px 0px 0px 30px">
+						  <font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=stuProject.getName() %></a></font>
+						</li>
+				  	  <%
+				  	}
+			  %>
+			</ul>
+		</div>
+		<!-- -----sidebar----- -->
+		<!-- -----main----- -->
+		<div class="container-fluid" id="main">
+			<%
+				String projectName = choosedProject.getName();
+				String projectUrl = stuDashChoPro.getChoosedProjectUrl(choosedProject);
+				List<String> jobColors = stuDash.getMainTableJobColor(stuProjects);
+				List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
+				projectUrl = projectUrl.replace("f05f585bd8c9", "mselab.iecs.fcu.edu.tw:10080");
+				ProjectDbManager pDb = ProjectDbManager.getInstance();
+				Project project = pDb.getProjectByName(projectName);
+			%>
+			<div style="margin: 10px 10px 10px 10px;">
+				<h2 style="white-space: nowrap"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=projectName%></h2>
+				<br>
+				<h5 style="font-weight: 700"><fmt:message key="stuDashChooseProject_p_gitRepo"/></h5>
+				<div id="inline" style="white-space: nowrap">
+					<p id="copyTarget" style="padding-right: 10px;"><%=projectUrl %></p>
+					<button id="copyButton" class="btn btn-dark" onclick = "copyToClipboard(document.getElementById('copyTarget'))"><i class="fa fa-clipboard" aria-hidden="true"></i></button>
+				</div>
+				<p><fmt:message key="stuDashChooseProject_p_cloneUrl"/></p>
+				<hr>
+				<h5 style="font-weight: 700"><fmt:message key="stuDashChooseProject_p_assignmentContent"/></h5>
+				<p><%=project.getDescription() %></p>
+				<hr>
+				<h5 style="font-weight: 700"><fmt:message key="stuDashChooseProject_p_deadline"/></h5>
+				<p><%=project.getDeadline() %></p>
+			</div>
+			
+			<hr>
+			
+			<div class="container" style="margin: 25px 0px;">
+				<div class="row">
+					<div class="col-3">
+						<h4 style="text-align: center;"><fmt:message key="stuDashChooseProject_h4_codeAnalysisResult"/></h4>
+						<%
+							String lastBuildColor = stuDashChoPro.getLastColor(user.getUsername(), projectName);
+							lastBuildColor = "bigcircle2 " + lastBuildColor;
+							List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(user.getUsername(), projectName);
+							int lastBuildNum = buildNum.size();
+							if(lastBuildNum==1){
+							  lastBuildColor = "bigcircle2 gray";
+							}
+						%>
+                 				<div style="text-align: center">
+		                	<div style="padding: 5px;">
+		                		<h3 class="<%=lastBuildColor%>" style="width: 90px; margin: 0 auto; padding: 20px; color: white;"><a><%=lastBuildNum %></a></h3>
+		                    </div>
+		                </div>
 					</div>
 					
-					<hr>
-	
-	          		<h4 id="iFrameTitle">Feedback Information</h4>
-	          				
-	        		<!-- iFrame -->
-					<%
-						int num = lastBuildMessageNum;
-						String jobName = user.getUsername() + "_" + projectName;
-						String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" +  num + "/consoleText";
-						String url = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/";
-					%>
-					<div style="margin:10px;">
-						<iframe src="<%=lastBuildUrl %>" width="100%" height="500px" style="background: #fff3cd;" id="jenkinsOutput">
-					  		<p>Your browser does not support iframes.</p>
-						</iframe>
+					<div class="col-9">
+						<h4><fmt:message key="stuDashChooseProject_h4_programHistory"/></h4>
+						<table class="table table-hover" style="background-color: white" id="projectList">
+							<thead>
+								<tr>
+			                    	<th>#</th>
+			                    	<th><fmt:message key="stuDashChooseProject_th_status"/></th>
+			                    	<th><fmt:message key="stuDashChooseProject_th_date"/></th>
+			                    	<th><fmt:message key="stuDashChooseProject_th_comment"/></th>
+			                    </tr>
+							</thead>
+							<tbody>
+							<%
+								int commit_count = buildNum.size();
+								int i=1;
+								int lastBuildMessageNum = 0;
+								for(Integer num : buildNum){
+								  	%>
+								  	<script type="text/javascript">
+										var userName = <%="'" + user.getUsername() + "'"%>
+										var proName = <%="'" + projectName + "'"%>
+										var date, color, message, num
+										$.ajax({
+											url : 'webapi/jenkins/buildDetail',
+											type : 'GET',
+											data: {
+												"num": <%=num%>,
+												"proName" : proName,
+												"userName" : userName
+											}, 
+											async : true,
+											cache : true,
+											contentType: 'application/json; charset=UTF-8',
+											success : function(responseText) {
+												var str = JSON.stringify(responseText);
+												var obj = JSON.parse(str);
+												date = obj.date;
+												color = obj.color;
+												message = obj.message;
+												num = obj.num;
+												
+												td_color = document.getElementById("color" + num);
+												td_date = document.getElementById("date" + num);
+												td_message = document.getElementById("message" + num);
+												
+												td_color.className=color;
+												td_date.textContent = date;
+												td_message.innerHTML = message;
+											}, 
+											error : function(responseText) {
+												console.log("False!");
+											}
+										});
+									</script>
+								  	<tr id="<%=num %>" onClick="changeIframe(this)">
+								  		<td><%=i %></td>
+								  		<td><p class="" id=<%="color" + num %>></p></td>
+								  		<td id=<%="date" + num %>>></td>
+								  		<td id=<%="message" + num %>></td>
+								  	</tr>
+								  	<%
+								  	i++;
+								  	lastBuildMessageNum = num;
+								}
+							%>
+							</tbody>
+						</table>
 					</div>
-					<!-- iFrame -->
-					
-					<!-- -----main----- -->
-				</td>
-			</tr>
-		</table>
-		
+				</div>
+			</div>
+			
+			<hr>
+
+         		<h4 id="iFrameTitle">Feedback Information</h4>
+         				
+       		<!-- iFrame -->
+			<%
+				int num = lastBuildMessageNum;
+				String jobName = user.getUsername() + "_" + projectName;
+				String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" +  num + "/consoleText";
+				String url = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/";
+			%>
+			<div style="margin:10px;">
+				<iframe src="<%=lastBuildUrl %>" width="100%" height="500px" style="background: #fff3cd;" id="jenkinsOutput">
+			  		<p>Your browser does not support iframes.</p>
+				</iframe>
+			</div>
+			<!-- iFrame -->
+		</div>
+		<!-- -----main----- -->
 	</body>
 	<script type="text/javascript">
-		document.getElementById("copyButton").addEventListener("click", function() {
-	    	copyToClipboard(document.getElementById("copyTarget"));
-		});
-	
 		function copyToClipboard(elem) {
 			  // create hidden text element, if it doesn't already exist
 		    var targetId = "_hiddenCopyText_";

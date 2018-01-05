@@ -36,7 +36,7 @@ public class ZipHandler {
   HttpConnect httpConn = new HttpConnect();
   private static final String tempDir = System.getProperty("java.io.tmpdir");
   private static final String uploadDir = tempDir + "/uploads/";
-  private static final String testDir = uploadDir + "/tests/";
+  private static final String testDir = tempDir + "/tests/";
 
   private final List<File> fileList;
   private List<String> paths;
@@ -155,8 +155,8 @@ public class ZipHandler {
     if (testFile.exists()) {
       zipTestFolder(testDirectory);
 
-      setUrlForJenkinsDownloadTestFile(serverIp + "/ProgEdu/webapi/jenkins/getTestFile?filePath="
-          + testDir + projectName + ".zip");
+      setUrlForJenkinsDownloadTestFile(
+          serverIp + "/ProgEdu/webapi/jenkins/getTestFile?filePath=" + testDir + ".zip");
     }
     zipIn.close();
   }
@@ -321,6 +321,7 @@ public class ZipHandler {
       File targetFile = new File(testDirectory);
       try {
         FileUtils.copyFile(dataFile, targetFile);
+        dataFile.delete();
       } catch (IOException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();

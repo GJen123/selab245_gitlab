@@ -94,6 +94,38 @@ public class CommitResultDbManager {
   }
 
   /**
+   * check if result is in db
+   * 
+   * @param conn
+   *          db connection
+   * @param id
+   *          student id
+   * @param hw
+   *          he number
+   * @return boolean
+   */
+  public boolean checkJenkinsJobTimestamp(Connection conn, int id, String hw) {
+    PreparedStatement preStmt = null;
+    String query = "SELECT * FROM Commit_Result WHERE stuId=? AND hw=?";
+    boolean check = false;
+
+    try {
+      preStmt = conn.prepareStatement(query);
+      preStmt.setInt(1, id);
+      preStmt.setString(2, hw);
+
+      ResultSet rs = preStmt.executeQuery();
+      while (rs.next()) {
+        check = true;
+      }
+      preStmt.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return check;
+  }
+
+  /**
    * update jenkins situation
    * 
    * @param conn

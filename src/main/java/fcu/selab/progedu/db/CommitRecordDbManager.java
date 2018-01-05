@@ -126,6 +126,7 @@ public class CommitRecordDbManager {
       while (rs.next()) {
         check = true;
       }
+      preStmt.close();
     } catch (SQLException e) {
       e.printStackTrace();
     }

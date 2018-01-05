@@ -35,19 +35,19 @@ public class ProjectDbManager {
   public void addProject(Project project) {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
-    Statement stmt = null;
-    String sql = "INSERT INTO Assignment(name, deadline, description, hasTemplate, type,"
-        + " zipChecksum, zipUrl)  VALUES(?, ?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO Assignment(name, createTime, deadline, description, hasTemplate"
+        + ", type, zipChecksum, zipUrl)  VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 
     try {
       preStmt = conn.prepareStatement(sql);
       preStmt.setString(1, project.getName());
-      preStmt.setString(2, project.getDeadline());
-      preStmt.setString(3, project.getDescription());
-      preStmt.setBoolean(4, project.isHasTemplate());
-      preStmt.setString(5, project.getType());
-      preStmt.setString(6, project.getTestZipChecksum());
-      preStmt.setString(7, project.getTestZipUrl());
+      preStmt.setString(2, project.getCreateTime());
+      preStmt.setString(3, project.getDeadline());
+      preStmt.setString(4, project.getDescription());
+      preStmt.setBoolean(5, project.isHasTemplate());
+      preStmt.setString(6, project.getType());
+      preStmt.setString(7, project.getTestZipChecksum());
+      preStmt.setString(8, project.getTestZipUrl());
       preStmt.executeUpdate();
       preStmt.close();
     } catch (SQLException e) {
@@ -79,6 +79,7 @@ public class ProjectDbManager {
       stmt.setString(1, name);
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
+        String createTime = rs.getString("createTime");
         String deadline = rs.getString("deadline").replace("T", " ");
         String description = rs.getString("description");
         boolean hasTemplate = rs.getBoolean("hasTemplate");
@@ -87,6 +88,7 @@ public class ProjectDbManager {
         String zipUrl = rs.getString("zipUrl");
 
         project.setName(name);
+        project.setCreateTime(createTime);
         project.setDescription(description);
         project.setHasTemplate(hasTemplate);
         project.setType(type);
@@ -129,6 +131,8 @@ public class ProjectDbManager {
         String type = rs.getString("type");
         String checksum = rs.getString("zipChecksum");
         String zipUrl = rs.getString("zipUrl");
+        String createTime = rs.getString("createTime");
+        String deadline = rs.getString("deadline");
 
         Project project = new Project();
         project.setName(name);
@@ -137,6 +141,8 @@ public class ProjectDbManager {
         project.setType(type);
         project.setTestZipChecksum(checksum);
         project.setTestZipUrl(zipUrl);
+        project.setCreateTime(createTime);
+        project.setDeadline(deadline);
 
         lsProjects.add(project);
       }
@@ -198,6 +204,99 @@ public class ProjectDbManager {
     String sql = "DELETE FROM Assignment WHERE name='" + name + "'";
     try {
       preStmt = conn.prepareStatement(sql);
+      preStmt.executeUpdate();
+      preStmt.close();
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  /**
+   * Edit project from database
+   * 
+   * @param deadline
+   *          new deadline
+   * @param readMe
+   *          new readMe
+   * @param name
+   *          project name
+   */
+  public void editProject(String deadline, String readMe, String name) {
+    Connection conn = database.getConnection();
+    PreparedStatement preStmt = null;
+    String sql = "UPDATE Assignment SET deadline=? and description=? WHERE name=?";
+    try {
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setString(1, deadline);
+      preStmt.setString(2, readMe);
+      preStmt.setString(3, name);
+      preStmt.executeUpdate();
+      preStmt.close();
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  /**
+   * Edit project from database
+   * 
+   * @param deadline
+   *          new deadline
+   * @param name
+   *          project name
+   */
+  public void editProjectDeadline(String deadline, String name) {
+    Connection conn = database.getConnection();
+    PreparedStatement preStmt = null;
+    String sql = "UPDATE Assignment SET deadline=? WHERE name=?";
+    try {
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setString(1, deadline);
+      preStmt.setString(2, name);
+      preStmt.executeUpdate();
+      preStmt.close();
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  /**
+   * Edit project from database
+   * 
+   * @param readMe
+   *          new readMe
+   * @param name
+   *          project name
+   */
+  public void editProjectReadMe(String readMe, String name) {
+    Connection conn = database.getConnection();
+    PreparedStatement preStmt = null;
+    String sql = "UPDATE Assignment SET description=? WHERE name=?";
+    try {
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setString(1, readMe);
+      preStmt.setString(2, name);
       preStmt.executeUpdate();
       preStmt.close();
     } catch (SQLException e) {

@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.gitlab.api.models.GitlabProject;
 import org.json.JSONArray;
@@ -264,6 +265,7 @@ public class StudentDashChoosePro {
     long timestamp = json.getLong("timestamp");
     Date date = new Date(timestamp);
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    sdf.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
     String strDate = sdf.format(date);
     return strDate;
   }

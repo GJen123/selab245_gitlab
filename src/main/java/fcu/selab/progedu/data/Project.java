@@ -2,6 +2,8 @@ package fcu.selab.progedu.data;
 
 public class Project {
 
+  private String createTime = "";
+
   private String name = "";
 
   private String deadline = "";
@@ -19,6 +21,14 @@ public class Project {
   private String testZipChecksum = "";
 
   private String testZipUrl = "";
+
+  public String getCreateTime() {
+    return createTime;
+  }
+
+  public void setCreateTime(String createTime) {
+    this.createTime = createTime;
+  }
 
   public String getName() {
     return name;

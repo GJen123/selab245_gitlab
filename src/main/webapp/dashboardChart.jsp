@@ -36,7 +36,7 @@ body, html, .container-fluid {
 	background-color: #444;
 	color: white; 
 	margin: -1px;
-	position: fixed; /* Set the navbar to fixed position */
+	position: absolute; /* Set the navbar to fixed position */
 	top: 0;
 	padding-top: 50px;
  	overflow-x:hidden;
@@ -145,38 +145,50 @@ body, html, .container-fluid {
 				<!-- -----sidebar----- -->
 				<div class="sidebar" style="width:200px">
 				<ul class="nav flex-column" style="padding-top: 20px;">
-					<li class="nav-item"><font size="4"><a
-							href="javascript:;" data-toggle="collapse" data-target="#overview"
-							class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp;
-								<fmt:message key="dashboard_a_overview" /> <i
-								class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+					<li class="nav-item">
+						<font size="4">
+							<a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link">
+								<i class="fa fa-bars" aria-hidden="true"></i>&nbsp;
+									<fmt:message key="dashboard_a_overview" />
+									<i class="fa fa-chevron-down" aria-hidden="true"></i>
+							</a>
+						</font>
 						<ul id="overview" class="collapse" style="list-style: none;">
-							<li class="nav-item"><font size="3"><a
-									class="nav-link" href="#Student Projects"><i
-										class="fa fa-table" aria-hidden="true"></i>&nbsp; <fmt:message
-											key="dashboard_li_studentProjects" /></a></font></li>
 							<li class="nav-item"><font size="3">
-									<button type="button" class="btn btn-default"
-										data-toggle="modal" data-target="#exampleModal">
+								<a class="nav-link" href="#Student Projects">
+									<i class="fa fa-table" aria-hidden="true"></i>&nbsp; 
+									<fmt:message key="dashboard_li_studentProjects" />
+								</a>
+							</font></li>
+							<li class="nav-item"><font size="3">
+									<button type="button" class="btn btn-default" data-toggle="modal" data-target="#exampleModal">
 										<i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp;
 										<fmt:message key="dashboard_li_chart" />
 									</button>
 							</font></li>
 						</ul></li>
-					<li class="nav-item"><font size="4"><a
-							href="javascript:;" data-toggle="collapse" data-target="#student"
-							class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp;
-								<fmt:message key="dashboard_a_student" /> <i
-								class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+					<li class="nav-item">
+						<font size="4">
+							<a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link">
+								<i class="fa fa-bars" aria-hidden="true"></i>&nbsp;
+									<fmt:message key="dashboard_a_student" />
+									<i class="fa fa-chevron-down" aria-hidden="true">
+								</i>
+							</a>
+						</font>
 						<ul id="student" class="collapse" style="list-style: none;">
 							<%
 								for (User user : users) {
 									String userName = user.getUserName();
 									String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
 							%>
-							<li class="nav-item"><font size="3"><a
-									class="nav-link" href=<%=href%>><i
-										class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName%></a></font></li>
+							<li class="nav-item">
+								<font size="3">
+									<a class="nav-link" href=<%=href%>>
+										<i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName%>
+									</a>
+								</font>
+							</li>
 							<%
 								}
 							%>
@@ -198,12 +210,9 @@ body, html, .container-fluid {
 					</h4>
 					<div class="card-block">
 						<ul class="nav nav-tabs" role="tablist">
-							<li class="nav-item"><a class="nav-link active"
-								data-toggle="tab" href="#chart1" role="tab">Chart1</a></li>
-							<li class="nav-item"><a class="nav-link" data-toggle="tab"
-								href="#chart2" role="tab">Chart2</a></li>
-							<li class="nav-item"><a class="nav-link" data-toggle="tab"
-								href="#chart3" role="tab">Chart3</a></li>
+							<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#chart1" role="tab">Chart1</a></li>
+							<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#chart2" role="tab">Chart2</a></li>
+							<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#chart3" role="tab">Chart3</a></li>
 						</ul>
 						<!-- Tab panes -->
 						<div class="tab-content text-center" style="margin-top: 10px">
