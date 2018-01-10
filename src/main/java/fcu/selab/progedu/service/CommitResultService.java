@@ -138,6 +138,7 @@ public class CommitResultService {
 
     String buildApiJson = stuDashChoPro.getBuildApiJson(buildNum.get(num), userName, proName);
     String strDate = stuDashChoPro.getCommitTime(buildApiJson);
+    String[] dates = strDate.split(" ");
     int id = db.getUser(userName).getId();
 
     boolean check = commiResulttDb.checkJenkinsJobTimestamp(connection, id, hw);
@@ -150,9 +151,9 @@ public class CommitResultService {
     }
 
     CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
-    boolean inDb = commitRecordDb.checkRecord(connection, id, hw, color, strDate);
+    boolean inDb = commitRecordDb.checkRecord(connection, id, hw, color, dates[0], dates[1]);
     if (!inDb) {
-      commitRecordDb.insertCommitRecord(connection, id, hw, color, strDate);
+      commitRecordDb.insertCommitRecord(connection, id, hw, color, dates[0], dates[1]);
     }
 
     try {

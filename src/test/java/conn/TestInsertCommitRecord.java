@@ -41,12 +41,17 @@ public class TestInsertCommitRecord {
     CommitRecordDbManager commitDb = CommitRecordDbManager.getInstance();
     StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
     JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+
     for (User user : users) {
       String userName = user.getUserName();
       gitProjects = conn.getProject(user);
       Collections.reverse(gitProjects);
       for (Project dbProject : dbProjects) {
         String proName = null;
+        if (!dbProject.getName().equals("OOP-HW9") && !dbProject.getName().equals("OOP-HW10")
+            && !dbProject.getName().equals("OOP-HW11")) {
+          continue;
+        }
         for (GitlabProject gitProject : gitProjects) {
           if (dbProject.getName().equals(gitProject.getName())) {
             proName = dbProject.getName();
@@ -54,6 +59,7 @@ public class TestInsertCommitRecord {
             for (Integer num : buildNum) {
               String buildApiJson = stuDashChoPro.getBuildApiJson(num, userName, proName);
               String strDate = stuDashChoPro.getCommitTime(buildApiJson);
+              String[] dates = strDate.split(" ");
               String color = stuDashChoPro.getCommitColor(num, userName, proName, buildApiJson);
               if (num == 1) {
                 continue;
@@ -67,10 +73,11 @@ public class TestInsertCommitRecord {
                 }
               }
               String hw = proName.replace("OOP-HW", "");
-              boolean inDb = commitDb.checkRecord(connection, user.getId(), hw, color, strDate);
+              boolean inDb = commitDb.checkRecord(connection, user.getId(), hw, color, dates[0],
+                  dates[1]);
               if (!inDb) {
                 boolean check = commitDb.insertCommitRecord(connection, user.getId(), hw, color,
-                    strDate);
+                    dates[0], dates[1]);
                 if (check) {
                   System.out.println(user.getId() + ", " + hw + ", " + color + ", " + strDate);
                 }

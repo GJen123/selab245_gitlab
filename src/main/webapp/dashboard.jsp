@@ -107,9 +107,6 @@
 			color: #fff;
 			line-height: 30px;
 		}
-		.highcharts-container {
-			text-align: center;
-		}
 	</style>
 
 	<link rel="shortcut icon" href="img/favicon.ico"/>

@@ -22,104 +22,100 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<style type="text/css">
-body, html, .container-fluid {
-	height: 100%;
-}
-
-#allProject {
-	margin: 10px 0px 0px 0px;
-}
-
-.sidebar {
-	height: 100%;
-	background-color: #444;
-	color: white; 
-	margin: -1px;
-	position: absolute; /* Set the navbar to fixed position */
-	top: 0;
-	padding-top: 50px;
- 	overflow-x:hidden;
-}
-.sidebar a{
-	color: white;
-}
-.sidebar a:hover{
-	color: orange;
-}
-.sidebar button{
-	color: white;
-	background: none;
-}
-
-#inline {
-	margin: 20px;
-}
-
-#inline p {
-	display: inline;
-}
-
-.ovol {
-	border-radius: 5px;
-	height: 50px;
-	font-weight: bold;
-	width: 120px;
-	color: white;
-	text-align: center;
-}
-
-.circle {
-	border-radius: 30px;
-	height: 30px;
-	font-weight: bold;
-	width: 30px;
-	color: white;
-	text-align: center;
-}
-
-.red {
-	background: #e52424;
-}
-
-.blue {
-	background: #5fa7e8;
-}
-
-.gray {
-	background: #878787;
-}
-
-.orange {
-	background: #FF5809;
-}
-
-.green {
-	background: #32CD32;
-}
-
-.gold {
-	background: #FFD700;
-}
-
-.circle a {
-	color: #fff;
-}
-
-.highcharts-container {
-	text-align: center;
-}
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-.dot {
-  stroke: #000;
-}
-</style>
+		<style type="text/css">
+		body, html{
+			height: 100%;
+			overflow-x: hidden;
+		}
+		
+		.sidebar {
+			height: 100%;
+			background-color: #444;
+			color: white; 
+			margin: -1px;
+			position: fixed; /* Set the navbar to fixed position */
+   			top: 0;
+   			margin-top: 50px;
+   		 	overflow-y: scroll;
+   		 	z-index: 100;
+		}
+		.sidebar a{
+			color: white;
+		}
+		.sidebar a:hover{
+			color: orange;
+		}
+		.sidebar button{
+			color: white;
+			background: none;
+		}
+		
+		#main {
+			height: 100%;
+			margin-left: 200px;
+			overflow-x: scroll;
+			padding-top: 20px;
+			width: auto;
+		}
+		
+		#inline {
+		    margin: 20px;
+		}
+		
+		#inline p {
+		    display: inline;
+		}
+		.ovol {
+			border-radius: 5px;
+			height: 50px;
+            font-weight: bold;
+            width: 120px;
+            color: white;
+            text-align: center;
+		}
+		.circle {
+			border-radius: 30px;
+			height: 30px;
+            font-weight: bold;
+            width: 30px;
+            color: white;
+            text-align: center;
+		}
+		.red {
+			background: #e52424;
+		}
+		.blue {
+			background: #5fa7e8;
+		}
+		.gray {
+			background: #878787;
+		}
+		.orange {
+			background: gold;
+		}
+		.green {
+			background: #32CD32;
+		}
+		.gold{
+			background: #FFD700;
+		}
+		.circle a {
+			color: #fff;
+			line-height: 30px;
+		}
+		.highcharts-container {
+			text-align: center;
+		}
+		.axis path, .axis line {
+		  fill: none;
+		  stroke: #000;
+		  shape-rendering: crispEdges;
+		}
+		
+		.dot {
+		  stroke: #000;
+		}
+		</style>
 
 <link rel="shortcut icon" href="img/favicon.ico" />
 <link rel="bookmark" href="img/favicon.ico" />
@@ -136,316 +132,320 @@ body, html, .container-fluid {
 
 		// db projects
 		List<Project> dbProjects = Pdb.listAllProjects();
+		List<String> pNames = Pdb.listAllProjectNames();
 
 	%>
 	<%@ include file="header.jsp"%>
-	<table style="width: 100%; height: 100%;">
-		<tr>
-			<td style="width:200px">
-				<!-- -----sidebar----- -->
-				<div class="sidebar" style="width:200px">
-				<ul class="nav flex-column" style="padding-top: 20px;">
+	<!-- -----sidebar----- -->
+	<div class="sidebar" style="width:200px">
+		<ul class="nav flex-column" style="padding-top: 20px;">
+			<li class="nav-item">
+				<font size="4">
+					<a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link">
+						<i class="fa fa-bars" aria-hidden="true"></i>&nbsp;
+							<fmt:message key="dashboard_a_overview" />
+							<i class="fa fa-chevron-down" aria-hidden="true"></i>
+					</a>
+				</font>
+				<ul id="overview" class="collapse" style="list-style: none;">
+					<li class="nav-item"><font size="3">
+						<a class="nav-link" href="#Student Projects">
+							<i class="fa fa-table" aria-hidden="true"></i>&nbsp; 
+							<fmt:message key="dashboard_li_studentProjects" />
+						</a>
+					</font></li>
+					<li class="nav-item"><font size="3">
+							<button type="button" class="btn btn-default" data-toggle="modal" data-target="#exampleModal">
+								<i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp;
+								<fmt:message key="dashboard_li_chart" />
+							</button>
+					</font></li>
+				</ul></li>
+			<li class="nav-item">
+				<font size="4">
+					<a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link">
+						<i class="fa fa-bars" aria-hidden="true"></i>&nbsp;
+							<fmt:message key="dashboard_a_student" />
+							<i class="fa fa-chevron-down" aria-hidden="true">
+						</i>
+					</a>
+				</font>
+				<ul id="student" class="collapse" style="list-style: none;">
+					<%
+						for (User user : users) {
+							String userName = user.getUserName();
+							String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+					%>
 					<li class="nav-item">
-						<font size="4">
-							<a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link">
-								<i class="fa fa-bars" aria-hidden="true"></i>&nbsp;
-									<fmt:message key="dashboard_a_overview" />
-									<i class="fa fa-chevron-down" aria-hidden="true"></i>
+						<font size="3">
+							<a class="nav-link" href=<%=href%>>
+								<i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName%>
 							</a>
 						</font>
-						<ul id="overview" class="collapse" style="list-style: none;">
-							<li class="nav-item"><font size="3">
-								<a class="nav-link" href="#Student Projects">
-									<i class="fa fa-table" aria-hidden="true"></i>&nbsp; 
-									<fmt:message key="dashboard_li_studentProjects" />
-								</a>
-							</font></li>
-							<li class="nav-item"><font size="3">
-									<button type="button" class="btn btn-default" data-toggle="modal" data-target="#exampleModal">
-										<i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp;
-										<fmt:message key="dashboard_li_chart" />
-									</button>
-							</font></li>
-						</ul></li>
-					<li class="nav-item">
-						<font size="4">
-							<a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link">
-								<i class="fa fa-bars" aria-hidden="true"></i>&nbsp;
-									<fmt:message key="dashboard_a_student" />
-									<i class="fa fa-chevron-down" aria-hidden="true">
-								</i>
-							</a>
-						</font>
-						<ul id="student" class="collapse" style="list-style: none;">
-							<%
-								for (User user : users) {
-									String userName = user.getUserName();
-									String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
-							%>
-							<li class="nav-item">
-								<font size="3">
-									<a class="nav-link" href=<%=href%>>
-										<i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName%>
-									</a>
-								</font>
-							</li>
-							<%
-								}
-							%>
-						</ul></li>
+					</li>
+					<%
+						}
+					%>
+				</ul></li>
+		</ul>
+		</div>
+	<!-- -----sidebar----- -->
+	<div class="container-fluid" id="main">
+		<h1 style="margin-top: 30px; margin-bottom: 20px;">
+			<fmt:message key="dashboard_a_overview" />
+		</h1>
+		<!-- ---------------------------- Student Project ------------------------------- -->
+		<div class="card" style="width: max-content;">
+			<h4 id="Student Projects" class="card-header">
+				<i class="fa fa-table" aria-hidden="true"></i>&nbsp;
+				<fmt:message key="dashboard_li_studentProjects" />
+			</h4>
+			<div class="card-block">
+				<ul class="nav nav-tabs" role="tablist">
+					<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#chart1" role="tab">Chart1</a></li>
+					<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#chart2" role="tab">Chart2</a></li>
+					<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#chart3" role="tab">Chart3</a></li>
 				</ul>
-			</div>
-			<!-- -----sidebar----- -->
-			</td>
-			<td>
-			<div class="container-fluid" id="main" style="margin-top: 60px;">
-				<h1 style="margin-top: 30px; margin-bottom: 20px;">
-					<fmt:message key="dashboard_a_overview" />
-				</h1>
-				<!-- ---------------------------- Student Project ------------------------------- -->
-				<div class="card col-md-12" style="padding:0;">
-					<h4 id="Student Projects" class="card-header col-md-12">
-						<i class="fa fa-table" aria-hidden="true"></i>&nbsp;
-						<fmt:message key="dashboard_li_studentProjects" />
-					</h4>
-					<div class="card-block">
-						<ul class="nav nav-tabs" role="tablist">
-							<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#chart1" role="tab">Chart1</a></li>
-							<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#chart2" role="tab">Chart2</a></li>
-							<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#chart3" role="tab">Chart3</a></li>
-						</ul>
-						<!-- Tab panes -->
-						<div class="tab-content text-center" style="margin-top: 10px">
-							<div class="tab-pane active col-md-12" id="chart1" role="tabpanel">
-								<div class="col-md-12" id="chart1Demo"
-									style="min-width: 310px; max-width: 1200px; height: 400px; margin: 0 auto"></div>
-							</div>
-							<div class="tab-pane col-md-12" id="chart2" role="tabpanel">
-								<div class="col-md-12" id="chart2Demo"
-									style="min-width: 310px; max-width: 1200px; height: 400px; margin: 0 auto"></div>
-							</div>
-							<div class="tab-pane col-md-12" id="chart3" role="tabpanel">
-								<div class="col-md-12" id="chart3Demo"
-									style="min-width: 310px; max-width: 1200px; height: 400px; margin: 0 auto"></div>
-							</div>
-						</div>
+				<!-- Tab panes -->
+				<div class="tab-content text-center" style="margin-top: 10px">
+					<div class="tab-pane active col-md-12" id="chart1" role="tabpanel">
+						<div class="col-md-12" id="chart1Demo"
+							style="width: 1200px; height: 400px; margin: 0 auto"></div>
 					</div>
-					<script>
-						var chart1Array = [];
-						var projectNames = <%=Pdb.listAllProjectNames()%>
-					</script>
+					<div class="tab-pane col-md-12" id="chart2" role="tabpanel">
+						<div class="col-md-12" id="chart2Demo"
+							style="min-width: 310px; max-width: 1200px; height: 400px; margin: 0 auto"></div>
+					</div>
+					<div class="tab-pane col-md-12" id="chart3" role="tabpanel" style="width: 1200px">
 					<%
-						String[] colors = {"blue", "red", "orange", "gray"};
-						for (String color : colors) {
-					%>
-							<script type="text/javascript">
-							var color = <%="'" + color + "'"%>;
-							$.ajax({
-								url : 'webapi/commits/color',
-								type : 'GET',
-								data: {
-									"color" : color
-								}, 
-								async : false,
-								cache : true,
-								contentType: 'application/json; charset=UTF-8',
-								success : function(responseText) {
-									var str = JSON.stringify(responseText);
-									var obj = JSON.parse(str);
-									chart1Array.push(obj);
-								}, 
-								error : function(responseText,A,B) {
-									console.log(responseText,A,B);
-								}
-							});
-							</script>
-					<%
+						for(String pName : pNames) {
+							System.out.println(pName);
+							String index = pName.replace("\"", "").replace("HW", "");
+							int i = Integer.valueOf(index);
+							String id = "canvas" + i;
+							%>
+							<canvas id=<%=id %> class="col-md-12"></canvas>
+							<hr>
+							<%
 						}
 					%>
+					</div>
+				</div>
+			</div>
+			<script>
+				var chart1Array = [];
+				var projectNames = <%=Pdb.listAllProjectNames()%>
+			</script>
+			<%
+				String[] colors = {"blue", "red", "orange", "gray"};
+				for (String color : colors) {
+			%>
+					<script type="text/javascript">
+					var color = <%="'" + color + "'"%>;
+					$.ajax({
+						url : 'webapi/commits/color',
+						type : 'GET',
+						data: {
+							"color" : color
+						}, 
+						async : false,
+						cache : true,
+						contentType: 'application/json; charset=UTF-8',
+						success : function(responseText) {
+							var str = JSON.stringify(responseText);
+							var obj = JSON.parse(str);
+							chart1Array.push(obj);
+						}, 
+						error : function(responseText,A,B) {
+							console.log(responseText,A,B);
+						}
+					});
+					</script>
+			<%
+				}
+			%>
+			<script>
+				var chart2Array = [];
+				$.ajax({
+					url : 'webapi/commits/count',
+					type : 'GET',
+					async : false,
+					cache : true,
+					contentType: 'application/json; charset=UTF-8',
+					success : function(responseText) {
+						var str = JSON.stringify(responseText);
+						var obj = JSON.parse(str);
+						chart2Array.push(obj);
+					}, 
+					error : function(responseText,A,B) {
+						console.log(responseText,A,B);
+					}
+				});
+			</script>
+			<%
+				for (String color : colors) {
+					if(color.equals("gray")) {
+						continue;
+					}
+			%>
+					<script type="text/javascript">
+					var color = <%="'" + color + "'"%>;
+					$.ajax({
+						url : 'webapi/commits/record/color',
+						type : 'GET',
+						data: {
+							"color" : color
+						}, 
+						async : false,
+						cache : true,
+						contentType: 'application/json; charset=UTF-8',
+						success : function(responseText) {
+							var str = JSON.stringify(responseText);
+							var obj = JSON.parse(str);
+							chart2Array.push(obj);
+						}, 
+						error : function(responseText,A,B) {
+							console.log(responseText,A,B);
+						}
+					});
+					</script>
+			<%
+				}
+			%>
 					<script>
-						var chart2Array = [];
-						$.ajax({
-							url : 'webapi/commits/count',
-							type : 'GET',
-							async : false,
-							cache : true,
-							contentType: 'application/json; charset=UTF-8',
-							success : function(responseText) {
-								var str = JSON.stringify(responseText);
-								var obj = JSON.parse(str);
-								chart2Array.push(obj);
-							}, 
-							error : function(responseText,A,B) {
-								console.log(responseText,A,B);
-							}
-						});
+					var chart3Array = []
 					</script>
 					<%
-						for (String color : colors) {
-							if(color.equals("gray")) {
-								continue;
-							}
-					%>
-							<script type="text/javascript">
-							var color = <%="'" + color + "'"%>;
-							$.ajax({
-								url : 'webapi/commits/record/color',
-								type : 'GET',
-								data: {
-									"color" : color
-								}, 
-								async : false,
-								cache : true,
-								contentType: 'application/json; charset=UTF-8',
-								success : function(responseText) {
-									var str = JSON.stringify(responseText);
-									var obj = JSON.parse(str);
-									chart2Array.push(obj);
-								}, 
-								error : function(responseText,A,B) {
-									console.log(responseText,A,B);
-								}
-							});
-							</script>
-					<%
-						}
+					for(String pName : pNames) {
+						String index = pName.replace("\"", "").replace("HW", "");
+						int i = Integer.valueOf(index);
 					%>
 					<script type="text/javascript">
-						var chart3;
 						$.ajax({
 							url : 'webapi/commits/record/records',
 							type : 'GET',
 							data: {
-								"hw" : '1'
+								"hw" : <%=i%>
 							}, 
 							async : false,
 							cache : true,
 							contentType: 'application/json; charset=UTF-8',
 							success : function(responseText) {
 								var str = JSON.stringify(responseText);
+								var chart3;
 								chart3 = JSON.parse(str);
+								chart3Array.push(chart3);
 							}, 
 							error : function(responseText,A,B) {
 								console.log(responseText,A,B);
 							}
 						 });
 					</script>
-				</div>
-			</div>
-			</main>
-		</td>
-	</tr>
-</table>
+					<%
+					}
+					%>
+		</div>
+	</div>
 </body>
 <!-- set Highchart colors -->
 <script>
 Highcharts.setOptions({
-	 colors: ['#5fa7e8', '#e52424', '#FF5809', '#878787']
+	 colors: ['#5fa7e8', '#e52424', 'gold', '#878787']
 	})
 </script>
 
-<script>
-Highcharts.chart('chart1Demo', {
-    chart: {
-        type: 'column'
-    },
-    title: {
-        text: '各作業建置結果統計'
-    },
-    subtitle: {
-        text: ''
-    },
-    xAxis: {
-        categories: projectNames,
-        crosshair: true
-    },
-    yAxis: {
-        min: 0,
-        title: {
-            text: '個數'
-        }
-    },
-    tooltip: {
-        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y}</b></td></tr>',
-        footerFormat: '</table>',
-        shared: true,
-        useHTML: true
-    },
-    plotOptions: {
-        column: {
-            pointPadding: 0.2,
-            borderWidth: 0
-        }
-    },
-    series: chart1Array
-});
-</script>
+<script src="./chart/chart1.js"></script>
 
 <!-- set Highchart colors -->
 <script>
 Highcharts.setOptions({
-	 colors: ['#878787', '#5fa7e8', '#e52424', '#FF5809']
+	 colors: ['#878787', '#5fa7e8', '#e52424', 'gold']
 	})
 </script>
 
+<script src="./chart/chart2.js"></script>
+
+<script src = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js"></script>
+<script src = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+<script src = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js"></script>
+<script src = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+<script src="./dist/utils.js"></script>
+<script src="./dist/moment.min.js"></script>
+<script src="./dist/moment-with-locales.min.js"></script>
 <script>
-Highcharts.chart('chart2Demo', {
-    chart: {
-        zoomType: 'xy'
-    },
-    title: {
-        text: '各作業上傳次數及建置結果統計'
-    },
-    subtitle: {
-        text: ''
-    },
-    xAxis: [{
-        categories: projectNames,
-        crosshair: true
-    }],
-    yAxis: [{ // Primary yAxis
-        labels: {
-            format: '',
-            style: {
-                color: Highcharts.getOptions().colors[0]
-            }
-        },
-        title: {
-            text: '次數',
-            style: {
-                color: Highcharts.getOptions().colors[0]
-            }
-        }
-    }, { // Secondary yAxis blue
-        title: {
-            text: '個數',
-            style: {
-                color: Highcharts.getOptions().colors[0]
-            }
-        },
-        labels: {
-            format: '',
-            style: {
-                color: Highcharts.getOptions().colors[0]
-            }
-        },
-        opposite: true
-    }],
-    tooltip: {
-        shared: true
-    },
-    legend: {
-        layout: 'vertical',
-        align: 'left',
-        x: 120,
-        verticalAlign: 'top',
-        y: 100,
-        floating: true,
-        backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
-    },
-    series: chart2Array
-});
+var i;
+var bubbleChartDataArray = []
+for(i in chart3Array) {
+	var chart3 = chart3Array[i];
+	var DEFAULT_DATASET_SIZE = 7;
+	var addedCount = 0;
+	var color = Chart.helpers.color;
+	var bubbleChartData = {
+	    animation: {
+	        duration: 10000
+	    },
+	    datasets: [{
+	        label: chart3.title + ' (' + chart3.deadline + ')',
+	        backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+	        borderColor: window.chartColors.red,
+	        borderWidth: 1,
+	        data: chart3.records
+	    }]
+	};
+	bubbleChartDataArray.push(bubbleChartData);
+}
+window.onload = function() {
+	for(i in chart3Array) {
+		var chart3 = chart3Array[i];
+		var index = chart3.title.replace('HW', '');
+	    var ctx = document.getElementById("canvas" + index).getContext("2d");
+	    window.myChart = new Chart(ctx, {
+	    	responsive: true,
+	        type: 'bubble',
+	        data: bubbleChartDataArray[i],
+	        options: {
+	            responsive: true,
+	            title:{
+	                display:true,
+	                text:'Commit Record'
+	            },
+	            tooltips: {
+	            	enabled: true,
+	                mode: 'single',
+	                callbacks: {
+	                  label: function(tooltipItem, data) {
+	                    var label = data.labels[tooltipItem.index];
+	                    var datasetLabel = data.datasets[0].data[tooltipItem.index];
+	                    var date = new Date(datasetLabel.t);
+	                    return date.toLocaleString() + ', count: ' + datasetLabel.r;
+	                  }
+	                }
+	            },
+	            scales: {
+	                xAxes: [{
+	                	ticks: {
+	                		callback: function(value, index, values) {
+	                			var now = new Date(value).toDateString();
+	                            return now;
+	                        },
+		                	maxRotation: 60,
+		                    minRotation: 60
+	                	}
+	                }],
+	                yAxes: [{
+	                    ticks: {
+	                        // Include a dollar sign in the ticks
+	                        callback: function(value, index, values) {
+	                            return value + ':00';
+	                        },
+	                        max: 24,
+	                        min: 0
+	                    }
+	                }]
+	            }
+	        }
+	    });
+	};
+}
 </script>
 </html>

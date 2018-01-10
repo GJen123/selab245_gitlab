@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -40,9 +41,10 @@ public class CommitRecordDbManager {
    * @return check
    */
   public boolean insertCommitRecord(Connection conn, int stuId, String hw, String color,
-      String time) {
+      String date, String time) {
     PreparedStatement preStmt = null;
-    String sql = "INSERT INTO Commit_Record" + "(stuId, hw, color, time) " + "VALUES(?, ?, ?, ?)";
+    String sql = "INSERT INTO Commit_Record" + "(stuId, hw, color, date, time) "
+        + "VALUES(?, ?, ?, ?, ?)";
     boolean check = false;
 
     try {
@@ -50,7 +52,8 @@ public class CommitRecordDbManager {
       preStmt.setInt(1, stuId);
       preStmt.setString(2, hw);
       preStmt.setString(3, color);
-      preStmt.setString(4, time);
+      preStmt.setString(4, date);
+      preStmt.setString(5, time);
 
       preStmt.executeUpdate();
       preStmt.close();
@@ -111,8 +114,10 @@ public class CommitRecordDbManager {
    *          commit time
    * @return boolean
    */
-  public boolean checkRecord(Connection conn, int stuId, String hw, String color, String time) {
-    String query = "SELECT * FROM Commit_Record where stuId=? and hw=? and color=? and time=?";
+  public boolean checkRecord(Connection conn, int stuId, String hw, String color, String date,
+      String time) {
+    String query = "SELECT * FROM Commit_Record where stuId=? "
+        + "and hw=? and color=? and date=? and time=?";
     PreparedStatement preStmt = null;
     boolean check = false;
 
@@ -121,7 +126,8 @@ public class CommitRecordDbManager {
       preStmt.setInt(1, stuId);
       preStmt.setString(2, hw);
       preStmt.setString(3, color);
-      preStmt.setString(4, time);
+      preStmt.setString(4, date);
+      preStmt.setString(5, time);
       ResultSet rs = preStmt.executeQuery();
       while (rs.next()) {
         check = true;
@@ -142,27 +148,36 @@ public class CommitRecordDbManager {
    */
   public JSONArray getCountGroupByHwAndTime(String hw) {
     Connection conn = database.getConnection();
-    String query = "select time, count(color) from Commit_Record where hw=? group by time";
+    String query = "select date, time, count(color) from Commit_Record where hw=? "
+        + "group by date, time";
     PreparedStatement preStmt = null;
-    boolean check = false;
     JSONArray records = new JSONArray();
-
-    JSONArray arr = new JSONArray();
 
     try {
       preStmt = conn.prepareStatement(query);
       preStmt.setString(1, hw);
       ResultSet rs = preStmt.executeQuery();
       while (rs.next()) {
-        String[] dateString = rs.getString("time").split(" ");
-        String date = dateString[0];
-        String time = dateString[1].substring(0, dateString[1].length() - 2);
-        int count = rs.getInt("count(color)");
+        String date = rs.getString("date");
+        String time = rs.getString("time");
+        String[] times = time.split(":");
+        final double timeValue = Integer.valueOf(times[0]) + (Integer.valueOf(times[1])) * 0.01;
 
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        ts = Timestamp.valueOf(date + " " + time);
+
+        Timestamp xlabel = new Timestamp(System.currentTimeMillis());
+        xlabel = Timestamp.valueOf(date + " " + time);
+        xlabel.setHours(0);
+        xlabel.setMinutes(0);
+        xlabel.setSeconds(0);
+        int count = rs.getInt("count(color)");
         JSONObject record = new JSONObject();
-        record.put("x", rs.getString("time").substring(0, rs.getString("time").length() - 2));
-        // record.put("time", time);
-        record.put("y", count);
+        // record.put("x", date.substring(date.length() - 2));
+        record.put("x", xlabel.getTime());
+        record.put("y", timeValue);
+        record.put("r", count);
+        record.put("t", ts.getTime());
         records.put(record);
       }
     } catch (SQLException e) {

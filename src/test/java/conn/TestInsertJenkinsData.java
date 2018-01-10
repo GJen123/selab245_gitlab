@@ -42,6 +42,9 @@ public class TestInsertJenkinsData {
       StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
       for (Project dbProject : dbProjects) {
         String proName = null;
+        if (!dbProject.getName().equals("OOP-HW10") && !dbProject.getName().equals("OOP-HW11")) {
+          continue;
+        }
         for (GitlabProject gitProject : gitProjects) {
           if (dbProject.getName().equals(gitProject.getName())) {
             proName = dbProject.getName();
@@ -56,10 +59,6 @@ public class TestInsertJenkinsData {
             proName = "N/A";
           }
         } else {
-          if (!proName.equals("OOP-HW8") && !proName.equals("OOP-HW9")
-              && !proName.equals("OOP-HW10")) {
-            continue;
-          }
           String[] result = jenkins.getColor(proName, userName).split(",");
           String color = result[0].replace("circle ", "");
           int commit = Integer.valueOf(result[1]) - 1;
@@ -79,13 +78,13 @@ public class TestInsertJenkinsData {
           if (check) {
             commitDb.updateJenkinsCommitCount(connection, id, hw, commit, color);
             commitDb.updateJenkinsJobTimestamp(connection, id, hw, strDate);
-            System.out
-                .println("update, " + user.getId() + ", " + hw + ", " + commit + ", " + color);
+            System.out.println("update, " + user.getId() + ", " + hw + ", " + commit + ", " + color
+                + ", " + strDate);
           } else {
             commitDb.insertJenkinsCommitCount(connection, id, hw, commit, color);
             commitDb.updateJenkinsJobTimestamp(connection, id, hw, strDate);
-            System.out
-                .println("insert, " + user.getId() + ", " + hw + ", " + commit + ", " + color);
+            System.out.println("insert, " + user.getId() + ", " + hw + ", " + commit + ", " + color
+                + ", " + strDate);
           }
         }
       }

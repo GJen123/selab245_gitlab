@@ -15,10 +15,12 @@ import org.json.JSONObject;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.IDatabase;
 import fcu.selab.progedu.db.MySqlDatabase;
+import fcu.selab.progedu.db.ProjectDbManager;
 
 @Path("commits/record/")
 public class CommitRecordService {
   CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
+  ProjectDbManager pdb = ProjectDbManager.getInstance();
   IDatabase database = new MySqlDatabase();
   Connection connection = database.getConnection();
 
@@ -65,8 +67,12 @@ public class CommitRecordService {
   @Path("records")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCountGroupByHwAndTime(@QueryParam("hw") String hw) {
-    JSONArray ob = new JSONArray();
-    ob = commitRecordDb.getCountGroupByHwAndTime(hw);
+    JSONObject ob = new JSONObject();
+    JSONArray records = commitRecordDb.getCountGroupByHwAndTime(hw);
+    String deadline = pdb.getProjectByName("OOP-HW" + hw).getDeadline();
+    ob.put("records", records);
+    ob.put("title", "HW" + hw);
+    ob.put("deadline", deadline);
     Response response = Response.ok().entity(ob.toString()).build();
     return response;
   }
