@@ -136,7 +136,8 @@ public class ZipHandler {
         }
 
         // Get the test folder
-        searchTestFile(entryNewName, testDirectory + "/" + entry.getName());
+        // searchTestFile(entryNewName, testDirectory + "/" + entry.getName());
+
         // String testFilePath = testDirectory + File.separator +
         // entry.getName();
         // copyTestFileToFolder(testFilePath, projectName);
@@ -151,6 +152,9 @@ public class ZipHandler {
       zipIn.closeEntry();
       entry = zipIn.getNextEntry();
     }
+
+    copyTestFile(destDir, destDirectory, testDirectory);
+
     File testFile = new File(testDirectory);
     if (testFile.exists()) {
       zipTestFolder(testDirectory);
@@ -317,7 +321,9 @@ public class ZipHandler {
   private void searchTestFile(String entryName, String testDirectory) {
     if (entryName.contains("src/test")) {
       System.out.println("searchTestFile : " + entryName);
-      File dataFile = new File(entryName);
+      String strDataFile = uploadDir + entryName;
+      System.out.println("strDataFile : " + strDataFile);
+      File dataFile = new File(strDataFile);
       File targetFile = new File(testDirectory);
       try {
         FileUtils.copyFile(dataFile, targetFile);
@@ -343,6 +349,39 @@ public class ZipHandler {
 
   public String getUrlForJenkinsDownloadTestFile() {
     return urlForJenkinsDownloadTestFile;
+  }
+
+  private void copyTestFile(File folder, String strFolder, String testFilePath) {
+    for (final File fileEntry : folder.listFiles()) {
+      if (fileEntry.isDirectory()) {
+        copyTestFile(fileEntry, strFolder, testFilePath);
+      } else {
+        if (fileEntry.getAbsolutePath().contains("src")) {
+          String entry = fileEntry.getAbsolutePath();
+          if (entry.contains("src/test")) {
+            // System.out.println("entry : " + entry);
+            // String filePath = entry.substring(strFolder.length(),
+            // entry.length());
+            // System.out.println("filePath : " + filePath);
+            // String strTestFolder = testFilePath + filePath;
+            // System.out.println("strTestFolder : " + strTestFolder);
+
+            File dataFile = new File(strFolder + "/src/test");
+            File targetFile = new File(testFilePath + "/src/test");
+            try {
+              // FileUtils.copyFile(dataFile, targetFile);
+              FileUtils.copyDirectory(dataFile, targetFile);
+              FileUtils.deleteDirectory(dataFile);
+              // dataFile.delete();
+            } catch (IOException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
+          }
+        }
+
+      }
+    }
   }
 
 }
