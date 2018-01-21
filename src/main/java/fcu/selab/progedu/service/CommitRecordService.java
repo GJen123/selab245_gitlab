@@ -77,4 +77,18 @@ public class CommitRecordService {
     return response;
   }
 
+  /**
+   * delete build record of hw
+   * 
+   * @param hw
+   *          hw
+   */
+  public void deleteRecord(String hw) {
+    IDatabase database = new MySqlDatabase();
+    Connection connection = database.getConnection();
+
+    String hwIndex = hw.replace("OOP-HW", "");
+    commitRecordDb.deleteRecord(connection, hwIndex);
+  }
+
 }

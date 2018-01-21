@@ -185,4 +185,28 @@ public class CommitRecordDbManager {
     }
     return records;
   }
+
+  /**
+   * delete built record of specific hw
+   * 
+   * @param conn
+   *          db connection
+   * @param hw
+   *          hw
+   */
+  public void deleteRecord(Connection conn, String hw) {
+    PreparedStatement preStmt = null;
+    String sql = "DELETE FROM Commit_Record WHERE hw=?";
+
+    try {
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setString(1, hw);
+
+      preStmt.executeUpdate();
+      preStmt.close();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
 }

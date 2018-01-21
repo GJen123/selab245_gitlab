@@ -355,4 +355,28 @@ public class CommitResultDbManager {
       }
     }
   }
+
+  /**
+   * delete build result of specific hw
+   * 
+   * @param conn
+   *          db connection
+   * @param hw
+   *          hw
+   */
+  public void deleteResult(Connection conn, String hw) {
+    PreparedStatement preStmt = null;
+    String sql = "DELETE FROM Commit_Result WHERE hw=?";
+
+    try {
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setString(1, hw);
+
+      preStmt.executeUpdate();
+      preStmt.close();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
 }

@@ -48,10 +48,6 @@ public class TestInsertCommitRecord {
       Collections.reverse(gitProjects);
       for (Project dbProject : dbProjects) {
         String proName = null;
-        if (!dbProject.getName().equals("OOP-HW9") && !dbProject.getName().equals("OOP-HW10")
-            && !dbProject.getName().equals("OOP-HW11")) {
-          continue;
-        }
         for (GitlabProject gitProject : gitProjects) {
           if (dbProject.getName().equals(gitProject.getName())) {
             proName = dbProject.getName();

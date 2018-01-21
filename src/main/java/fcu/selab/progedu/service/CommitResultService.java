@@ -243,4 +243,18 @@ public class CommitResultService {
     }
     return jsonString;
   }
+
+  /**
+   * delete build result of hw
+   * 
+   * @param hw
+   *          hw
+   */
+  public void deleteResult(String hw) {
+    IDatabase database = new MySqlDatabase();
+    Connection connection = database.getConnection();
+
+    String hwIndex = hw.replace("OOP-HW", "");
+    db.deleteResult(connection, hwIndex);
+  }
 }

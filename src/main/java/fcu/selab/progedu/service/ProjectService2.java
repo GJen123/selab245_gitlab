@@ -63,6 +63,8 @@ public class ProjectService2 {
   private String jenkinsRootPassword;
 
   private ProjectDbManager dbManager = ProjectDbManager.getInstance();
+  private CommitRecordService commitRecordService = new CommitRecordService();
+  private CommitResultService commitResultService = new CommitResultService();
 
   private static final String tempDir = System.getProperty("java.io.tmpdir");
   private static String uploadDir = tempDir + "/uploads/";
@@ -526,15 +528,17 @@ public class ProjectService2 {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   public Response deleteProject(@FormDataParam("Hw_Name") String name) {
-    List<GitlabUser> users = conn.getUsers();
 
     // delete db
     dbManager.deleteProject(name);
+    commitRecordService.deleteRecord(name);
+    commitResultService.deleteResult(name);
 
     // delete gitlab
     conn.deleteProjects(name);
     String crumb = jenkins.getCrumb("root", "zxcv1234");
 
+    List<GitlabUser> users = conn.getUsers();
     // delete Jenkins
     for (GitlabUser user : users) {
       String jobName = user.getUsername() + "_" + name;
