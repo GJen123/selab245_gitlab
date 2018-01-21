@@ -116,7 +116,8 @@ public class StudentDashChoosePro {
       JSONArray actions = json.getJSONArray("actions");
       JSONArray causes = actions.getJSONObject(0).getJSONArray("causes");
       String shortDescription = causes.getJSONObject(0).optString("shortDescription");
-      if ("Started by an SCM change".equals(shortDescription)) {
+      if ("Started by an SCM change".equals(shortDescription)
+          || "由 SCM 變更所啟動".equals(shortDescription)) {
         counts.add(i);
       } else {
         if (i == 1) { // teacher commit
