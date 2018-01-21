@@ -112,7 +112,8 @@ public class CommitResultService {
     String hw = proName.replace("OOP-HW", "");
     CommitResult commitResult = db.getCommitResultByStudentAndHw(connection, id, hw);
     String circleColor = "circle " + commitResult.getColor();
-    String result = userName + "_" + proName + "," + circleColor + "," + commitResult.getCommit();
+    String result = userName + "_" + proName + "," + circleColor + ","
+        + (commitResult.getCommit() + 1);
 
     Response response = Response.ok().entity(result).build();
     return response;
