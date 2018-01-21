@@ -42,7 +42,7 @@ public class TestInsertJenkinsData {
       StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
       for (Project dbProject : dbProjects) {
         String proName = null;
-        if (!dbProject.getName().equals("OOP-HW10") && !dbProject.getName().equals("OOP-HW11")) {
+        if (!dbProject.getName().equals("OOP-HW11")) {
           continue;
         }
         for (GitlabProject gitProject : gitProjects) {

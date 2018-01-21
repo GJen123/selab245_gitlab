@@ -54,6 +54,35 @@
 		body, html, .row, #navHeight{
 			height:100%;
 		}
+		.sidebar {
+			height: 100%;
+			background-color: #444;
+			color: white; 
+			margin: -1px;
+			position: fixed; /* Set the navbar to fixed position */
+   			top: 0;
+   			margin-top: 50px;
+   		 	overflow-y: scroll;
+   		 	z-index: 100;
+		}
+		.sidebar a{
+			color: white;
+		}
+		.sidebar a:hover{
+			color: orange;
+		}
+		.sidebar button{
+			color: white;
+			background: none;
+		}
+		
+		#main {
+			height: 100%;
+			margin-left: 200px;
+			overflow-x: scroll;
+			padding-top: 20px;
+			width: auto;
+		}
 		#groupMamber {
 			padding: 5px !important;
 		}
@@ -73,143 +102,139 @@
 <body>
 	<%@ include file="header.jsp" %>
 
-	<div class="row">
-        <nav class="bg-faded sidebar hidden-xs-down" id="navHeight">
-          <ul class="nav nav-pills flex-column" style="margin-top: 20px;">
-            <%
-            	for(GitlabGroup group : groups){
-            	  String href = "\"teacherGroup.jsp?id=" + group.getId() + "\"";
-            	  %>
-            	  	<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><%=group.getName() %></a></font></li>
-            	  <%
-            	}
-            %>
-          </ul>
-        </nav>
-        <main class="col-md-9 col-xs-11 p-l-2 p-t-2">
-        	<%
-        		GitlabGroup groupChoosed = new GitlabGroup();
-        		for(GitlabGroup group : groups){
-        			  int id = Integer.valueOf(groupId);
-        		  if(id == group.getId()){
-        		    groupChoosed = group;
-        		    break;
-        		  }
-        		}
-        		String groupUrl = gitData.getGitlabHostUrl() + "/groups/" + groupChoosed.getName();
-        	%>
-        	<div class="container" style="margin-top: 20px;">
-	        	<h2><a id="groupNameLink" href="#" onclick="window.open('<%=groupUrl %>')"><%=groupChoosed.getName() %></a></h2>
-	        		<table class="table" style="margin-top: 20px;">
-			        	<thead class="thead-default">
-			        		<tr>
-			        			<th width="20%"><font size="3"><fmt:message key="teacherGroup_th_project"/></font></th>
-							    <th width="20%"><font size="3"><fmt:message key="teacherGroup_th_student"/></font></th>
-			        		</tr>
-			        	</thead>
-			        	<tbody>
-			        		<%
-			        			List<GitlabProject> projects = conn.getGroupProject(groupChoosed);
-			        			Collections.reverse(projects);
-			        			List<GitlabGroupMember> groupMembers = conn.getGroupMembers(groupChoosed);
-			        			Collections.reverse(groupMembers);
-			        		%>
-			        		<tr>
-			        			<td>
-			        				<table>
-			        					<tr>
-			        						<%
-			        						List<JSONObject> jsons = new ArrayList<JSONObject>();
-			        							for(GitlabProject project : projects){
-			        							  String projectUrl = gitData.getGitlabHostUrl() + "/" + groupChoosed.getName() + "/" + project.getName();
-			        							  String commitsUrl = gitData.getGitlabHostUrl() + "projects/" + project.getId() + "/repository/commits?private_token=" + gitData.getGitlabApiToken();
-			        							  JSONObject json = new JSONObject();
-			        							  JSONArray array = new JSONArray();
-			        							  	%>
-			        							  		<td id="groupMamber" width="20%"><p><a href="#" onclick="window.open('<%=projectUrl %>')"><%=project.getName() %></a></p></td>
-			        							  	<%
-			        							  json.put("projectName", project.getName());
-			        							  List<GitlabCommit> commits = conn.getProjectCommits(project.getId());
-			        							  for(GitlabGroupMember member : groupMembers) {
-			        								if(member.getName().equals("Administrator")) {
-					        						  continue;
-					        						}
-			        								int count=0;
-			        								JSONObject memberJson = new JSONObject();
-			        								  for(GitlabCommit commit : commits) {
-			        									if(member.getUsername().equals(commit.getAuthorName())) {
-			        									  count++;
-			        									}
-			        								  }
-			        								  memberJson.put("authorName", member.getName());
-			        								  memberJson.put("count", count);
-			        								  array.put(memberJson);
-			        							  }
-			        							  json.put("member", array);
-			        							  jsons.add(json);
-			        							}
-			       							%>
-			       						</tr>
-			       					</table>
-			       				</td>
-			     				<td>
-			        				<table id="noborder">
-			        					<%
-			        					for(GitlabGroupMember member : groupMembers){
-			        					  String userName = member.getUsername();
-			        					  String personal_url = gitData.getGitlabHostUrl() + "/u/" + userName;
-			        						if(member.getName().equals("Administrator")) {
-		        								continue;
-		        							}
-			        						if(member.getAccessLevel().toString().equals("Master")) {
-			        							%>
-			        								<tr><td id="groupMamber"><h5><a href="#" onclick="window.open('<%=personal_url %>')"><i class="fa fa-flag" aria-hidden="true"></i>&nbsp; <%=member.getName() %></a></h5></td></tr>
-			       								<%
-			       							}else{
-			       							  	continue;
-			       							}
-			       						}
-			       						for(GitlabGroupMember member : groupMembers){
-			       							String userName = member.getUsername();
-			        					  	String personal_url = gitData.getGitlabHostUrl() + "/u/" + userName;
-			       							if(member.getName().equals("Administrator")) {
-		       									continue;
-		       								}
-		        							if(member.getAccessLevel().toString().equals("Developer")) {
-		        								%>
-					        					  	<tr><td id="groupMamber"><h6><a href="#" onclick="window.open('<%=personal_url %>')"><i class="fa fa-user" aria-hidden="true"></i>&nbsp; <%=member.getName() %></a></h6></td></tr>
-					        					<%
+       <div class="sidebar" style="width:200px;">
+         <ul class="nav nav-pills flex-column" style="margin-top: 20px;">
+           <%
+           	for(GitlabGroup group : groups){
+           	  String href = "\"teacherGroup.jsp?id=" + group.getId() + "\"";
+           	  %>
+           	  	<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><%=group.getName() %></a></font></li>
+           	  <%
+           	}
+           %>
+         </ul>
+       </div>
+      	<%
+      		GitlabGroup groupChoosed = new GitlabGroup();
+      		for(GitlabGroup group : groups){
+      			  int id = Integer.valueOf(groupId);
+      		  if(id == group.getId()){
+      		    groupChoosed = group;
+      		    break;
+      		  }
+      		}
+      		String groupUrl = gitData.getGitlabHostUrl() + "/groups/" + groupChoosed.getName();
+      	%>
+      	<div class="container-fluid" id="main" style="width: auto;">
+       	<h2><a id="groupNameLink" href="#" onclick="window.open('<%=groupUrl %>')"><%=groupChoosed.getName() %></a></h2>
+       		<table class="table" style="margin-top: 20px;">
+	        	<thead class="thead-default">
+	        		<tr>
+	        			<th width="20%"><font size="3"><fmt:message key="teacherGroup_th_project"/></font></th>
+					    <th width="20%"><font size="3"><fmt:message key="teacherGroup_th_student"/></font></th>
+	        		</tr>
+	        	</thead>
+	        	<tbody>
+	        		<%
+	        			List<GitlabProject> projects = conn.getGroupProject(groupChoosed);
+	        			Collections.reverse(projects);
+	        			List<GitlabGroupMember> groupMembers = conn.getGroupMembers(groupChoosed);
+	        			Collections.reverse(groupMembers);
+	        		%>
+	        		<tr>
+	        			<td>
+	        				<table>
+	        					<tr>
+	        						<%
+	        						List<JSONObject> jsons = new ArrayList<JSONObject>();
+	        							for(GitlabProject project : projects){
+	        							  String projectUrl = gitData.getGitlabHostUrl() + "/" + groupChoosed.getName() + "/" + project.getName();
+	        							  String commitsUrl = gitData.getGitlabHostUrl() + "projects/" + project.getId() + "/repository/commits?private_token=" + gitData.getGitlabApiToken();
+	        							  JSONObject json = new JSONObject();
+	        							  JSONArray array = new JSONArray();
+	        							  	%>
+	        							  		<td id="groupMamber" width="20%"><p><a href="#" onclick="window.open('<%=projectUrl %>')"><%=project.getName() %></a></p></td>
+	        							  	<%
+	        							  json.put("projectName", project.getName());
+	        							  List<GitlabCommit> commits = conn.getProjectCommits(project.getId());
+	        							  for(GitlabGroupMember member : groupMembers) {
+	        								if(member.getName().equals("Administrator")) {
+			        						  continue;
 			        						}
-			        					}
-			       					%>
-			       				</table>
-			       			</td>
-						</tr>
-		        	</tbody>
-		        </table>
-		        <!-- Nav tabs -->
-		        <div class="card">
-		        	<div class="card-header">
-		        		<h4 id="Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_chart"/></h4>
-		        	</div>
-		        	
-		        	<div class="card-block">
-		        		<ul class="nav nav-tabs" role="tablist">
-						  <li class="nav-item">
-						    <a class="nav-link active" data-toggle="tab" href="#chart1" role="tab">Chart1</a>
-						  </li>
-						</ul>
-		        		<!-- Tab panes -->
-						<div class="tab-content text-center" style="margin-top: 10px">
-						  <div class="tab-pane active" id="chart1" role="tabpanel">
-						  	<div id="chart1Demo" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-						  	</div>
-						</div>
-		        	</div>
-		        </div>
+	        								int count=0;
+	        								JSONObject memberJson = new JSONObject();
+	        								  for(GitlabCommit commit : commits) {
+	        									if(member.getUsername().equals(commit.getAuthorName())) {
+	        									  count++;
+	        									}
+	        								  }
+	        								  memberJson.put("authorName", member.getName());
+	        								  memberJson.put("count", count);
+	        								  array.put(memberJson);
+	        							  }
+	        							  json.put("member", array);
+	        							  jsons.add(json);
+	        							}
+	       							%>
+	       						</tr>
+	       					</table>
+	       				</td>
+	     				<td>
+	        				<table id="noborder">
+	        					<%
+	        					for(GitlabGroupMember member : groupMembers){
+	        					  String userName = member.getUsername();
+	        					  String personal_url = gitData.getGitlabHostUrl() + "/u/" + userName;
+	        						if(member.getName().equals("Administrator")) {
+        								continue;
+        							}
+	        						if(member.getAccessLevel().toString().equals("Master")) {
+	        							%>
+	        								<tr><td id="groupMamber"><h5><a href="#" onclick="window.open('<%=personal_url %>')"><i class="fa fa-flag" aria-hidden="true"></i>&nbsp; <%=member.getName() %></a></h5></td></tr>
+	       								<%
+	       							}else{
+	       							  	continue;
+	       							}
+	       						}
+	       						for(GitlabGroupMember member : groupMembers){
+	       							String userName = member.getUsername();
+	        					  	String personal_url = gitData.getGitlabHostUrl() + "/u/" + userName;
+	       							if(member.getName().equals("Administrator")) {
+       									continue;
+       								}
+        							if(member.getAccessLevel().toString().equals("Developer")) {
+        								%>
+			        					  	<tr><td id="groupMamber"><h6><a href="#" onclick="window.open('<%=personal_url %>')"><i class="fa fa-user" aria-hidden="true"></i>&nbsp; <%=member.getName() %></a></h6></td></tr>
+			        					<%
+	        						}
+	        					}
+	       					%>
+	       				</table>
+	       			</td>
+				</tr>
+        	</tbody>
+        </table>
+        <!-- Nav tabs -->
+        <div class="card">
+        	<div class="card-header">
+        		<h4 id="Statistics Chart"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_chart"/></h4>
         	</div>
-        </main>
-    </div>
+        	
+        	<div class="card-block">
+        		<ul class="nav nav-tabs" role="tablist">
+				  <li class="nav-item">
+				    <a class="nav-link active" data-toggle="tab" href="#chart1" role="tab">Chart1</a>
+				  </li>
+				</ul>
+        		<!-- Tab panes -->
+				<div class="tab-content text-center" style="margin-top: 10px">
+				  <div class="tab-pane active" id="chart1" role="tabpanel">
+				  	<div id="chart1Demo" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+				  	</div>
+				</div>
+        	</div>
+        </div>
+      	</div>
 </body>
 
 <!-- set Highchart colors -->

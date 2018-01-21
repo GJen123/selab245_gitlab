@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="utf-8"%>
-<%@ page import="fcu.selab.progedu.conn.Conn,fcu.selab.progedu.conn.HttpConnect" %>
+<%@ page import="fcu.selab.progedu.conn.Conn" %>
 <%@ page import="fcu.selab.progedu.jenkins.JenkinsApi, fcu.selab.progedu.conn.Language" %>
 <%@ page import="fcu.selab.progedu.config.GitlabConfig" %>
 <%@ page import="fcu.selab.progedu.config.JenkinsConfig" %>
@@ -12,6 +12,7 @@
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
 <%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="fcu.selab.progedu.conn.StudentDashChoosePro" %> 
 
 <%
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
@@ -124,6 +125,7 @@
 	
 		UserDbManager db = UserDbManager.getInstance();
 		ProjectDbManager Pdb = ProjectDbManager.getInstance();
+		StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
 		
 		List<User> users = db.listAllUsers();
 		List<Project> dbProjects = Pdb.listAllProjects();
@@ -194,7 +196,7 @@
 					<p class="ovol gold" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p> -->
 					<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
 				</div>
-				<table class="table table-striped" style="margin-top: 20px; width: 100%; margin-bottom: 0px;">
+				<table class="table table-hover" style="margin-top: 20px; width: 100%; margin-bottom: 0px;">
 					<thead>
 						<tr>
 							<th width="10%" class="text-center">Commit</th>
@@ -205,57 +207,57 @@
 					</thead>
 					<tbody>
 						<%
-							GitlabProject choosedProject = new GitlabProject();
-							for(GitlabProject project : projects){
-							  if(projectName.equals(project.getName())){
-							    choosedProject = project;
-							  }
-							}
-							int commit_count = conn.getAllCommitsCounts(choosedProject.getId());
-							List<GitlabCommit> commits = conn.getAllCommits(choosedProject.getId());
-							Collections.reverse(commits);
-							String circleColor = null;
-							String projectJenkinsUrl = null;
-							for(int num=1; num<=commit_count; num++){
-							  String jobName = choosedUser.getUsername() + "_" + projectName;
-							  String jobUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/api/json";
-							  List<Integer> buildNumbers = jenkins.getJenkinsJobAllBuildNumber(jenkinsData.getJenkinsRootUsername(), jenkinsData.getJenkinsRootPassword(), jobUrl);
-							  String buildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num + "/api/json";
-							  String buildApiJson = jenkins.getJobBuildApiJson(jenkinsData.getJenkinsRootUsername() ,jenkinsData.getJenkinsRootPassword(), buildUrl);
-							  String result = jenkins.getJobBuildResult(buildApiJson);
-							  
-							  // Get commit date
-							  Date date = commits.get(num-1).getCreatedAt();
-							  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-							  sdf.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
-							  String strDate = sdf.format(date);
-							  
-							  if(result.equals("SUCCESS")){
-							    circleColor = "circle blue";
-							    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
-							  }else{
-							    circleColor = "circle red";
-							    projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num +"/consoleText";
-							    
-							    // check if is checkstyle error
-							    String consoleText = jenkins.getConsoleText(projectJenkinsUrl);
-							    boolean isCheckstyleError = jenkins.checkIsCheckstyleError(consoleText);
-							    if(isCheckstyleError){
-							      circleColor = "circle orange";
-							      projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" + num +"/violations";
-							    }
-							  }
-							  if(num == 1){
-							    circleColor = "circle gray";
-							  }
-							  %>
-							  	<tr>
-							  		<th width="10%" class="text-center"><%=num %></th>
-							  		<td width="10%"><p class="<%=circleColor%>" id="pProject"><a href="#" onclick="window.open('<%=projectJenkinsUrl  %>')">&nbsp;</a></p></td>
-							  		<td width="15%"><%=strDate %></td>
-							  		<td><%=commits.get(num-1).getMessage() %></td>
+							List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(choosedUser.getUsername(), projectName);
+							int commit_count = buildNum.size();
+							int i=1;
+							int lastBuildMessageNum = 0;
+							for(Integer num : buildNum){
+							  	%>
+							  	<script type="text/javascript">
+									var userName = <%="'" + choosedUser.getUsername() + "'"%>
+									var proName = <%="'" + projectName + "'"%>
+									var date, color, message, num
+									$.ajax({
+										url : 'webapi/jenkins/buildDetail',
+										type : 'GET',
+										data: {
+											"num": <%=num%>,
+											"proName" : proName,
+											"userName" : userName
+										}, 
+										async : true,
+										cache : true,
+										contentType: 'application/json; charset=UTF-8',
+										success : function(responseText) {
+											var str = JSON.stringify(responseText);
+											var obj = JSON.parse(str);
+											date = obj.date;
+											color = obj.color;
+											message = obj.message;
+											num = obj.num;
+											
+											td_color = document.getElementById("color" + num);
+											td_date = document.getElementById("date" + num);
+											td_message = document.getElementById("message" + num);
+											
+											td_color.className=color;
+											td_date.textContent = date;
+											td_message.innerHTML = message;
+										}, 
+										error : function(responseText) {
+											console.log("False!");
+										}
+									});
+								</script>
+							  	<tr id="<%=num %>" onClick="changeIframe(this)">
+							  		<th width="10%" class="text-center"><%=i %></th>
+							  		<td width="10%"><p id=<%="color" + num %>></p></td>
+							  		<td width="15%" id=<%="date" + num %>>></td>
+							  		<td id=<%="message" + num %>></td>
 							  	</tr>
-							  <%
+							  	<%
+							  	i++;
+							  	lastBuildMessageNum = num;
 							}
 						%>
 					</tbody>
@@ -263,7 +265,80 @@
         	</div>
         </div>
         <!-- ---------------------------- Student Project ------------------------------- -->
+        	<hr>
+
+       		<h4 id="iFrameTitle">Feedback Information</h4>
+         				
+       		<!-- iFrame -->
+			<%
+				int num = lastBuildMessageNum;
+				String jobName = choosedUser.getUsername() + "_" + projectName;
+				String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" +  num + "/consoleText";
+				String url = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/";
+			%>
+			<div style="margin:10px;">
+				<iframe src="<%=lastBuildUrl %>" width="100%" height="500px" style="background: #fff3cd;" id="jenkinsOutput">
+			  		<p>Your browser does not support iframes.</p>
+				</iframe>
+			</div>
+			<!-- iFrame -->
        </div>
 <!-- ------------------------ main -------------------------------------- -->
-	</body>
+	</body><script type="text/javascript">
+		function copyToClipboard(elem) {
+			  // create hidden text element, if it doesn't already exist
+		    var targetId = "_hiddenCopyText_";
+		    var isInput = elem.tagName === "INPUT" || elem.tagName === "TEXTAREA";
+		    var origSelectionStart, origSelectionEnd;
+		    if (isInput) {
+		        // can just use the original source element for the selection and copy
+		        target = elem;
+		        origSelectionStart = elem.selectionStart;
+		        origSelectionEnd = elem.selectionEnd;
+		    } else {
+		        // must use a temporary form element for the selection and copy
+		        target = document.getElementById(targetId);
+		        if (!target) {
+		            var target = document.createElement("textarea");
+		            target.style.position = "absolute";
+		            target.style.left = "-9999px";
+		            target.style.top = "0";
+		            target.id = targetId;
+		            document.body.appendChild(target);
+		        }
+		        target.textContent = elem.textContent;
+		    }
+		    // select the content
+		    var currentFocus = document.activeElement;
+		    target.focus();
+		    target.setSelectionRange(0, target.value.length);
+		    
+		    // copy the selection
+		    var succeed;
+		    try {
+		    	  succeed = document.execCommand("copy");
+		    } catch(e) {
+		        succeed = false;
+		    }
+		    // restore original focus
+		    if (currentFocus && typeof currentFocus.focus === "function") {
+		        currentFocus.focus();
+		    }
+		    
+		    if (isInput) {
+		        // restore prior selection
+		        elem.setSelectionRange(origSelectionStart, origSelectionEnd);
+		    } else {
+		        // clear temporary content
+		        target.textContent = "";
+		    }
+		    return succeed;
+		}
+	</script>
+	<script type="text/javascript">
+		function changeIframe(tr){
+			var u = '<%=url%>' + tr.id + '/consoleText';
+			$('#jenkinsOutput').attr('src',u);
+		}
+	</script>
 </html>

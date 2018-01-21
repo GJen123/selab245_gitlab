@@ -7,29 +7,6 @@
 		response.sendRedirect("index.jsp");
 	}
 	session.putValue("page", "studentManagement");
-	
-
-	// Set the student private_token
-	String private_token = null;
-	
-	Cookie[] cookies = request.getCookies();
-	Cookie cookie = null;
-	if(cookies != null){
-	  for(Cookie c : cookies){
-	    if(c.getName().equals("private_token")){
-	      cookie = c;
-	      break;
-	    }
-	  }
-	}else {
-		response.sendRedirect("index.jsp");
-	}
-	if(cookie != null){
-	  private_token = cookie.getValue();
-	}else {
-		response.sendRedirect("index.jsp");
-	}
-	
 %>
 
 <%@ include file="language.jsp"%>

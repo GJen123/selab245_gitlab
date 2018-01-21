@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.StudentDashChoosePro;
+import fcu.selab.progedu.data.CommitResult;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.CommitResultDbManager;
 import fcu.selab.progedu.db.IDatabase;
@@ -34,6 +35,7 @@ import fcu.selab.progedu.exception.LoadConfigFailureException;
 @Path("commits/")
 public class CommitResultService {
   CommitResultDbManager db = CommitResultDbManager.getInstance();
+  UserDbManager userDb = UserDbManager.getInstance();
   IDatabase database = new MySqlDatabase();
   Connection connection = database.getConnection();
 
@@ -88,6 +90,31 @@ public class CommitResultService {
     ob.put("name", "commit counts");
     ob.put("type", "column");
     Response response = Response.ok().entity(ob.toString()).build();
+    return response;
+  }
+
+  /**
+   * get commit result by stuId and hw
+   * 
+   * @param proName
+   *          project name
+   * @param userName
+   *          student id
+   * @return hw, colorm, commit
+   */
+  @GET
+  @Path("result")
+  @Produces(MediaType.TEXT_PLAIN)
+  public Response getCommitResultByStudentAndHw(@QueryParam("proName") String proName,
+      @QueryParam("userName") String userName) {
+
+    int id = userDb.getUser(userName).getId();
+    String hw = proName.replace("OOP-HW", "");
+    CommitResult commitResult = db.getCommitResultByStudentAndHw(connection, id, hw);
+    String circleColor = "circle " + commitResult.getColor();
+    String result = userName + "_" + proName + "," + circleColor + "," + commitResult.getCommit();
+
+    Response response = Response.ok().entity(result).build();
     return response;
   }
 

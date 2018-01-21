@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import fcu.selab.progedu.data.CommitResult;
+
 public class CommitResultDbManager {
 
   private static CommitResultDbManager DB_MANAGER = new CommitResultDbManager();
@@ -261,6 +263,44 @@ public class CommitResultDbManager {
       }
     }
     return counts;
+  }
+
+  /**
+   * get commit result by stuId and hw
+   * 
+   * @param conn
+   *          db connection
+   * @param id
+   *          stuId
+   * @param hw
+   *          hw
+   * @return commit result
+   */
+  public CommitResult getCommitResultByStudentAndHw(Connection conn, int id, String hw) {
+    PreparedStatement preStmt = null;
+    String query = "SELECT * FROM Commit_Result WHERE stuId=? AND hw=?";
+    CommitResult result = new CommitResult();
+
+    try {
+      preStmt = conn.prepareStatement(query);
+      preStmt.setInt(1, id);
+      preStmt.setString(2, hw);
+
+      ResultSet rs = preStmt.executeQuery();
+      while (rs.next()) {
+        String color = rs.getString("color");
+        int commit = rs.getInt("commit");
+
+        result.setStuId(id);
+        result.setHw(hw);
+        result.setColor(color);
+        result.setCommit(commit);
+      }
+      preStmt.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return result;
   }
 
   /**

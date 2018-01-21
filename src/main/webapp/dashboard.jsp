@@ -142,33 +142,34 @@
 	<!-- -----sidebar----- -->
 	<div class="sidebar" style="width:200px;">
 		<ul class="nav flex-column" style="padding-top: 20px;">
-         			<li class="nav-item">
-         				<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_overview"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
-         				<ul id="overview" class="collapse" style="list-style: none;">
-         					<li class="nav-item"><font size="3"><a class="nav-link" href="#Student Projects"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_studentProjects"/></a></font></li>
-      			   			<li class="nav-item"><font size="3">
-      			   				<a class="nav-link" href="dashboardChart.jsp">
-      			   					<i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_chart"/>
-						</a></font>
-					</li>
-      			   		</ul>
-     			    </li>
-     			    <li class="nav-item">
-    			         <font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_student"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
-    			         <ul id="student" class="collapse" style="list-style: none;">
-     			            <%
-			           	for(User user : users){
-		            	  String userName = user.getUserName();
-		            	  String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
-		            %>
-			           	  	<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName %></a></font></li>
-			           	<%
- 			          	}
- 			          %>
-      			       </ul>
-      			   </li>
-     			</ul>
-     		</div>
+   			<li class="nav-item">
+   				<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#overview" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_overview"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+   				<ul id="overview" class="collapse" style="list-style: none;">
+   					<li class="nav-item"><font size="3"><a class="nav-link" href="#Student Projects"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_li_studentProjects"/></a></font></li>
+			   			<li class="nav-item"><font size="3">
+			   				<a class="nav-link" href="dashboardChart.jsp">
+			   					<i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp; 
+			   					<fmt:message key="dashboard_li_chart"/>
+			   				</a>
+			   			</font></li>
+   				</ul>
+    		</li>
+    		<li class="nav-item">
+    		<font size="4"><a href="javascript:;" data-toggle="collapse" data-target="#student" class="nav-link"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; <fmt:message key="dashboard_a_student"/> <i class="fa fa-chevron-down" aria-hidden="true"></i></a></font>
+  			<ul id="student" class="collapse" style="list-style: none;">
+   			            <%
+	           	for(User user : users){
+            	  String userName = user.getUserName();
+            	  String href = "\"dashStuChoosed.jsp?studentId=" + user.getGitLabId() + "\"";
+            %>
+	           	  	<li class="nav-item"><font size="3"><a class="nav-link" href=<%=href %>><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp; <%=userName %></a></font></li>
+	           	<%
+		          	}
+		          %>
+    		</ul>
+     		</li>
+    	</ul>
+    </div>
 	<!-- -----sidebar----- -->
       <div class="container-fluid" id="main" style="width: auto;">
       <h1 style="margin-bottom: 20px;"><fmt:message key="dashboard_a_overview"/></h1>
@@ -240,7 +241,7 @@
 														var userName = <%="'" + user.getUserName() + "'"%>
 														var proName = <%="'" + dbProject.getName() + "'"%>
 														$.ajax({
-															url : 'webapi/jenkins/color',
+															url : 'webapi/commits/result',
 															type : 'GET',
 															data: {
 																"proName" : proName,
