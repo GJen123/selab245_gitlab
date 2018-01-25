@@ -985,4 +985,29 @@ public class JenkinsApi {
     }
     return configType;
   }
+
+  /**
+   * Check is JUnit error
+   * 
+   * @param consoleText
+   *          jenkins job console text
+   * @return boolean
+   */
+  public boolean checkIsJunitError(String consoleText) {
+    boolean isJunitError = false;
+    if (consoleText.contains("Tests run")) {
+      // have run junit test
+      if (consoleText.contains("There are test failures")) {
+        // junit runs failure.
+        isJunitError = true;
+      } else {
+        // junit runs pass.
+        // return false.
+      }
+    } else {
+      // do nothing
+      // return false
+    }
+    return isJunitError;
+  }
 }

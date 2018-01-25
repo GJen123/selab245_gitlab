@@ -171,6 +171,9 @@
 	    		-moz-text-align-last: center;
 	    		text-align-last: center;
 			}
+			.tableActive {
+				background-color: #ddd;
+			}
 		</style>
 		<script type="text/javascript">
 				function handleClick(cb, divId){
@@ -292,6 +295,10 @@
 					
 					<div class="col-9">
 						<h4><fmt:message key="stuDashChooseProject_h4_programHistory"/></h4>
+						<div style="margin: 15px 0px;">
+							<%@ include file="projectLight.jsp" %>
+						</div>
+						
 						<table class="table table-hover" style="background-color: white" id="projectList">
 							<thead>
 								<tr>
@@ -363,7 +370,7 @@
 			
 			<hr>
 
-       		<h4 id="iFrameTitle">Feedback Information</h4>
+       		<h4 id="iFrameTitle">Feedback Information (#1)</h4>
          				
        		<!-- iFrame -->
 			<%
@@ -436,6 +443,8 @@
 		function changeIframe(tr){
 			var u = '<%=url%>' + tr.id + '/consoleText';
 			$('#jenkinsOutput').attr('src',u);
+			document.getElementById("iFrameTitle").innerHTML = "Feedback Information (#" + tr.id + ")";
+			document.getElementById(tr.id).className = "tableActive";
 		}
 	</script>
 </html>

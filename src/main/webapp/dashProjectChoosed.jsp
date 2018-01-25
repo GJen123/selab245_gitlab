@@ -112,6 +112,9 @@
 			width:1px;
 			height:1px;
 		}
+		.tableActive {
+			background-color: #ddd;
+		}
 	</style>
 	
 	<link rel="shortcut icon" href="img/favicon.ico"/>
@@ -188,14 +191,15 @@
         <div class="card" style="padding:0; width: fit-content">
         	<h4 id="Student Projects" class="card-header"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; Records</h4>
         	<div class="card-block">
-				<div id="inline">
+        		<%@ include file="projectLight.jsp" %>
+				<!-- <div id="inline">
 					<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
 					<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
 					<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_checkstyleFail"/></p>
-					<!-- <p class="ovol green" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p>
-					<p class="ovol gold" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p> -->
+					<p class="ovol green" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p>
+					<p class="ovol gold" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p>
 					<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
-				</div>
+				</div> -->
 				<table class="table table-hover" style="margin-top: 20px; width: 100%; margin-bottom: 0px;">
 					<thead>
 						<tr>
@@ -249,7 +253,13 @@
 										}
 									});
 								</script>
-							  	<tr id="<%=num %>" onClick="changeIframe(this)">
+								<%
+									String tableActive = "";
+									if(num == 1){
+									  tableActive = "tableActive";
+									}
+								%>
+							  	<tr id="<%=num %>" onClick="changeIframe(this)" class="<%=tableActive %>">
 							  		<th width="10%" class="text-center"><%=i %></th>
 							  		<td width="10%"><p id=<%="color" + num %>></p></td>
 							  		<td width="15%" id=<%="date" + num %>>></td>
@@ -267,7 +277,7 @@
         <!-- ---------------------------- Student Project ------------------------------- -->
         	<hr>
 
-       		<h4 id="iFrameTitle">Feedback Information</h4>
+       		<h4 id="iFrameTitle">Feedback Information (#1)</h4>
          				
        		<!-- iFrame -->
 			<%
@@ -339,6 +349,8 @@
 		function changeIframe(tr){
 			var u = '<%=url%>' + tr.id + '/consoleText';
 			$('#jenkinsOutput').attr('src',u);
+			document.getElementById("iFrameTitle").innerHTML = "Feedback Information (#" + tr.id + ")";
+			document.getElementById(tr.id).className = "tableActive";
 		}
 	</script>
 </html>
