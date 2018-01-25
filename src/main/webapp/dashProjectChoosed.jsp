@@ -209,7 +209,7 @@
 							<th>Commit Message</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody id="projectTbody">
 						<%
 							List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(choosedUser.getUsername(), projectName);
 							int commit_count = buildNum.size();
@@ -350,6 +350,7 @@
 			var u = '<%=url%>' + tr.id + '/consoleText';
 			$('#jenkinsOutput').attr('src',u);
 			document.getElementById("iFrameTitle").innerHTML = "Feedback Information (#" + tr.id + ")";
+			$('#projectTbody tr').removeClass("tableActive");
 			document.getElementById(tr.id).className = "tableActive";
 		}
 	</script>

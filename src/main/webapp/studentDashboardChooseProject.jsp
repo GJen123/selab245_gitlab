@@ -444,6 +444,7 @@
 			var u = '<%=url%>' + tr.id + '/consoleText';
 			$('#jenkinsOutput').attr('src',u);
 			document.getElementById("iFrameTitle").innerHTML = "Feedback Information (#" + tr.id + ")";
+			$('#projectTbody tr').removeClass("tableActive");
 			document.getElementById(tr.id).className = "tableActive";
 		}
 	</script>
