@@ -308,7 +308,7 @@
 			                    	<th><fmt:message key="stuDashChooseProject_th_comment"/></th>
 			                    </tr>
 							</thead>
-							<tbody>
+							<tbody id="projectTbody">
 							<%
 								int commit_count = buildNum.size();
 								int i=1;
@@ -351,7 +351,13 @@
 											}
 										});
 									</script>
-								  	<tr id="<%=num %>" onClick="changeIframe(this)">
+									<%
+										String tableActive = "";
+										if(num == 1){
+										  tableActive = "tableActive";
+										}
+									%>
+								  	<tr id="<%=num %>" onClick="changeIframe(this)" class="<%=tableActive%>">
 								  		<td><%=i %></td>
 								  		<td><p class="" id=<%="color" + num %>></p></td>
 								  		<td id=<%="date" + num %>>></td>
