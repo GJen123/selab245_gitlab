@@ -161,10 +161,8 @@ public class JenkinsApi {
     String url = jenkinsRootUrl + "/createItem?name=" + jobName;
     try {
       String tomcatUrl = courseData.getTomcatServerIp()
-          + "/ProgEdu/webapi/project/checksum?proName="
-          + proName;
-      String updateDbUrl = courseData.getTomcatServerIp()
-          + "/ProgEdu/webapi/commits/update";
+          + "/ProgEdu/webapi/project/checksum?proName=" + proName;
+      String updateDbUrl = courseData.getTomcatServerIp() + "/ProgEdu/webapi/commits/update";
       HttpPost post = new HttpPost(url);
 
       post.addHeader("Content-Type", "application/xml");
@@ -367,8 +365,8 @@ public class JenkinsApi {
    * @param updateDbUrl
    *          updating db url
    */
-  public void modifyXmlFileProgEdu(
-      String filePath, String userName, String proName, String tomcatUrl, String updateDbUrl) {
+  public void modifyXmlFileProgEdu(String filePath, String userName, String proName,
+      String tomcatUrl, String updateDbUrl) {
     try {
       String filepath = filePath;
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -956,6 +954,21 @@ public class JenkinsApi {
     isCheckstyleError = consoleText.contains(checkstyleError);
 
     return isCheckstyleError;
+  }
+
+  /**
+   * Check is JUnit error
+   *
+   * @param consoleText
+   *          jenkins job console text
+   * @return boolean
+   */
+  public boolean checkIsJunitError(String consoleText) {
+    boolean isJunitError = false;
+    if (consoleText.contains("Tests run") && consoleText.contains("There are test failures")) {
+      isJunitError = true;
+    }
+    return isJunitError;
   }
 
   /**
