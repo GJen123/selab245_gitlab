@@ -20,6 +20,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import fcu.selab.progedu.jenkins.JenkinsApi;
 import org.json.JSONObject;
 
 import fcu.selab.progedu.config.JenkinsConfig;
@@ -137,14 +138,15 @@ public class CommitResultService {
     IDatabase database = new MySqlDatabase();
     Connection connection = database.getConnection();
 
-    JenkinsService jenkins = new JenkinsService();
+    JenkinsService jenkinsService = new JenkinsService();
+    JenkinsApi jenkinsApi = new JenkinsApi();
     StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
     JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
     UserDbManager db = UserDbManager.getInstance();
     CommitResultDbManager commiResulttDb = CommitResultDbManager.getInstance();
 
-    String[] result = jenkins.getColor(proName, userName).split(",");
+    String[] result = jenkinsService.getColor(proName, userName).split(",");
 
     String color = result[0].replace("circle ", "");
     int commit = Integer.valueOf(result[1]) - 1;
@@ -155,10 +157,14 @@ public class CommitResultService {
       num = buildNum.size() - 1;
     }
     if (color.equals("red")) {
-      String style = checkErrorStyle(jenkinsData, userName, proName, num);
-      boolean ifCheckStyle = style.contains("Checkstyle violation");
-      if (ifCheckStyle) {
+      String consoleText = checkErrorStyle(jenkinsData, userName, proName, num);
+      boolean isCheckStyle = jenkinsApi.checkIsCheckstyleError(consoleText);
+      boolean isJunitError = jenkinsApi.checkIsJunitError(consoleText);
+      if (isCheckStyle) {
         color = "orange";
+      }
+      if (isJunitError) {
+        color = "green";
       }
     }
 

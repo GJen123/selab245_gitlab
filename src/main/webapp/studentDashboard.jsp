@@ -208,16 +208,6 @@
               		<i class="fa fa-bar-chart" aria-hidden="true"></i> <fmt:message key="stuDashboard_h2_overviewOfAssignments"/>
             	</h2>
             	<div class="card-block">
-	            	<!-- <div id="inline" style="margin-top: 20px;">
-						<p class="ovol gray" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileNotYet"/></p>
-						<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
-						<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_checkstyleFail"/></p>
-						
-						<p class="ovol green" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p>
-						<p class="ovol gold" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p>
-						 
-						<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
-					</div>-->
 					<%@ include file="projectLight.jsp" %>
 					<!-- -----table----- -->
 					<table class="table table-striped" style="margin-top: 20px; margin-bottom: 0px; width: max-content;">

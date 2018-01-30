@@ -208,7 +208,10 @@ public class ZipHandler {
 
   private void searchJavaFile(String entryName) {
     // ".java" length = 5
-    String last = entryName.substring(entryName.length() - 5, entryName.length());
+    String last = "";
+    if(entryName.endsWith(".java")) {
+      last = entryName.substring(entryName.length() - 5, entryName.length());
+    }
     String fileName = null;
     for (int i = 0; i < entryName.length() - 3; i++) {
       if (entryName.substring(i, i + 3).equals("src")) {

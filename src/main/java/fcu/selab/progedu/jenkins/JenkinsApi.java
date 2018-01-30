@@ -1011,5 +1011,7 @@ public class JenkinsApi {
       configType = "config_javac.xml";
     }
     return configType;
-  }
+  }<<<<<<<HEAD=======
+
+  >>>>>>>b3c1c3b299422815d186dbfa5e9196c56fffff7d
 }

@@ -142,15 +142,15 @@ public class JenkinsService {
     int checkstyleErrorAmount = 0;
     if (null != apiJson) {
       color = jenkins.getJobJsonColor(apiJson);
-      if (isMaven) {
-        if (color.equals("red")) {
-          JSONObject checkstyleDes = jenkins.getCheckstyleDes(apiJson);
-          checkstyleErrorAmount = jenkins.getCheckstyleErrorAmount(checkstyleDes);
-          if (checkstyleErrorAmount != 0) {
-            color = "orange";
-          }
-        }
-      }
+//      if (isMaven) {
+//        if (color.equals("red")) {
+//          JSONObject checkstyleDes = jenkins.getCheckstyleDes(apiJson);
+//          checkstyleErrorAmount = jenkins.getCheckstyleErrorAmount(checkstyleDes);
+//          if (checkstyleErrorAmount != 0) {
+//            color = "orange";
+//          }
+//        }
+//      }
     }
 
     String circleColor = "";
@@ -206,8 +206,8 @@ public class JenkinsService {
       JSONArray actions = json.getJSONArray("actions");
       JSONArray causes = actions.getJSONObject(0).getJSONArray("causes");
       String shortDescription = causes.getJSONObject(0).optString("shortDescription");
-      if ("Started by an SCM change".equals(shortDescription)
-          || "由 SCM 變更所啟動".equals(shortDescription)) {
+      System.out.println(shortDescription);
+      if (shortDescription.contains("SCM")) {
         commitCount++;
       } else {
         if (i == 1) { // teacher commit
@@ -246,10 +246,14 @@ public class JenkinsService {
       color = "gray";
     }
     if (color.equals("red")) {
-      String style = checkErrorStyle(jenkinsData, userName, proName, num);
-      boolean ifCheckStyle = style.contains("Checkstyle violation");
-      if (ifCheckStyle) {
+      String consoleText = checkErrorStyle(jenkinsData, userName, proName, num);
+      boolean isCheckStyle = jenkins.checkIsCheckstyleError(consoleText);
+      boolean isJUnitStyle = jenkins.checkIsJunitError(consoleText);
+      if (isCheckStyle) {
         color = "orange";
+      }
+      if(isJUnitStyle) {
+        color = "green";
       }
     }
     color = "circle " + color;
