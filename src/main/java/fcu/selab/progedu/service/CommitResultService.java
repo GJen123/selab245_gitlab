@@ -20,7 +20,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import fcu.selab.progedu.jenkins.JenkinsApi;
 import org.json.JSONObject;
 
 import fcu.selab.progedu.config.JenkinsConfig;
@@ -32,6 +31,7 @@ import fcu.selab.progedu.db.IDatabase;
 import fcu.selab.progedu.db.MySqlDatabase;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.jenkins.JenkinsApi;
 
 @Path("commits/")
 public class CommitResultService {
@@ -101,7 +101,7 @@ public class CommitResultService {
    *          project name
    * @param userName
    *          student id
-   * @return hw, colorm, commit
+   * @return hw, color, commit
    */
   @GET
   @Path("result")
@@ -121,6 +121,25 @@ public class CommitResultService {
   }
 
   /**
+   * get commit result by stuId and hw
+   * 
+   * @param userName
+   *          student id
+   * @param proName
+   *          project name
+   * @return color
+   */
+  public String getCommitResult(String userName, String proName) {
+
+    int id = userDb.getUser(userName).getId();
+    String hw = proName.replace("OOP-HW", "");
+    CommitResult commitResult = db.getCommitResultByStudentAndHw(connection, id, hw);
+    String color = commitResult.getColor();
+
+    return color;
+  }
+
+  /**
    * update stu project commit record
    * 
    * @param userName
@@ -135,16 +154,10 @@ public class CommitResultService {
       @FormParam("proName") String proName) {
     proName = proName.toUpperCase();
 
-    IDatabase database = new MySqlDatabase();
-    Connection connection = database.getConnection();
-
     JenkinsService jenkinsService = new JenkinsService();
     JenkinsApi jenkinsApi = new JenkinsApi();
     StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
     JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-
-    UserDbManager db = UserDbManager.getInstance();
-    CommitResultDbManager commiResulttDb = CommitResultDbManager.getInstance();
 
     String[] result = jenkinsService.getColor(proName, userName).split(",");
 
@@ -157,9 +170,10 @@ public class CommitResultService {
       num = buildNum.size() - 1;
     }
     if (color.equals("red")) {
-      String consoleText = checkErrorStyle(jenkinsData, userName, proName, num);
+      String consoleText = checkErrorStyle(jenkinsData, userName, proName, buildNum.get(num));
       boolean isCheckStyle = jenkinsApi.checkIsCheckstyleError(consoleText);
       boolean isJunitError = jenkinsApi.checkIsJunitError(consoleText);
+      System.out.println(isCheckStyle + ", " + isJunitError);
       if (isCheckStyle) {
         color = "orange";
       }
@@ -167,8 +181,16 @@ public class CommitResultService {
         color = "green";
       }
     }
+    if (color.contains("_anime")) {
+      color = color.replaceAll("_anime", "");
+    }
 
     String hw = proName.replace("OOP-HW", "");
+
+    IDatabase database = new MySqlDatabase();
+    Connection connection = database.getConnection();
+    UserDbManager db = UserDbManager.getInstance();
+    CommitResultDbManager commiResulttDb = CommitResultDbManager.getInstance();
 
     String buildApiJson = stuDashChoPro.getBuildApiJson(buildNum.get(num), userName, proName);
     String strDate = stuDashChoPro.getCommitTime(buildApiJson);

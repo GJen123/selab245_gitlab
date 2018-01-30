@@ -979,8 +979,18 @@ public class JenkinsApi {
    */
   public boolean checkIsJunitError(String consoleText) {
     boolean isJunitError = false;
-    if (consoleText.contains("Tests run") && consoleText.contains("There are test failures")) {
-      isJunitError = true;
+    if (consoleText.contains("T E S T S")) {
+      // have run junit test
+      if (consoleText.contains("Failed tests")) {
+        // junit runs failure.
+        isJunitError = true;
+      } else {
+        // junit runs pass.
+        // return false.
+      }
+    } else {
+      // do nothing
+      // return false
     }
     return isJunitError;
   }
@@ -1011,7 +1021,5 @@ public class JenkinsApi {
       configType = "config_javac.xml";
     }
     return configType;
-  }<<<<<<<HEAD=======
-
-  >>>>>>>b3c1c3b299422815d186dbfa5e9196c56fffff7d
+  }
 }

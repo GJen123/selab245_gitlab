@@ -198,8 +198,10 @@
 			if(type == 'Javac') {
 				document.getElementById('java_download').style.display = '';
 				document.getElementById('mvn_download').style.display = 'none';
+				document.getElementById('mvn_no_checkstyle_download').style.display = 'none';
 			}else if (type == 'Maven'){
 				document.getElementById('mvn_download').style.display = '';
+				document.getElementById('mvn_no_checkstyle_download').style.display = '';
 				document.getElementById('java_download').style.display = 'none';
 			}
 		}
@@ -384,7 +386,7 @@
 						<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#web" role="tab">Web</a></li>
 					</ul>
 					<!-- Tab panes -->
-					<div class="tab-content" style="margin-top: 20px; margin-left: 20px; width: fit-content;">
+					<div class="tab-content" style="margin-top: 20px; margin-left"C:/Users/WeiHan/Desktop/MvnQuickStartWithoutCheckstyle/pom.xml": 20px; width: fit-content;">
 						<div class="tab-pane active col-md-12" id="java" role="tabpanel">
 							<div class="form-group" style="width: max-content; white-space: nowrap; display: list-item">
 								<label for="fileRadio"><fmt:message key="teacherManageHW_label_zipradio"/>&nbsp; &nbsp; </label>
@@ -393,6 +395,7 @@
 								<br>
 								<a href="JavacQuickStart.zip" class="btn btn-default" style="background-color:#F5F5F5; color: #292b2c; border-color: #ccc" id="java_download"><fmt:message key="teacherManageHW_a_downloadJavac"/></a>
 								<a href="MvnQuickStart.zip" class="btn btn-default" style="background-color:#F5F5F5; color: #292b2c; border-color: #ccc; display: none;" id="mvn_download"><fmt:message key="teacherManageHW_a_downloadMaven"/></a>
+								<a href="MvnQuickStartWithoutCheckstyle.zip" class="btn btn-default" style="background-color:#F5F5F5; color: #292b2c; border-color: #ccc; display: none;" id="mvn_no_checkstyle_download"><fmt:message key="teacherManageHW_a_downloadMavenWithoutCheckstyle"/></a>
 							</div>
 							<div class="form-group" style="width: max-content; display: list-item">
 								<label for="file"><fmt:message key="teacherManageHW_label_uploadZip"/></label>

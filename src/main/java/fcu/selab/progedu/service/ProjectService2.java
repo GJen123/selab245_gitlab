@@ -150,7 +150,6 @@ public class ProjectService2 {
         }
       } else {
         // fileType is null
-        System.out.println("FileType is null Javac");
         fileType = "Javac";
         filePath = this.getClass().getResource("JavacQuickStart.zip").getFile();
         folderName = "JavacQuickStart.zip";

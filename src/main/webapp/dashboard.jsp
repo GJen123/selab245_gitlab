@@ -242,7 +242,7 @@
 														var userName = <%="'" + user.getUserName() + "'"%>
 														var proName = <%="'" + dbProject.getName() + "'"%>
 														$.ajax({
-															url : 'webapi/jenkins/color',
+															url : 'webapi/commits/result',
 															type : 'GET',
 															data: {
 																"proName" : proName,

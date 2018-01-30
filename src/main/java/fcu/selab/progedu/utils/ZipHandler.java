@@ -209,7 +209,7 @@ public class ZipHandler {
   private void searchJavaFile(String entryName) {
     // ".java" length = 5
     String last = "";
-    if(entryName.endsWith(".java")) {
+    if (entryName.endsWith(".java")) {
       last = entryName.substring(entryName.length() - 5, entryName.length());
     }
     String fileName = null;

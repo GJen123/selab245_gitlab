@@ -14,11 +14,13 @@ import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.jenkins.JobStatus;
+import fcu.selab.progedu.service.CommitResultService;
 
 public class StudentDashChoosePro {
   JenkinsConfig jenkinsData;
   JenkinsApi jenkins;
   JobStatus jobStatus = new JobStatus();
+  CommitResultService commitResultService = new CommitResultService();
 
   public StudentDashChoosePro() {
     jenkinsData = JenkinsConfig.getInstance();
@@ -138,26 +140,30 @@ public class StudentDashChoosePro {
    */
   public String getLastColor(String username, String projectName) {
     String color = null;
-    String jobName = username + "_" + projectName;
-    try {
-      List<Integer> buildNumbers = getBuildNumbers(username, projectName);
-
-      String buildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/"
-          + buildNumbers.get(buildNumbers.size() - 1) + "/api/json";
-
-      String buildApiJson = jenkins.getJobBuildApiJson(jenkinsData.getJenkinsRootUsername(),
-          jenkinsData.getJenkinsRootPassword(), buildUrl);
-
-      String result = jenkins.getJobBuildResult(buildApiJson);
-
-      String projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/"
-          + buildNumbers.get(buildNumbers.size() - 1) + "/consoleText";
-
-      color = checkColor(result, projectJenkinsUrl);
-    } catch (LoadConfigFailureException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    color = commitResultService.getCommitResult(username, projectName);
+    // String jobName = username + "_" + projectName;
+    // try {
+    // List<Integer> buildNumbers = getBuildNumbers(username, projectName);
+    //
+    // String buildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName +
+    // "/"
+    // + buildNumbers.get(buildNumbers.size() - 1) + "/api/json";
+    //
+    // String buildApiJson =
+    // jenkins.getJobBuildApiJson(jenkinsData.getJenkinsRootUsername(),
+    // jenkinsData.getJenkinsRootPassword(), buildUrl);
+    //
+    // String result = jenkins.getJobBuildResult(buildApiJson);
+    //
+    // String projectJenkinsUrl = jenkinsData.getJenkinsHostUrl() + "/job/" +
+    // jobName + "/"
+    // + buildNumbers.get(buildNumbers.size() - 1) + "/consoleText";
+    //
+    // color = checkColor(result, projectJenkinsUrl);
+    // } catch (LoadConfigFailureException e) {
+    // // TODO Auto-generated catch block
+    // e.printStackTrace();
+    // }
     return color;
   }
 
