@@ -5,3 +5,5 @@ pom.properties
 .classpath
 .project
 .settings/
+.idea
+progedu.iml

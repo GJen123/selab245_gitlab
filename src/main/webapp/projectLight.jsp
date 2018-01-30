@@ -42,7 +42,7 @@
 		.plagirism {
 			background: black;
 		}
-		.junit{
+		.green{
 			background: #32CD32;
 		}
 		.circle a {
@@ -56,6 +56,6 @@
 		<p class="ovol red" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_compileFail"/></p>
 		<p class="ovol orange" style="padding: 5px 10px; margin-left: 5px;"><fmt:message key="dashboard_p_checkstyleFail"/></p>
 		<!-- <p class="ovol plagirism" style="padding: 5px 10px;"><fmt:message key="dashboard_p_plagiarism"/></p> -->
-		<p class="ovol junit" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p>
+		<p class="ovol green" style="padding: 5px 10px;"><fmt:message key="dashboard_p_unitTestFail"/></p>
 		<p class="ovol blue" style="padding: 5px 10px;"><fmt:message key="dashboard_p_compileSuccess"/></p>
 	</div>
