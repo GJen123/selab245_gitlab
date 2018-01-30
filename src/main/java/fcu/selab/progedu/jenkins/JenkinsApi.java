@@ -175,7 +175,7 @@ public class JenkinsApi {
       proUrl = proUrl.toLowerCase();
       modifyXmlFileUrl(filePath, proUrl);
       if ("Javac".equals(fileType)) {
-        modifyXmlFileCommand(filePath, sb);
+        modifyXmlFileCommand(filePath, sb, updateDbUrl, userName, proName);
       }
       if ("Maven".equals(fileType)) {
         modifyXmlFileProgEdu(filePath, userName, proName, tomcatUrl, updateDbUrl);
@@ -325,8 +325,17 @@ public class JenkinsApi {
    *          Config file path
    * @param sb
    *          Command string
+   * @param updateDbUrl
+   *          tomcat db url
+   * @param userName
+   *          user name
    */
-  public void modifyXmlFileCommand(String filePath, StringBuilder sb) {
+  public void modifyXmlFileCommand(
+      String filePath,
+      StringBuilder sb,
+      String updateDbUrl,
+      String userName,
+      String proName) {
     try {
       String filepath = filePath;
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -335,6 +344,15 @@ public class JenkinsApi {
 
       Node ndUrl = doc.getElementsByTagName("command").item(0);
       ndUrl.setTextContent(sb.toString());
+
+      Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
+      progeduDbUrl.setTextContent(updateDbUrl);
+
+      Node user = doc.getElementsByTagName("user").item(0);
+      user.setTextContent(userName);
+
+      Node ndProName = doc.getElementsByTagName("proName").item(0);
+      ndProName.setTextContent(proName);
 
       // write the content into xml file
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -997,5 +1015,30 @@ public class JenkinsApi {
       configType = "config_javac.xml";
     }
     return configType;
+  }
+
+  /**
+   * Check is JUnit error
+   * 
+   * @param consoleText
+   *          jenkins job console text
+   * @return boolean
+   */
+  public boolean checkIsJunitError(String consoleText) {
+    boolean isJunitError = false;
+    if (consoleText.contains("Tests run")) {
+      // have run junit test
+      if (consoleText.contains("There are test failures")) {
+        // junit runs failure.
+        isJunitError = true;
+      } else {
+        // junit runs pass.
+        // return false.
+      }
+    } else {
+      // do nothing
+      // return false
+    }
+    return isJunitError;
   }
 }

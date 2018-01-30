@@ -171,6 +171,9 @@
 	    		-moz-text-align-last: center;
 	    		text-align-last: center;
 			}
+			.tableActive {
+				background-color: #ddd;
+			}
 		</style>
 		<script type="text/javascript">
 				function handleClick(cb, divId){
@@ -292,6 +295,10 @@
 					
 					<div class="col-9">
 						<h4><fmt:message key="stuDashChooseProject_h4_programHistory"/></h4>
+						<div style="margin: 15px 0px;">
+							<%@ include file="projectLight.jsp" %>
+						</div>
+						
 						<table class="table table-hover" style="background-color: white" id="projectList">
 							<thead>
 								<tr>
@@ -301,7 +308,7 @@
 			                    	<th><fmt:message key="stuDashChooseProject_th_comment"/></th>
 			                    </tr>
 							</thead>
-							<tbody>
+							<tbody id="projectTbody">
 							<%
 								int commit_count = buildNum.size();
 								int i=1;
@@ -344,7 +351,13 @@
 											}
 										});
 									</script>
-								  	<tr id="<%=num %>" onClick="changeIframe(this)">
+									<%
+										String tableActive = "";
+										if(num == 1){
+										  tableActive = "tableActive";
+										}
+									%>
+								  	<tr id="<%=num %>" onClick="changeIframe(this)" class="<%=tableActive%>">
 								  		<td><%=i %></td>
 								  		<td><p class="" id=<%="color" + num %>></p></td>
 								  		<td id=<%="date" + num %>>></td>
@@ -362,16 +375,16 @@
 			</div>
 			
 			<hr>
-
-       		<h4 id="iFrameTitle">Feedback Information</h4>
          				
        		<!-- iFrame -->
 			<%
 				int num = lastBuildMessageNum;
 				String jobName = user.getUsername() + "_" + projectName;
+				String jenkinsBuildNumUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName;
 				String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" +  num + "/consoleText";
 				String url = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/";
 			%>
+			<h4><a id="iFrameTitle" href="<%=jenkinsBuildNumUrl%>">Feedback Information (#1)</a></h4>
 			<div style="margin:10px;">
 				<iframe src="<%=lastBuildUrl %>" width="100%" height="500px" style="background: #fff3cd;" id="jenkinsOutput">
 			  		<p>Your browser does not support iframes.</p>
@@ -436,6 +449,9 @@
 		function changeIframe(tr){
 			var u = '<%=url%>' + tr.id + '/consoleText';
 			$('#jenkinsOutput').attr('src',u);
+			document.getElementById("iFrameTitle").innerHTML = "Feedback Information (#" + tr.id + ")";
+			$('#projectTbody tr').removeClass("tableActive");
+			document.getElementById(tr.id).className = "tableActive";
 		}
 	</script>
 </html>

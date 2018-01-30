@@ -57,6 +57,12 @@
       <command>javac src/*.java</command>
     </hudson.tasks.Shell>
   </builders>
-  <publishers/>
+  <publishers>
+  	<org.jenkinsci.plugins.UpdatingDbPublisher plugin="jenkins-progedu@1.0-SNAPSHOT">
+      <progeduDbUrl>http://140.134.26.72:8080/ProgEdu/webapi/commits/update</progeduDbUrl>
+      <user>M0605103</user>
+      <proName>OOP-HW10</proName>
+    </org.jenkinsci.plugins.UpdatingDbPublisher>
+  </publishers>
   <buildWrappers/>
 </project>
