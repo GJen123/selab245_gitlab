@@ -38,7 +38,6 @@ public class CommitResultService {
   CommitResultDbManager db = CommitResultDbManager.getInstance();
   UserDbManager userDb = UserDbManager.getInstance();
   IDatabase database = new MySqlDatabase();
-  Connection connection = database.getConnection();
 
   /**
    * get counts by different color
@@ -51,6 +50,7 @@ public class CommitResultService {
   @Path("color")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCounts(@QueryParam("color") String color) {
+    Connection connection = database.getConnection();
     int[] array = db.getCounts(connection, color);
     switch (color) {
       case "blue":
@@ -72,6 +72,12 @@ public class CommitResultService {
     ob.put("data", array);
     ob.put("name", color);
     // ob.put("type", "spline");
+    try {
+      connection.close();
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     Response response = Response.ok().entity(ob.toString()).build();
     return response;
   }
@@ -85,11 +91,18 @@ public class CommitResultService {
   @Path("count")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCommitSum() {
+    Connection connection = database.getConnection();
     int[] array = db.getCommitSum(connection);
     JSONObject ob = new JSONObject();
     ob.put("data", array);
     ob.put("name", "commit counts");
     ob.put("type", "column");
+    try {
+      connection.close();
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     Response response = Response.ok().entity(ob.toString()).build();
     return response;
   }
@@ -108,7 +121,7 @@ public class CommitResultService {
   @Produces(MediaType.TEXT_PLAIN)
   public Response getCommitResultByStudentAndHw(@QueryParam("proName") String proName,
       @QueryParam("userName") String userName) {
-
+    Connection connection = database.getConnection();
     int id = userDb.getUser(userName).getId();
     String hw = proName.replace("OOP-HW", "");
     CommitResult commitResult = db.getCommitResultByStudentAndHw(connection, id, hw);
@@ -116,6 +129,12 @@ public class CommitResultService {
     String result = userName + "_" + proName + "," + circleColor + ","
         + (commitResult.getCommit() + 1);
 
+    try {
+      connection.close();
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     Response response = Response.ok().entity(result).build();
     return response;
   }
@@ -130,12 +149,18 @@ public class CommitResultService {
    * @return color
    */
   public String getCommitResult(String userName, String proName) {
-
+    Connection connection = database.getConnection();
     int id = userDb.getUser(userName).getId();
     String hw = proName.replace("OOP-HW", "");
     CommitResult commitResult = db.getCommitResultByStudentAndHw(connection, id, hw);
     String color = commitResult.getColor();
 
+    try {
+      connection.close();
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     return color;
   }
 
