@@ -205,20 +205,22 @@ public class CommitResultDbManager {
    *          db connection
    * @return counts
    */
-  public int[] getCounts(Connection conn, String color) {
+  public List<Integer> getCounts(Connection conn, String color) {
     String query = "SELECT hw,count(color) FROM Commit_Result " + "where color like ? group by hw";
     PreparedStatement preStmt = null;
     List<String> lsProjects = pdb.listAllProjectNames();
     int plength = lsProjects.size();
     int[] counts = new int[plength];
+    List<Integer> array = new ArrayList<Integer>();
 
     try {
       preStmt = conn.prepareStatement(query);
       preStmt.setString(1, color);
       ResultSet rs = preStmt.executeQuery();
       while (rs.next()) {
-        int index = Integer.valueOf(rs.getString("hw"));
-        counts[index - 1] = rs.getInt("count(color)");
+        array.add(rs.getInt("count(color)"));
+        // int index = Integer.valueOf(rs.getString("hw"));
+        // counts[index - 1] = rs.getInt("count(color)");
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -229,7 +231,7 @@ public class CommitResultDbManager {
         e.printStackTrace();
       }
     }
-    return counts;
+    return array;
   }
 
   /**

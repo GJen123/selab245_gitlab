@@ -1,6 +1,7 @@
 package fcu.selab.progedu.service;
 
 import java.sql.Connection;
+import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -35,7 +36,7 @@ public class CommitRecordService {
   @Path("color")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCounts(@QueryParam("color") String color) {
-    int[] array = commitRecordDb.getCounts(connection, color);
+    List<Integer> array = commitRecordDb.getCounts(connection, color);
     switch (color) {
       case "blue":
         color = "build success";

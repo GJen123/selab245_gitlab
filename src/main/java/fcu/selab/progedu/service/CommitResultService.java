@@ -51,7 +51,7 @@ public class CommitResultService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCounts(@QueryParam("color") String color) {
     Connection connection = database.getConnection();
-    int[] array = db.getCounts(connection, color);
+    List<Integer> array = db.getCounts(connection, color);
     switch (color) {
       case "blue":
         color = "build success";
