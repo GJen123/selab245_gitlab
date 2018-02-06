@@ -13,11 +13,11 @@ public class TestGetCommitSituation {
     IDatabase database = new MySqlDatabase();
     Connection connection = database.getConnection();
     CommitResultDbManager db = CommitResultDbManager.getInstance();
-    int[] results = db.getCounts(connection, "orange");
-
-    for (int i : results) {
-      System.out.println(i);
-    }
+    // int[] results = db.getCounts(connection, "orange");
+    //
+    // for (int i : results) {
+    // System.out.println(i);
+    // }
   }
 
 }

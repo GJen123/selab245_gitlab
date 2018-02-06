@@ -241,19 +241,21 @@ public class CommitResultDbManager {
    *          db connection
    * @return commits sum
    */
-  public int[] getCommitSum(Connection conn) {
+  public List<Integer> getCommitSum(Connection conn) {
     String query = "SELECT hw, sum(commit) FROM Commit_Result group by hw";
     PreparedStatement preStmt = null;
     List<String> lsProjects = pdb.listAllProjectNames();
     int plength = lsProjects.size();
     int[] counts = new int[plength];
+    List<Integer> array = new ArrayList<Integer>();
 
     try {
       preStmt = conn.prepareStatement(query);
       ResultSet rs = preStmt.executeQuery();
       while (rs.next()) {
-        int index = Integer.valueOf(rs.getString("hw"));
-        counts[index - 1] = rs.getInt("sum(commit)");
+        array.add(rs.getInt("sum(commit)"));
+        // int index = Integer.valueOf(rs.getString("hw"));
+        // counts[index - 1] = rs.getInt("sum(commit)");
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -264,7 +266,7 @@ public class CommitResultDbManager {
         e.printStackTrace();
       }
     }
-    return counts;
+    return array;
   }
 
   /**

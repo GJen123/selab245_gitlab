@@ -92,7 +92,7 @@ public class CommitResultService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCommitSum() {
     Connection connection = database.getConnection();
-    int[] array = db.getCommitSum(connection);
+    List<Integer> array = db.getCommitSum(connection);
     JSONObject ob = new JSONObject();
     ob.put("data", array);
     ob.put("name", "commit counts");
