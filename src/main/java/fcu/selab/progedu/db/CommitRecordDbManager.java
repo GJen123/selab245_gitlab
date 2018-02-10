@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -100,6 +102,40 @@ public class CommitRecordDbManager {
       }
     }
     return array;
+  }
+
+  /**
+   * get each hw's CommitRecordStateCounts
+   * 
+   * @param conn
+   *          db connection
+   * @return map
+   */
+  public Map<String, Integer> getCommitRecordStateCounts(int hw) {
+    Connection conn = database.getConnection();
+    String query = "SELECT hw,color,count(color) FROM Commit_Record where hw = ? group by color";
+    PreparedStatement preStmt = null;
+    List<Integer> array = new ArrayList<Integer>();
+
+    Map<String, Integer> map = new HashMap<>();
+
+    try {
+      preStmt = conn.prepareStatement(query);
+      preStmt.setInt(1, hw);
+      ResultSet rs = preStmt.executeQuery();
+      while (rs.next()) {
+        map.put(rs.getString("color"), rs.getInt("count(color)"));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+    return map;
   }
 
   /**
