@@ -535,7 +535,16 @@ public class ProjectService2 {
 
     // delete gitlab
     conn.deleteProjects(name);
-    String crumb = jenkins.getCrumb("root", "zxcv1234");
+    String jenkinsUserName = "";
+    String jenkinsPass = "";
+    try {
+      jenkinsUserName = JenkinsConfig.getInstance().getJenkinsRootUsername();
+      jenkinsPass = JenkinsConfig.getInstance().getJenkinsRootPassword();
+    } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    String crumb = jenkins.getCrumb(jenkinsUserName, jenkinsPass);
 
     List<GitlabUser> users = conn.getUsers();
     // delete Jenkins

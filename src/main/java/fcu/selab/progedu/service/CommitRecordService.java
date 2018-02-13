@@ -13,10 +13,12 @@ import javax.ws.rs.core.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.IDatabase;
 import fcu.selab.progedu.db.MySqlDatabase;
 import fcu.selab.progedu.db.ProjectDbManager;
+import fcu.selab.progedu.exception.LoadConfigFailureException;
 
 @Path("commits/record/")
 public class CommitRecordService {
@@ -68,9 +70,16 @@ public class CommitRecordService {
   @Path("records")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCountGroupByHwAndTime(@QueryParam("hw") String hw) {
+    String courseName = "";
+    try {
+      courseName = CourseConfig.getInstance().getCourseName();
+    } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     JSONObject ob = new JSONObject();
     JSONArray records = commitRecordDb.getCountGroupByHwAndTime(hw);
-    String deadline = pdb.getProjectByName("OOP-HW" + hw).getDeadline();
+    String deadline = pdb.getProjectByName(courseName + "-HW" + hw).getDeadline();
     ob.put("records", records);
     ob.put("title", "HW" + hw);
     ob.put("deadline", deadline);
@@ -87,8 +96,15 @@ public class CommitRecordService {
   public void deleteRecord(String hw) {
     IDatabase database = new MySqlDatabase();
     Connection connection = database.getConnection();
+    String courseName = "";
+    try {
+      courseName = CourseConfig.getInstance().getCourseName();
+    } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
 
-    String hwIndex = hw.replace("OOP-HW", "");
+    String hwIndex = hw.replace(courseName + "-HW", "");
     commitRecordDb.deleteRecord(connection, hwIndex);
   }
 

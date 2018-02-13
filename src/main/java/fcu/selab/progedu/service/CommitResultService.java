@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response;
 
 import org.json.JSONObject;
 
+import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.StudentDashChoosePro;
 import fcu.selab.progedu.data.CommitResult;
@@ -123,7 +124,14 @@ public class CommitResultService {
       @QueryParam("userName") String userName) {
     Connection connection = database.getConnection();
     int id = userDb.getUser(userName).getId();
-    String hw = proName.replace("OOP-HW", "");
+    String courseName = "";
+    try {
+      courseName = CourseConfig.getInstance().getCourseName();
+    } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    String hw = proName.replace(courseName + "-HW", "");
     CommitResult commitResult = db.getCommitResultByStudentAndHw(connection, id, hw);
     String circleColor = "circle " + commitResult.getColor();
     String result = userName + "_" + proName + "," + circleColor + ","
@@ -151,7 +159,14 @@ public class CommitResultService {
   public String getCommitResult(String userName, String proName) {
     Connection connection = database.getConnection();
     int id = userDb.getUser(userName).getId();
-    String hw = proName.replace("OOP-HW", "");
+    String courseName = "";
+    try {
+      courseName = CourseConfig.getInstance().getCourseName();
+    } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    String hw = proName.replace(courseName + "-HW", "");
     CommitResult commitResult = db.getCommitResultByStudentAndHw(connection, id, hw);
     String color = commitResult.getColor();
 
@@ -210,7 +225,14 @@ public class CommitResultService {
       color = color.replaceAll("_anime", "");
     }
 
-    String hw = proName.replace("OOP-HW", "");
+    String courseName = "";
+    try {
+      courseName = CourseConfig.getInstance().getCourseName();
+    } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    String hw = proName.replace(courseName + "-HW", "");
 
     IDatabase database = new MySqlDatabase();
     Connection connection = database.getConnection();
@@ -307,8 +329,14 @@ public class CommitResultService {
   public void deleteResult(String hw) {
     IDatabase database = new MySqlDatabase();
     Connection connection = database.getConnection();
-
-    String hwIndex = hw.replace("OOP-HW", "");
+    String courseName = "";
+    try {
+      courseName = CourseConfig.getInstance().getCourseName();
+    } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    String hwIndex = hw.replace(courseName + "-HW", "");
     db.deleteResult(connection, hwIndex);
   }
 }
