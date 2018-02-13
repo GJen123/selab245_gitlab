@@ -107,15 +107,14 @@ public class CommitRecordDbManager {
   /**
    * get each hw's CommitRecordStateCounts
    * 
-   * @param conn
-   *          db connection
+   * @param hw
+   *          hw number
    * @return map
    */
   public Map<String, Integer> getCommitRecordStateCounts(int hw) {
     Connection conn = database.getConnection();
     String query = "SELECT hw,color,count(color) FROM Commit_Record where hw = ? group by color";
     PreparedStatement preStmt = null;
-    List<Integer> array = new ArrayList<Integer>();
 
     Map<String, Integer> map = new HashMap<>();
 
