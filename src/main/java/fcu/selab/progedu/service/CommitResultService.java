@@ -53,22 +53,6 @@ public class CommitResultService {
   public Response getCounts(@QueryParam("color") String color) {
     Connection connection = database.getConnection();
     List<Integer> array = db.getCounts(connection, color);
-    switch (color) {
-      case "blue":
-        color = "build success";
-        break;
-      case "gray":
-        color = "not build";
-        break;
-      case "red":
-        color = "compile error";
-        break;
-      case "orange":
-        color = "check style error";
-        break;
-      default:
-        break;
-    }
     JSONObject ob = new JSONObject();
     ob.put("data", array);
     ob.put("name", color);
@@ -215,10 +199,10 @@ public class CommitResultService {
       boolean isJunitError = jenkinsApi.checkIsJunitError(consoleText);
       System.out.println(isCheckStyle + ", " + isJunitError);
       if (isCheckStyle) {
-        color = "orange";
+        color = "CSF";
       }
       if (isJunitError) {
-        color = "green";
+        color = "CTF";
       }
     }
     if (color.contains("_anime")) {

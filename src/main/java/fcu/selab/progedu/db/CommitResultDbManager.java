@@ -219,8 +219,6 @@ public class CommitResultDbManager {
       ResultSet rs = preStmt.executeQuery();
       while (rs.next()) {
         array.add(rs.getInt("count(color)"));
-        // int index = Integer.valueOf(rs.getString("hw"));
-        // counts[index - 1] = rs.getInt("count(color)");
       }
     } catch (SQLException e) {
       e.printStackTrace();

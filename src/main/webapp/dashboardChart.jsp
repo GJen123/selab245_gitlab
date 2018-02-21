@@ -237,7 +237,7 @@
 				var projectNames = <%=Pdb.listAllProjectNames()%>
 			</script>
 			<%
-				String[] colors = {"blue", "red", "orange", "gray"};
+				String[] colors = {"S", "CPF", "CSF", "CTF", "NB"};
 				for (String color : colors) {
 			%>
 					<script type="text/javascript">
@@ -284,7 +284,7 @@
 			</script>
 			<%
 				for (String color : colors) {
-					if(color.equals("gray")) {
+					if(color.equals("NB")) {
 						continue;
 					}
 			%>
@@ -350,7 +350,7 @@
 <!-- set Highchart colors -->
 <script>
 Highcharts.setOptions({
-	 colors: ['#5fa7e8', '#e52424', 'gold', '#878787']
+	 colors: ['#5fa7e8', '#e52424', 'gold', '#32CD32', '#878787']
 	})
 </script>
 
@@ -359,7 +359,7 @@ Highcharts.setOptions({
 <!-- set Highchart colors -->
 <script>
 Highcharts.setOptions({
-	 colors: ['#878787', '#5fa7e8', '#e52424', 'gold']
+	 colors: ['#878787', '#5fa7e8', '#e52424', 'gold', '#32CD32']
 	})
 </script>
 

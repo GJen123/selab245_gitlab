@@ -39,19 +39,6 @@ public class CommitRecordService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCounts(@QueryParam("color") String color) {
     List<Integer> array = commitRecordDb.getCounts(connection, color);
-    switch (color) {
-      case "blue":
-        color = "build success";
-        break;
-      case "red":
-        color = "compile error";
-        break;
-      case "orange":
-        color = "check style error";
-        break;
-      default:
-        break;
-    }
     JSONObject ob = new JSONObject();
     ob.put("data", array);
     ob.put("name", color);

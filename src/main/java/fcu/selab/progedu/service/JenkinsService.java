@@ -94,12 +94,12 @@ public class JenkinsService {
 
     String circleColor = "";
     if (commitCount == 1) {
-      circleColor = "circle gray";
+      circleColor = "circle NB";
     } else {
       if (color != null) {
         circleColor = "circle " + color;
       } else {
-        circleColor = "circle gray";
+        circleColor = "circle NB";
       }
     }
     String result = circleColor + "," + commitCount;
@@ -181,17 +181,17 @@ public class JenkinsService {
 
     String color = stuDashChoPro.getCommitColor(num, userName, proName, buildApiJson);
     if (num == 1) {
-      color = "gray";
+      color = "NB";
     }
     if (color.equals("red")) {
       String consoleText = checkErrorStyle(jenkinsData, userName, proName, num);
       boolean isCheckStyle = jenkins.checkIsCheckstyleError(consoleText);
       boolean isJUnitStyle = jenkins.checkIsJunitError(consoleText);
       if (isCheckStyle) {
-        color = "orange";
+        color = "CSF";
       }
       if (isJUnitStyle) {
-        color = "green";
+        color = "CTF";
       }
     }
     color = "circle " + color;
