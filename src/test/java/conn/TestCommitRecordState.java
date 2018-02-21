@@ -23,13 +23,11 @@ public class TestCommitRecordState {
 
     for (String name : lsNames) {
       name = name.replaceAll("\"", "");
-      name = name.replaceAll("HW", "");
-
-      int hwnum = Integer.parseInt(name);
+      name = name.split("-")[1];
 
       Map<String, Integer> map = new HashMap<>();
 
-      map = commitRecordDb.getCommitRecordStateCounts(hwnum);
+      map = commitRecordDb.getCommitRecordStateCounts(name);
 
       int blue = 0;
       int gray = 0;
@@ -57,7 +55,7 @@ public class TestCommitRecordState {
         red = map.get("red");
       }
 
-      commitRecordStateDb.addCommitRecordState(hwnum, blue, orange, red, green, gray);
+      commitRecordStateDb.addCommitRecordState(name, blue, orange, red, green, gray);
 
     }
 

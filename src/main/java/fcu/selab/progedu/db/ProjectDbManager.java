@@ -176,7 +176,6 @@ public class ProjectDbManager {
       while (rs.next()) {
         String name = "\"";
         name += rs.getString("name");
-        name = name.replace("OOP-", "");
         name += "\"";
         lsNames.add(name);
       }

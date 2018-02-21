@@ -88,7 +88,7 @@
 				processData : false,
 				success : function(response) {
 					alert("uploaded!");
-					top.location.href = "../ProgEdu/studentManagement.jsp";
+					top.location.href = "studentManagement.jsp";
 				}, 
 				error : function(response) {
 					alert("failed!");

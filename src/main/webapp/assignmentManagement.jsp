@@ -110,7 +110,7 @@
 				processData : false,
 				success : function(response) {
 					alert("deleted!");
-					top.location.href = "../ProgEdu/assignmentManagement.jsp";
+					top.location.href = "assignmentManagement.jsp";
 				}, 
 				error : function(response,A,B) {
 					console.log(response,A,B);
@@ -137,7 +137,7 @@
 				processData : false,
 				success : function(response) {
 					alert("Edited!");
-					top.location.href = "../ProgEdu/assignmentManagement.jsp";
+					top.location.href = "assignmentManagement.jsp";
 				}, 
 				error : function(response,A,B) {
 					console.log(response,A,B);
@@ -182,7 +182,7 @@
 				processData : false,
 				success : function(response) {
 					alert("uploaded!");
-					top.location.href = "../ProgEdu/assignmentManagement.jsp";
+					top.location.href = "assignmentManagement.jsp";
 				}, 
 				error : function(response) {
 					alert("failed!");
