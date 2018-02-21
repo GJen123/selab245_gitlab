@@ -253,7 +253,7 @@ public class StudentDashChoosePro {
           + "/consoleText";
       console = jenkins.getConsoleTextCommitMessage(projectJenkinsUrl);
     } catch (LoadConfigFailureException e) {
-      // TODO Auto-generated catch block
+      // TODO Auto-generated catch block3
       e.printStackTrace();
     }
     return console;

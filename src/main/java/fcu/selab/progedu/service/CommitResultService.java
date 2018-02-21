@@ -115,8 +115,7 @@ public class CommitResultService {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    String hw = proName.replace(courseName + "-HW", "");
-    CommitResult commitResult = db.getCommitResultByStudentAndHw(connection, id, hw);
+    CommitResult commitResult = db.getCommitResultByStudentAndHw(connection, id, proName);
     String circleColor = "circle " + commitResult.getColor();
     String result = userName + "_" + proName + "," + circleColor + ","
         + (commitResult.getCommit() + 1);
@@ -150,8 +149,7 @@ public class CommitResultService {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    String hw = proName.replace(courseName + "-HW", "");
-    CommitResult commitResult = db.getCommitResultByStudentAndHw(connection, id, hw);
+    CommitResult commitResult = db.getCommitResultByStudentAndHw(connection, id, proName);
     String color = commitResult.getColor();
 
     try {
@@ -176,7 +174,6 @@ public class CommitResultService {
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public void updateCommitResult(@FormParam("user") String userName,
       @FormParam("proName") String proName) {
-    proName = proName.toUpperCase();
 
     JenkinsService jenkinsService = new JenkinsService();
     JenkinsApi jenkinsApi = new JenkinsApi();
@@ -216,7 +213,6 @@ public class CommitResultService {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    String hw = proName.replace(courseName + "-HW", "");
 
     IDatabase database = new MySqlDatabase();
     Connection connection = database.getConnection();
@@ -228,19 +224,31 @@ public class CommitResultService {
     String[] dates = strDate.split(" ");
     int id = db.getUser(userName).getId();
 
-    boolean check = commiResulttDb.checkJenkinsJobTimestamp(connection, id, hw);
+    switch (color) {
+      case "blue":
+        color = "S";
+        break;
+      case "red":
+        color = "CPF";
+        break;
+      case "gray" :
+        color = "NB";
+        break;
+    }
+
+    boolean check = commiResulttDb.checkJenkinsJobTimestamp(connection, id, proName);
     if (check) {
-      commiResulttDb.updateJenkinsCommitCount(connection, id, hw, commit, color);
-      commiResulttDb.updateJenkinsJobTimestamp(connection, id, hw, strDate);
+      commiResulttDb.updateJenkinsCommitCount(connection, id, proName, commit, color);
+      commiResulttDb.updateJenkinsJobTimestamp(connection, id, proName, strDate);
     } else {
-      commiResulttDb.insertJenkinsCommitCount(connection, id, hw, commit, color);
-      commiResulttDb.updateJenkinsJobTimestamp(connection, id, hw, strDate);
+      commiResulttDb.insertJenkinsCommitCount(connection, id, proName, commit, color);
+      commiResulttDb.updateJenkinsJobTimestamp(connection, id, proName, strDate);
     }
 
     CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
-    boolean inDb = commitRecordDb.checkRecord(connection, id, hw, color, dates[0], dates[1]);
+    boolean inDb = commitRecordDb.checkRecord(connection, id, proName, color, dates[0], dates[1]);
     if (!inDb) {
-      commitRecordDb.insertCommitRecord(connection, id, hw, color, dates[0], dates[1]);
+      commitRecordDb.insertCommitRecord(connection, id, proName, color, dates[0], dates[1]);
     }
 
     try {
