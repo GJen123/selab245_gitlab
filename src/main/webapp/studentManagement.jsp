@@ -16,6 +16,19 @@
 <head>
 	<style>
 		/* Center the loader */
+		#loadingBackground {
+			position: absolute;
+			top: 0;
+			bottom: 0%;
+			left: 0;
+			right: 0%;
+			background-color: rgba(0, 0, 0, 0.7);
+			z-index: 9999;
+			display: none;
+			text-align: center;
+			width: 100%;
+			padding-top: 25px;
+		}
 		#loader {
  			position: absolute;
   			left: 50%;
@@ -100,11 +113,14 @@
 </script>
 	
 	<script type="text/javascript">
-		function load() {
-			document.getElementById("loader").style.display = "block";
-		}
+        function load() {
+            document.getElementById("loader").style.display = "block";
+            document.getElementById("loadingBackground").style.display = "block";
+        }
 	</script>
-	<div id="loader" style="display: none"></div>
+	<div id="loadingBackground" style="display: none">
+		<div id="loader"></div>
+	</div>
 	
 	<div>
 		<div class="container-fluid" style="margin-top: 20px; width: 1140px;">

@@ -66,9 +66,6 @@ public class UserService {
     System.out.println("uploadDir : " + uploadDir);
     System.out.println("fileName : " + fileName);
     System.out.println("uploadedFileLocation : " + uploadedFileLocation);
-    Logger.getLogger(UserService.class.getName()).log(Level.ALL, uploadDir);
-    Logger.getLogger(UserService.class.getName()).log(Level.ALL, fileName);
-    Logger.getLogger(UserService.class.getName()).log(Level.ALL, uploadedFileLocation);
     List<String> studentList = new ArrayList<String>();
 
     try {
