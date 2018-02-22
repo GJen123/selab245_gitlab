@@ -220,8 +220,6 @@
 					<%
 						for(String pName : pNames) {
 							System.out.println(pName);
-							//String index = pName.replace("\"", "").replace("HW", "");
-							//int i = Integer.valueOf(index);
 							String id = "canvas_" + pName;
 							%>
 							<canvas id=<%=id %> class="col-md-12"></canvas>
@@ -283,18 +281,16 @@
 				});
 			</script>
 			<%
-				for (String color : colors) {
-					if(color.equals("NB")) {
-						continue;
-					}
+				String[] status = {"success", "checkStyleError", "compileFailure", "testFailure"};
+				for (String s : status) {
 			%>
 					<script type="text/javascript">
-					var color = <%="'" + color + "'"%>;
+					var s = <%="'" + s + "'"%>;
 					$.ajax({
 						url : 'webapi/commits/state/color',
 						type : 'GET',
 						data: {
-							"color" : color
+							"state" : s
 						}, 
 						async : false,
 						cache : true,
@@ -317,15 +313,15 @@
 					</script>
 					<%
 					for(String pName : pNames) {
-						String index = pName.replace("\"", "").replace("HW", "");
-						int i = Integer.valueOf(index);
+						pName = pName.replace("\"", "");
 					%>
 					<script type="text/javascript">
+						var pName = <%="'" + pName + "'"%>;
 						$.ajax({
 							url : 'webapi/commits/record/records',
 							type : 'GET',
 							data: {
-								"hw" : <%=i%>
+								"hw" : pName
 							}, 
 							async : false,
 							cache : true,
