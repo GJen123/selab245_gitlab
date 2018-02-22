@@ -177,7 +177,9 @@ public class JenkinsService {
     final String strDate = stuDashChoPro.getCommitTime(buildApiJson);
     String commitMessage = stuDashChoPro.getCommitMessage(num, userName, proName);
     commitMessage = commitMessage.replace("Commit message: ", "");
-    commitMessage = commitMessage.substring(1, commitMessage.length() - 1);
+    if (null != commitMessage || !"".equals(commitMessage)) {
+      commitMessage = commitMessage.substring(1, commitMessage.length() - 1);
+    }
 
     String color = stuDashChoPro.getCommitColor(num, userName, proName, buildApiJson);
     if (num == 1) {
