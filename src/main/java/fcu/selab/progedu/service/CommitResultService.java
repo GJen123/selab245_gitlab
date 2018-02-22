@@ -231,8 +231,11 @@ public class CommitResultService {
       case "red":
         color = "CPF";
         break;
-      case "gray" :
+      case "gray":
         color = "NB";
+        break;
+
+      default:
         break;
     }
 
