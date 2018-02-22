@@ -84,16 +84,16 @@
 		.circle {
 			border-radius: 30px;
 			height: 30px;
-            font-weight: bold;
-            width: 30px;
-            color: white;
-            text-align: center;
+			font-weight: bold;
+			width: 30px;
+			color: white;
+			text-align: center;
 		}
-        .red {
+		.red {
 			background: #e52424;
 		}
 		.blue {
-			background: #258ce8;
+			background: #5fa7e8;
 		}
 		.gray {
 			background: #878787;

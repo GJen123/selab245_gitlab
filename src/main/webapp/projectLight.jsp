@@ -27,22 +27,22 @@
             color: white;
             text-align: center;
 		}
-		.red {
+		.CPF {
 			background: #e52424;
 		}
-		.blue {
+		.S {
 			background: #5fa7e8;
 		}
-		.gray {
+		.NB {
 			background: #878787;
 		}
-		.orange {
+		.CSF {
 			background: gold;
 		}
 		.plagirism {
 			background: black;
 		}
-		.green{
+		.CTF{
 			background: #32CD32;
 		}
 		.circle a {

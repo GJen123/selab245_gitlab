@@ -212,7 +212,7 @@
 										Collections.reverse(gitProjects);
 										for(Project dbProject : dbProjects){
 											String proName = null;
-											String circleColor = "circle gray";
+											String circleColor = "circle NB";
 											for(GitlabProject gitProject : gitProjects){
 												if(dbProject.getName().equals(gitProject.getName())){
 													proName = dbProject.getName(); 
@@ -253,6 +253,7 @@
 															contentType: 'application/json; charset=UTF-8',
 															success : function(responseText) {
 																var result = responseText.split(",");
+																console.log(result)
 																if(result.length >= 3) {
 																	var d = document.getElementById(result[0]);
 																	d.className = result[1];

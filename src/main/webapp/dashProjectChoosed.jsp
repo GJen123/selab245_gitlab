@@ -76,13 +76,23 @@
             color: white;
             text-align: center;
 		}
+		html, body, .row, #navHeight {
+			height: 100%;
+		}
+		#pProject a{
+			width:1px;
+			height:1px;
+		}
+		.tableActive {
+			background-color: #ddd;
+		}
 		.circle {
 			border-radius: 30px;
 			height: 30px;
-            font-weight: bold;
-            width: 30px;
-            color: white;
-            text-align: center;
+			font-weight: bold;
+			width: 30px;
+			color: white;
+			text-align: center;
 		}
 		.red {
 			background: #e52424;
@@ -104,16 +114,7 @@
 		}
 		.circle a {
 			color: #fff;
-		}
-		html, body, .row, #navHeight {
-			height: 100%;
-		}
-		#pProject a{
-			width:1px;
-			height:1px;
-		}
-		.tableActive {
-			background-color: #ddd;
+			line-height: 30px;
 		}
 	</style>
 	

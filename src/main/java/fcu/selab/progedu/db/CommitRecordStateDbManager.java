@@ -24,34 +24,34 @@ public class CommitRecordStateDbManager {
    * 
    * @param hw
    *          hw's number
-   * @param blue
+   * @param s
    *          build success
-   * @param orange
+   * @param csf
    *          check style error
-   * @param red
+   * @param cpf
    *          build fault
-   * @param green
+   * @param ctf
    *          junit fault
-   * @param gray
+   * @param nb
    *          not build
    */
-  public void addCommitRecordState(int hw, int blue, int orange, int red, int green, int gray) {
+  public void addCommitRecordState(String hw, int s, int csf, int cpf, int ctf, int nb) {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
     Statement stmt = null;
-    String sql = "INSERT INTO " + "Commit_Record_State(hw, blue, orange, red, green, gray)  "
+    String sql = "INSERT INTO " + "Commit_Record_State(hw, S, CSF, CPF, CTF, NB)  "
         + "VALUES(?, ?, ?, ?, ?, ?)";
     String query = "SELECT * FROM CommitRecordState";
 
     try {
       preStmt = conn.prepareStatement(sql);
 
-      preStmt.setInt(1, hw);
-      preStmt.setInt(2, blue);
-      preStmt.setInt(3, orange);
-      preStmt.setInt(4, red);
-      preStmt.setInt(5, green);
-      preStmt.setInt(6, gray);
+      preStmt.setString(1, hw);
+      preStmt.setInt(2, s);
+      preStmt.setInt(3, csf);
+      preStmt.setInt(4, cpf);
+      preStmt.setInt(5, ctf);
+      preStmt.setInt(6, nb);
 
       preStmt.executeUpdate();
       preStmt.close();
