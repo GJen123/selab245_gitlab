@@ -181,8 +181,8 @@ public class ProjectService2 {
     // execCmd(pushCommand, name);
 
     // remove project file in linux
-    String removeFileCommand = "rm -rf uploads/";
-    execLinuxCommandInFile(removeFileCommand, tempDir);
+    // String removeFileCommand = "rm -rf uploads/";
+    // execLinuxCommandInFile(removeFileCommand, tempDir);
 
     // 9. Add project to database
     Date date = new Date();
@@ -576,14 +576,10 @@ public class ProjectService2 {
       @FormDataParam("Hw_Deadline") String deadline, @FormDataParam("Hw_README") String readMe) {
     System.out.println("name: " + name);
     if (!deadline.equals("") && !readMe.equals("<br>")) { // has deadline readMe
-      System.out.println("deadline: " + deadline);
-      System.out.println("readMe: " + readMe);
       dbManager.editProject(deadline, readMe, name);
     } else if (!readMe.equals("<br>") && deadline.equals("")) { // no deadline
-      System.out.println("readMe: " + readMe);
       dbManager.editProjectReadMe(readMe, name);
     } else if (readMe.equals("<br>") && !deadline.equals("")) { // no ReadMe
-      System.out.println("deadline: " + deadline);
       dbManager.editProjectDeadline(deadline, name);
     }
 

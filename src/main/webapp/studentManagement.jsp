@@ -128,13 +128,20 @@
 			<div>
 				<div class="card">
 					<h4 class="card-header"><strong><fmt:message key="teacherManageStudent_h3_newAllStudent"/></strong></h4>
-	
+					
+					<div class="col-md-3" style="padding-top: 20px;">
+						<a href="StudentTemplate.csv" class="btn btn-default" style="background-color:#F5F5F5; color: #292b2c; border-color: #ccc">
+							<fmt:message key="teacherManageStudent_a_downloadEnrollmentTemplate"/>
+						</a>
+					</div>
 					<div class="card-block" style="padding: 20px 20px 20px 20px;">
 						<div class="form-group">
 							<form>
 								<h5><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageStudent_h4_uploadStudent"/></h5>
-								Select File to Upload:<input type="file" name="file" style="margin-left: 10px;">
-								<br> <input type="submit" value="Upload" onclick="load();">
+								Select File to Upload:
+								<input type="file" name="file" style="margin-left: 10px;">
+								<br>
+								<input type="submit" value="Upload" onclick="load();" style="margin-top:10px;">
 							</form>
 						</div>
 					</div>

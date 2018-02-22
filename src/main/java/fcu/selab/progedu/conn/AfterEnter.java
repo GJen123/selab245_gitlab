@@ -101,8 +101,8 @@ public class AfterEnter extends HttpServlet {
    * @param privateToken
    *          Check return private token
    */
-  public void sendRedirect(HttpServletResponse response, HttpSession session,
-      String privateToken, String username) {
+  public void sendRedirect(HttpServletResponse response, HttpSession session, String privateToken,
+      String username) {
     try {
       if (isEnter == true) {
         if (privateToken.equals(gitData.getGitlabApiToken())) {
@@ -119,6 +119,7 @@ public class AfterEnter extends HttpServlet {
         }
       } else {
         session.setAttribute("enterError", "Enter Error");
+        session.setAttribute("private_token", privateToken);
         response.sendRedirect("index.jsp");
       }
     } catch (LoadConfigFailureException e) {

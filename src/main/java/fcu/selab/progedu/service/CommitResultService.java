@@ -231,8 +231,11 @@ public class CommitResultService {
       case "red":
         color = "CPF";
         break;
-      case "gray" :
+      case "gray":
         color = "NB";
+        break;
+
+      default:
         break;
     }
 
@@ -321,14 +324,6 @@ public class CommitResultService {
   public void deleteResult(String hw) {
     IDatabase database = new MySqlDatabase();
     Connection connection = database.getConnection();
-    String courseName = "";
-    try {
-      courseName = CourseConfig.getInstance().getCourseName();
-    } catch (LoadConfigFailureException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    String hwIndex = hw.replace(courseName + "-HW", "");
-    db.deleteResult(connection, hwIndex);
+    db.deleteResult(connection, hw);
   }
 }

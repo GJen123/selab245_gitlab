@@ -27,7 +27,7 @@ public class CommitRecordStateDbManager {
    * 
    * @param hw
    *          hw's number
-   * @param s
+   * @param success
    *          build success
    * @param csf
    *          check style error
@@ -38,7 +38,7 @@ public class CommitRecordStateDbManager {
    * @param nb
    *          not build
    */
-  public void addCommitRecordState(String hw, int s, int csf, int cpf, int ctf, int nb) {
+  public void addCommitRecordState(String hw, int success, int csf, int cpf, int ctf, int nb) {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
     Statement stmt = null;
@@ -50,7 +50,7 @@ public class CommitRecordStateDbManager {
       preStmt = conn.prepareStatement(sql);
 
       preStmt.setString(1, hw);
-      preStmt.setInt(2, s);
+      preStmt.setInt(2, success);
       preStmt.setInt(3, csf);
       preStmt.setInt(4, cpf);
       preStmt.setInt(5, ctf);

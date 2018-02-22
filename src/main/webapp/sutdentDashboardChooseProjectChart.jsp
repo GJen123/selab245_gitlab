@@ -69,7 +69,6 @@
 			GitlabProject project = sConn.getProjectById(projectId);
 			projectName = project.getName();
 			projectUrl = project.getHttpUrl();
-			projectUrl = projectUrl.replace("0912fe2b3e43", "140.134.26.71:20080");
 		}
 		GitlabProject choosedProject = new GitlabProject();
 		for(GitlabProject project : projects){
@@ -134,7 +133,7 @@ for(User eachuser : users){
 					notCommitCount++;
 				} else {
 					if(color!=null){
-					  	if(color.equals("red") || color.equals("blue") || color.equals("orange")) {
+					  	if(color.equals("CPF") || color.equals("S") || color.equals("CSF") || color.equals("CTF")) {
 					  		commitCount++;
 					  	}
 					}else{
