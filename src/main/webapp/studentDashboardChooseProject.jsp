@@ -250,7 +250,6 @@
 				String projectUrl = stuDashChoPro.getChoosedProjectUrl(choosedProject);
 				List<String> jobColors = stuDash.getMainTableJobColor(stuProjects);
 				List<String> jobCommitCounts = stuDash.getMainTableJobCommitCount(stuProjects);
-				projectUrl = projectUrl.replace("f05f585bd8c9", "mselab.iecs.fcu.edu.tw:10080");
 				ProjectDbManager pDb = ProjectDbManager.getInstance();
 				Project project = pDb.getProjectByName(projectName);
 			%>

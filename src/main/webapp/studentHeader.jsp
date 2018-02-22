@@ -69,7 +69,7 @@
 					processData : false,
 					success : function(response) {
 						alert("Updated!");
-						top.location.href = "../ProgEdu/studentDashboard.jsp";
+						top.location.href = "studentDashboard.jsp";
 					}, 
 					error : function(response) {
 						alert("Failed! Please try again.");

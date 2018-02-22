@@ -576,14 +576,10 @@ public class ProjectService2 {
       @FormDataParam("Hw_Deadline") String deadline, @FormDataParam("Hw_README") String readMe) {
     System.out.println("name: " + name);
     if (!deadline.equals("") && !readMe.equals("<br>")) { // has deadline readMe
-      System.out.println("deadline: " + deadline);
-      System.out.println("readMe: " + readMe);
       dbManager.editProject(deadline, readMe, name);
     } else if (!readMe.equals("<br>") && deadline.equals("")) { // no deadline
-      System.out.println("readMe: " + readMe);
       dbManager.editProjectReadMe(readMe, name);
     } else if (readMe.equals("<br>") && !deadline.equals("")) { // no ReadMe
-      System.out.println("deadline: " + deadline);
       dbManager.editProjectDeadline(deadline, name);
     }
 

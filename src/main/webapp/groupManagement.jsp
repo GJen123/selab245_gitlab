@@ -48,7 +48,7 @@
 				processData : false,
 				success : function(response) {
 					alert("Uploaded!");
-					top.location.href = "../ProgEdu/groupManagement.jsp";
+					top.location.href = "groupManagement.jsp";
 				}, 
 				error : function(response) {
 					alert("Failed! Check out whether there is the group with the same name on GitLab.");
@@ -73,7 +73,7 @@
 				processData : false,
 				success : function(response) {
 					alert("Added!");
-					top.location.href = "../ProgEdu/groupManagement.jsp";
+					top.location.href = "groupManagement.jsp";
 				}, 
 				error : function(response) {
 					alert("Failed!");

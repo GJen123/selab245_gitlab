@@ -83,16 +83,7 @@ public class CommitRecordService {
   public void deleteRecord(String hw) {
     IDatabase database = new MySqlDatabase();
     Connection connection = database.getConnection();
-    String courseName = "";
-    try {
-      courseName = CourseConfig.getInstance().getCourseName();
-    } catch (LoadConfigFailureException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-
-    String hwIndex = hw.replace(courseName + "-HW", "");
-    commitRecordDb.deleteRecord(connection, hwIndex);
+    commitRecordDb.deleteRecord(connection, hw);
   }
 
 }
