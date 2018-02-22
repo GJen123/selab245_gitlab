@@ -25,7 +25,6 @@ public class CommitRecordDbManager {
 
   }
 
-  private ProjectDbManager pdb = ProjectDbManager.getInstance();
   private IDatabase database = new MySqlDatabase();
 
   /**
@@ -78,9 +77,6 @@ public class CommitRecordDbManager {
   public List<Integer> getCounts(Connection conn, String color) {
     String query = "SELECT hw,count(color) FROM Commit_Record where color like ? group by hw";
     PreparedStatement preStmt = null;
-    List<String> lsProjects = pdb.listAllProjectNames();
-    int plength = lsProjects.size();
-    int[] counts = new int[plength];
     List<Integer> array = new ArrayList<Integer>();
 
     try {
@@ -89,8 +85,6 @@ public class CommitRecordDbManager {
       ResultSet rs = preStmt.executeQuery();
       while (rs.next()) {
         array.add(rs.getInt("count(color)"));
-        // int index = Integer.valueOf(rs.getString("hw"));
-        // counts[index - 1] = rs.getInt("count(color)");
       }
     } catch (SQLException e) {
       e.printStackTrace();

@@ -2,8 +2,11 @@ package fcu.selab.progedu.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommitRecordStateDbManager {
 
@@ -65,6 +68,37 @@ public class CommitRecordStateDbManager {
         e.printStackTrace();
       }
     }
+  }
+
+  /**
+   * get all state counts
+   * 
+   * @param conn
+   *          db connection
+   * @return state's counts
+   */
+  public List<Integer> getCommitRecordStateCounts(Connection conn, String state) {
+    String query = "SELECT * FROM Commit_Record_State";
+    PreparedStatement preStmt = null;
+    List<Integer> array = new ArrayList<Integer>();
+
+    try {
+      preStmt = conn.prepareStatement(query);
+      // preStmt.setString(1, state);
+      ResultSet rs = preStmt.executeQuery();
+      while (rs.next()) {
+        array.add(rs.getInt(state));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+    return array;
   }
 
 }

@@ -291,7 +291,7 @@
 					<script type="text/javascript">
 					var color = <%="'" + color + "'"%>;
 					$.ajax({
-						url : 'webapi/commits/record/color',
+						url : 'webapi/commits/state/color',
 						type : 'GET',
 						data: {
 							"color" : color
