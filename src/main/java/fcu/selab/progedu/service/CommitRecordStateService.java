@@ -33,7 +33,7 @@ public class CommitRecordStateService {
    * 
    * @return counts
    */
-  @GETProgEdu.
+  @GET
   @Path("color")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCommitRecordStateCounts(@QueryParam("state") String state) {
