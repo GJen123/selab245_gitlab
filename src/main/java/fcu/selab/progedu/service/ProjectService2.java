@@ -181,8 +181,8 @@ public class ProjectService2 {
     // execCmd(pushCommand, name);
 
     // remove project file in linux
-    String removeFileCommand = "rm -rf uploads/";
-    execLinuxCommandInFile(removeFileCommand, tempDir);
+    // String removeFileCommand = "rm -rf uploads/";
+    // execLinuxCommandInFile(removeFileCommand, tempDir);
 
     // 9. Add project to database
     Date date = new Date();

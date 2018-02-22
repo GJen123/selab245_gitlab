@@ -119,6 +119,7 @@ public class AfterEnter extends HttpServlet {
         }
       } else {
         session.setAttribute("enterError", "Enter Error");
+        session.setAttribute("private_token", privateToken);
         response.sendRedirect("index.jsp");
       }
     } catch (LoadConfigFailureException e) {

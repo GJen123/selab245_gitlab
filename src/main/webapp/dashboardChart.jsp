@@ -220,9 +220,9 @@
 					<%
 						for(String pName : pNames) {
 							System.out.println(pName);
-							String index = pName.replace("\"", "").replace("HW", "");
-							int i = Integer.valueOf(index);
-							String id = "canvas" + i;
+							//String index = pName.replace("\"", "").replace("HW", "");
+							//int i = Integer.valueOf(index);
+							String id = "canvas_" + pName;
 							%>
 							<canvas id=<%=id %> class="col-md-12"></canvas>
 							<hr>
