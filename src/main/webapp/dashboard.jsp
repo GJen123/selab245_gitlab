@@ -253,7 +253,6 @@
 															contentType: 'application/json; charset=UTF-8',
 															success : function(responseText) {
 																var result = responseText.split(",");
-																console.log(result)
 																if(result.length >= 3) {
 																	var d = document.getElementById(result[0]);
 																	d.className = result[1];

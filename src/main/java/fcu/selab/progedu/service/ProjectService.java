@@ -34,6 +34,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import fcu.selab.progedu.config.CourseConfig;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -49,7 +50,7 @@ import fcu.selab.progedu.jenkins.JenkinsApi;
 import fcu.selab.progedu.utils.ZipHandler;
 
 @Path("project/")
-public class ProjectService2 {
+public class ProjectService {
 
   private Conn conn = Conn.getInstance();
   private GitlabUser root = conn.getRoot();
@@ -58,6 +59,7 @@ public class ProjectService2 {
 
   private GitlabConfig gitlabData = GitlabConfig.getInstance();
   private JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+  private CourseConfig courseConfig = CourseConfig.getInstance();
 
   private String jenkinsRootUsername;
   private String jenkinsRootPassword;
@@ -77,7 +79,7 @@ public class ProjectService2 {
   /**
    * Constuctor
    */
-  public ProjectService2() {
+  public ProjectService() {
     try {
       zipHandler = new ZipHandler();
       jenkinsRootUsername = jenkinsData.getJenkinsRootUsername();
@@ -611,5 +613,16 @@ public class ProjectService2 {
   public void setTestFileInfo() {
     testZipChecksum = String.valueOf(zipHandler.getChecksum());
     testZipUrl = zipHandler.getUrlForJenkinsDownloadTestFile();
+  }
+
+  public String getCourseName() {
+    String name = "";
+    try {
+      name = courseConfig.getCourseName();
+    } catch (LoadConfigFailureException e) {
+      e.printStackTrace();
+    }
+
+    return  name;
   }
 }
