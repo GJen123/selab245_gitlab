@@ -66,9 +66,9 @@ public class CommitRecordService {
     }
     JSONObject ob = new JSONObject();
     JSONArray records = commitRecordDb.getCountGroupByHwAndTime(hw);
-    String deadline = pdb.getProjectByName(courseName + "-HW" + hw).getDeadline();
+    String deadline = pdb.getProjectByName(hw).getDeadline();
     ob.put("records", records);
-    ob.put("title", "HW" + hw);
+    ob.put("title", hw);
     ob.put("deadline", deadline);
     Response response = Response.ok().entity(ob.toString()).build();
     return response;

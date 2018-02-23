@@ -219,7 +219,6 @@
 					<div class="tab-pane col-md-12" id="chart3" role="tabpanel" style="width: 1200px">
 					<%
 						for(String pName : pNames) {
-							System.out.println(pName);
 							String id = "canvas_" + pName;
 							%>
 							<canvas id=<%=id %> class="col-md-12"></canvas>
@@ -232,7 +231,15 @@
 			</div>
 			<script>
 				var chart1Array = [];
-				var projectNames = <%=Pdb.listAllProjectNames()%>
+                var projectNames = [];
+				<%
+					for(String pname : pNames) {
+					  String name = "'" + pname + "'";
+				%>
+						projectNames.push(<%=name%>);
+				<%
+					}
+				%>
 			</script>
 			<%
 				String[] colors = {"S", "CPF", "CSF", "CTF", "NB"};
@@ -313,7 +320,6 @@
 					</script>
 					<%
 					for(String pName : pNames) {
-						pName = pName.replace("\"", "");
 					%>
 					<script type="text/javascript">
 						var pName = <%="'" + pName + "'"%>;
@@ -393,8 +399,7 @@ for(i in chart3Array) {
 window.onload = function() {
 	for(i in chart3Array) {
 		var chart3 = chart3Array[i];
-		var index = chart3.title.replace('HW', '');
-	    var ctx = document.getElementById("canvas" + index).getContext("2d");
+	    var ctx = document.getElementById("canvas_" + chart3.title).getContext("2d");
 	    window.myChart = new Chart(ctx, {
 	    	responsive: true,
 	        type: 'bubble',
