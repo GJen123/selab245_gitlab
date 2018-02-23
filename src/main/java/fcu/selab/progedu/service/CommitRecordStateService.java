@@ -20,7 +20,7 @@ import fcu.selab.progedu.db.CommitRecordStateDbManager;
 import fcu.selab.progedu.db.IDatabase;
 import fcu.selab.progedu.db.MySqlDatabase;
 
-@Path("commits/state/")
+@Path("commits/")
 public class CommitRecordStateService {
   CommitRecordStateDbManager commitRecordStatedDb = CommitRecordStateDbManager.getInstance();
   IDatabase database = new MySqlDatabase();
@@ -34,7 +34,7 @@ public class CommitRecordStateService {
    * @return counts
    */
   @GET
-  @Path("color")
+  @Path("state/")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCommitRecordStateCounts(@QueryParam("state") String state) {
     List<Integer> array = commitRecordStatedDb.getCommitRecordStateCounts(connection, state);
