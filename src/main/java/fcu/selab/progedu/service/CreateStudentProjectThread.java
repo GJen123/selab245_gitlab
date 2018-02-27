@@ -14,7 +14,7 @@ public class CreateStudentProjectThread extends Thread {
   
   private String rootProjectUrl;
   
-  private ProjectService2 projectService = new ProjectService2();
+  private ProjectService projectService = new ProjectService();
   private Conn conn = Conn.getInstance();
   
   /**

@@ -174,9 +174,7 @@ public class ProjectDbManager {
       stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(sql);
       while (rs.next()) {
-        String name = "\"";
-        name += rs.getString("name");
-        name += "\"";
+        String name = rs.getString("name");
         lsNames.add(name);
       }
     } catch (SQLException e) {

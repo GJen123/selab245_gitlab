@@ -208,10 +208,8 @@ public class CommitResultDbManager {
   public List<Integer> getCounts(Connection conn, String color) {
     String query = "SELECT hw,count(color) FROM Commit_Result " + "where color like ? group by hw";
     PreparedStatement preStmt = null;
-    List<String> lsProjects = pdb.listAllProjectNames();
-    int plength = lsProjects.size();
-    int[] counts = new int[plength];
-    List<Integer> array = new ArrayList<Integer>();
+    List<Integer> array;
+    array = new ArrayList<Integer>();
 
     try {
       preStmt = conn.prepareStatement(query);
@@ -242,9 +240,6 @@ public class CommitResultDbManager {
   public List<Integer> getCommitSum(Connection conn) {
     String query = "SELECT hw, sum(commit) FROM Commit_Result group by hw";
     PreparedStatement preStmt = null;
-    List<String> lsProjects = pdb.listAllProjectNames();
-    int plength = lsProjects.size();
-    int[] counts = new int[plength];
     List<Integer> array = new ArrayList<Integer>();
 
     try {
@@ -252,8 +247,6 @@ public class CommitResultDbManager {
       ResultSet rs = preStmt.executeQuery();
       while (rs.next()) {
         array.add(rs.getInt("sum(commit)"));
-        // int index = Integer.valueOf(rs.getString("hw"));
-        // counts[index - 1] = rs.getInt("sum(commit)");
       }
     } catch (SQLException e) {
       e.printStackTrace();

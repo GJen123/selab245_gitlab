@@ -1,12 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="utf-8"%>
 <%@ page import="fcu.selab.progedu.db.ProjectDbManager, java.util.*, fcu.selab.progedu.data.Project" %>
-<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.text.SimpleDateFormat, fcu.selab.progedu.service.ProjectService" %>
 <%
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
 		response.sendRedirect("index.jsp");
 	}
 	session.putValue("page", "assignmentManagement");
+
+	ProjectService projectService = new ProjectService();
+	String courseName = projectService.getCourseName();
 %>
 
 <%@ include file="language.jsp" %>
@@ -359,7 +362,7 @@
 		      <div class="modal-body">
 				<div class="form-group">
 					<label for="Hw_Name"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwName"/></h4></label>
-					<input id="Hw_Name" type="text" class="form-control" name="Hw_Name" required="required" placeholder="eg. OOP-HW1"/>
+					<input id="Hw_Name" type="text" class="form-control" name="Hw_Name" required="required" placeholder="eg. <%=courseName%>-HW1"/>
 				</div>
 				<%
 					TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
