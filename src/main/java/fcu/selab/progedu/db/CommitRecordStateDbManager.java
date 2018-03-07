@@ -42,7 +42,8 @@ public class CommitRecordStateDbManager {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
     Statement stmt = null;
-    String sql = "INSERT INTO " + "Commit_Record_State(hw, S, CSF, CPF, CTF, NB)  "
+    String sql = "INSERT INTO "
+        + "Commit_Record_State(hw, success, checkStyleError, compileFailure, testFailure, notBuild)  "
         + "VALUES(?, ?, ?, ?, ?, ?)";
     String query = "SELECT * FROM CommitRecordState";
 
@@ -84,7 +85,6 @@ public class CommitRecordStateDbManager {
 
     try {
       preStmt = conn.prepareStatement(query);
-      // preStmt.setString(1, state);
       ResultSet rs = preStmt.executeQuery();
       while (rs.next()) {
         array.add(rs.getInt(state));

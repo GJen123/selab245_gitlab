@@ -22,40 +22,38 @@ public class TestCommitRecordState {
     lsNames = projectDb.listAllProjectNames();
 
     for (String name : lsNames) {
-      name = name.replaceAll("\"", "");
-      name = name.split("-")[1];
 
       Map<String, Integer> map = new HashMap<>();
 
       map = commitRecordDb.getCommitRecordStateCounts(name);
 
-      int blue = 0;
-      int gray = 0;
-      int green = 0;
-      int orange = 0;
-      int red = 0;
+      int success = 0;
+      int nb = 0;
+      int ctf = 0;
+      int csf = 0;
+      int cpf = 0;
 
-      if (map.containsKey("blue")) {
-        blue = map.get("blue");
+      if (map.containsKey("S")) {
+        success = map.get("S");
       }
 
-      if (map.containsKey("gray")) {
-        gray = map.get("gray");
+      if (map.containsKey("NB")) {
+        nb = map.get("NB");
       }
 
-      if (map.containsKey("green")) {
-        green = map.get("green");
+      if (map.containsKey("CTF")) {
+        ctf = map.get("CTF");
       }
 
-      if (map.containsKey("orange")) {
-        orange = map.get("orange");
+      if (map.containsKey("CSF")) {
+        csf = map.get("CSF");
       }
 
-      if (map.containsKey("red")) {
-        red = map.get("red");
+      if (map.containsKey("CPF")) {
+        cpf = map.get("CPF");
       }
 
-      commitRecordStateDb.addCommitRecordState(name, blue, orange, red, green, gray);
+      commitRecordStateDb.addCommitRecordState(name, success, csf, cpf, ctf, nb);
 
     }
 

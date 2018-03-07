@@ -21,10 +21,6 @@ public class CommitRecordDbManager {
     return DB_MANAGER;
   }
 
-  private CommitRecordDbManager() {
-
-  }
-
   private IDatabase database = new MySqlDatabase();
 
   /**
