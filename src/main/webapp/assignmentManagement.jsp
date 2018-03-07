@@ -20,6 +20,7 @@
 	<style type="text/css">
 		body{
 			overflow-x: scroll;
+			height: fit-content;
 		}
 		#editModal{
 			overflow-x: auto; !important
@@ -53,37 +54,37 @@
   			height: 120px;
   			-webkit-animation: spin 2s linear infinite;
   			animation: spin 2s linear infinite;
-			}
+		}
 
-			@-webkit-keyframes spin {
-  				0% { -webkit-transform: rotate(0deg); }
-  				100% { -webkit-transform: rotate(360deg); }
-			}
+		@-webkit-keyframes spin {
+			0% { -webkit-transform: rotate(0deg); }
+			100% { -webkit-transform: rotate(360deg); }
+		}
 
-			@keyframes spin {
-			  	0% { transform: rotate(0deg); }
-  				100% { transform: rotate(360deg); }
-			}
-			
-			/* Add animation to "page content" */
-			.animate-bottom {
- 				position: relative;
- 		 		-webkit-animation-name: animatebottom;
-  				-webkit-animation-duration: 1s;
-  				animation-name: animatebottom;
-  				animation-duration: 1s
-			}
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
 
-			@-webkit-keyframes animatebottom {
-  					from { bottom:-100px; opacity:0 } 
-  				to { bottom:0px; opacity:1 }
-			}
+		/* Add animation to "page content" */
+		.animate-bottom {
+			position: relative;
+			-webkit-animation-name: animatebottom;
+			-webkit-animation-duration: 1s;
+			animation-name: animatebottom;
+			animation-duration: 1s
+		}
 
-			@keyframes animatebottom { 
-  				from{ bottom:-100px; opacity:0 } 
-  				to{ bottom:0; opacity:1 }
-			}
-		html, body{
+		@-webkit-keyframes animatebottom {
+				from { bottom:-100px; opacity:0 }
+			to { bottom:0px; opacity:1 }
+		}
+
+		@keyframes animatebottom {
+			from{ bottom:-100px; opacity:0 }
+			to{ bottom:0; opacity:1 }
+		}
+		body{
 			height: 100%;
 		}
 	</style>
@@ -95,7 +96,7 @@
 	<link rel="bookmark" href="img/favicon.ico"/>
 	<title>ProgEdu</title>
 </head>
-<body>
+<body id="body">
 	<%@ include file="header.jsp" %>
 	<script>
 	$(document).ready(function() {
@@ -152,9 +153,29 @@
 	});
 	</script>
 	<script type="text/javascript">
-		function load() {
-			document.getElementById("loader").style.display = "block";
-			document.getElementById("loadingBackground").style.display = "block";
+		function load(target) {
+		    var name = target.name;
+		    switch (name) {
+				case 'new_btn':
+				    var hw_name = document.getElementById('Hw_Name').value;
+				    console.log(hw_name)
+				    if(hw_name !== '' && hw_name !== undefined){
+                        document.getElementById("loader").style.display = "block";
+                        document.getElementById("loadingBackground").style.display = "block";
+					}
+				    break;
+				case 'delete_btn':
+                    var hw_name = document.getElementById('del_Hw_Name').value;
+                    if(hw_name !== '' && hw_name !== undefined){
+                        document.getElementById("loader").style.display = "block";
+                        document.getElementById("loadingBackground").style.display = "block";
+                    }
+				    break;
+				default:
+                    document.getElementById("loader").style.display = "block";
+                    document.getElementById("loadingBackground").style.display = "block";
+                    break;
+			}
 		}
 	</script>
 	<script type="text/javascript">
@@ -185,10 +206,11 @@
 				processData : false,
 				success : function(response) {
 					alert("uploaded!");
-					top.location.href = "assignmentManagement.jsp";
+                    location.reload();
 				}, 
 				error : function(response) {
 					alert("failed!");
+					location.reload();
 				}
 			});
 			return false;
@@ -196,6 +218,7 @@
 	});
 	</script>
 	<script>
+
 		function changeBotton(target) {
 			var type = target.value;
 			if(type == 'Javac') {
@@ -208,26 +231,41 @@
 				document.getElementById('java_download').style.display = 'none';
 			}
 		}
+		function changeDisplay(target) {
+			var name = target.name;
+			switch (name) {
+				case 'hw_list':
+                    document.getElementById('hw_list').style.display = 'block';
+                    document.getElementById('new_hw').style.display = 'none';
+                    break;
+				case 'distributeHW':
+                    document.getElementById('hw_list').style.display = 'none';
+                    document.getElementById('new_hw').style.display = 'block';
+                    break;
+				default:
+				    break;
+
+			}
+        }
 	</script>
 	
 	<%
 		ProjectDbManager db = ProjectDbManager.getInstance();
 		List<Project> projects = db.listAllProjects();
 	%>
-	
 	<div id="loadingBackground" style="display: none">
 		<div id="loader"></div>
 	</div>
 	
-	<div class="container" style="margin-top: 30px; width: 1140px;">
-		<button class="btn btn-default" data-toggle="modal" data-target="#newModal">
+	<div class="container" style="margin-top: 30px; height: fit-content">
+		<button class="btn btn-outline-secondary" name="hw_list" onclick="changeDisplay(this)">
+			<fmt:message key="teacherManageHW_hw_list"/>
+		</button>
+		<button class="btn btn-outline-secondary" name="distributeHW" onclick="changeDisplay(this)">
 			<fmt:message key="teacherManageHW_h3_distributeHW"/>
 		</button>
-		<br>
-		<br>
-		<div class="card">
+		<div class="card" id="hw_list" style="margin-top: 20px;">
 			<div class="card-header">
-				<!-- <h4 ><strong><fmt:message key="deleteAssignment_h4"/></strong></h4> -->
 				<h4 ><strong><fmt:message key="teacherManageHW_hw_list"/></strong></h4>
 			</div>
   			<div class="card-block" style="padding: 20px 20px 20px 20px;">
@@ -270,6 +308,70 @@
   				</table>
   			</div>
 		</div>
+
+		<div class="card" id="new_hw" style="margin-top: 20px; display: none">
+			<div class="card-header">
+				<h4 ><strong><fmt:message key="teacherManageHW_hw_edit_modal_title"/></strong></h4>
+			</div>
+			<div class="card-block" style="padding: 20px 20px 20px 20px;">
+				<form id="newHw" style="margin-top: 10px;">
+					<div class="form-group col-md-3" style="padding-left: 0px;">
+						<label for="Hw_Name"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwName"/></h4></label>
+						<input id="Hw_Name" type="text" class="form-control" name="Hw_Name" required="required" placeholder="eg. <%=courseName%>-HW1" required/>
+					</div>
+					<%
+						TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
+						Date now = new Date();
+						SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+						String datestring = sdFormat.format(now);
+					%>
+					<div class="form-group" style="width: fit-content">
+						<label for="Hw_Deadline"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwDeadline"/></h4></label>
+						<input id="Hw_Deadline" type="datetime-local" class="form-control" name="Hw_Deadline" required="required" value=<%="\"" + datestring + "\""%>/>
+					</div>
+
+					<div class="form-group">
+						<label for="Hw_README"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwReadme"/></h4></label>
+						<textarea id="Hw_README" cols="100" rows="20" name="Hw_README" style="width: 823px; height: 200px;"></textarea>
+					</div>
+
+					<hr>
+
+					<form>
+						<ul class="nav nav-tabs" role="tablist">
+							<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#java" role="tab">Java</a></li>
+							<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#android" role="tab">Android</a></li>
+							<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#web" role="tab">Web</a></li>
+						</ul>
+						<!-- Tab panes -->
+						<div class="tab-content" style="margin-top: 20px; margin-left: 20px; width: fit-content;">
+						<div class="tab-pane active col-md-12" id="java" role="tabpanel">
+							<div class="form-group" style="width: max-content; white-space: nowrap; display: list-item">
+								<label for="fileRadio"><fmt:message key="teacherManageHW_label_zipradio"/>&nbsp; &nbsp; </label>
+								<label class="radio-inline"><input type="radio" name="fileRadio" value="Javac" onclick="changeBotton(this)" checked>&nbsp; Javac&nbsp; &nbsp; </label>
+								<label class="radio-inline"><input type="radio" name="fileRadio" value="Maven" onclick="changeBotton(this)">&nbsp; Maven</label>
+								<br>
+								<a href="JavacQuickStart.zip" class="btn btn-default" style="background-color:#F5F5F5; color: #292b2c; border-color: #ccc" id="java_download"><fmt:message key="teacherManageHW_a_downloadJavac"/></a>
+								<a href="MvnQuickStart.zip" class="btn btn-default" style="background-color:#F5F5F5; color: #292b2c; border-color: #ccc; display: none;" id="mvn_download"><fmt:message key="teacherManageHW_a_downloadMaven"/></a>
+								<a href="MvnQuickStartWithoutCheckstyle.zip" class="btn btn-default" style="background-color:#F5F5F5; color: #292b2c; border-color: #ccc; display: none;" id="mvn_no_checkstyle_download"><fmt:message key="teacherManageHW_a_downloadMavenWithoutCheckstyle"/></a>
+							</div>
+							<div class="form-group" style="width: max-content; display: list-item">
+								<label for="file"><fmt:message key="teacherManageHW_label_uploadZip"/></label>
+								<br>
+								<input type="file" accept=".zip" name="file" size="50" width="48"/>
+							</div>
+						</div>
+						<div class="tab-pane active col-md-12" id="android" role="tabpanel">
+						</div>
+						<div class="tab-pane active col-md-12" id="web" role="tabpanel">
+						</div>
+					</div>
+					<button type="submit" class="btn btn-info" name="new_btn" onclick="load(this);nicEditors.findEditor('Hw_README').saveContent();">
+						<fmt:message key="teacherManageHW_button_send"/>
+					</button>
+				</form>
+			</div>
+		</div>
 	</div>
 	
 	
@@ -304,7 +406,7 @@
 	        <button type="button" class="btn btn-secondary" data-dismiss="modal">
 				<fmt:message key="teacherManageGroup_button_close"/>
 			</button>
-			<button type="submit" class="btn btn-primary" onclick="load(); nicEditors.findEditor('Hw_README').saveContent();">
+			<button type="submit" class="btn btn-primary" name="edit_btn" onclick="load(); nicEditors.findEditor('Hw_README').saveContent();">
 				<fmt:message key="teacherManageGroup_button_send"/>
 			</button>
 	      </div>
@@ -329,7 +431,7 @@
 	      <div class="modal-body">
 		      <div class="form-group">
 		      	<h5><fmt:message key="teacherManageHW_hw_delete_modal_content"/></h5>
-		      	<input type="hidden" id="Hw_Name" name="Hw_Name"/>
+		      	<input type="hidden" id="del_Hw_Name" name="del_Hw_Name"/>
 		      </div>
 		  </div>
 		  
@@ -337,94 +439,13 @@
 	        <button type="button" class="btn btn-primary" data-dismiss="modal">
 				<fmt:message key="teacherManageGroup_button_close"/>
 			</button>
-			<button type="submit" class="btn btn-secondary" onclick="load();">
+			<button type="submit" class="btn btn-secondary" onclick="load(this);">
 				<fmt:message key="teacherManageHW_hw_delete_modal_botton"/>
 			</button>
 	      </div>
 	      
 	    </div>
 	  </div>
-	</div>
-  </form>
-  
-  <!-- New Project Modal -->
-  <form id="newHw" style="margin-top: 10px;">
-	<div class="modal fade" id="newModal" tabindex="-1" role="dialog" aria-labelledby="newModal" aria-hidden="true" style="overflow-x: auto;">
-		  <div class="modal-dialog" role="document"  style="max-width: 850px;">
-		    <div class="modal-content" style="width: 850px">
-		      <div class="modal-header">
-		        <h4 class="modal-title" id="newModal"><strong><fmt:message key="teacherManageHW_h3_distributeHW"/></strong></h4>
-		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-		          <span aria-hidden="true">&times;</span>
-		        </button>
-		      </div>
-		      
-		      <div class="modal-body">
-				<div class="form-group">
-					<label for="Hw_Name"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwName"/></h4></label>
-					<input id="Hw_Name" type="text" class="form-control" name="Hw_Name" required="required" placeholder="eg. <%=courseName%>-HW1"/>
-				</div>
-				<%
-					TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
-					Date now = new Date();
-					SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-					String datestring = sdFormat.format(now);
-				%>
-				<div class="form-group" style="width: fit-content">
-					<label for="Hw_Deadline"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwDeadline"/></h4></label>
-					<input id="Hw_Deadline" type="datetime-local" class="form-control" name="Hw_Deadline" required="required" value=<%="\"" + datestring + "\""%>/>
-				</div>				
-				
-				<div class="form-group">
-					<label for="Hw_README"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwReadme"/></h4></label>
-					<textarea id="Hw_README" cols="100" rows="20" name="Hw_README" style="width: 823px; height: 200px;"></textarea>
-				</div>
-				
-				<hr>
-				
-				<div>
-					<ul class="nav nav-tabs" role="tablist">
-						<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#java" role="tab">Java</a></li>
-						<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#android" role="tab">Android</a></li>
-						<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#web" role="tab">Web</a></li>
-					</ul>
-					<!-- Tab panes -->
-					<div class="tab-content" style="margin-top: 20px; margin-left"C:/Users/WeiHan/Desktop/MvnQuickStartWithoutCheckstyle/pom.xml": 20px; width: fit-content;">
-						<div class="tab-pane active col-md-12" id="java" role="tabpanel">
-							<div class="form-group" style="width: max-content; white-space: nowrap; display: list-item">
-								<label for="fileRadio"><fmt:message key="teacherManageHW_label_zipradio"/>&nbsp; &nbsp; </label>
-								<label class="radio-inline"><input type="radio" name="fileRadio" value="Javac" onclick="changeBotton(this)" checked>Javac&nbsp; &nbsp; </label>
-								<label class="radio-inline"><input type="radio" name="fileRadio" value="Maven" onclick="changeBotton(this)">Maven</label>
-								<br>
-								<a href="JavacQuickStart.zip" class="btn btn-default" style="background-color:#F5F5F5; color: #292b2c; border-color: #ccc" id="java_download"><fmt:message key="teacherManageHW_a_downloadJavac"/></a>
-								<a href="MvnQuickStart.zip" class="btn btn-default" style="background-color:#F5F5F5; color: #292b2c; border-color: #ccc; display: none;" id="mvn_download"><fmt:message key="teacherManageHW_a_downloadMaven"/></a>
-								<a href="MvnQuickStartWithoutCheckstyle.zip" class="btn btn-default" style="background-color:#F5F5F5; color: #292b2c; border-color: #ccc; display: none;" id="mvn_no_checkstyle_download"><fmt:message key="teacherManageHW_a_downloadMavenWithoutCheckstyle"/></a>
-							</div>
-							<div class="form-group" style="width: max-content; display: list-item">
-								<label for="file"><fmt:message key="teacherManageHW_label_uploadZip"/></label>
-								<br>
-								<input type="file" accept=".zip" name="file" size="50" width="48"/>
-							</div>
-						</div>
-						<div class="tab-pane active col-md-12" id="android" role="tabpanel">
-						</div>
-						<div class="tab-pane active col-md-12" id="web" role="tabpanel">
-						</div>
-					</div>
-			  </div>
-			  
-		      <div class="modal-footer">
-		        <button type="button" class="btn btn-primary" data-dismiss="modal">
-					<fmt:message key="teacherManageGroup_button_close"/>
-				</button>
-				<button type="submit" class="btn btn-secondary" onclick="load();nicEditors.findEditor('Hw_README').saveContent();">
-					<fmt:message key="teacherManageHW_button_send"/>
-				</button>
-		      </div>
-		      
-		    </div>
-		  </div>
-		</div>
 	</div>
   </form>
 </body>
