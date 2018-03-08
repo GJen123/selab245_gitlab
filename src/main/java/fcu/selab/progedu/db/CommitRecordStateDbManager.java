@@ -38,13 +38,15 @@ public class CommitRecordStateDbManager {
    * @param nb
    *          not build
    */
-  public void addCommitRecordState(String hw, int success, int csf, int cpf, int ctf, int nb) {
+  public void addCommitRecordState(String hw, int success, int csf, int cpf, int ctf, int nb,
+      int ccs) {
+    // System.out.println("ccccccs = " + ccs);
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
     Statement stmt = null;
     String sql = "INSERT INTO "
-        + "Commit_Record_State(hw, success, checkStyleError, compileFailure, testFailure, notBuild)  "
-        + "VALUES(?, ?, ?, ?, ?, ?)";
+        + "Commit_Record_State(hw, success, checkStyleError, compileFailure, testFailure, notBuild, commitCounts)  "
+        + "VALUES(?, ?, ?, ?, ?, ?, ?)";
     String query = "SELECT * FROM CommitRecordState";
 
     try {
@@ -56,6 +58,7 @@ public class CommitRecordStateDbManager {
       preStmt.setInt(4, cpf);
       preStmt.setInt(5, ctf);
       preStmt.setInt(6, nb);
+      preStmt.setInt(7, ccs);
 
       preStmt.executeUpdate();
       preStmt.close();

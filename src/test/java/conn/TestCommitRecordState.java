@@ -32,6 +32,7 @@ public class TestCommitRecordState {
       int ctf = 0;
       int csf = 0;
       int cpf = 0;
+      int ccs = 0;
 
       if (map.containsKey("S")) {
         success = map.get("S");
@@ -53,7 +54,9 @@ public class TestCommitRecordState {
         cpf = map.get("CPF");
       }
 
-      commitRecordStateDb.addCommitRecordState(name, success, csf, cpf, ctf, nb);
+      ccs = success + ctf + csf + cpf;
+
+      commitRecordStateDb.addCommitRecordState(name, success, csf, cpf, ctf, nb, ccs);
 
     }
 
