@@ -240,11 +240,12 @@ public class CommitResultDbManager {
   public List<Integer> getCommitSum(Connection conn) {
     String query = "SELECT hw, commitCounts FROM Commit_Record_State";
     PreparedStatement preStmt = null;
+    ResultSet rs = null;
     List<Integer> array = new ArrayList<Integer>();
 
     try {
       preStmt = conn.prepareStatement(query);
-      ResultSet rs = preStmt.executeQuery();
+      rs = preStmt.executeQuery();
       while (rs.next()) {
         array.add(rs.getInt("commitCounts"));
       }
@@ -252,6 +253,8 @@ public class CommitResultDbManager {
       e.printStackTrace();
     } finally {
       try {
+        preStmt.close();
+        rs.close();
         conn.close();
       } catch (SQLException e) {
         e.printStackTrace();

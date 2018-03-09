@@ -40,7 +40,6 @@ public class CommitRecordStateDbManager {
    */
   public void addCommitRecordState(String hw, int success, int csf, int cpf, int ctf, int nb,
       int ccs) {
-    // System.out.println("ccccccs = " + ccs);
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
     Statement stmt = null;
@@ -84,11 +83,12 @@ public class CommitRecordStateDbManager {
   public List<Integer> getCommitRecordStateCounts(Connection conn, String state) {
     String query = "SELECT * FROM Commit_Record_State";
     PreparedStatement preStmt = null;
+    ResultSet rs = null;
     List<Integer> array = new ArrayList<Integer>();
 
     try {
       preStmt = conn.prepareStatement(query);
-      ResultSet rs = preStmt.executeQuery();
+      rs = preStmt.executeQuery();
       while (rs.next()) {
         array.add(rs.getInt(state));
       }
@@ -96,6 +96,8 @@ public class CommitRecordStateDbManager {
       e.printStackTrace();
     } finally {
       try {
+        preStmt.close();
+        rs.close();
         conn.close();
       } catch (SQLException e) {
         e.printStackTrace();
