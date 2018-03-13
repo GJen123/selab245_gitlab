@@ -280,7 +280,7 @@
   					<%
   					
 					for(Project project : projects) {
-						String name = project.getName().replace("T", " ");
+						String name = project.getName();
 						String deadline = project.getDeadline().replace("T", " ");
 						String createTime = project.getCreateTime();
 						if(null == createTime) {

@@ -237,8 +237,9 @@ public class CommitResultDbManager {
    *          db connection
    * @return commits sum
    */
+
   public List<Integer> getCommitSum(Connection conn) {
-    String query = "SELECT hw, commitCounts FROM Commit_Record_State";
+    String query = "SELECT commitCounts FROM Commit_Record_State";
     PreparedStatement preStmt = null;
     ResultSet rs = null;
     List<Integer> array = new ArrayList<Integer>();
