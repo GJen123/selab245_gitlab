@@ -411,7 +411,7 @@ window.onload = function() {
 	            title:{
 	                display:true,
 	                text:text,
-	                fontSize: 20,
+	                fontSize: 18,
 	                fontStyle: "normal",
 	            },
 	            tooltips: {

@@ -27,7 +27,7 @@ Highcharts.chart('chart2Demo', {
         }
     }, { // Secondary yAxis blue
         title: {
-            text: '個數',
+            text: '',
             style: {
                 color: Highcharts.getOptions().colors[0]
             }
