@@ -202,9 +202,9 @@
 			</h4>
 			<div class="card-block">
 				<ul class="nav nav-tabs" role="tablist">
-					<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#chart1" role="tab">Chart1</a></li>
-					<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#chart2" role="tab">Chart2</a></li>
-					<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#chart3" role="tab">Chart3</a></li>
+					<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#chart1" role="tab">Compile Result</a></li>
+					<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#chart2" role="tab">Commit count and Build Result</a></li>
+					<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#chart3" role="tab">Commit Record</a></li>
 				</ul>
 				<!-- Tab panes -->
 				<div class="tab-content text-center" style="margin-top: 10px">
@@ -400,6 +400,8 @@ window.onload = function() {
 	for(i in chart3Array) {
 		var chart3 = chart3Array[i];
 	    var ctx = document.getElementById("canvas_" + chart3.title).getContext("2d");
+	    var text = 'Commit Record';
+	    text.fontsize(100);
 	    window.myChart = new Chart(ctx, {
 	    	responsive: true,
 	        type: 'bubble',
@@ -408,7 +410,9 @@ window.onload = function() {
 	            responsive: true,
 	            title:{
 	                display:true,
-	                text:'Commit Record'
+	                text:text,
+	                fontSize: 20,
+	                fontStyle: "normal",
 	            },
 	            tooltips: {
 	            	enabled: true,
