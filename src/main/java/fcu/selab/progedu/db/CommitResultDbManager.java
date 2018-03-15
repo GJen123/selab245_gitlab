@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fcu.selab.progedu.data.CommitResult;
+import fcu.selab.progedu.data.User;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class CommitResultDbManager {
 
@@ -22,6 +25,7 @@ public class CommitResultDbManager {
   }
 
   private ProjectDbManager pdb = ProjectDbManager.getInstance();
+  private UserDbManager udb = UserDbManager.getInstance();
 
   /**
    * aggregate jenkins situation
@@ -265,7 +269,7 @@ public class CommitResultDbManager {
   }
 
   /**
-   * get commit result by stuId and hw
+   * get commit result by student
    * 
    * @param conn
    *          db connection
@@ -300,6 +304,90 @@ public class CommitResultDbManager {
       e.printStackTrace();
     }
     return result;
+  }
+  /**
+   * get commit result by student
+   *
+   * @param conn
+   *          db connection
+   * @param id
+   *          stuId
+   * @return commit result
+   */
+  public JSONObject getCommitResultByStudent(Connection conn, int id) {
+    PreparedStatement preStmt = null;
+    String query = "SELECT * FROM Commit_Result WHERE stuId=?";
+    JSONObject ob = new JSONObject();
+    JSONArray array = new JSONArray();
+    String name = "";
+    int gitlabId = -1;
+
+    try {
+      preStmt = conn.prepareStatement(query);
+      preStmt.setInt(1, id);
+
+      ResultSet rs = preStmt.executeQuery();
+      while (rs.next()) {
+
+        String hw = rs.getString("hw");
+
+        User user = udb.getUser(conn, id);
+        name = user.getUserName();
+        gitlabId = user.getGitLabId();
+
+        String color = rs.getString("color");
+        int commit = rs.getInt("commit");
+
+        JSONObject eachHw = new JSONObject();
+        eachHw.put("hw", hw);
+        eachHw.put("commit", commit);
+        eachHw.put("color", color);
+        array.put(eachHw);
+      }
+
+      ob.put("userName", name);
+      ob.put("gitlabId", gitlabId);
+      ob.put("commits", array);
+
+      preStmt.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return ob;
+  }
+
+  /**
+   * list all commir result
+   * @param conn db connection
+   * @return array
+   */
+  public JSONArray listAllCommitResult(Connection conn) {
+    PreparedStatement preStmt = null;
+    String query = "SELECT * FROM Commit_Result";
+    JSONArray array = new JSONArray();
+
+    try {
+      preStmt = conn.prepareStatement(query);
+
+      ResultSet rs = preStmt.executeQuery();
+      while (rs.next()) {
+        JSONObject ob = new JSONObject();
+        int id = rs.getInt("stuId");
+        String color = rs.getString("color");
+        int commit = rs.getInt("commit");
+
+        User user = udb.getUser(conn, id);
+
+        ob.put("user", user.getUserName());
+        ob.put("color", color);
+        ob.put("commit", commit + 1);
+        array.put(ob);
+      }
+      preStmt.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return array;
   }
 
   /**

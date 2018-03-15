@@ -219,7 +219,84 @@ public class UserDbManager {
 
   /**
    * Get user from database
-   * 
+   *
+   * @param id
+   *          The gitlab user id
+   * @return user
+   */
+  public User getUser(int id) {
+    User user = new User();
+    Connection conn = database.getConnection();
+    String query = "SELECT * FROM User WHERE id = ?";
+    PreparedStatement preStmt = null;
+
+    try {
+      preStmt = conn.prepareStatement(query);
+      preStmt.setInt(1, id);
+      ResultSet rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int gitLabId = rs.getInt("gitLabId");
+        String stuId = rs.getString("userName");
+        String name = rs.getString("name");
+        String password = rs.getString("password");
+        String email = rs.getString("email");
+        String privateToken = rs.getString("privateToken");
+
+        user.setGitLabId(gitLabId);
+        user.setId(id);
+        user.setUserName(stuId);
+        user.setName(name);
+        user.setPassword(password);
+        user.setEmail(email);
+        user.setPrivateToken(privateToken);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return user;
+  }
+
+  /**
+   * Get user from database
+   *
+   * @param id
+   *          The gitlab user id
+   * @return user
+   */
+  public User getUser(Connection conn, int id) {
+    User user = new User();
+    String query = "SELECT * FROM User WHERE id = ?";
+    PreparedStatement preStmt = null;
+
+    try {
+      preStmt = conn.prepareStatement(query);
+      preStmt.setInt(1, id);
+      ResultSet rs = preStmt.executeQuery();
+      while (rs.next()) {
+        int gitLabId = rs.getInt("gitLabId");
+        String stuId = rs.getString("userName");
+        String name = rs.getString("name");
+        String password = rs.getString("password");
+        String email = rs.getString("email");
+        String privateToken = rs.getString("privateToken");
+
+        user.setGitLabId(gitLabId);
+        user.setId(id);
+        user.setUserName(stuId);
+        user.setName(name);
+        user.setPassword(password);
+        user.setEmail(email);
+        user.setPrivateToken(privateToken);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return user;
+  }
+
+  /**
+   * Get user from database
+   *
    * @param userId
    *          The db user id
    * @return user
@@ -236,6 +313,31 @@ public class UserDbManager {
       ResultSet rs = preStmt.executeQuery();
       while (rs.next()) {
         name = rs.getString("name");
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return name;
+  }
+
+  /**
+   * Get user from database
+   *
+   * @param userId
+   *          The db user id
+   * @return user
+   */
+  public String getUserName(Connection conn, int userId) {
+    String query = "SELECT * FROM User WHERE id = ?";
+    PreparedStatement preStmt = null;
+    String name = "";
+
+    try {
+      preStmt = conn.prepareStatement(query);
+      preStmt.setInt(1, userId);
+      ResultSet rs = preStmt.executeQuery();
+      while (rs.next()) {
+        name = rs.getString("userName");
       }
     } catch (SQLException e) {
       e.printStackTrace();

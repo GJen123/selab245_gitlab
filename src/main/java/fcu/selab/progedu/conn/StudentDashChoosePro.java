@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import fcu.selab.progedu.config.GitlabConfig;
 import org.gitlab.api.models.GitlabProject;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,6 +22,7 @@ public class StudentDashChoosePro {
   JenkinsApi jenkins;
   JobStatus jobStatus = new JobStatus();
   CommitResultService commitResultService = new CommitResultService();
+  GitlabConfig gitlabConfig = GitlabConfig.getInstance();
 
   public StudentDashChoosePro() {
     jenkinsData = JenkinsConfig.getInstance();
@@ -56,7 +58,11 @@ public class StudentDashChoosePro {
   public String getChoosedProjectUrl(GitlabProject project) {
     String url = null;
     url = project.getHttpUrl();
-    url = url.replace("0912fe2b3e43", "140.134.26.71:20080");
+    try {
+      url = url.replace(gitlabConfig.getGitlabContainerId(), gitlabConfig.getGitlabHostUrl());
+    } catch (LoadConfigFailureException e) {
+      e.printStackTrace();
+    }
     return url;
   }
 

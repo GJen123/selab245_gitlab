@@ -44,7 +44,8 @@ public class CommitRecordStateDbManager {
     PreparedStatement preStmt = null;
     Statement stmt = null;
     String sql = "INSERT INTO "
-        + "Commit_Record_State(hw, success, checkStyleError, compileFailure, testFailure, notBuild, commitCounts)  "
+        + "Commit_Record_State(hw, success, checkStyleError, compileFailure"
+        + ", testFailure, notBuild, commitCounts)  "
         + "VALUES(?, ?, ?, ?, ?, ?, ?)";
     String query = "SELECT * FROM CommitRecordState";
 
