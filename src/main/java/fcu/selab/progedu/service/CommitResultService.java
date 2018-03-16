@@ -27,6 +27,7 @@ import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.StudentDashChoosePro;
 import fcu.selab.progedu.data.CommitResult;
 import fcu.selab.progedu.db.CommitRecordDbManager;
+import fcu.selab.progedu.db.CommitRecordStateDbManager;
 import fcu.selab.progedu.db.CommitResultDbManager;
 import fcu.selab.progedu.db.IDatabase;
 import fcu.selab.progedu.db.MySqlDatabase;
@@ -37,6 +38,7 @@ import fcu.selab.progedu.jenkins.JenkinsApi;
 @Path("commits/")
 public class CommitResultService {
   CommitResultDbManager db = CommitResultDbManager.getInstance();
+  CommitRecordStateDbManager crsdb = CommitRecordStateDbManager.getInstance();
   UserDbManager userDb = UserDbManager.getInstance();
   IDatabase database = new MySqlDatabase();
 
@@ -77,7 +79,7 @@ public class CommitResultService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCommitSum() {
     Connection connection = database.getConnection();
-    List<Integer> array = db.getCommitSum(connection);
+    List<Integer> array = crsdb.getCommitSum(connection);
     JSONObject ob = new JSONObject();
     ob.put("data", array);
     ob.put("name", "commit counts");

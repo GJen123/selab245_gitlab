@@ -106,4 +106,38 @@ public class CommitRecordStateDbManager {
     return array;
   }
 
+  /**
+   * get commits sum group by hw
+   * 
+   * @param conn
+   *          db connection
+   * @return commits sum
+   */
+
+  public List<Integer> getCommitSum(Connection conn) {
+    String query = "SELECT commitCounts FROM Commit_Record_State";
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+    List<Integer> array = new ArrayList<Integer>();
+
+    try {
+      preStmt = conn.prepareStatement(query);
+      rs = preStmt.executeQuery();
+      while (rs.next()) {
+        array.add(rs.getInt("commitCounts"));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        preStmt.close();
+        rs.close();
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+    return array;
+  }
+
 }
