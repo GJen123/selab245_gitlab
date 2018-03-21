@@ -190,6 +190,13 @@
 		function sendEditId(a) {
 			var id = a.id;
 			document.getElementById("Edit_Hw_Name").value = id;
+
+			var deadline = document.getElementById(id + '_deadline').innerHTML;
+			deadline = deadline.replace(' ', 'T');
+            document.getElementById("edit_Hw_Deadline").value = deadline;
+
+            var readMe = document.getElementById(id + '_readMe').innerHTML;
+			nicEditors.findEditor('edit_Hw_README').setContent(readMe);
 		}
 	</script>
 	<script>
@@ -282,17 +289,19 @@
   					<%
   					
 					for(Project project : projects) {
-						String name = project.getName();
-						String deadline = project.getDeadline().replace("T", " ");
-						String createTime = project.getCreateTime();
-						if(null == createTime) {
-							createTime = "";
-						}
+					  String name = project.getName();
+					  String deadline = project.getDeadline().replace("T", " ");
+					  String createTime = project.getCreateTime();
+					  String readMe = project.getDescription();
+					  if(null == createTime) {
+					    createTime = "";
+					  }
 					%>
   					<tr>
-  						<td><%=name %></td>
-  						<td><%=createTime %></td>
-  						<td><%=deadline %></td>
+  						<td id=<%=name + "_name"%>><%=name %></td>
+  						<td id=<%=name + "_createTime"%>><%=createTime %></td>
+  						<td id=<%=name + "_deadline"%>><%=deadline %></td>
+  						<td style="display: none;" id=<%=name + "_readMe"%>><%=readMe %></td>
   						<td class="text-center">
   							<a id="<%=name %>" data-toggle="modal" data-target="#editModal" onclick="sendEditId(this)">
   								<i class="fa fa-lg fa-pencil-square-o" aria-hidden="true" style="line-height: 25px"></i>
@@ -303,7 +312,7 @@
   								<i class="fa fa-lg fa-times" aria-hidden="true" style="line-height: 25px; color: red;"></i>
   							</a>
   						</td>
-  						</tr>
+					</tr>
   					<%
   					}
   					%>
@@ -394,12 +403,12 @@
 	      	<input type="hidden" id="Edit_Hw_Name" name="Edit_Hw_Name"/>
 		    <div class="form-group" style="width: fit-content">
 				<label for="Hw_Deadline"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwDeadline"/></h4></label>
-				<input id="Hw_Deadline" type="datetime-local" class="form-control" name="Hw_Deadline"/>
+				<input id="edit_Hw_Deadline" type="datetime-local" class="form-control" name="Hw_Deadline"/>
 			</div>
 			<div class="form-group">
 				<label for="Hw_README"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwReadme"/></h4></label>
 				<div class="form-group" style="width: fit-content">
-					<textarea id="Hw_README" cols="100" rows="20" name="Hw_README" style="width: 823px; height: 200px;"></textarea>
+					<textarea id="edit_Hw_README" cols="100" rows="20" name="Hw_README" style="width: 823px; height: 200px;"></textarea>
 				</div>
 			</div>
 		  </div>
@@ -408,7 +417,7 @@
 	        <button type="button" class="btn btn-secondary" data-dismiss="modal">
 				<fmt:message key="teacherManageGroup_button_close"/>
 			</button>
-			<button type="submit" class="btn btn-primary" name="edit_btn" onclick="load(); nicEditors.findEditor('Hw_README').saveContent();">
+			<button type="submit" class="btn btn-primary" name="edit_btn" onclick="load(this); nicEditors.findEditor('edit_Hw_README').saveContent();">
 				<fmt:message key="teacherManageGroup_button_send"/>
 			</button>
 	      </div>

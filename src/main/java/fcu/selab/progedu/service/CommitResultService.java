@@ -228,7 +228,6 @@ public class CommitResultService {
       String consoleText = checkErrorStyle(jenkinsData, userName, proName, buildNum.get(num));
       boolean isCheckStyle = jenkinsApi.checkIsCheckstyleError(consoleText);
       boolean isJunitError = jenkinsApi.checkIsJunitError(consoleText);
-      System.out.println(isCheckStyle + ", " + isJunitError);
       if (isCheckStyle) {
         color = "CSF";
       }
@@ -240,23 +239,13 @@ public class CommitResultService {
       color = color.replaceAll("_anime", "");
     }
 
-    String courseName = "";
-    try {
-      courseName = CourseConfig.getInstance().getCourseName();
-    } catch (LoadConfigFailureException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-
     IDatabase database = new MySqlDatabase();
     Connection connection = database.getConnection();
-    UserDbManager db = UserDbManager.getInstance();
-    CommitResultDbManager commiResulttDb = CommitResultDbManager.getInstance();
 
     String buildApiJson = stuDashChoPro.getBuildApiJson(buildNum.get(num), userName, proName);
     String strDate = stuDashChoPro.getCommitTime(buildApiJson);
     String[] dates = strDate.split(" ");
-    int id = db.getUser(userName).getId();
+    int id = userDb.getUser(userName).getId();
 
     switch (color) {
       case "blue":
@@ -273,22 +262,21 @@ public class CommitResultService {
         break;
     }
 
-    boolean check = commiResulttDb.checkJenkinsJobTimestamp(connection, id, proName);
+    boolean check = db.checkJenkinsJobTimestamp(connection, id, proName);
     if (check) {
-      commiResulttDb.updateJenkinsCommitCount(connection, id, proName, commit, color);
-      commiResulttDb.updateJenkinsJobTimestamp(connection, id, proName, strDate);
+      db.updateJenkinsCommitCount(connection, id, proName, commit, color);
+      db.updateJenkinsJobTimestamp(connection, id, proName, strDate);
     } else {
-      commiResulttDb.insertJenkinsCommitCount(connection, id, proName, commit, color);
-      commiResulttDb.updateJenkinsJobTimestamp(connection, id, proName, strDate);
+      db.insertJenkinsCommitCount(connection, id, proName, commit, color);
+      db.updateJenkinsJobTimestamp(connection, id, proName, strDate);
     }
 
-    CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
     boolean inDb = commitRecordDb.checkRecord(connection, id, proName, color, dates[0], dates[1]);
     if (!inDb) {
       commitRecordDb.insertCommitRecord(connection, id, proName, color, dates[0], dates[1]);
     }
 
-    updateCommitRecordState();
+//    updateCommitRecordState();
 
     try {
       connection.close();

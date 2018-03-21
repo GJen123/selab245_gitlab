@@ -576,14 +576,7 @@ public class ProjectService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response editProject(@FormDataParam("Edit_Hw_Name") String name,
       @FormDataParam("Hw_Deadline") String deadline, @FormDataParam("Hw_README") String readMe) {
-    System.out.println("name: " + name);
-    if (!deadline.equals("") && !readMe.equals("<br>")) { // has deadline readMe
-      dbManager.editProject(deadline, readMe, name);
-    } else if (!readMe.equals("<br>") && deadline.equals("")) { // no deadline
-      dbManager.editProjectReadMe(readMe, name);
-    } else if (readMe.equals("<br>") && !deadline.equals("")) { // no ReadMe
-      dbManager.editProjectDeadline(deadline, name);
-    }
+    dbManager.editProject(deadline, readMe, name);
 
     Response response = Response.ok().build();
     if (!isSave) {
