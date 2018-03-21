@@ -7,10 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import fcu.selab.progedu.data.CommitResult;
-import fcu.selab.progedu.data.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import fcu.selab.progedu.data.CommitResult;
+import fcu.selab.progedu.data.User;
 
 public class CommitResultDbManager {
 
@@ -305,6 +306,7 @@ public class CommitResultDbManager {
     }
     return result;
   }
+
   /**
    * get commit result by student
    *
@@ -358,7 +360,9 @@ public class CommitResultDbManager {
 
   /**
    * list all commir result
-   * @param conn db connection
+   * 
+   * @param conn
+   *          db connection
    * @return array
    */
   public JSONArray listAllCommitResult(Connection conn) {

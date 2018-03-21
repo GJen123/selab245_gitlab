@@ -49,6 +49,9 @@ public class CommitRecordStateService {
     return response;
   }
 
+  /**
+   * update Commit_Record_State table
+   */
   public void updateCommitRecordState() {
 
     List<String> lsNames = new ArrayList<String>();
@@ -65,7 +68,6 @@ public class CommitRecordStateService {
       int ctf = 0;
       int csf = 0;
       int cpf = 0;
-      int ccs = 0;
 
       if (map.containsKey("S")) {
         success = map.get("S");
@@ -86,6 +88,8 @@ public class CommitRecordStateService {
       if (map.containsKey("CPF")) {
         cpf = map.get("CPF");
       }
+
+      int ccs = 0;
 
       ccs = success + ctf + csf + cpf;
 
