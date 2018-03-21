@@ -8,7 +8,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -31,6 +34,7 @@ import fcu.selab.progedu.db.CommitRecordStateDbManager;
 import fcu.selab.progedu.db.CommitResultDbManager;
 import fcu.selab.progedu.db.IDatabase;
 import fcu.selab.progedu.db.MySqlDatabase;
+import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
@@ -38,8 +42,10 @@ import fcu.selab.progedu.jenkins.JenkinsApi;
 @Path("commits/")
 public class CommitResultService {
   CommitResultDbManager db = CommitResultDbManager.getInstance();
+  CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
   CommitRecordStateDbManager crsdb = CommitRecordStateDbManager.getInstance();
   UserDbManager userDb = UserDbManager.getInstance();
+  ProjectDbManager projectDb = ProjectDbManager.getInstance();
   IDatabase database = new MySqlDatabase();
 
   /**
@@ -256,12 +262,61 @@ public class CommitResultService {
       commitRecordDb.insertCommitRecord(connection, id, proName, color, dates[0], dates[1]);
     }
 
+    updateCommitRecordState();
+
     try {
       connection.close();
     } catch (SQLException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
+  }
+
+  private void updateCommitRecordState() {
+    // TODO Auto-generated method stub
+
+    List<String> lsNames = new ArrayList<String>();
+    lsNames = projectDb.listAllProjectNames();
+
+    for (String name : lsNames) {
+
+      Map<String, Integer> map = new HashMap<>();
+
+      map = commitRecordDb.getCommitRecordStateCounts(name);
+
+      int success = 0;
+      int nb = 0;
+      int ctf = 0;
+      int csf = 0;
+      int cpf = 0;
+      int ccs = 0;
+
+      if (map.containsKey("S")) {
+        success = map.get("S");
+      }
+
+      if (map.containsKey("NB")) {
+        nb = map.get("NB");
+      }
+
+      if (map.containsKey("CTF")) {
+        ctf = map.get("CTF");
+      }
+
+      if (map.containsKey("CSF")) {
+        csf = map.get("CSF");
+      }
+
+      if (map.containsKey("CPF")) {
+        cpf = map.get("CPF");
+      }
+
+      ccs = success + ctf + csf + cpf;
+
+      crsdb.addCommitRecordState(name, success, csf, cpf, ctf, nb, ccs);
+
+    }
+
   }
 
   /**
