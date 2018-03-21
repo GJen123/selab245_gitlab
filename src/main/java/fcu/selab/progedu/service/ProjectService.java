@@ -119,7 +119,7 @@ public class ProjectService {
     String filePath = null;
     boolean hasTemplate = false;
 
-    // 1. Create root project and get project id and url
+//     1. Create root project and get project id and url
     createRootProject(name);
     rootProjectUrl = getThisProjectUrl(name);
 
@@ -183,8 +183,8 @@ public class ProjectService {
     // execCmd(pushCommand, name);
 
     // remove project file in linux
-    // String removeFileCommand = "rm -rf uploads/";
-    // execLinuxCommandInFile(removeFileCommand, tempDir);
+    String removeFileCommand = "rm -rf uploads/";
+    execLinuxCommandInFile(removeFileCommand, tempDir);
 
     // 9. Add project to database
     Date date = new Date();
@@ -528,7 +528,7 @@ public class ProjectService {
   @Path("delete")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response deleteProject(@FormDataParam("Hw_Name") String name) {
+  public Response deleteProject(@FormDataParam("del_Hw_Name") String name) {
 
     // delete db
     dbManager.deleteProject(name);
@@ -615,6 +615,10 @@ public class ProjectService {
     testZipUrl = zipHandler.getUrlForJenkinsDownloadTestFile();
   }
 
+  /**
+   * get course name
+   * @return course name
+   */
   public String getCourseName() {
     String name = "";
     try {

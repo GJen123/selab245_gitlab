@@ -1,11 +1,12 @@
 package fcu.selab.progedu.service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.FileInputStream;
+import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -53,22 +54,23 @@ public class UserService {
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
     boolean isSave = true;
 
-    String tempDir = System.getProperty("java.io.tmpdir");
-
-    String uploadDir = tempDir + "/uploads/";
-
-    File fileUploadDir = new File(uploadDir);
-    if (!fileUploadDir.exists()) {
-      fileUploadDir.mkdirs();
-    }
-    String fileName = fileDetail.getFileName();
-    String uploadedFileLocation = uploadDir + fileName;
-    System.out.println("uploadDir : " + uploadDir);
-    System.out.println("fileName : " + fileName);
-    System.out.println("uploadedFileLocation : " + uploadedFileLocation);
-    List<String> studentList = new ArrayList<String>();
-
     try {
+      String tempDir = System.getProperty("java.io.tmpdir");
+
+      String uploadDir = tempDir + "/uploads/";
+
+      File fileUploadDir = new File(uploadDir);
+      if (!fileUploadDir.exists()) {
+        fileUploadDir.mkdirs();
+      }
+      String fileName = fileDetail.getFileName();
+      String uploadedFileLocation = uploadDir + fileName;
+      System.out.println("uploadDir : " + uploadDir);
+      System.out.println("fileName : " + fileName);
+      System.out.println("uploadedFileLocation : " + uploadedFileLocation);
+
+      List<String> studentList = new ArrayList<String>();
+
       FileOutputStream out = new FileOutputStream(new File(uploadedFileLocation));
       int read = 0;
       byte[] bytes = new byte[1024];
@@ -78,8 +80,10 @@ public class UserService {
       }
 
       // parse file
-      FileReader fr = new FileReader(uploadedFileLocation);
-      BufferedReader br = new BufferedReader(fr);
+      File file = new File(uploadedFileLocation);
+      InputStreamReader fr = new InputStreamReader(new FileInputStream(file),"BIG5");
+      BufferedReader br;
+      br = new BufferedReader(fr);
 
       String line = "";
       String convert = "";
@@ -90,18 +94,16 @@ public class UserService {
         for (int i = 1; i < row.length; i++) {
           convert = convert + "," + row[i];
         }
-        System.out.println(convert + "\n");
 
         studentList.add(convert);
       }
       register(studentList);
 
-      fr.close();
       br.close();
 
       out.flush();
       out.close();
-    } catch (IOException e) {
+    } catch (Exception e) {
       isSave = false;
       e.printStackTrace();
     }
@@ -154,8 +156,9 @@ public class UserService {
       student.setEmail(email);
       student.setName(fullName);
       lsStudent.add(student);
+      boolean check = userConn.createUser(email, password, userName, fullName);
 
-      if (userConn.createUser(email, password, userName, fullName)) {
+      if (check) {
         System.out.println("register " + row[1] + " success!");
       }
     }
@@ -220,8 +223,10 @@ public class UserService {
     System.out.println("userId : " + userId);
     
     String userName = userConn.getUserById(userId).getUsername();
-    boolean check = dbManager.checkPassword(userName, oldPwd);
-    if (!check) {
+    System.out.println(userName);
+    boolean check = dbManager.checkPassword(userName, newPwd);
+    if (check) {
+      System.out.println("false");
       Response response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
       return response;
     } else {

@@ -261,6 +261,7 @@
 							  	<%
 							  	i++;
 							  	lastBuildMessageNum = num;
+							  	System.out.println(num);
 							}
 						%>
 					</tbody>

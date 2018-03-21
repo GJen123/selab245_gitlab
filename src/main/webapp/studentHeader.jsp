@@ -57,7 +57,11 @@
 			}
 			else if(newPwd!==checkPwd) {
 				alert("The password does not match!");
-			}else {
+			} else if(newPwd.length < 8) {
+                alert("The password is too short (minimum is 8 characters)");
+            }
+            else
+            {
 				$.ajax({
 					url : 'webapi/user/changePwd',
 					type : 'POST',
@@ -69,8 +73,8 @@
 					processData : false,
 					success : function(response) {
 						alert("Updated!");
-						top.location.href = "studentDashboard.jsp";
-					}, 
+						top.location.href = "index.jsp";
+					},
 					error : function(response) {
 						alert("Failed! Please try again.");
 					}

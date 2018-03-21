@@ -12,7 +12,7 @@
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
         <url>http://140.134.26.71:20080/m0602765/oop-hw1.git</url>
-        <credentialsId>b418c20c-ac40-49ce-b27f-e3c796837ce6</credentialsId>
+        <credentialsId>gitlab_root</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>

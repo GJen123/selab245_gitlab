@@ -119,6 +119,7 @@
 				error : function(response,A,B) {
 					console.log(response,A,B);
 					alert("failed!");
+					location.reload();
 				}
 			});
 			return false;
@@ -146,6 +147,7 @@
 				error : function(response,A,B) {
 					console.log(response,A,B);
 					alert("failed!");
+					location.reload();
 				}
 			});
 			return false;
@@ -181,7 +183,7 @@
 	<script type="text/javascript">
 		function sendDeleteId(a) {
 			var id = a.id;
-			document.getElementById("Hw_Name").value = id;
+			document.getElementById("del_Hw_Name").value = id;
 		}
 	</script>
 	<script type="text/javascript">

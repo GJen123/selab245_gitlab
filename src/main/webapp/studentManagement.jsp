@@ -103,8 +103,10 @@
 					alert("uploaded!");
 					top.location.href = "studentManagement.jsp";
 				}, 
-				error : function(response) {
+				error : function(a, b, c) {
+				    console.log(a.status, b, c)
 					alert("failed!");
+                    location.reload();
 				}
 			});
 			return false;

@@ -23,6 +23,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import fcu.selab.progedu.data.User;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fcu.selab.progedu.config.CourseConfig;
@@ -88,7 +90,8 @@ public class CommitResultService {
     List<Integer> array = crsdb.getCommitSum(connection);
     JSONObject ob = new JSONObject();
     ob.put("data", array);
-    ob.put("name", "commit counts");
+    ob.put("name", "commit counts")
+    ;
     ob.put("type", "column");
     try {
       connection.close();
@@ -116,13 +119,7 @@ public class CommitResultService {
       @QueryParam("userName") String userName) {
     Connection connection = database.getConnection();
     int id = userDb.getUser(userName).getId();
-    String courseName = "";
-    try {
-      courseName = CourseConfig.getInstance().getCourseName();
-    } catch (LoadConfigFailureException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+
     CommitResult commitResult = db.getCommitResultByStudentAndHw(connection, id, proName);
     String circleColor = "circle " + commitResult.getColor();
     String result = userName + "_" + proName + "," + circleColor + ","
@@ -135,6 +132,36 @@ public class CommitResultService {
       e.printStackTrace();
     }
     Response response = Response.ok().entity(result).build();
+    return response;
+  }
+
+  /**
+   * get all commit result
+   *
+   * @return hw, color, commit
+   */
+  @GET
+  @Path("all")
+  @Produces(MediaType.TEXT_PLAIN)
+  public Response getCommitResult() {
+    Connection connection = database.getConnection();
+    JSONArray array = new JSONArray();
+    JSONObject result = new JSONObject();
+
+    List<User> users = userDb.listAllUsers();
+    for (User user: users) {
+      JSONObject ob = db.getCommitResultByStudent(connection, user.getId());
+      array.put(ob);
+    }
+    result.put("result", array);
+
+    try {
+      connection.close();
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    Response response = Response.ok().entity(result.toString()).build();
     return response;
   }
 
