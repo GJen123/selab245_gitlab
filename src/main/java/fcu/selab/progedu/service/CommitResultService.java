@@ -8,8 +8,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.concurrent.BrokenBarrierException;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -62,12 +64,12 @@ public class CommitResultService {
     Connection connection = database.getConnection();
     JSONObject commitCounts = db.getCounts(connection, color);
     List<Integer> counts = new ArrayList<Integer>();
-    List<String> pNames = projectDb.listAllProjectNames();
+    List<String> pnames = projectDb.listAllProjectNames();
 
 
-    for(String pname : pNames) {
-        int count = commitCounts.optInt(pname);
-        counts.add(count);
+    for (String pname : pnames) {
+      int count = commitCounts.optInt(pname);
+      counts.add(count);
     }
 
     switch (color) {
