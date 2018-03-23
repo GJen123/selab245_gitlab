@@ -8,10 +8,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.BrokenBarrierException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -62,11 +60,39 @@ public class CommitResultService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCounts(@QueryParam("color") String color) {
     Connection connection = database.getConnection();
-    List<Integer> array = db.getCounts(connection, color);
+    JSONObject commitCounts = db.getCounts(connection, color);
+    List<Integer> counts = new ArrayList<Integer>();
+    List<String> pNames = projectDb.listAllProjectNames();
+
+
+    for(String pname : pNames) {
+        int count = commitCounts.optInt(pname);
+        counts.add(count);
+    }
+
+    switch (color) {
+      case "S":
+        color = "success";
+        break;
+      case "CPF":
+        color = "compile failure";
+        break;
+      case "CSF":
+        color = "checkstyle failure";
+        break;
+      case "CTF":
+        color = "JUnit failure";
+        break;
+      case "NB":
+        color = "not build";
+        break;
+      default:
+        break;
+    }
+
     JSONObject ob = new JSONObject();
-    ob.put("data", array);
+    ob.put("data", counts);
     ob.put("name", color);
-    // ob.put("type", "spline");
     try {
       connection.close();
     } catch (SQLException e) {

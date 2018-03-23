@@ -210,18 +210,20 @@ public class CommitResultDbManager {
    *          db connection
    * @return counts
    */
-  public List<Integer> getCounts(Connection conn, String color) {
+  public JSONObject getCounts(Connection conn, String color) {
     String query = "SELECT hw,count(color) FROM Commit_Result " + "where color like ? group by hw";
     PreparedStatement preStmt = null;
-    List<Integer> array;
-    array = new ArrayList<Integer>();
+    JSONObject ob = new JSONObject();
 
     try {
       preStmt = conn.prepareStatement(query);
       preStmt.setString(1, color);
       ResultSet rs = preStmt.executeQuery();
       while (rs.next()) {
-        array.add(rs.getInt("count(color)"));
+        String hw = rs.getString("hw");
+        int count = rs.getInt("count(color)");
+
+        ob.put(hw, count);
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -232,7 +234,7 @@ public class CommitResultDbManager {
         e.printStackTrace();
       }
     }
-    return array;
+    return ob;
   }
 
   // /**

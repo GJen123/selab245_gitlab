@@ -361,7 +361,7 @@ Highcharts.setOptions({
 <!-- set Highchart colors -->
 <script>
 Highcharts.setOptions({
-	 colors: ['#878787', '#5fa7e8', '#e52424', 'gold', '#32CD32']
+	 colors: ['#878787', '#5fa7e8', 'gold',  '#e52424', '#32CD32']
 	})
 </script>
 

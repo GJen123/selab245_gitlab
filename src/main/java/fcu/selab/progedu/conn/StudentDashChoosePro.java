@@ -58,12 +58,11 @@ public class StudentDashChoosePro {
   public String getChoosedProjectUrl(GitlabProject project) {
     String url = null;
     url = project.getHttpUrl();
-    // try {
-    // url = url.replace(gitlabConfig.getGitlabContainerId(),
-    // gitlabConfig.getGitlabHostUrl());
-    // } catch (LoadConfigFailureException e) {
-    // e.printStackTrace();
-    // }
+    try {
+      url = url.replace(gitlabConfig.getGitlabContainerId(),gitlabConfig.getGitlabHostUrl());
+    } catch (LoadConfigFailureException e) {
+      e.printStackTrace();
+    }
     return url;
   }
 
