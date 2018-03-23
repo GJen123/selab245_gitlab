@@ -198,7 +198,7 @@
 		<div class="card" style="width: max-content;">
 			<h4 id="Student Projects" class="card-header">
 				<i class="fa fa-table" aria-hidden="true"></i>&nbsp;
-				<fmt:message key="dashboard_li_studentProjects" />
+				<fmt:message key="dashboard_li_chart" />
 			</h4>
 			<div class="card-block">
 				<ul class="nav nav-tabs" role="tablist">

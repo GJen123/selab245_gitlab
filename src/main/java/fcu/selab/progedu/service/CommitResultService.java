@@ -276,7 +276,7 @@ public class CommitResultService {
       commitRecordDb.insertCommitRecord(connection, id, proName, color, dates[0], dates[1]);
     }
 
-//    updateCommitRecordState();
+    // updateCommitRecordState();
 
     try {
       connection.close();
@@ -285,6 +285,10 @@ public class CommitResultService {
       e.printStackTrace();
     }
   }
+
+  /**
+   * update Commit_Record_State
+   */
 
   private void updateCommitRecordState() {
     // TODO Auto-generated method stub
