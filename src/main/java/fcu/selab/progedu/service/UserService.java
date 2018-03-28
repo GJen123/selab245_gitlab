@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
@@ -163,6 +164,26 @@ public class UserService {
       }
     }
     printStudent(lsStudent);
+  }
+
+  @POST
+  @Path("new")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  public Response createAStudentAccount(@FormDataParam("studentName") String name,
+                                        @FormDataParam("studentId") String id,
+                                        @FormDataParam("studentEmail") String email) {
+    boolean isSave = false;
+    System.out.println("student: " + name + ", " + id + ", " + email);
+    try{
+      isSave = userConn.createUser(email, id, id, name);
+    } catch (Exception e){
+
+    }
+    Response response = Response.ok().build();
+    if (!isSave) {
+      response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+    return response;
   }
 
   /**

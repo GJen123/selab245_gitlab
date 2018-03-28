@@ -91,4 +91,17 @@ public class GitlabConfig {
     throw new LoadConfigFailureException(
       "Unable to get config of GITLAB connection string from file;" + PROPERTY_FILE);
   }
+
+  /**
+   * Get gitlab container id
+   * @return container id
+   * @throws LoadConfigFailureException on properties call error
+   */
+  public String getGitlabContainerId() throws LoadConfigFailureException {
+    if (props != null) {
+      return props.getProperty("GITLAB_CONTAINER");
+    }
+    throw new LoadConfigFailureException(
+            "Unable to get config of GITLAB connection string from file;" + PROPERTY_FILE);
+  }
 }
