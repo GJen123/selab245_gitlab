@@ -80,16 +80,6 @@ public class JenkinsService {
     int checkstyleErrorAmount = 0;
     if (null != apiJson) {
       color = jenkins.getJobJsonColor(apiJson);
-      // if (isMaven) {
-      // if (color.equals("red")) {
-      // JSONObject checkstyleDes = jenkins.getCheckstyleDes(apiJson);
-      // checkstyleErrorAmount =
-      // jenkins.getCheckstyleErrorAmount(checkstyleDes);
-      // if (checkstyleErrorAmount != 0) {
-      // color = "orange";
-      // }
-      // }
-      // }
     }
 
     String circleColor = "";

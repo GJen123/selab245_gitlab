@@ -21,8 +21,6 @@ public class TestGetJobTimestamp {
 
   public static void main(String[] args) {
     // TODO Auto-generated method stub
-    IDatabase database = new MySqlDatabase();
-    Connection connection = database.getConnection();
     UserDbManager db = UserDbManager.getInstance();
     List<User> users = db.listAllUsers();
     ProjectDbManager Pdb = ProjectDbManager.getInstance();
@@ -50,7 +48,7 @@ public class TestGetJobTimestamp {
             String strDate = stuDashChoPro.getCommitTime(buildApiJson);
             int id = db.getUser(userName).getId();
             String pro = proName.replace("OOP-HW", "");
-            boolean check = commitDb.updateJenkinsJobTimestamp(connection, id, pro, strDate);
+            boolean check = commitDb.updateJenkinsJobTimestamp(id, pro, strDate);
             if (check) {
               System.out.println(userName + ", " + proName + ", " + strDate);
             }

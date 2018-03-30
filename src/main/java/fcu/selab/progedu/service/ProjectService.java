@@ -546,6 +546,7 @@ public class ProjectService {
       // update test case
       storeFileToTestsFolder(fileDetail.getFileName(), uploadedInputStream);
       // update database checksum
+      String checksum = "";
       dbManager.updateProjectChecksum(name, checksum);
     }
 

@@ -22,8 +22,6 @@ import fcu.selab.progedu.service.JenkinsService;
 public class TestInsertJenkinsData {
 
   public static void main(String[] args) {
-    IDatabase database = new MySqlDatabase();
-    Connection connection = database.getConnection();
 
     UserDbManager db = UserDbManager.getInstance();
     ProjectDbManager Pdb = ProjectDbManager.getInstance();
@@ -74,28 +72,20 @@ public class TestInsertJenkinsData {
           String strDate = stuDashChoPro.getCommitTime(buildApiJson);
           int id = db.getUser(userName).getId();
 
-          boolean check = commitDb.checkJenkinsJobTimestamp(connection, user.getId(), hw);
+          boolean check = commitDb.checkJenkinsJobTimestamp(user.getId(), hw);
           if (check) {
-            commitDb.updateJenkinsCommitCount(connection, id, hw, commit, color);
-            commitDb.updateJenkinsJobTimestamp(connection, id, hw, strDate);
+            commitDb.updateJenkinsCommitCount(id, hw, commit, color);
+            commitDb.updateJenkinsJobTimestamp(id, hw, strDate);
             System.out.println("update, " + user.getId() + ", " + hw + ", " + commit + ", " + color
                 + ", " + strDate);
           } else {
-            commitDb.insertJenkinsCommitCount(connection, id, hw, commit, color);
-            commitDb.updateJenkinsJobTimestamp(connection, id, hw, strDate);
+            commitDb.insertJenkinsCommitCount(id, hw, commit, color);
+            commitDb.updateJenkinsJobTimestamp(id, hw, strDate);
             System.out.println("insert, " + user.getId() + ", " + hw + ", " + commit + ", " + color
                 + ", " + strDate);
           }
         }
       }
-    }
-    try
-
-    {
-      connection.close();
-    } catch (SQLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
     }
   }
 }

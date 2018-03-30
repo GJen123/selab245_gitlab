@@ -206,6 +206,11 @@
 </body>
 <script type="text/javascript">
     var projectCount = <%=dbProjects.size()%>
+    var projects = [];
+    <% for (int i=0; i<dbProjects.size(); i++) { %>
+            projects.push("<%=dbProjects.get(i).getName()%>");
+    <% } %>
+
     $.ajax({
         url : 'webapi/commits/all',
         type : 'GET',
@@ -214,7 +219,6 @@
         contentType: 'application/json; charset=UTF-8',
         success : function(responseText) {
             var result = JSON.parse(responseText);
-            console.log(result)
             setData(result.result);
         },
         error : function(responseText) {
@@ -234,23 +238,45 @@
             content += '<td width="10%" id="allProject"><a href="dashStuChoosed.jsp?studentId=' + gitlabId + '">' + userName + '</a></td>';
 
             if(commits.length > 0){
-                for(j in commits) {
-                    var hw = commits[j]
-                    var hwName = hw.hw;
-                    var commit = hw.commit + 1;
-                    var color = 'circle ' + hw.color;
+                for(j in projects) {
+                    var thName = projects[j];
+                    console.log('project' + j + ': ' + thName)
 
-                    content += '<td style="padding: 10px 0px 0px 30px;">';
-                    content += '<p id="' + userName + '_' + hwName + '" class="' + color + '">';
-                    content += '<a id="' + userName + '_' + hwName + '_commit" href="dashStuChoosed.jsp?studentId=' + gitlabId + '&proName=' + hwName + '">';
-                    content += commit;
-                    content += '</a>';
-                    content += '</p></td>';
+                    for(k in commits) {
+                        var pName;
+                        var hw = commits[k];
+                        var hwName = hw.hw;
+                        var commit = hw.commit + 1;
+                        var color = 'circle ' + hw.color;
+                        if(thName == hwName) {
+                            pName = hwName;
+                            console.log('commits' + k + ': ' + hwName)
+                            break;
+                        }
+                        else {
+                            console.log('commits' + k + ' else: ' + hwName)
+                            pName = 'N/A';
+                        }
+                    }
+                    console.log('result: ' + pName)
+
+                    if(pName == undefined || pName == 'N/A') {
+                        content += '<td style="padding: 10px 0px 0px 30px;">';
+                        content += '<p>' + pName + '</p></td>';
+                    } else {
+                        pName = hwName;
+                        content += '<td style="padding: 10px 0px 0px 30px;">';
+                        content += '<p id="' + userName + '_' + hwName + '" class="' + color + '">';
+                        content += '<a id="' + userName + '_' + hwName + '_commit" href="dashStuChoosed.jsp?studentId=' + gitlabId + '&proName=' + hwName + '">';
+                        content += commit;
+                        content += '</a>';
+                        content += '</p></td>';
+                    }
+                    console.log('============================')
                 }
                 content += '</tr>';
                 $('#dashboard').append(content)
             } else {
-                console.log(userName)
                 for (var i=0; i<projectCount; i++) {
                     content += '<td style="padding: 10px 0px 0px 30px;">';
                     content += '<p>N/A</p></td>';
