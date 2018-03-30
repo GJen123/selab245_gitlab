@@ -258,6 +258,25 @@ public class ProjectDbManager {
    *          new checksum
    */
   public void updateProjectChecksum(String name, String checksum) {
-
+    Connection conn = database.getConnection();
+    PreparedStatement preStmt = null;
+    String sql = "UPDATE Assignment SET checksum=? WHERE name=?";
+    try {
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setString(1, checksum);
+      preStmt.setString(2, name);
+      System.out.println(preStmt.toString());
+      preStmt.executeUpdate();
+      preStmt.close();
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
   }
 }
