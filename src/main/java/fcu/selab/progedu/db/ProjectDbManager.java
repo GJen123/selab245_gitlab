@@ -248,4 +248,16 @@ public class ProjectDbManager {
       }
     }
   }
+
+  /**
+   * Edit project checksum
+   * 
+   * @param name
+   *          project name
+   * @param checksum
+   *          new checksum
+   */
+  public void updateProjectChecksum(String name, String checksum) {
+
+  }
 }

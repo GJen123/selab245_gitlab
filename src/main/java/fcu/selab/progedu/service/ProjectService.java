@@ -34,12 +34,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import fcu.selab.progedu.config.CourseConfig;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.Conn;
@@ -70,6 +70,7 @@ public class ProjectService {
 
   private static final String tempDir = System.getProperty("java.io.tmpdir");
   private static String uploadDir = tempDir + "/uploads/";
+  private static String testDir = tempDir + "/tests/";
 
   boolean isSave = true;
 
@@ -119,7 +120,7 @@ public class ProjectService {
     String filePath = null;
     boolean hasTemplate = false;
 
-//     1. Create root project and get project id and url
+    // 1. Create root project and get project id and url
     createRootProject(name);
     rootProjectUrl = getThisProjectUrl(name);
 
@@ -224,18 +225,6 @@ public class ProjectService {
     return dbManager.listAllProjectNames();
   }
 
-  private int getThisProjectId(String name) {
-    Integer id = null;
-    List<GitlabProject> rootProjects = conn.getProject(root);
-    for (GitlabProject project : rootProjects) {
-      String proName = project.getName();
-      if (proName.equals(name)) {
-        id = project.getId();
-      }
-    }
-    return id;
-  }
-
   private String getThisProjectUrl(String name) {
     String url = null;
     String gitlabUrl = null;
@@ -297,34 +286,6 @@ public class ProjectService {
       e.printStackTrace();
     }
 
-  }
-
-  private void execCmdInUploads(String command) {
-    Process process;
-
-    File fileUploadDir = new File(uploadDir);
-    if (!fileUploadDir.exists()) {
-      fileUploadDir.mkdir();
-    }
-
-    try {
-      process = Runtime.getRuntime().exec(command, // path to
-                                                   // executable
-          null, // env vars, null means pass parent env
-          new File(uploadDir));
-      BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-      String line;
-      while (true) {
-        line = br.readLine();
-        if (line == null) {
-          break;
-        }
-        System.out.println(line);
-      }
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
   }
 
   /**
@@ -575,8 +536,18 @@ public class ProjectService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   public Response editProject(@FormDataParam("Edit_Hw_Name") String name,
-      @FormDataParam("Hw_Deadline") String deadline, @FormDataParam("Hw_README") String readMe) {
+      @FormDataParam("Hw_Deadline") String deadline, @FormDataParam("Hw_README") String readMe,
+      @FormDataParam("Hw_TestCase") InputStream uploadedInputStream,
+      @FormDataParam("Hw_TestCase") FormDataContentDisposition fileDetail) {
+
     dbManager.editProject(deadline, readMe, name);
+
+    if (!fileDetail.getFileName().isEmpty()) {
+      // update test case
+      storeFileToTestsFolder(fileDetail.getFileName(), uploadedInputStream);
+      // update database checksum
+      dbManager.updateProjectChecksum(name, checksum);
+    }
 
     Response response = Response.ok().build();
     if (!isSave) {
@@ -610,6 +581,7 @@ public class ProjectService {
 
   /**
    * get course name
+   * 
    * @return course name
    */
   public String getCourseName() {
@@ -620,6 +592,28 @@ public class ProjectService {
       e.printStackTrace();
     }
 
-    return  name;
+    return name;
+  }
+
+  /**
+   * Edit test case upload test case to test folder
+   * 
+   * @param fileName
+   *          file name
+   * @param uploadedInputStream
+   *          file
+   */
+  private void storeFileToTestsFolder(String fileName, InputStream uploadedInputStream) {
+    try {
+      createFolderIfNotExists(testDir);
+    } catch (SecurityException se) {
+      System.out.println(se.toString());
+    }
+    String uploadedFileLocation = testDir + fileName;
+    try {
+      saveToFile(uploadedInputStream, uploadedFileLocation);
+    } catch (IOException e) {
+      System.out.println(e.toString());
+    }
   }
 }

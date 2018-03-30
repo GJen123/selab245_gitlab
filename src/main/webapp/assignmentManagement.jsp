@@ -411,6 +411,11 @@
 					<textarea id="edit_Hw_README" cols="100" rows="20" name="Hw_README" style="width: 823px; height: 200px;"></textarea>
 				</div>
 			</div>
+			<div class="form-group" style="width: fit-content">
+				<label for="Hw_TestCase"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwTestCase"/></h4></label>
+				<br>
+				<input id="edit_Hw_TestCase" type="file" accept=".zip" name="Hw_TestCase" size="50" width="48"/>
+			</div>
 		  </div>
 		  
 	      <div class="modal-footer">

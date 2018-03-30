@@ -166,6 +166,13 @@ public class UserService {
     printStudent(lsStudent);
   }
 
+  /**
+   * 
+   * @param name name
+   * @param id id
+   * @param email email 
+   * @return
+   */
   @POST
   @Path("new")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -174,10 +181,10 @@ public class UserService {
                                         @FormDataParam("studentEmail") String email) {
     boolean isSave = false;
     System.out.println("student: " + name + ", " + id + ", " + email);
-    try{
+    try {
       isSave = userConn.createUser(email, id, id, name);
-    } catch (Exception e){
-
+    } catch (Exception e) {
+      e.printStackTrace();
     }
     Response response = Response.ok().build();
     if (!isSave) {
