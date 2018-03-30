@@ -54,7 +54,7 @@ public class CommitRecordStateService {
   }
 
   /**
-   * update Commit_Record_State table
+   * update data in Commit_Record_State table
    */
   public void updateCommitRecordState() {
 

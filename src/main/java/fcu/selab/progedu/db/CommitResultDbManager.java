@@ -335,6 +335,10 @@ public class CommitResultDbManager {
 
         String hw = rs.getString("hw");
 
+        User user = udb.getUser(conn, id);
+        name = user.getUserName();
+        gitlabId = user.getGitLabId();
+
         String color = rs.getString("color");
         int commit = rs.getInt("commit");
 
@@ -344,10 +348,6 @@ public class CommitResultDbManager {
         eachHw.put("color", color);
         array.put(eachHw);
       }
-
-      User user = udb.getUser(conn, id);
-      name = user.getUserName();
-      gitlabId = user.getGitLabId();
 
       ob.put("userName", name);
       ob.put("gitlabId", gitlabId);

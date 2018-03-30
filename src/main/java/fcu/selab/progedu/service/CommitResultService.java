@@ -8,10 +8,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -65,7 +65,6 @@ public class CommitResultService {
     JSONObject commitCounts = db.getCounts(connection, color);
     List<Integer> counts = new ArrayList<Integer>();
     List<String> pnames = projectDb.listAllProjectNames();
-
 
     for (String pname : pnames) {
       int count = commitCounts.optInt(pname);
@@ -315,11 +314,13 @@ public class CommitResultService {
   }
 
   /**
-   * update Commit_Record_State
+   * update Commit_Record_State DB's data
    */
 
   private void updateCommitRecordState() {
     // TODO Auto-generated method stub
+
+    Connection connection = database.getConnection();
 
     List<String> lsNames = new ArrayList<String>();
     lsNames = projectDb.listAllProjectNames();
@@ -357,10 +358,17 @@ public class CommitResultService {
       }
 
       int ccs = 0;
-
       ccs = success + ctf + csf + cpf;
 
-      crsdb.addCommitRecordState(name, success, csf, cpf, ctf, nb, ccs);
+      boolean check;
+      check = crsdb.checkCommitRecordStatehw(connection, name);
+
+      if (check) {
+        crsdb.updateCommitRecordState(name, success, csf, cpf, ctf, nb, ccs);
+
+      } else {
+        crsdb.addCommitRecordState(name, success, csf, cpf, ctf, nb, ccs);
+      }
 
     }
 
