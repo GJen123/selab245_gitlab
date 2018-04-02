@@ -3,6 +3,7 @@ package fcu.selab.progedu.service;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +17,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedInputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -544,8 +549,12 @@ public class ProjectService {
 
     if (!fileDetail.getFileName().isEmpty()) {
       // update test case
-      storeFileToTestsFolder(fileDetail.getFileName(), uploadedInputStream);
+      String filePath = storeFileToTestsFolder(fileDetail.getFileName(), uploadedInputStream);
       // update database checksum
+
+      String checksum = getChecksum(filePath);
+      System.out.println("checksum : " + checksum);
+
       dbManager.updateProjectChecksum(name, checksum);
     }
 
@@ -603,7 +612,7 @@ public class ProjectService {
    * @param uploadedInputStream
    *          file
    */
-  private void storeFileToTestsFolder(String fileName, InputStream uploadedInputStream) {
+  private String storeFileToTestsFolder(String fileName, InputStream uploadedInputStream) {
     try {
       createFolderIfNotExists(testDir);
     } catch (SecurityException se) {
@@ -615,5 +624,36 @@ public class ProjectService {
     } catch (IOException e) {
       System.out.println(e.toString());
     }
+    return uploadedFileLocation;
+  }
+
+  private String getChecksum(String zipFilePath) {
+    String strChecksum = "";
+
+    FileInputStream fileInputStream = null;
+    CheckedInputStream checksum = null;
+    ZipInputStream zipIn = null;
+    try {
+      fileInputStream = new FileInputStream(zipFilePath);
+      checksum = new CheckedInputStream(fileInputStream, new CRC32());
+
+      zipIn = new ZipInputStream(checksum);
+      ZipEntry entry = zipIn.getNextEntry();
+
+      strChecksum = String.valueOf(checksum.getChecksum().getValue());
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        checksum.close();
+        fileInputStream.close();
+        zipIn.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return strChecksum;
   }
 }
