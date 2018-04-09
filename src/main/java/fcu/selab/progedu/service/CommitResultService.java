@@ -264,7 +264,7 @@ public class CommitResultService {
       commitRecordDb.insertCommitRecord(id, proName, color, dates[0], dates[1]);
     }
 
-    // updateCommitRecordState();
+     updateCommitRecordState();
   }
 
   /**

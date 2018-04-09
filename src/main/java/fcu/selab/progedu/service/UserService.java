@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.FileInputStream;
 import java.io.BufferedReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +21,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import fcu.selab.progedu.config.GitlabConfig;
+import fcu.selab.progedu.config.JenkinsConfig;
+import fcu.selab.progedu.data.Project;
+import fcu.selab.progedu.db.ProjectDbManager;
+import fcu.selab.progedu.jenkins.JenkinsApi;
+import fcu.selab.progedu.utils.ZipHandler;
+import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -37,7 +45,12 @@ public class UserService {
 
   CourseConfig course = CourseConfig.getInstance();
   
-  private static UserDbManager dbManager = UserDbManager.getInstance();
+  private UserDbManager dbManager = UserDbManager.getInstance();
+  private ProjectDbManager projectDbManager = ProjectDbManager.getInstance();
+  private GitlabConfig gitlabData = GitlabConfig.getInstance();
+  private JenkinsApi jenkins = JenkinsApi.getInstance();
+  private ZipHandler zipHandler;
+  private JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
   /**
    * Upload a csv file for student batch registration
@@ -180,9 +193,11 @@ public class UserService {
                                         @FormDataParam("studentId") String id,
                                         @FormDataParam("studentEmail") String email) {
     boolean isSave = false;
-    System.out.println("student: " + name + ", " + id + ", " + email);
     try {
       isSave = userConn.createUser(email, id, id, name);
+      User user = dbManager.getUser(id);
+      boolean isSuccess = importPreviousProject(user);
+      isSave = isSave && isSuccess;
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -191,6 +206,48 @@ public class UserService {
       response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
     }
     return response;
+  }
+
+  public boolean importPreviousProject(User user){
+    boolean check = false;
+    List<Project> projects = projectDbManager.listAllProjects();
+    String url = "";
+    String gitlabUrl = "";
+    String userName = user.getUserName();
+    try {
+      gitlabUrl = gitlabData.getGitlabRootUrl();
+      for(Project project : projects) {
+        String projectName = project.getName();
+        Project project1 = projectDbManager.getProjectByName(projectName);
+        url = gitlabUrl + "/root/" + projectName;
+        userConn.createPrivateProject(user.getGitLabId(), project.getName(), url);
+        boolean isSuccess = createPreviuosJob(userName, projectName, project1.getType());
+        check = check && isSuccess;
+      }
+      check = true;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return  check;
+  }
+
+  public boolean createPreviuosJob(String username, String name, String fileType){
+    boolean check = false;
+    String jenkinsRootUsername = null;
+    String jenkinsRootPassword = null;
+    try {
+      jenkinsRootUsername = jenkinsData.getJenkinsRootUsername();
+      jenkinsRootPassword = jenkinsData.getJenkinsRootPassword();
+      String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername, jenkinsRootPassword);
+      StringBuilder sb = zipHandler.getStringBuilder();
+      jenkins.createRootJob(name, jenkinsCrumb, fileType, sb);
+      jenkins.createJenkinsJob(username, name, jenkinsCrumb, fileType, sb);
+      jenkins.buildJob(username, name, jenkinsCrumb);
+      check = true;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return  check;
   }
 
   /**

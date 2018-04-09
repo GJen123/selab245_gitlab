@@ -19,7 +19,7 @@ public class TestUpdatePassword {
     for(User user : users) {
       String userName = user.getUserName();
       System.out.println(userName);
-      service.updateCommitResult(userName, "OOP-HW2");
+      service.updateCommitResult(userName, "OOP-HW4");
       System.out.println("--------------------------------------------------\n");
     }
 
