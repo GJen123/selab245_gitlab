@@ -51,7 +51,8 @@ public class CommitRecordStateService {
   }
 
   /**
-   * update data in Commit_Record_State table
+   * <<<<<<< HEAD update state table ======= update data in Commit_Record_State
+   * table >>>>>>> b77d964bf49ff866ed65195bcda4931ca40c49f0
    */
   public void updateCommitRecordState() {
 
@@ -91,7 +92,6 @@ public class CommitRecordStateService {
       }
 
       int ccs = 0;
-
       ccs = success + ctf + csf + cpf;
 
       commitRecordStateDb.addCommitRecordState(name, success, csf, cpf, ctf, nb, ccs);
