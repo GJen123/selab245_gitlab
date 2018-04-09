@@ -6,11 +6,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import fcu.selab.progedu.config.GitlabConfig;
 import org.gitlab.api.models.GitlabProject;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
 import fcu.selab.progedu.jenkins.JenkinsApi;
@@ -58,11 +58,12 @@ public class StudentDashChoosePro {
   public String getChoosedProjectUrl(GitlabProject project) {
     String url = null;
     url = project.getHttpUrl();
-    try {
-      url = url.replace(gitlabConfig.getGitlabContainerId(), gitlabConfig.getGitlabHostUrl());
-    } catch (LoadConfigFailureException e) {
-      e.printStackTrace();
-    }
+    // try {
+    // url = url.replace(gitlabConfig.getGitlabContainerId(),
+    // gitlabConfig.getGitlabHostUrl());
+    // } catch (LoadConfigFailureException e) {
+    // e.printStackTrace();
+    // }
     return url;
   }
 

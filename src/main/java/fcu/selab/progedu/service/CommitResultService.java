@@ -23,7 +23,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import fcu.selab.progedu.data.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -31,6 +30,7 @@ import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.StudentDashChoosePro;
 import fcu.selab.progedu.data.CommitResult;
+import fcu.selab.progedu.data.User;
 import fcu.selab.progedu.db.CommitRecordDbManager;
 import fcu.selab.progedu.db.CommitRecordStateDbManager;
 import fcu.selab.progedu.db.CommitResultDbManager;
@@ -90,8 +90,7 @@ public class CommitResultService {
     List<Integer> array = crsdb.getCommitSum(connection);
     JSONObject ob = new JSONObject();
     ob.put("data", array);
-    ob.put("name", "commit counts")
-    ;
+    ob.put("name", "commit counts");
     ob.put("type", "column");
     try {
       connection.close();
@@ -149,7 +148,7 @@ public class CommitResultService {
     JSONObject result = new JSONObject();
 
     List<User> users = userDb.listAllUsers();
-    for (User user: users) {
+    for (User user : users) {
       JSONObject ob = db.getCommitResultByStudent(connection, user.getId());
       array.put(ob);
     }
@@ -316,7 +315,6 @@ public class CommitResultService {
       int ctf = 0;
       int csf = 0;
       int cpf = 0;
-      int ccs = 0;
 
       if (map.containsKey("S")) {
         success = map.get("S");
@@ -338,6 +336,7 @@ public class CommitResultService {
         cpf = map.get("CPF");
       }
 
+      int ccs = 0;
       ccs = success + ctf + csf + cpf;
 
       crsdb.addCommitRecordState(name, success, csf, cpf, ctf, nb, ccs);
