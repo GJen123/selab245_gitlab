@@ -228,12 +228,13 @@ public class ProjectDbManager {
   public void editProject(String deadline, String readMe, String name) {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
-    String sql = "UPDATE Assignment SET deadline=? and description=? WHERE name=?";
+    String sql = "UPDATE Assignment SET deadline=?, description=? WHERE name=?";
     try {
       preStmt = conn.prepareStatement(sql);
       preStmt.setString(1, deadline);
       preStmt.setString(2, readMe);
       preStmt.setString(3, name);
+      System.out.println(preStmt.toString());
       preStmt.executeUpdate();
       preStmt.close();
     } catch (SQLException e) {
@@ -249,51 +250,22 @@ public class ProjectDbManager {
   }
 
   /**
-   * Edit project from database
+   * Edit project checksum
    * 
-   * @param deadline
-   *          new deadline
    * @param name
    *          project name
+   * @param checksum
+   *          new checksum
    */
-  public void editProjectDeadline(String deadline, String name) {
+  public void updateProjectChecksum(String name, String checksum) {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
-    String sql = "UPDATE Assignment SET deadline=? WHERE name=?";
+    String sql = "UPDATE Assignment SET checksum=? WHERE name=?";
     try {
       preStmt = conn.prepareStatement(sql);
-      preStmt.setString(1, deadline);
+      preStmt.setString(1, checksum);
       preStmt.setString(2, name);
-      preStmt.executeUpdate();
-      preStmt.close();
-    } catch (SQLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } finally {
-      try {
-        conn.close();
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
-    }
-  }
-
-  /**
-   * Edit project from database
-   * 
-   * @param readMe
-   *          new readMe
-   * @param name
-   *          project name
-   */
-  public void editProjectReadMe(String readMe, String name) {
-    Connection conn = database.getConnection();
-    PreparedStatement preStmt = null;
-    String sql = "UPDATE Assignment SET description=? WHERE name=?";
-    try {
-      preStmt = conn.prepareStatement(sql);
-      preStmt.setString(1, readMe);
-      preStmt.setString(2, name);
+      System.out.println(preStmt.toString());
       preStmt.executeUpdate();
       preStmt.close();
     } catch (SQLException e) {

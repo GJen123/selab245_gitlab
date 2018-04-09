@@ -11,6 +11,7 @@ import java.util.List;
 public class CommitRecordStateDbManager {
 
   private static CommitRecordStateDbManager DB_MANAGER = new CommitRecordStateDbManager();
+  private static ProjectDbManager projectDb = ProjectDbManager.getInstance();
 
   public static CommitRecordStateDbManager getInstance() {
     return DB_MANAGER;
@@ -40,13 +41,16 @@ public class CommitRecordStateDbManager {
    */
   public void addCommitRecordState(String hw, int success, int csf, int cpf, int ctf, int nb,
       int ccs) {
+
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
     Statement stmt = null;
-    String sql = "INSERT INTO "
-        + "Commit_Record_State(hw, success, checkStyleError, compileFailure"
-        + ", testFailure, notBuild, commitCounts)  "
-        + "VALUES(?, ?, ?, ?, ?, ?, ?)";
+
+    List<String> lsNames = new ArrayList<String>();
+    lsNames = projectDb.listAllProjectNames();
+
+    String sql = "INSERT INTO " + "Commit_Record_State(hw, success, checkStyleError, compileFailure"
+        + ", testFailure, notBuild, commitCounts)  " + "VALUES(?, ?, ?, ?, ?, ?, ?)";
     String query = "SELECT * FROM CommitRecordState";
 
     try {
@@ -59,6 +63,61 @@ public class CommitRecordStateDbManager {
       preStmt.setInt(5, ctf);
       preStmt.setInt(6, nb);
       preStmt.setInt(7, ccs);
+
+      preStmt.executeUpdate();
+      preStmt.close();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  /**
+   * add each hw CommitRecordState counts
+   * 
+   * @param hw
+   *          hw's number
+   * @param success
+   *          build success
+   * @param csf
+   *          check style error
+   * @param cpf
+   *          build fault
+   * @param ctf
+   *          junit fault
+   * @param nb
+   *          not build
+   */
+  public void updateCommitRecordState(String hw, int success, int csf, int cpf, int ctf, int nb,
+      int ccs) {
+
+    Connection conn = database.getConnection();
+    PreparedStatement preStmt = null;
+    Statement stmt = null;
+
+    List<String> lsNames = new ArrayList<String>();
+    lsNames = projectDb.listAllProjectNames();
+
+    String sql = "UPDATE " + "Commit_Record_State  SET success = ? ,checkStyleError = ? "
+        + ", compileFailure = ? , testFailure = ? , notBuild = ? , commitCounts = ?  "
+        + "where hw = ? ";
+
+    try {
+      preStmt = conn.prepareStatement(sql);
+
+      preStmt.setInt(1, success);
+      preStmt.setInt(2, csf);
+      preStmt.setInt(3, cpf);
+      preStmt.setInt(4, ctf);
+      preStmt.setInt(5, nb);
+      preStmt.setInt(6, ccs);
+      preStmt.setString(7, hw);
 
       preStmt.executeUpdate();
       preStmt.close();
@@ -105,6 +164,46 @@ public class CommitRecordStateDbManager {
       }
     }
     return array;
+  }
+
+  /**
+   * check if hw exists in Commit_Record_State DB table
+   * 
+   * @param conn
+   *          db connection
+   * @param hw
+   *          hw name
+   * 
+   * @return check result (boolean)
+   */
+  public boolean checkCommitRecordStatehw(Connection conn, String hw) {
+
+    String query = "SELECT hw FROM Commit_Record_State where hw=?";
+    PreparedStatement preStmt = null;
+    ResultSet rs = null;
+
+    boolean check = false;
+
+    try {
+      preStmt = conn.prepareStatement(query);
+      preStmt.setString(1, hw);
+      rs = preStmt.executeQuery();
+
+      while (rs.next()) {
+        check = true;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        preStmt.close();
+        rs.close();
+        // conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+    return check;
   }
 
   /**

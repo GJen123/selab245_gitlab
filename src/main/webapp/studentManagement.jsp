@@ -87,7 +87,7 @@
 	
 <script>
 	$(document).ready(function() {
-		$("form").submit(function(evt) {
+		$("#addAllStudent").submit(function(evt) {
 			evt.preventDefault();
 			var formData = new FormData($(this)[0]);
 			$.ajax({
@@ -112,6 +112,32 @@
 			return false;
 		});
 	});
+    $(document).ready(function() {
+        $("#newStudent").submit(function(evt) {
+            evt.preventDefault();
+            var formData = new FormData($(this)[0]);
+            $.ajax({
+                url : 'webapi/user/new',
+                type : 'POST',
+                data : formData,
+                async : true,
+                cache : false,
+                contentType : false,
+                enctype : 'multipart/form-data',
+                processData : false,
+                success : function(response) {
+                    alert("uploaded!");
+                    top.location.href = "studentManagement.jsp";
+                },
+                error : function(a, b, c) {
+                    console.log(a.status, b, c)
+                    alert("failed!");
+                    // location.reload();
+                }
+            });
+            return false;
+        });
+    });
 </script>
 	
 	<script type="text/javascript">
@@ -138,12 +164,49 @@
 					</div>
 					<div class="card-block" style="padding: 20px 20px 20px 20px;">
 						<div class="form-group">
-							<form>
+							<form id="addAllStudent">
 								<h5><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageStudent_h4_uploadStudent"/></h5>
 								Select File to Upload:
 								<input type="file" name="file" style="margin-left: 10px;">
 								<br>
-								<input type="submit" value="Upload" onclick="load();" style="margin-top:10px;">
+								<input type="submit" class="btn btn-light" style="border: gray solid 1px" value="Upload" onclick="load();" style="margin-top:10px;">
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div>
+		<div class="container-fluid" style="margin-top: 20px; width: 1140px;">
+			<br>
+			<div>
+				<div class="card">
+					<h4 class="card-header"><strong><fmt:message key="teacherManageStudent_h3_newAStudent"/></strong></h4>
+					<div class="card-block" style="padding: 20px 20px 20px 20px;">
+						<div class="form-group">
+							<form id="newStudent">
+								<div class="form-group row" style="text-align: right">
+									<label class="col-sm-2 col-form-label">Student's name</label>
+									<div class="col-sm-3">
+										<input type="text" class="form-control" name="studentName">
+									</div>
+								</div>
+								<div class="form-group row" style="text-align: right">
+									<label class="col-sm-2 col-form-label">Student's Id</label>
+									<div class="col-sm-3">
+										<input type="text" class="form-control" name="studentId">
+									</div>
+								</div>
+								<div class="form-group row" style="text-align: right">
+									<label class="col-sm-2 col-form-label">Student's email</label>
+									<div class="col-sm-3">
+										<input type="text" class="form-control" name="studentEmail">
+									</div>
+								</div>
+								<div class="form-group">
+									<input type="submit" class="btn btn-light" style="border: gray solid 1px;" value="Submit" onclick="load();" style="margin-top:10px;">
+								</div>
 							</form>
 						</div>
 					</div>

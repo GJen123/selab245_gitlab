@@ -147,17 +147,20 @@
 	    		margin-right: -50%;
 	    		transform: translate(-50%, -50%)
 			}
-			.red {
+			.CPF {
 				background: #e52424;
 			}
-			.blue {
+			.S {
 				background: #5fa7e8;
 			}
-			.gray {
+			.NB {
 				background: #878787;
 			}
-			.orange {
+			.CSF {
 				background: gold;
+			}
+			.CJF {
+				background: #32CD32;
 			}
 			#goToJenkins{
 				float: right;

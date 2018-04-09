@@ -1,18 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=BIG5"
     pageEncoding="utf-8"%>
-<%@ page import="fcu.selab.progedu.conn.Conn" %>
-<%@ page import="fcu.selab.progedu.jenkins.JenkinsApi, fcu.selab.progedu.conn.Language" %>
+<%@ page import="fcu.selab.progedu.jenkins.JenkinsApi" %>
 <%@ page import="fcu.selab.progedu.config.GitlabConfig" %>
 <%@ page import="fcu.selab.progedu.config.JenkinsConfig" %>
 <%@ page import="fcu.selab.progedu.db.UserDbManager, fcu.selab.progedu.db.ProjectDbManager" %>
-<%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>   
-<%@ page import="org.gitlab.api.GitlabAPI" %>
+<%@ page import="fcu.selab.progedu.data.User, fcu.selab.progedu.data.Project" %>
 <%@ page import="org.gitlab.api.models.*" %>
-<%@ page import="java.util.*, fcu.selab.progedu.conn.Dash" %>
+<%@ page import="java.util.*" %>
 <%@ page import="fcu.selab.progedu.jenkins.JobStatus" %>
 <%@ page import="org.json.JSONArray, org.json.JSONException, org.json.JSONObject" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="fcu.selab.progedu.conn.StudentDashChoosePro" %> 
+<%@ page import="fcu.selab.progedu.conn.*" %>
 
 <%
 	if(session.getAttribute("username") == null || session.getAttribute("username").toString().equals("")){
@@ -189,6 +187,20 @@
 	<div class="container-fluid" id="main">
        	<h1 style="margin-bottom: 20px;"> <%=choosedUser.getUsername() %>_ <%=projectName %> </h1>
         <!-- ---------------------------- Project ------------------------------- -->
+		<%
+			ProjectDbManager pDb = ProjectDbManager.getInstance();
+			Project project = pDb.getProjectByName(projectName);
+		%>
+		<div style="margin: 10px 10px 10px 10px;">
+			<h2 style="white-space: nowrap"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp; <%=projectName%></h2>
+			<hr>
+			<h5 style="font-weight: 700"><fmt:message key="stuDashChooseProject_p_assignmentContent"/></h5>
+			<p><%=project.getDescription() %></p>
+			<hr>
+			<h5 style="font-weight: 700"><fmt:message key="stuDashChooseProject_p_deadline"/></h5>
+			<p><%=project.getDeadline() %></p>
+			<hr>
+		</div>
         <div class="card" style="padding:0; width: fit-content">
         	<h4 id="Student Projects" class="card-header"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; Records</h4>
         	<div class="card-block">

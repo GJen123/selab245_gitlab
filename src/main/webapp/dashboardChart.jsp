@@ -198,7 +198,7 @@
 		<div class="card" style="width: max-content;">
 			<h4 id="Student Projects" class="card-header">
 				<i class="fa fa-table" aria-hidden="true"></i>&nbsp;
-				<fmt:message key="dashboard_li_studentProjects" />
+				<fmt:message key="dashboard_li_chart" />
 			</h4>
 			<div class="card-block">
 				<ul class="nav nav-tabs" role="tablist">
@@ -361,7 +361,7 @@ Highcharts.setOptions({
 <!-- set Highchart colors -->
 <script>
 Highcharts.setOptions({
-	 colors: ['#878787', '#5fa7e8', '#e52424', 'gold', '#32CD32']
+	 colors: ['#878787', '#5fa7e8', 'gold',  '#e52424', '#32CD32']
 	})
 </script>
 

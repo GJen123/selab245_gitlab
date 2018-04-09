@@ -3,6 +3,7 @@ package fcu.selab.progedu.service;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +17,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedInputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -34,12 +39,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import fcu.selab.progedu.config.CourseConfig;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import fcu.selab.progedu.config.CourseConfig;
 import fcu.selab.progedu.config.GitlabConfig;
 import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.Conn;
@@ -70,6 +75,7 @@ public class ProjectService {
 
   private static final String tempDir = System.getProperty("java.io.tmpdir");
   private static String uploadDir = tempDir + "/uploads/";
+  private static String testDir = tempDir + "/tests/";
 
   boolean isSave = true;
 
@@ -119,7 +125,7 @@ public class ProjectService {
     String filePath = null;
     boolean hasTemplate = false;
 
-//     1. Create root project and get project id and url
+    // 1. Create root project and get project id and url
     createRootProject(name);
     rootProjectUrl = getThisProjectUrl(name);
 
@@ -224,18 +230,6 @@ public class ProjectService {
     return dbManager.listAllProjectNames();
   }
 
-  private int getThisProjectId(String name) {
-    Integer id = null;
-    List<GitlabProject> rootProjects = conn.getProject(root);
-    for (GitlabProject project : rootProjects) {
-      String proName = project.getName();
-      if (proName.equals(name)) {
-        id = project.getId();
-      }
-    }
-    return id;
-  }
-
   private String getThisProjectUrl(String name) {
     String url = null;
     String gitlabUrl = null;
@@ -297,34 +291,6 @@ public class ProjectService {
       e.printStackTrace();
     }
 
-  }
-
-  private void execCmdInUploads(String command) {
-    Process process;
-
-    File fileUploadDir = new File(uploadDir);
-    if (!fileUploadDir.exists()) {
-      fileUploadDir.mkdir();
-    }
-
-    try {
-      process = Runtime.getRuntime().exec(command, // path to
-                                                   // executable
-          null, // env vars, null means pass parent env
-          new File(uploadDir));
-      BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-      String line;
-      while (true) {
-        line = br.readLine();
-        if (line == null) {
-          break;
-        }
-        System.out.println(line);
-      }
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
   }
 
   /**
@@ -575,14 +541,21 @@ public class ProjectService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   public Response editProject(@FormDataParam("Edit_Hw_Name") String name,
-      @FormDataParam("Hw_Deadline") String deadline, @FormDataParam("Hw_README") String readMe) {
-    System.out.println("name: " + name);
-    if (!deadline.equals("") && !readMe.equals("<br>")) { // has deadline readMe
-      dbManager.editProject(deadline, readMe, name);
-    } else if (!readMe.equals("<br>") && deadline.equals("")) { // no deadline
-      dbManager.editProjectReadMe(readMe, name);
-    } else if (readMe.equals("<br>") && !deadline.equals("")) { // no ReadMe
-      dbManager.editProjectDeadline(deadline, name);
+      @FormDataParam("Hw_Deadline") String deadline, @FormDataParam("Hw_README") String readMe,
+      @FormDataParam("Hw_TestCase") InputStream uploadedInputStream,
+      @FormDataParam("Hw_TestCase") FormDataContentDisposition fileDetail) {
+
+    dbManager.editProject(deadline, readMe, name);
+
+    if (!fileDetail.getFileName().isEmpty()) {
+      // update test case
+      String filePath = storeFileToTestsFolder(fileDetail.getFileName(), uploadedInputStream);
+      // update database checksum
+
+      String checksum = getChecksum(filePath);
+      System.out.println("checksum : " + checksum);
+
+      dbManager.updateProjectChecksum(name, checksum);
     }
 
     Response response = Response.ok().build();
@@ -617,6 +590,7 @@ public class ProjectService {
 
   /**
    * get course name
+   * 
    * @return course name
    */
   public String getCourseName() {
@@ -627,6 +601,59 @@ public class ProjectService {
       e.printStackTrace();
     }
 
-    return  name;
+    return name;
+  }
+
+  /**
+   * Edit test case upload test case to test folder
+   * 
+   * @param fileName
+   *          file name
+   * @param uploadedInputStream
+   *          file
+   */
+  private String storeFileToTestsFolder(String fileName, InputStream uploadedInputStream) {
+    try {
+      createFolderIfNotExists(testDir);
+    } catch (SecurityException se) {
+      System.out.println(se.toString());
+    }
+    String uploadedFileLocation = testDir + fileName;
+    try {
+      saveToFile(uploadedInputStream, uploadedFileLocation);
+    } catch (IOException e) {
+      System.out.println(e.toString());
+    }
+    return uploadedFileLocation;
+  }
+
+  private String getChecksum(String zipFilePath) {
+    String strChecksum = "";
+
+    FileInputStream fileInputStream = null;
+    CheckedInputStream checksum = null;
+    ZipInputStream zipIn = null;
+    try {
+      fileInputStream = new FileInputStream(zipFilePath);
+      checksum = new CheckedInputStream(fileInputStream, new CRC32());
+
+      zipIn = new ZipInputStream(checksum);
+      ZipEntry entry = zipIn.getNextEntry();
+
+      strChecksum = String.valueOf(checksum.getChecksum().getValue());
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        checksum.close();
+        fileInputStream.close();
+        zipIn.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return strChecksum;
   }
 }

@@ -205,6 +205,7 @@
 </div>
 </body>
 <script type="text/javascript">
+    var projectCount = <%=dbProjects.size()%>
     $.ajax({
         url : 'webapi/commits/all',
         type : 'GET',
@@ -213,6 +214,7 @@
         contentType: 'application/json; charset=UTF-8',
         success : function(responseText) {
             var result = JSON.parse(responseText);
+            console.log(result)
             setData(result.result);
         },
         error : function(responseText) {
@@ -230,21 +232,32 @@
 
             content = '<tr id="allProject">';
             content += '<td width="10%" id="allProject"><a href="dashStuChoosed.jsp?studentId=' + gitlabId + '">' + userName + '</a></td>';
-            for(j in commits) {
-                var hw = commits[j]
-                var hwName = hw.hw;
-                var commit = hw.commit + 1;
-                var color = 'circle ' + hw.color;
 
-                content += '<td style="padding: 10px 0px 0px 30px;">';
-                content += '<p id="' + userName + '_' + hwName + '" class="' + color + '">';
-                content += '<a id="' + userName + '_' + hwName + '_commit" href="dashStuChoosed.jsp?studentId=' + gitlabId + '&proName=' + hwName + '">';
-                content += commit;
-                content += '</a>';
-                content += '</p></td>';
+            if(commits.length > 0){
+                for(j in commits) {
+                    var hw = commits[j]
+                    var hwName = hw.hw;
+                    var commit = hw.commit + 1;
+                    var color = 'circle ' + hw.color;
+
+                    content += '<td style="padding: 10px 0px 0px 30px;">';
+                    content += '<p id="' + userName + '_' + hwName + '" class="' + color + '">';
+                    content += '<a id="' + userName + '_' + hwName + '_commit" href="dashStuChoosed.jsp?studentId=' + gitlabId + '&proName=' + hwName + '">';
+                    content += commit;
+                    content += '</a>';
+                    content += '</p></td>';
+                }
+                content += '</tr>';
+                $('#dashboard').append(content)
+            } else {
+                console.log(userName)
+                for (var i=0; i<projectCount; i++) {
+                    content += '<td style="padding: 10px 0px 0px 30px;">';
+                    content += '<p>N/A</p></td>';
+                }
+                content += '</tr>';
+                $('#dashboard').append(content)
             }
-            content += '</tr>';
-            $('#dashboard').append(content)
         }
     }
 </script>

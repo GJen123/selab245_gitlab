@@ -62,11 +62,38 @@ public class CommitResultService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCounts(@QueryParam("color") String color) {
     Connection connection = database.getConnection();
-    List<Integer> array = db.getCounts(connection, color);
+    JSONObject commitCounts = db.getCounts(connection, color);
+    List<Integer> counts = new ArrayList<Integer>();
+    List<String> pnames = projectDb.listAllProjectNames();
+
+    for (String pname : pnames) {
+      int count = commitCounts.optInt(pname);
+      counts.add(count);
+    }
+
+    switch (color) {
+      case "S":
+        color = "success";
+        break;
+      case "CPF":
+        color = "compile failure";
+        break;
+      case "CSF":
+        color = "checkstyle failure";
+        break;
+      case "CTF":
+        color = "JUnit failure";
+        break;
+      case "NB":
+        color = "not build";
+        break;
+      default:
+        break;
+    }
+
     JSONObject ob = new JSONObject();
-    ob.put("data", array);
+    ob.put("data", counts);
     ob.put("name", color);
-    // ob.put("type", "spline");
     try {
       connection.close();
     } catch (SQLException e) {
@@ -228,7 +255,6 @@ public class CommitResultService {
       String consoleText = checkErrorStyle(jenkinsData, userName, proName, buildNum.get(num));
       boolean isCheckStyle = jenkinsApi.checkIsCheckstyleError(consoleText);
       boolean isJunitError = jenkinsApi.checkIsJunitError(consoleText);
-      System.out.println(isCheckStyle + ", " + isJunitError);
       if (isCheckStyle) {
         color = "CSF";
       }
@@ -240,23 +266,13 @@ public class CommitResultService {
       color = color.replaceAll("_anime", "");
     }
 
-    String courseName = "";
-    try {
-      courseName = CourseConfig.getInstance().getCourseName();
-    } catch (LoadConfigFailureException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-
     IDatabase database = new MySqlDatabase();
     Connection connection = database.getConnection();
-    UserDbManager db = UserDbManager.getInstance();
-    CommitResultDbManager commiResulttDb = CommitResultDbManager.getInstance();
 
     String buildApiJson = stuDashChoPro.getBuildApiJson(buildNum.get(num), userName, proName);
     String strDate = stuDashChoPro.getCommitTime(buildApiJson);
     String[] dates = strDate.split(" ");
-    int id = db.getUser(userName).getId();
+    int id = userDb.getUser(userName).getId();
 
     switch (color) {
       case "blue":
@@ -273,22 +289,21 @@ public class CommitResultService {
         break;
     }
 
-    boolean check = commiResulttDb.checkJenkinsJobTimestamp(connection, id, proName);
+    boolean check = db.checkJenkinsJobTimestamp(connection, id, proName);
     if (check) {
-      commiResulttDb.updateJenkinsCommitCount(connection, id, proName, commit, color);
-      commiResulttDb.updateJenkinsJobTimestamp(connection, id, proName, strDate);
+      db.updateJenkinsCommitCount(connection, id, proName, commit, color);
+      db.updateJenkinsJobTimestamp(connection, id, proName, strDate);
     } else {
-      commiResulttDb.insertJenkinsCommitCount(connection, id, proName, commit, color);
-      commiResulttDb.updateJenkinsJobTimestamp(connection, id, proName, strDate);
+      db.insertJenkinsCommitCount(connection, id, proName, commit, color);
+      db.updateJenkinsJobTimestamp(connection, id, proName, strDate);
     }
 
-    CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
     boolean inDb = commitRecordDb.checkRecord(connection, id, proName, color, dates[0], dates[1]);
     if (!inDb) {
       commitRecordDb.insertCommitRecord(connection, id, proName, color, dates[0], dates[1]);
     }
 
-    updateCommitRecordState();
+    // updateCommitRecordState();
 
     try {
       connection.close();
@@ -298,8 +313,14 @@ public class CommitResultService {
     }
   }
 
+  /**
+   * update Commit_Record_State DB's data
+   */
+
   private void updateCommitRecordState() {
     // TODO Auto-generated method stub
+
+    Connection connection = database.getConnection();
 
     List<String> lsNames = new ArrayList<String>();
     lsNames = projectDb.listAllProjectNames();
@@ -339,7 +360,15 @@ public class CommitResultService {
       int ccs = 0;
       ccs = success + ctf + csf + cpf;
 
-      crsdb.addCommitRecordState(name, success, csf, cpf, ctf, nb, ccs);
+      boolean check;
+      check = crsdb.checkCommitRecordStatehw(connection, name);
+
+      if (check) {
+        crsdb.updateCommitRecordState(name, success, csf, cpf, ctf, nb, ccs);
+
+      } else {
+        crsdb.addCommitRecordState(name, success, csf, cpf, ctf, nb, ccs);
+      }
 
     }
 

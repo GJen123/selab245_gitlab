@@ -1,5 +1,9 @@
 package fcu.selab.progedu.service;
 
+//public class CommitRecordStateService {
+//
+//}
+
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +54,8 @@ public class CommitRecordStateService {
   }
 
   /**
-   * update state table
+   * <<<<<<< HEAD update state table ======= update data in Commit_Record_State
+   * table >>>>>>> b77d964bf49ff866ed65195bcda4931ca40c49f0
    */
   public void updateCommitRecordState() {
 
