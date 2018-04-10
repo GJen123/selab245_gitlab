@@ -173,23 +173,14 @@ public class UserService {
   }
 
   /**
-   * 
-   * <<<<<<< HEAD
-   * 
+   *
    * @param name
    *          name
    * @param id
    *          id
    * @param email
    *          email
-   * @return =======
-   * @param name
-   *          name
-   * @param id
-   *          id
-   * @param email
-   *          email
-   * @return response >>>>>>> ba429338be89f1642a8cd5f07b7943e5e0af83f6
+   * @return response
    */
   @POST
   @Path("new")
@@ -213,12 +204,9 @@ public class UserService {
   }
 
   /**
-   * <<<<<<< HEAD create previous project for new student
-   * 
+   * create previous project for new student.
    * @param user
-   *          new student ======= create previous project for new student.
-   * @param user
-   *          student >>>>>>> ba429338be89f1642a8cd5f07b7943e5e0af83f6
+   *          student
    * @return check
    */
   public boolean importPreviousProject(User user) {
@@ -244,23 +232,13 @@ public class UserService {
     return check;
   }
 
-  /**
-   * create previous job for new student
-   * 
-   * @param username
-   *          student id
-   * @param name
-   *          job name
-   * @param fileType
-   *          job file type ======= return check; }
-   * 
-   *          /** create previous job for new student.
+  /** create previous job for new student.
    * @param username
    *          student name
    * @param name
    *          job name
    * @param fileType
-   *          job type >>>>>>> ba429338be89f1642a8cd5f07b7943e5e0af83f6
+   *          job type
    * @return check
    */
   public boolean createPreviuosJob(String username, String name, String fileType) {
