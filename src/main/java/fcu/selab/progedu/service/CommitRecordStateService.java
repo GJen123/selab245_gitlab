@@ -31,9 +31,6 @@ public class CommitRecordStateService {
   CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
   ProjectDbManager projectDb = ProjectDbManager.getInstance();
 
-  IDatabase database = new MySqlDatabase();
-  Connection connection = database.getConnection();
-
   /**
    * get counts by different state
    * 
@@ -45,7 +42,7 @@ public class CommitRecordStateService {
   @Path("state/")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCommitRecordStateCounts(@QueryParam("state") String state) {
-    List<Integer> array = commitRecordStateDb.getCommitRecordStateCounts(connection, state);
+    List<Integer> array = commitRecordStateDb.getCommitRecordStateCounts(state);
     JSONObject ob = new JSONObject();
     ob.put("data", array);
     ob.put("name", state);

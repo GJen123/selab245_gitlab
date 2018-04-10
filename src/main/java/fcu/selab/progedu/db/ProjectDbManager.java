@@ -54,6 +54,7 @@ public class ProjectDbManager {
       e.printStackTrace();
     } finally {
       try {
+        preStmt.close();
         conn.close();
       } catch (SQLException e) {
         e.printStackTrace();
@@ -101,6 +102,7 @@ public class ProjectDbManager {
       e.printStackTrace();
     } finally {
       try {
+        stmt.close();
         conn.close();
       } catch (SQLException e) {
         e.printStackTrace();
@@ -150,6 +152,7 @@ public class ProjectDbManager {
       e.printStackTrace();
     } finally {
       try {
+        stmt.close();
         conn.close();
       } catch (SQLException e) {
         e.printStackTrace();
@@ -181,6 +184,7 @@ public class ProjectDbManager {
       e.printStackTrace();
     } finally {
       try {
+        stmt.close();
         conn.close();
       } catch (SQLException e) {
         e.printStackTrace();
@@ -208,6 +212,7 @@ public class ProjectDbManager {
       e.printStackTrace();
     } finally {
       try {
+        preStmt.close();
         conn.close();
       } catch (SQLException e) {
         e.printStackTrace();
@@ -234,7 +239,6 @@ public class ProjectDbManager {
       preStmt.setString(1, deadline);
       preStmt.setString(2, readMe);
       preStmt.setString(3, name);
-      System.out.println(preStmt.toString());
       preStmt.executeUpdate();
       preStmt.close();
     } catch (SQLException e) {
@@ -242,6 +246,7 @@ public class ProjectDbManager {
       e.printStackTrace();
     } finally {
       try {
+        preStmt.close();
         conn.close();
       } catch (SQLException e) {
         e.printStackTrace();
@@ -260,12 +265,11 @@ public class ProjectDbManager {
   public void updateProjectChecksum(String name, String checksum) {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
-    String sql = "UPDATE Assignment SET checksum=? WHERE name=?";
+    String sql = "UPDATE Assignment SET zipChecksum=? WHERE name=?";
     try {
       preStmt = conn.prepareStatement(sql);
       preStmt.setString(1, checksum);
       preStmt.setString(2, name);
-      System.out.println(preStmt.toString());
       preStmt.executeUpdate();
       preStmt.close();
     } catch (SQLException e) {
@@ -273,6 +277,7 @@ public class ProjectDbManager {
       e.printStackTrace();
     } finally {
       try {
+        preStmt.close();
         conn.close();
       } catch (SQLException e) {
         e.printStackTrace();

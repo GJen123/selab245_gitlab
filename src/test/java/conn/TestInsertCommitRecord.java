@@ -30,8 +30,6 @@ public class TestInsertCommitRecord {
 
   public static void main(String[] args) {
     // TODO Auto-generated method stub
-    IDatabase database = new MySqlDatabase();
-    Connection connection = database.getConnection();
     UserDbManager db = UserDbManager.getInstance();
     List<User> users = db.listAllUsers();
     ProjectDbManager Pdb = ProjectDbManager.getInstance();
@@ -72,10 +70,10 @@ public class TestInsertCommitRecord {
                 }
               }
               String hw = proName.replace("OOP-HW", "");
-              boolean inDb = commitDb.checkRecord(connection, user.getId(), hw, color, dates[0],
+              boolean inDb = commitDb.checkRecord(user.getId(), hw, color, dates[0],
                   dates[1]);
               if (!inDb) {
-                boolean check = commitDb.insertCommitRecord(connection, user.getId(), hw, color,
+                boolean check = commitDb.insertCommitRecord(user.getId(), hw, color,
                     dates[0], dates[1]);
                 if (check) {
                   System.out.println(user.getId() + ", " + hw + ", " + color + ", " + strDate);
@@ -86,11 +84,6 @@ public class TestInsertCommitRecord {
           }
         }
       }
-    }
-    try {
-      connection.close();
-    } catch (SQLException e) {
-      e.printStackTrace();
     }
   }
 

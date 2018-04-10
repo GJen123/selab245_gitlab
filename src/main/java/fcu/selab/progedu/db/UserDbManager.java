@@ -38,7 +38,6 @@ public class UserDbManager {
   public void addUser(GitlabUser user) {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
-    Statement stmt = null;
     String sql = "INSERT INTO " + "User(gitLabId, userName, name, password, email, privateToken)  "
         + "VALUES(?, ?, ?, ?, ?, ?)";
     String query = "SELECT * FROM User";
@@ -55,19 +54,6 @@ public class UserDbManager {
       preStmt.setString(6, user.getPrivateToken());
       preStmt.executeUpdate();
       preStmt.close();
-
-      // stmt = conn.createStatement();
-      // ResultSet rs = stmt.executeQuery(query);
-      // System.out.println("List All Students");
-      // while (rs.next()) {
-      // System.out.println("GitLabId: " + rs.getString("gitLabId") + ", StuId:
-      // "
-      // + rs.getString("userName") + ", Name: " + rs.getString("name") + ",
-      // Email: "
-      // + rs.getString("email") + ", Private_Token: " +
-      // rs.getString("privateToken")
-      // + ", privateToken: " + rs.getString("privateToken"));
-      // }
     } catch (SQLException e) {
       e.printStackTrace();
     } finally {
@@ -130,6 +116,13 @@ public class UserDbManager {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      try {
+        preStmt.close();
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
     }
     return password;
   }
@@ -155,6 +148,13 @@ public class UserDbManager {
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      try {
+        preStmt.close();
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
     }
   }
 
@@ -213,6 +213,13 @@ public class UserDbManager {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      try {
+        preStmt.close();
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
     }
     return user;
   }
@@ -252,44 +259,13 @@ public class UserDbManager {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-    }
-    return user;
-  }
-
-  /**
-   * Get user from database
-   *
-   * @param id
-   *          The gitlab user id
-   * @return user
-   */
-  public User getUser(Connection conn, int id) {
-    User user = new User();
-    String query = "SELECT * FROM User WHERE id = ?";
-    PreparedStatement preStmt = null;
-
-    try {
-      preStmt = conn.prepareStatement(query);
-      preStmt.setInt(1, id);
-      ResultSet rs = preStmt.executeQuery();
-      while (rs.next()) {
-        int gitLabId = rs.getInt("gitLabId");
-        String stuId = rs.getString("userName");
-        String name = rs.getString("name");
-        String password = rs.getString("password");
-        String email = rs.getString("email");
-        String privateToken = rs.getString("privateToken");
-
-        user.setGitLabId(gitLabId);
-        user.setId(id);
-        user.setUserName(stuId);
-        user.setName(name);
-        user.setPassword(password);
-        user.setEmail(email);
-        user.setPrivateToken(privateToken);
+    } finally {
+      try {
+        preStmt.close();
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
       }
-    } catch (SQLException e) {
-      e.printStackTrace();
     }
     return user;
   }
@@ -316,6 +292,13 @@ public class UserDbManager {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      try {
+        preStmt.close();
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
     }
     return name;
   }
@@ -327,7 +310,8 @@ public class UserDbManager {
    *          The db user id
    * @return user
    */
-  public String getUserName(Connection conn, int userId) {
+  public String getUserName(int userId) {
+    Connection conn = database.getConnection();
     String query = "SELECT * FROM User WHERE id = ?";
     PreparedStatement preStmt = null;
     String name = "";
@@ -341,6 +325,13 @@ public class UserDbManager {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      try {
+        preStmt.close();
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
     }
     return name;
   }
@@ -367,6 +358,13 @@ public class UserDbManager {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      try {
+        preStmt.close();
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
     }
     return id;
   }
@@ -407,6 +405,13 @@ public class UserDbManager {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      try {
+        stmt.close();
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
     }
     return lsUsers;
   }

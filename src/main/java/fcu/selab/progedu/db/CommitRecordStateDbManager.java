@@ -44,14 +44,9 @@ public class CommitRecordStateDbManager {
 
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
-    Statement stmt = null;
-
-    List<String> lsNames = new ArrayList<String>();
-    lsNames = projectDb.listAllProjectNames();
 
     String sql = "INSERT INTO " + "Commit_Record_State(hw, success, checkStyleError, compileFailure"
         + ", testFailure, notBuild, commitCounts)  " + "VALUES(?, ?, ?, ?, ?, ?, ?)";
-    String query = "SELECT * FROM CommitRecordState";
 
     try {
       preStmt = conn.prepareStatement(sql);
@@ -99,10 +94,6 @@ public class CommitRecordStateDbManager {
 
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
-    Statement stmt = null;
-
-    List<String> lsNames = new ArrayList<String>();
-    lsNames = projectDb.listAllProjectNames();
 
     String sql = "UPDATE " + "Commit_Record_State  SET success = ? ,checkStyleError = ? "
         + ", compileFailure = ? , testFailure = ? , notBuild = ? , commitCounts = ?  "
@@ -135,12 +126,10 @@ public class CommitRecordStateDbManager {
 
   /**
    * get all state counts
-   * 
-   * @param conn
-   *          db connection
    * @return state's counts
    */
-  public List<Integer> getCommitRecordStateCounts(Connection conn, String state) {
+  public List<Integer> getCommitRecordStateCounts(String state) {
+    Connection conn = database.getConnection();
     String query = "SELECT * FROM Commit_Record_State";
     PreparedStatement preStmt = null;
     ResultSet rs = null;
@@ -168,16 +157,14 @@ public class CommitRecordStateDbManager {
 
   /**
    * check if hw exists in Commit_Record_State DB table
-   * 
-   * @param conn
-   *          db connection
    * @param hw
    *          hw name
    * 
    * @return check result (boolean)
    */
-  public boolean checkCommitRecordStatehw(Connection conn, String hw) {
+  public boolean checkCommitRecordStatehw(String hw) {
 
+    Connection conn = database.getConnection();
     String query = "SELECT hw FROM Commit_Record_State where hw=?";
     PreparedStatement preStmt = null;
     ResultSet rs = null;
@@ -198,7 +185,7 @@ public class CommitRecordStateDbManager {
       try {
         preStmt.close();
         rs.close();
-        // conn.close();
+        conn.close();
       } catch (SQLException e) {
         e.printStackTrace();
       }
@@ -208,13 +195,11 @@ public class CommitRecordStateDbManager {
 
   /**
    * get commits sum group by hw
-   * 
-   * @param conn
-   *          db connection
    * @return commits sum
    */
 
-  public List<Integer> getCommitSum(Connection conn) {
+  public List<Integer> getCommitSum() {
+    Connection conn = database.getConnection();
     String query = "SELECT commitCounts FROM Commit_Record_State";
     PreparedStatement preStmt = null;
     ResultSet rs = null;

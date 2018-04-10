@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.deser.std.DateDeserializers;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -25,9 +26,7 @@ public class CommitRecordDbManager {
 
   /**
    * insert student commit records into db
-   * 
-   * @param conn
-   *          db connection
+   *
    * @param stuId
    *          studrnt id
    * @param hw
@@ -38,8 +37,9 @@ public class CommitRecordDbManager {
    *          commit time
    * @return check
    */
-  public boolean insertCommitRecord(Connection conn, int stuId, String hw, String color,
+  public boolean insertCommitRecord(int stuId, String hw, String color,
       String date, String time) {
+    Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
     String sql = "INSERT INTO Commit_Record" + "(stuId, hw, color, date, time) "
         + "VALUES(?, ?, ?, ?, ?)";
@@ -59,18 +59,24 @@ public class CommitRecordDbManager {
       check = true;
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      try {
+        preStmt.close();
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
     }
     return check;
   }
 
   /**
    * get all counts
-   * 
-   * @param conn
-   *          db connection
+   *
    * @return counts
    */
-  public List<Integer> getCounts(Connection conn, String color) {
+  public List<Integer> getCounts(String color) {
+    Connection conn = database.getConnection();
     String query = "SELECT hw,count(color) FROM Commit_Record where color like ? group by hw";
     PreparedStatement preStmt = null;
     List<Integer> array = new ArrayList<Integer>();
@@ -86,6 +92,7 @@ public class CommitRecordDbManager {
       e.printStackTrace();
     } finally {
       try {
+        preStmt.close();
         conn.close();
       } catch (SQLException e) {
         e.printStackTrace();
@@ -119,6 +126,7 @@ public class CommitRecordDbManager {
       e.printStackTrace();
     } finally {
       try {
+        preStmt.close();
         conn.close();
       } catch (SQLException e) {
         e.printStackTrace();
@@ -129,9 +137,7 @@ public class CommitRecordDbManager {
 
   /**
    * check if record is in db
-   * 
-   * @param conn
-   *          db connection
+   *
    * @param stuId
    *          student id
    * @param hw
@@ -142,8 +148,9 @@ public class CommitRecordDbManager {
    *          commit time
    * @return boolean
    */
-  public boolean checkRecord(Connection conn, int stuId, String hw, String color, String date,
+  public boolean checkRecord(int stuId, String hw, String color, String date,
       String time) {
+    Connection conn = database.getConnection();
     String query = "SELECT * FROM Commit_Record where stuId=? "
         + "and hw=? and color=? and date=? and time=?";
     PreparedStatement preStmt = null;
@@ -160,9 +167,15 @@ public class CommitRecordDbManager {
       while (rs.next()) {
         check = true;
       }
-      preStmt.close();
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      try {
+        preStmt.close();
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
     }
     return check;
   }
@@ -210,19 +223,25 @@ public class CommitRecordDbManager {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      try {
+        preStmt.close();
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
     }
     return records;
   }
 
   /**
    * delete built record of specific hw
-   * 
-   * @param conn
-   *          db connection
+   *
    * @param hw
    *          hw
    */
-  public void deleteRecord(Connection conn, String hw) {
+  public void deleteRecord(String hw) {
+    Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
     String sql = "DELETE FROM Commit_Record WHERE hw=?";
 
@@ -235,6 +254,13 @@ public class CommitRecordDbManager {
 
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      try {
+        preStmt.close();
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
     }
   }
 }

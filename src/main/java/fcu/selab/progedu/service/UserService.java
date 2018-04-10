@@ -38,13 +38,12 @@ public class UserService {
   Conn userConn = Conn.getInstance();
 
   CourseConfig course = CourseConfig.getInstance();
+  private UserDbManager dbManager = UserDbManager.getInstance();
   private ProjectDbManager projectDbManager = ProjectDbManager.getInstance();
   private GitlabConfig gitlabData = GitlabConfig.getInstance();
   private JenkinsApi jenkins = JenkinsApi.getInstance();
   private ZipHandler zipHandler;
   private JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
-
-  private static UserDbManager dbManager = UserDbManager.getInstance();
 
   /**
    * Upload a csv file for student batch registration
@@ -153,7 +152,7 @@ public class UserService {
         try {
           email = row[0] + course.getSchoolEmail();
         } catch (LoadConfigFailureException e) {
-          // TODO Auto-generated catch block
+          // TODO Auto-generated catch bloc
           e.printStackTrace();
         }
       }
@@ -175,13 +174,22 @@ public class UserService {
 
   /**
    * 
+   * <<<<<<< HEAD
+   * 
    * @param name
    *          name
    * @param id
    *          id
    * @param email
    *          email
-   * @return
+   * @return =======
+   * @param name
+   *          name
+   * @param id
+   *          id
+   * @param email
+   *          email
+   * @return response >>>>>>> ba429338be89f1642a8cd5f07b7943e5e0af83f6
    */
   @POST
   @Path("new")
@@ -189,7 +197,6 @@ public class UserService {
   public Response createAStudentAccount(@FormDataParam("studentName") String name,
       @FormDataParam("studentId") String id, @FormDataParam("studentEmail") String email) {
     boolean isSave = false;
-    System.out.println("student: " + name + ", " + id + ", " + email);
     try {
       isSave = userConn.createUser(email, id, id, name);
       User user = dbManager.getUser(id);
@@ -206,10 +213,12 @@ public class UserService {
   }
 
   /**
-   * create previous project for new student
+   * <<<<<<< HEAD create previous project for new student
    * 
    * @param user
-   *          new student
+   *          new student ======= create previous project for new student.
+   * @param user
+   *          student >>>>>>> ba429338be89f1642a8cd5f07b7943e5e0af83f6
    * @return check
    */
   public boolean importPreviousProject(User user) {
@@ -243,7 +252,15 @@ public class UserService {
    * @param name
    *          job name
    * @param fileType
-   *          job file type
+   *          job file type ======= return check; }
+   * 
+   *          /** create previous job for new student.
+   * @param username
+   *          student name
+   * @param name
+   *          job name
+   * @param fileType
+   *          job type >>>>>>> ba429338be89f1642a8cd5f07b7943e5e0af83f6
    * @return check
    */
   public boolean createPreviuosJob(String username, String name, String fileType) {
@@ -254,8 +271,7 @@ public class UserService {
       jenkinsRootUsername = jenkinsData.getJenkinsRootUsername();
       jenkinsRootPassword = jenkinsData.getJenkinsRootPassword();
       String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername, jenkinsRootPassword);
-      StringBuilder sb = new StringBuilder();
-      jenkins.createRootJob(name, jenkinsCrumb, fileType, sb);
+      StringBuilder sb = zipHandler.getStringBuilder();
       jenkins.createJenkinsJob(username, name, jenkinsCrumb, fileType, sb);
       jenkins.buildJob(username, name, jenkinsCrumb);
       check = true;

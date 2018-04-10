@@ -24,8 +24,6 @@ import fcu.selab.progedu.exception.LoadConfigFailureException;
 public class CommitRecordService {
   CommitRecordDbManager commitRecordDb = CommitRecordDbManager.getInstance();
   ProjectDbManager pdb = ProjectDbManager.getInstance();
-  IDatabase database = new MySqlDatabase();
-  Connection connection = database.getConnection();
 
   /**
    * get counts by different color
@@ -38,7 +36,7 @@ public class CommitRecordService {
   @Path("color")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCounts(@QueryParam("color") String color) {
-    List<Integer> array = commitRecordDb.getCounts(connection, color);
+    List<Integer> array = commitRecordDb.getCounts(color);
     JSONObject ob = new JSONObject();
     ob.put("data", array);
     ob.put("name", color);
@@ -83,7 +81,7 @@ public class CommitRecordService {
   public void deleteRecord(String hw) {
     IDatabase database = new MySqlDatabase();
     Connection connection = database.getConnection();
-    commitRecordDb.deleteRecord(connection, hw);
+    commitRecordDb.deleteRecord(hw);
   }
 
 }

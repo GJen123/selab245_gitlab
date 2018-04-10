@@ -24,6 +24,65 @@
 <html>
 <head>
     <style type="text/css">
+        /* Center the loader */
+    #loadingBackground {
+        position: absolute;
+        top: 0;
+        bottom: 0%;
+        left: 0;
+        right: 0%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 9999;
+        display: none;
+        text-align: center;
+        width: 100%;
+        padding-top: 25px;
+    }
+    #loader {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 9999;
+        width: 150px;
+        height: 150px;
+        margin: -75px 0 0 -75px;
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 120px;
+        height: 120px;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+    }
+
+    @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Add animation to "page content" */
+    .animate-bottom {
+        position: relative;
+        -webkit-animation-name: animatebottom;
+        -webkit-animation-duration: 1s;
+        animation-name: animatebottom;
+        animation-duration: 1s
+    }
+
+    @-webkit-keyframes animatebottom {
+        from { bottom:-100px; opacity:0 }
+        to { bottom:0px; opacity:1 }
+    }
+
+    @keyframes animatebottom {
+        from{ bottom:-100px; opacity:0 }
+        to{ bottom:0; opacity:1 }
+    }
         body, html{
             height: 100%;
             overflow-x: hidden;
@@ -136,6 +195,9 @@
     JenkinsApi jenkins = JenkinsApi.getInstance();
 %>
 <%@ include file="header.jsp" %>
+<div id="loadingBackground" style="display: block">
+    <div id="loader"></div>
+</div>
 <!-- -----sidebar----- -->
 <div class="sidebar" style="width:200px;">
     <ul class="nav flex-column" style="padding-top: 20px;">
@@ -206,6 +268,11 @@
 </body>
 <script type="text/javascript">
     var projectCount = <%=dbProjects.size()%>
+    var projects = [];
+    <% for (int i=0; i<dbProjects.size(); i++) { %>
+            projects.push("<%=dbProjects.get(i).getName()%>");
+    <% } %>
+
     $.ajax({
         url : 'webapi/commits/all',
         type : 'GET',
@@ -214,7 +281,6 @@
         contentType: 'application/json; charset=UTF-8',
         success : function(responseText) {
             var result = JSON.parse(responseText);
-            console.log(result)
             setData(result.result);
         },
         error : function(responseText) {
@@ -223,39 +289,67 @@
     });
 
     function setData(result) {
-    	 var content = '';
-         for (i in result) {
-             var student = result[i];
-             var userName = student.userName;
-             var gitlabId = student.gitlabId;
-             var commits = student.commits;
-             content = '<tr id="allProject">';
-             content += '<td width="10%" id="allProject"><a href="dashStuChoosed.jsp?studentId=' + gitlabId + '">' + userName + '</a></td>';
-             if(commits.length > 0){
-                 for(j in commits) {
-                     var hw = commits[j]
-                     var hwName = hw.hw;
-                     var commit = hw.commit + 1;
-                     var color = 'circle ' + hw.color;
-                     content += '<td style="padding: 10px 0px 0px 30px;">';
-                     content += '<p id="' + userName + '_' + hwName + '" class="' + color + '">';
-                     content += '<a id="' + userName + '_' + hwName + '_commit" href="dashStuChoosed.jsp?studentId=' + gitlabId + '&proName=' + hwName + '">';
-                     content += commit;
-                     content += '</a>';
-                     content += '</p></td>';
-                 }
-                 content += '</tr>';
-                 $('#dashboard').append(content)
-             } else {
-                 console.log(userName)
-                 for (var i=0; i<projectCount; i++) {
-                     content += '<td style="padding: 10px 0px 0px 30px;">';
-                     content += '<p>N/A</p></td>';
-                 }
-                 content += '</tr>';
-                 $('#dashboard').append(content)
-             }
-         }
+        var content = '';
+        for (i in result) {
+            var student = result[i];
+            var userName = student.userName;
+            var gitlabId = student.gitlabId;
+            var commits = student.commits;
+
+            console.log(student);
+
+            content = '<tr id="allProject">';
+            content += '<td width="10%" id="allProject"><a href="dashStuChoosed.jsp?studentId=' + gitlabId + '">' + userName + '</a></td>';
+
+            if(commits.length > 0){
+                for(j in projects) {
+                    var thName = projects[j];
+                    console.log('project' + j + ': ' + thName)
+
+                    for(k in commits) {
+                        var pName;
+                        var hw = commits[k];
+                        var hwName = hw.hw;
+                        var commit = hw.commit + 1;
+                        var color = 'circle ' + hw.color;
+                        if(thName == hwName) {
+                            pName = hwName;
+                            console.log('commits' + k + ': ' + hwName)
+                            break;
+                        }
+                        else {
+                            console.log('commits' + k + ' else: ' + hwName)
+                            pName = 'N/A';
+                        }
+                    }
+                    console.log('result: ' + pName)
+
+                    if(pName == undefined || pName == 'N/A') {
+                        content += '<td style="padding: 10px 0px 0px 30px;">';
+                        content += '<p>' + pName + '</p></td>';
+                    } else {
+                        pName = hwName;
+                        content += '<td style="padding: 10px 0px 0px 30px;">';
+                        content += '<p id="' + userName + '_' + hwName + '" class="' + color + '">';
+                        content += '<a id="' + userName + '_' + hwName + '_commit" href="dashStuChoosed.jsp?studentId=' + gitlabId + '&proName=' + hwName + '">';
+                        content += commit;
+                        content += '</a>';
+                        content += '</p></td>';
+                    }
+                    console.log('============================')
+                }
+                content += '</tr>';
+                $('#dashboard').append(content)
+            } else {
+                for (var i=0; i<projectCount; i++) {
+                    content += '<td style="padding: 10px 0px 0px 30px;">';
+                    content += '<p>N/A</p></td>';
+                }
+                content += '</tr>';
+                $('#dashboard').append(content)
+            }
+        }
+        document.getElementById('loadingBackground').style.display = 'none';
     }
 </script>
 </html>

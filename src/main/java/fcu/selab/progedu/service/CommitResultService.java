@@ -48,7 +48,6 @@ public class CommitResultService {
   CommitRecordStateDbManager crsdb = CommitRecordStateDbManager.getInstance();
   UserDbManager userDb = UserDbManager.getInstance();
   ProjectDbManager projectDb = ProjectDbManager.getInstance();
-  IDatabase database = new MySqlDatabase();
 
   /**
    * get counts by different color
@@ -61,8 +60,7 @@ public class CommitResultService {
   @Path("color")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCounts(@QueryParam("color") String color) {
-    Connection connection = database.getConnection();
-    JSONObject commitCounts = db.getCounts(connection, color);
+    JSONObject commitCounts = db.getCounts(color);
     List<Integer> counts = new ArrayList<Integer>();
     List<String> pnames = projectDb.listAllProjectNames();
 
@@ -94,12 +92,6 @@ public class CommitResultService {
     JSONObject ob = new JSONObject();
     ob.put("data", counts);
     ob.put("name", color);
-    try {
-      connection.close();
-    } catch (SQLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     Response response = Response.ok().entity(ob.toString()).build();
     return response;
   }
@@ -113,18 +105,11 @@ public class CommitResultService {
   @Path("count")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getCommitSum() {
-    Connection connection = database.getConnection();
-    List<Integer> array = crsdb.getCommitSum(connection);
+    List<Integer> array = crsdb.getCommitSum();
     JSONObject ob = new JSONObject();
     ob.put("data", array);
     ob.put("name", "commit counts");
     ob.put("type", "column");
-    try {
-      connection.close();
-    } catch (SQLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     Response response = Response.ok().entity(ob.toString()).build();
     return response;
   }
@@ -143,20 +128,13 @@ public class CommitResultService {
   @Produces(MediaType.TEXT_PLAIN)
   public Response getCommitResultByStudentAndHw(@QueryParam("proName") String proName,
       @QueryParam("userName") String userName) {
-    Connection connection = database.getConnection();
     int id = userDb.getUser(userName).getId();
 
-    CommitResult commitResult = db.getCommitResultByStudentAndHw(connection, id, proName);
+    CommitResult commitResult = db.getCommitResultByStudentAndHw(id, proName);
     String circleColor = "circle " + commitResult.getColor();
     String result = userName + "_" + proName + "," + circleColor + ","
         + (commitResult.getCommit() + 1);
 
-    try {
-      connection.close();
-    } catch (SQLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     Response response = Response.ok().entity(result).build();
     return response;
   }
@@ -170,23 +148,16 @@ public class CommitResultService {
   @Path("all")
   @Produces(MediaType.TEXT_PLAIN)
   public Response getCommitResult() {
-    Connection connection = database.getConnection();
     JSONArray array = new JSONArray();
     JSONObject result = new JSONObject();
 
     List<User> users = userDb.listAllUsers();
     for (User user : users) {
-      JSONObject ob = db.getCommitResultByStudent(connection, user.getId());
+      JSONObject ob = db.getCommitResultByStudent(user.getId());
       array.put(ob);
     }
     result.put("result", array);
 
-    try {
-      connection.close();
-    } catch (SQLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     Response response = Response.ok().entity(result.toString()).build();
     return response;
   }
@@ -201,7 +172,6 @@ public class CommitResultService {
    * @return color
    */
   public String getCommitResult(String userName, String proName) {
-    Connection connection = database.getConnection();
     int id = userDb.getUser(userName).getId();
     String courseName = "";
     try {
@@ -210,15 +180,9 @@ public class CommitResultService {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    CommitResult commitResult = db.getCommitResultByStudentAndHw(connection, id, proName);
+    CommitResult commitResult = db.getCommitResultByStudentAndHw(id, proName);
     String color = commitResult.getColor();
 
-    try {
-      connection.close();
-    } catch (SQLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     return color;
   }
 
@@ -266,9 +230,6 @@ public class CommitResultService {
       color = color.replaceAll("_anime", "");
     }
 
-    IDatabase database = new MySqlDatabase();
-    Connection connection = database.getConnection();
-
     String buildApiJson = stuDashChoPro.getBuildApiJson(buildNum.get(num), userName, proName);
     String strDate = stuDashChoPro.getCommitTime(buildApiJson);
     String[] dates = strDate.split(" ");
@@ -289,38 +250,28 @@ public class CommitResultService {
         break;
     }
 
-    boolean check = db.checkJenkinsJobTimestamp(connection, id, proName);
+    boolean check = db.checkJenkinsJobTimestamp(id, proName);
     if (check) {
-      db.updateJenkinsCommitCount(connection, id, proName, commit, color);
-      db.updateJenkinsJobTimestamp(connection, id, proName, strDate);
+      db.updateJenkinsCommitCount(id, proName, commit, color);
+      db.updateJenkinsJobTimestamp(id, proName, strDate);
     } else {
-      db.insertJenkinsCommitCount(connection, id, proName, commit, color);
-      db.updateJenkinsJobTimestamp(connection, id, proName, strDate);
+      db.insertJenkinsCommitCount(id, proName, commit, color);
+      db.updateJenkinsJobTimestamp(id, proName, strDate);
     }
 
-    boolean inDb = commitRecordDb.checkRecord(connection, id, proName, color, dates[0], dates[1]);
+    boolean inDb = commitRecordDb.checkRecord(id, proName, color, dates[0], dates[1]);
     if (!inDb) {
-      commitRecordDb.insertCommitRecord(connection, id, proName, color, dates[0], dates[1]);
+      commitRecordDb.insertCommitRecord(id, proName, color, dates[0], dates[1]);
     }
 
-    // updateCommitRecordState();
-
-    try {
-      connection.close();
-    } catch (SQLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    updateCommitRecordState();
   }
 
   /**
    * update Commit_Record_State DB's data
    */
-
   private void updateCommitRecordState() {
     // TODO Auto-generated method stub
-
-    Connection connection = database.getConnection();
 
     List<String> lsNames = new ArrayList<String>();
     lsNames = projectDb.listAllProjectNames();
@@ -361,7 +312,7 @@ public class CommitResultService {
       ccs = success + ctf + csf + cpf;
 
       boolean check;
-      check = crsdb.checkCommitRecordStatehw(connection, name);
+      check = crsdb.checkCommitRecordStatehw(name);
 
       if (check) {
         crsdb.updateCommitRecordState(name, success, csf, cpf, ctf, nb, ccs);
@@ -436,6 +387,6 @@ public class CommitResultService {
   public void deleteResult(String hw) {
     IDatabase database = new MySqlDatabase();
     Connection connection = database.getConnection();
-    db.deleteResult(connection, hw);
+    db.deleteResult(hw);
   }
 }

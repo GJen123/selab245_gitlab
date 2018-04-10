@@ -119,6 +119,7 @@ public class GroupDbManager {
       e.printStackTrace();
     } finally {
       try {
+        stmt.close();
         conn.close();
       } catch (SQLException e) {
         e.printStackTrace();
