@@ -116,7 +116,7 @@ public class UserDbManager {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-    }finally {
+    } finally {
       try {
         preStmt.close();
         conn.close();
@@ -148,7 +148,7 @@ public class UserDbManager {
       preStmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
-    }finally {
+    } finally {
       try {
         preStmt.close();
         conn.close();
@@ -213,7 +213,7 @@ public class UserDbManager {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-    }finally {
+    } finally {
       try {
         preStmt.close();
         conn.close();
@@ -259,7 +259,7 @@ public class UserDbManager {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-    }finally {
+    } finally {
       try {
         preStmt.close();
         conn.close();
@@ -292,7 +292,7 @@ public class UserDbManager {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-    }finally {
+    } finally {
       try {
         preStmt.close();
         conn.close();
@@ -325,7 +325,7 @@ public class UserDbManager {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-    }finally {
+    } finally {
       try {
         preStmt.close();
         conn.close();
@@ -358,7 +358,7 @@ public class UserDbManager {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-    }finally {
+    } finally {
       try {
         preStmt.close();
         conn.close();
@@ -405,7 +405,7 @@ public class UserDbManager {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-    }finally {
+    } finally {
       try {
         stmt.close();
         conn.close();

@@ -159,7 +159,7 @@ public class UserService {
         try {
           email = row[0] + course.getSchoolEmail();
         } catch (LoadConfigFailureException e) {
-          // TODO Auto-generated catch block
+          // TODO Auto-generated catch bloc
           e.printStackTrace();
         }
       }
@@ -184,7 +184,7 @@ public class UserService {
    * @param name name
    * @param id id
    * @param email email 
-   * @return
+   * @return response
    */
   @POST
   @Path("new")
@@ -208,7 +208,12 @@ public class UserService {
     return response;
   }
 
-  public boolean importPreviousProject(User user){
+  /**
+   * create previous project for new student.
+   * @param user student
+   * @return check
+   */
+  public boolean importPreviousProject(User user) {
     boolean check = false;
     List<Project> projects = projectDbManager.listAllProjects();
     String url = "";
@@ -216,7 +221,7 @@ public class UserService {
     String userName = user.getUserName();
     try {
       gitlabUrl = gitlabData.getGitlabRootUrl();
-      for(Project project : projects) {
+      for (Project project : projects) {
         String projectName = project.getName();
         Project project1 = projectDbManager.getProjectByName(projectName);
         url = gitlabUrl + "/root/" + projectName;
@@ -231,7 +236,14 @@ public class UserService {
     return  check;
   }
 
-  public boolean createPreviuosJob(String username, String name, String fileType){
+  /**
+   * create previous job for new student.
+   * @param username student name
+   * @param name job name
+   * @param fileType job type
+   * @return check
+   */
+  public boolean createPreviuosJob(String username, String name, String fileType) {
     boolean check = false;
     String jenkinsRootUsername = null;
     String jenkinsRootPassword = null;

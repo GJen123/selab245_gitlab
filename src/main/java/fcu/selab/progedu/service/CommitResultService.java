@@ -264,13 +264,12 @@ public class CommitResultService {
       commitRecordDb.insertCommitRecord(id, proName, color, dates[0], dates[1]);
     }
 
-     updateCommitRecordState();
+    updateCommitRecordState();
   }
 
   /**
    * update Commit_Record_State DB's data
    */
-
   private void updateCommitRecordState() {
     // TODO Auto-generated method stub
 

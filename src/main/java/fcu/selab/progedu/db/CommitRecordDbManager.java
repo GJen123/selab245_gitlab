@@ -236,9 +236,7 @@ public class CommitRecordDbManager {
 
   /**
    * delete built record of specific hw
-   * 
-   * @param conn
-   *          db connection
+   *
    * @param hw
    *          hw
    */
@@ -257,7 +255,7 @@ public class CommitRecordDbManager {
     } catch (SQLException e) {
       e.printStackTrace();
     } finally {
-      try{
+      try {
         preStmt.close();
         conn.close();
       } catch (SQLException e) {

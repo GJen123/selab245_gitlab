@@ -349,6 +349,7 @@ public class CommitResultDbManager {
       preStmt.close();
     } catch (SQLException e) {
       e.printStackTrace();
+      return new JSONObject();
     } finally {
       try {
         conn.close();
