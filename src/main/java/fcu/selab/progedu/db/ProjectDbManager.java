@@ -265,7 +265,7 @@ public class ProjectDbManager {
   public void updateProjectChecksum(String name, String checksum) {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
-    String sql = "UPDATE Assignment SET checksum=? WHERE name=?";
+    String sql = "UPDATE Assignment SET zipChecksum=? WHERE name=?";
     try {
       preStmt = conn.prepareStatement(sql);
       preStmt.setString(1, checksum);
