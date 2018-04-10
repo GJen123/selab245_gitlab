@@ -1,19 +1,15 @@
 package fcu.selab.progedu.service;
 
-import java.io.InputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.FileInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
@@ -25,10 +21,16 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import fcu.selab.progedu.config.CourseConfig;
+import fcu.selab.progedu.config.GitlabConfig;
+import fcu.selab.progedu.config.JenkinsConfig;
 import fcu.selab.progedu.conn.Conn;
+import fcu.selab.progedu.data.Project;
 import fcu.selab.progedu.data.User;
+import fcu.selab.progedu.db.ProjectDbManager;
 import fcu.selab.progedu.db.UserDbManager;
 import fcu.selab.progedu.exception.LoadConfigFailureException;
+import fcu.selab.progedu.jenkins.JenkinsApi;
+import fcu.selab.progedu.utils.ZipHandler;
 
 @Path("user/")
 public class UserService {
@@ -36,7 +38,12 @@ public class UserService {
   Conn userConn = Conn.getInstance();
 
   CourseConfig course = CourseConfig.getInstance();
-  
+  private ProjectDbManager projectDbManager = ProjectDbManager.getInstance();
+  private GitlabConfig gitlabData = GitlabConfig.getInstance();
+  private JenkinsApi jenkins = JenkinsApi.getInstance();
+  private ZipHandler zipHandler;
+  private JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+
   private static UserDbManager dbManager = UserDbManager.getInstance();
 
   /**
@@ -82,7 +89,7 @@ public class UserService {
 
       // parse file
       File file = new File(uploadedFileLocation);
-      InputStreamReader fr = new InputStreamReader(new FileInputStream(file),"BIG5");
+      InputStreamReader fr = new InputStreamReader(new FileInputStream(file), "BIG5");
       BufferedReader br;
       br = new BufferedReader(fr);
 
@@ -168,21 +175,26 @@ public class UserService {
 
   /**
    * 
-   * @param name name
-   * @param id id
-   * @param email email 
+   * @param name
+   *          name
+   * @param id
+   *          id
+   * @param email
+   *          email
    * @return
    */
   @POST
   @Path("new")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response createAStudentAccount(@FormDataParam("studentName") String name,
-                                        @FormDataParam("studentId") String id,
-                                        @FormDataParam("studentEmail") String email) {
+      @FormDataParam("studentId") String id, @FormDataParam("studentEmail") String email) {
     boolean isSave = false;
     System.out.println("student: " + name + ", " + id + ", " + email);
     try {
       isSave = userConn.createUser(email, id, id, name);
+      User user = dbManager.getUser(id);
+      boolean isSuccess = importPreviousProject(user);
+      isSave = isSave && isSuccess;
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -191,6 +203,66 @@ public class UserService {
       response = Response.serverError().status(Status.INTERNAL_SERVER_ERROR).build();
     }
     return response;
+  }
+
+  /**
+   * create previous project for new student
+   * 
+   * @param user
+   *          new student
+   * @return check
+   */
+  public boolean importPreviousProject(User user) {
+    boolean check = false;
+    List<Project> projects = projectDbManager.listAllProjects();
+    String url = "";
+    String gitlabUrl = "";
+    String userName = user.getUserName();
+    try {
+      gitlabUrl = gitlabData.getGitlabRootUrl();
+      for (Project project : projects) {
+        String projectName = project.getName();
+        Project project1 = projectDbManager.getProjectByName(projectName);
+        url = gitlabUrl + "/root/" + projectName;
+        userConn.createPrivateProject(user.getGitLabId(), project.getName(), url);
+        boolean isSuccess = createPreviuosJob(userName, projectName, project1.getType());
+        check = check && isSuccess;
+      }
+      check = true;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return check;
+  }
+
+  /**
+   * create previous job for new student
+   * 
+   * @param username
+   *          student id
+   * @param name
+   *          job name
+   * @param fileType
+   *          job file type
+   * @return check
+   */
+  public boolean createPreviuosJob(String username, String name, String fileType) {
+    boolean check = false;
+    String jenkinsRootUsername = null;
+    String jenkinsRootPassword = null;
+    try {
+      jenkinsRootUsername = jenkinsData.getJenkinsRootUsername();
+      jenkinsRootPassword = jenkinsData.getJenkinsRootPassword();
+      String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername, jenkinsRootPassword);
+      StringBuilder sb = new StringBuilder();
+      jenkins.createRootJob(name, jenkinsCrumb, fileType, sb);
+      jenkins.createJenkinsJob(username, name, jenkinsCrumb, fileType, sb);
+      jenkins.buildJob(username, name, jenkinsCrumb);
+      check = true;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return check;
   }
 
   /**
@@ -210,8 +282,8 @@ public class UserService {
       email = user.getEmail();
       name = user.getName();
 
-      System.out.println("userName: " + userName + ", password: " + password
-          + ", email: " + email + ", name: " + name);
+      System.out.println("userName: " + userName + ", password: " + password + ", email: " + email
+          + ", name: " + name);
     }
   }
 
@@ -241,15 +313,14 @@ public class UserService {
   @Path("changePwd")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response changePassword(@FormDataParam("oldPwd") String oldPwd,
-      @FormDataParam("newPwd") String newPwd,
-      @FormDataParam("checkPwd") String checkPwd,
+      @FormDataParam("newPwd") String newPwd, @FormDataParam("checkPwd") String checkPwd,
       @FormDataParam("userId") Integer userId) {
 
     System.out.println("oldPwd : " + oldPwd);
     System.out.println("newPwd : " + newPwd);
     System.out.println("checkPwd : " + checkPwd);
     System.out.println("userId : " + userId);
-    
+
     String userName = userConn.getUserById(userId).getUsername();
     System.out.println(userName);
     boolean check = dbManager.checkPassword(userName, newPwd);
@@ -261,7 +332,7 @@ public class UserService {
       dbManager.modifiedUserPassword(userName, newPwd);
       userConn.updateUserPassword(userId, newPwd);
     }
-    
+
     Response response = Response.ok().build();
     return response;
 

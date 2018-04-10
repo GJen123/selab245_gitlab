@@ -223,42 +223,39 @@
     });
 
     function setData(result) {
-        var content = '';
-        for (i in result) {
-            var student = result[i];
-            var userName = student.userName;
-            var gitlabId = student.gitlabId;
-            var commits = student.commits;
-
-            content = '<tr id="allProject">';
-            content += '<td width="10%" id="allProject"><a href="dashStuChoosed.jsp?studentId=' + gitlabId + '">' + userName + '</a></td>';
-
-            if(commits.length > 0){
-                for(j in commits) {
-                    var hw = commits[j]
-                    var hwName = hw.hw;
-                    var commit = hw.commit + 1;
-                    var color = 'circle ' + hw.color;
-
-                    content += '<td style="padding: 10px 0px 0px 30px;">';
-                    content += '<p id="' + userName + '_' + hwName + '" class="' + color + '">';
-                    content += '<a id="' + userName + '_' + hwName + '_commit" href="dashStuChoosed.jsp?studentId=' + gitlabId + '&proName=' + hwName + '">';
-                    content += commit;
-                    content += '</a>';
-                    content += '</p></td>';
-                }
-                content += '</tr>';
-                $('#dashboard').append(content)
-            } else {
-                console.log(userName)
-                for (var i=0; i<projectCount; i++) {
-                    content += '<td style="padding: 10px 0px 0px 30px;">';
-                    content += '<p>N/A</p></td>';
-                }
-                content += '</tr>';
-                $('#dashboard').append(content)
-            }
-        }
+    	 var content = '';
+         for (i in result) {
+             var student = result[i];
+             var userName = student.userName;
+             var gitlabId = student.gitlabId;
+             var commits = student.commits;
+             content = '<tr id="allProject">';
+             content += '<td width="10%" id="allProject"><a href="dashStuChoosed.jsp?studentId=' + gitlabId + '">' + userName + '</a></td>';
+             if(commits.length > 0){
+                 for(j in commits) {
+                     var hw = commits[j]
+                     var hwName = hw.hw;
+                     var commit = hw.commit + 1;
+                     var color = 'circle ' + hw.color;
+                     content += '<td style="padding: 10px 0px 0px 30px;">';
+                     content += '<p id="' + userName + '_' + hwName + '" class="' + color + '">';
+                     content += '<a id="' + userName + '_' + hwName + '_commit" href="dashStuChoosed.jsp?studentId=' + gitlabId + '&proName=' + hwName + '">';
+                     content += commit;
+                     content += '</a>';
+                     content += '</p></td>';
+                 }
+                 content += '</tr>';
+                 $('#dashboard').append(content)
+             } else {
+                 console.log(userName)
+                 for (var i=0; i<projectCount; i++) {
+                     content += '<td style="padding: 10px 0px 0px 30px;">';
+                     content += '<p>N/A</p></td>';
+                 }
+                 content += '</tr>';
+                 $('#dashboard').append(content)
+             }
+         }
     }
 </script>
 </html>
