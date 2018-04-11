@@ -50,7 +50,7 @@ public class CommitResultService {
   ProjectDbManager projectDb = ProjectDbManager.getInstance();
 
   /**
-   * get counts by different color
+   * get counts by different color.
    * 
    * @param color
    *          color
@@ -97,7 +97,7 @@ public class CommitResultService {
   }
 
   /**
-   * get Commit Sum
+   * get Commit Sum.
    * 
    * @return sum
    */
@@ -115,7 +115,7 @@ public class CommitResultService {
   }
 
   /**
-   * get commit result by stuId and hw
+   * get commit result by stuId and hw.
    * 
    * @param proName
    *          project name
@@ -140,7 +140,7 @@ public class CommitResultService {
   }
 
   /**
-   * get all commit result
+   * get all commit result.
    *
    * @return hw, color, commit
    */
@@ -163,7 +163,7 @@ public class CommitResultService {
   }
 
   /**
-   * get commit result by stuId and hw
+   * get commit result by stuId and hw.
    * 
    * @param userName
    *          student id
@@ -187,7 +187,7 @@ public class CommitResultService {
   }
 
   /**
-   * update stu project commit record
+   * update stu project commit record.
    * 
    * @param userName
    *          stu id
@@ -268,7 +268,7 @@ public class CommitResultService {
   }
 
   /**
-   * update Commit_Record_State DB's data
+   * update Commit_Record_State DB's data.
    */
   private void updateCommitRecordState() {
     // TODO Auto-generated method stub
@@ -326,7 +326,7 @@ public class CommitResultService {
   }
 
   /**
-   * check if error is checkstyle error
+   * check if error is checkstyle error.
    * 
    * @param jenkinsData
    *          connect jenkins
@@ -379,7 +379,7 @@ public class CommitResultService {
   }
 
   /**
-   * delete build result of hw
+   * delete build result of hw.
    * 
    * @param hw
    *          hw

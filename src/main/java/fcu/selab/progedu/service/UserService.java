@@ -250,8 +250,8 @@ public class UserService {
       jenkinsRootPassword = jenkinsData.getJenkinsRootPassword();
       String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername, jenkinsRootPassword);
       StringBuilder sb = zipHandler.getStringBuilder();
-      jenkins.createJenkinsJob(username, name, jenkinsCrumb, fileType, sb);
-      jenkins.buildJob(username, name, jenkinsCrumb);
+//      jenkins.createJenkinsJob(username, name, jenkinsCrumb, fileType, sb);
+//      jenkins.buildJob(username, name, jenkinsCrumb);
       check = true;
     } catch (Exception e) {
       e.printStackTrace();

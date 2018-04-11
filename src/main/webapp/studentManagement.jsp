@@ -177,7 +177,6 @@
 			</div>
 		</div>
 	</div>
-	<!--
 	<div>
 		<div class="container-fluid" style="margin-top: 20px; width: 1140px;">
 			<br>
@@ -215,6 +214,5 @@
 			</div>
 		</div>
 	</div>
--->
 </body>
 </html>

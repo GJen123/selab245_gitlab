@@ -267,7 +267,7 @@
 </div>
 </body>
 <script type="text/javascript">
-    var projectCount = <%=dbProjects.size()%>
+    var projectCount = <%=dbProjects.size()%>;
     var projects = [];
     <% for (int i=0; i<dbProjects.size(); i++) { %>
             projects.push("<%=dbProjects.get(i).getName()%>");
