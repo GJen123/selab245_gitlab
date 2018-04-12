@@ -205,6 +205,7 @@ public class UserService {
 
   /**
    * create previous project for new student.
+   * 
    * @param user
    *          student
    * @return check
@@ -232,26 +233,41 @@ public class UserService {
     return check;
   }
 
-  /** create previous job for new student.
+  /**
+   * create previous job for new student.
+   * 
    * @param username
    *          student name
-   * @param name
-   *          job name
+   * @param proName
+   *          project name
    * @param fileType
    *          job type
    * @return check
    */
-  public boolean createPreviuosJob(String username, String name, String fileType) {
+  public boolean createPreviuosJob(String username, String proName, String fileType) {
     boolean check = false;
     String jenkinsRootUsername = null;
     String jenkinsRootPassword = null;
+    String tempDir = System.getProperty("java.io.tmpdir");
     try {
+      proName = proName.toUpperCase();
+
+      String proUrl = gitlabData.getGitlabHostUrl() + "/" + username + "/" + proName + ".git";
+      proUrl = proUrl.toLowerCase();
+      String filePath = tempDir + "/configs/" + proName + ".xml";
+      jenkins.modifyXmlFileUrl(filePath, proUrl);
+      if ("Javac".equals(fileType)) {
+        jenkins.modifyXmlFileCommand(filePath, username, proName);
+      }
+      if ("Maven".equals(fileType)) {
+        jenkins.modifyXmlFileProgEdu(filePath, username, proName);
+      }
+
       jenkinsRootUsername = jenkinsData.getJenkinsRootUsername();
       jenkinsRootPassword = jenkinsData.getJenkinsRootPassword();
       String jenkinsCrumb = jenkins.getCrumb(jenkinsRootUsername, jenkinsRootPassword);
-      StringBuilder sb = zipHandler.getStringBuilder();
-//      jenkins.createJenkinsJob(username, name, jenkinsCrumb, fileType, sb);
-//      jenkins.buildJob(username, name, jenkinsCrumb);
+      jenkins.postCreateJob(username, proName, proUrl, jenkinsCrumb, filePath);
+      jenkins.buildJob(username, proName, jenkinsCrumb);
       check = true;
     } catch (Exception e) {
       e.printStackTrace();

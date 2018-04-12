@@ -195,7 +195,7 @@
     JenkinsApi jenkins = JenkinsApi.getInstance();
 %>
 <%@ include file="header.jsp" %>
-<div id="loadingBackground" style="display: block">
+<div id="loadingBackground" style="display: none">
     <div id="loader"></div>
 </div>
 <!-- -----sidebar----- -->

@@ -4,10 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
-import fcu.selab.progedu.conn.Conn;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -43,8 +40,7 @@ public class CommitResultDbManager {
    *          build color
    * @return check
    */
-  public boolean insertJenkinsCommitCount(int id, String hw, int commit,
-      String color) {
+  public boolean insertJenkinsCommitCount(int id, String hw, int commit, String color) {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
     String sql = "INSERT INTO Commit_Result" + "(stuId, hw, commit, color) " + "VALUES(?, ?, ?, ?)";
@@ -162,8 +158,7 @@ public class CommitResultDbManager {
    *          build color
    * @return check
    */
-  public boolean updateJenkinsCommitCount(int id, String hw, int commit,
-      String color) {
+  public boolean updateJenkinsCommitCount(int id, String hw, int commit, String color) {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
     String sql = "UPDATE Commit_Result SET commit=?, color=? WHERE stuId=? AND hw=?";
@@ -192,39 +187,39 @@ public class CommitResultDbManager {
     return check;
   }
 
-//  /**
-//   * get student all project commit counts
-//   *
-//   * @param stuId
-//   *          student id
-//   * @return counts
-//   */
-//  public List<Integer> getCommit(int stuId) {
-//    Connection conn = database.getConnection();
-//    List<Integer> commits = new ArrayList<Integer>();
-//
-//    String query = "SELECT * FROM Commit_Result where stuId = ?";
-//    PreparedStatement preStmt = null;
-//
-//    try {
-//      preStmt = conn.prepareStatement(query);
-//      preStmt.setInt(1, stuId);
-//      ResultSet rs = preStmt.executeQuery();
-//      while (rs.next()) {
-//
-//      }
-//    } catch (SQLException e) {
-//      e.printStackTrace();
-//    } finally {
-//      try {
-//        conn.close();
-//      } catch (SQLException e) {
-//        e.printStackTrace();
-//      }
-//    }
-//
-//    return commits;
-//  }
+  // /**
+  // * get student all project commit counts
+  // *
+  // * @param stuId
+  // * student id
+  // * @return counts
+  // */
+  // public List<Integer> getCommit(int stuId) {
+  // Connection conn = database.getConnection();
+  // List<Integer> commits = new ArrayList<Integer>();
+  //
+  // String query = "SELECT * FROM Commit_Result where stuId = ?";
+  // PreparedStatement preStmt = null;
+  //
+  // try {
+  // preStmt = conn.prepareStatement(query);
+  // preStmt.setInt(1, stuId);
+  // ResultSet rs = preStmt.executeQuery();
+  // while (rs.next()) {
+  //
+  // }
+  // } catch (SQLException e) {
+  // e.printStackTrace();
+  // } finally {
+  // try {
+  // conn.close();
+  // } catch (SQLException e) {
+  // e.printStackTrace();
+  // }
+  // }
+  //
+  // return commits;
+  // }
 
   /**
    * get all counts
@@ -319,6 +314,12 @@ public class CommitResultDbManager {
     String name = "";
     int gitlabId = -1;
 
+    User user = udb.getUser(id);
+    name = user.getUserName();
+    gitlabId = user.getGitLabId();
+    ob.put("userName", name);
+    ob.put("gitlabId", gitlabId);
+
     try {
       preStmt = conn.prepareStatement(query);
       preStmt.setInt(1, id);
@@ -327,10 +328,6 @@ public class CommitResultDbManager {
       while (rs.next()) {
 
         String hw = rs.getString("hw");
-
-        User user = udb.getUser(id);
-        name = user.getUserName();
-        gitlabId = user.getGitLabId();
 
         String color = rs.getString("color");
         int commit = rs.getInt("commit");
@@ -342,8 +339,6 @@ public class CommitResultDbManager {
         array.put(eachHw);
       }
 
-      ob.put("userName", name);
-      ob.put("gitlabId", gitlabId);
       ob.put("commits", array);
 
       preStmt.close();

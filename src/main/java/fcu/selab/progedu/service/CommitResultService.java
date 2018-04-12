@@ -7,7 +7,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -262,6 +261,8 @@ public class CommitResultService {
     boolean inDb = commitRecordDb.checkRecord(id, proName, color, dates[0], dates[1]);
     if (!inDb) {
       commitRecordDb.insertCommitRecord(id, proName, color, dates[0], dates[1]);
+    } else {
+      commitRecordDb.updateRecordStatus(id, proName, color, dates[0], dates[1]);
     }
 
     updateCommitRecordState();
@@ -270,7 +271,7 @@ public class CommitResultService {
   /**
    * update Commit_Record_State DB's data.
    */
-  private void updateCommitRecordState() {
+  public void updateCommitRecordState() {
     // TODO Auto-generated method stub
 
     List<String> lsNames = new ArrayList<String>();

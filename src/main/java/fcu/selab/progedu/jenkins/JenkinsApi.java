@@ -22,6 +22,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -112,7 +113,9 @@ public class JenkinsApi {
     // ---Create Jenkins Job---
     String proUrl = gitlabHostUrl + "/root/" + proName + ".git";
     System.out.println("proUrl : " + proUrl);
-    postCreateJob("root", proName, proUrl, jenkinsCrumb, fileType, sb);
+    String filePath = modifyXml("root", proName, proUrl, fileType, sb);
+    postCreateJob("root", proName, proUrl, jenkinsCrumb, filePath);
+    backupConfig(filePath, proName);
     // ------------------------
   }
 
@@ -137,7 +140,8 @@ public class JenkinsApi {
 
     // ---Create Jenkins Job---
     String proUrl = gitlabHostUrl + "/" + userName + "/" + proName + ".git";
-    postCreateJob(userName, proName, proUrl, jenkinsCrumb, fileType, sb);
+    String filePath = modifyXml(userName, proName, proUrl, fileType, sb);
+    postCreateJob(userName, proName, proUrl, jenkinsCrumb, filePath);
     // ------------------------
   }
 
@@ -148,13 +152,11 @@ public class JenkinsApi {
    *          Gitlab project url
    * @param jenkinsCrumb
    *          Jenkins crumb
-   * @param fileType
-   *          File type
-   * @param sb
-   *          The config build job command
+   * @param filePath
+   *          File path
    */
   public void postCreateJob(String userName, String proName, String proUrl, String jenkinsCrumb,
-      String fileType, StringBuilder sb) {
+      String filePath) {
     HttpClient client = new DefaultHttpClient();
     String jobName = userName + "_" + proName;
 
@@ -167,19 +169,6 @@ public class JenkinsApi {
 
       post.addHeader("Content-Type", "application/xml");
       post.addHeader("Jenkins-Crumb", jenkinsCrumb);
-      String filePath = null;
-      String configType = getConfigType(fileType);
-      filePath = this.getClass().getResource("/jenkins/" + configType).getPath();
-
-      // proUrl project name toLowerCase
-      proUrl = proUrl.toLowerCase();
-      modifyXmlFileUrl(filePath, proUrl);
-      if ("Javac".equals(fileType)) {
-        modifyXmlFileCommand(filePath, sb, updateDbUrl, userName, proName);
-      }
-      if ("Maven".equals(fileType)) {
-        modifyXmlFileProgEdu(filePath, userName, proName, tomcatUrl, updateDbUrl);
-      }
 
       StringBuilder sbConfig = getConfig(filePath);
       StringEntity se = new StringEntity(sbConfig.toString(),
@@ -200,6 +189,67 @@ public class JenkinsApi {
     } catch (IOException e) {
       e.printStackTrace();
     } catch (LoadConfigFailureException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * modify job config
+   * 
+   * @param userName
+   *          student id
+   * @param proName
+   *          project name
+   * @param proUrl
+   *          project url
+   * @param fileType
+   *          job type
+   * @param sb
+   *          command
+   * @return config file path
+   */
+  public String modifyXml(String userName, String proName, String proUrl, String fileType,
+      StringBuilder sb) {
+    String filePath = null;
+    String configType = getConfigType(fileType);
+    filePath = this.getClass().getResource("/jenkins/" + configType).getPath();
+
+    try {
+      String tomcatUrl;
+      tomcatUrl = courseData.getTomcatServerIp() + "/ProgEdu/webapi/project/checksum?proName="
+          + proName;
+      String updateDbUrl = courseData.getTomcatServerIp() + "/ProgEdu/webapi/commits/update";
+      // proUrl project name toLowerCase
+      proUrl = proUrl.toLowerCase();
+      modifyXmlFileUrl(filePath, proUrl);
+      if ("Javac".equals(fileType)) {
+        modifyXmlFileCommand(filePath, sb, updateDbUrl, userName, proName);
+      }
+      if ("Maven".equals(fileType)) {
+        modifyXmlFileProgEdu(filePath, userName, proName, tomcatUrl, updateDbUrl);
+      }
+    } catch (LoadConfigFailureException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    return filePath;
+  }
+
+  /**
+   * backup job config
+   * 
+   * @param source
+   *          source file
+   */
+  public void backupConfig(String source, String proName) {
+    String tempDir = System.getProperty("java.io.tmpdir");
+    try {
+      File sourceFile = new File(source);
+      File desFile = new File(tempDir + "/configs/" + proName + ".xml");
+      FileUtils.copyFile(sourceFile, desFile);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }
@@ -368,6 +418,44 @@ public class JenkinsApi {
   }
 
   /**
+   * Change the config file command (Maven or Javac)
+   * 
+   * @param filePath
+   *          Config file path
+   * @param userName
+   *          user name
+   */
+  public void modifyXmlFileCommand(String filePath, String userName, String proName) {
+    try {
+      String filepath = filePath;
+      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+      Document doc = docBuilder.parse(filepath);
+
+      Node user = doc.getElementsByTagName("user").item(0);
+      user.setTextContent(userName);
+
+      Node ndProName = doc.getElementsByTagName("proName").item(0);
+      ndProName.setTextContent(proName);
+
+      // write the content into xml file
+      TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      Transformer transformer = transformerFactory.newTransformer();
+      DOMSource source = new DOMSource(doc);
+      StreamResult result = new StreamResult(new File(filepath));
+      transformer.transform(source, result);
+    } catch (ParserConfigurationException e) {
+      e.printStackTrace();
+    } catch (TransformerException e) {
+      e.printStackTrace();
+    } catch (SAXException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
    * Change the config ProgEdu plugin content
    * 
    * @param userName
@@ -399,6 +487,48 @@ public class JenkinsApi {
 
       Node progeduDbUrl = doc.getElementsByTagName("progeduDbUrl").item(0);
       progeduDbUrl.setTextContent(updateDbUrl);
+
+      Node user = doc.getElementsByTagName("user").item(0);
+      user.setTextContent(userName);
+
+      Node ndProName = doc.getElementsByTagName("proName").item(0);
+      ndProName.setTextContent(proName);
+
+      // write the content into xml file
+      TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      Transformer transformer = transformerFactory.newTransformer();
+      DOMSource source = new DOMSource(doc);
+      StreamResult result = new StreamResult(new File(filepath));
+      transformer.transform(source, result);
+    } catch (ParserConfigurationException e) {
+      e.printStackTrace();
+    } catch (TransformerException e) {
+      e.printStackTrace();
+    } catch (SAXException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Change the config ProgEdu plugin content
+   * 
+   * @param userName
+   *          user name
+   * @param proName
+   *          project name
+   */
+  public void modifyXmlFileProgEdu(String filePath, String userName, String proName) {
+    try {
+      String filepath = filePath;
+      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+      Document doc = docBuilder.parse(filepath);
+
+      String strJobName = userName + "_" + proName;
+      Node jobName = doc.getElementsByTagName("jobName").item(0);
+      jobName.setTextContent(strJobName);
 
       Node user = doc.getElementsByTagName("user").item(0);
       user.setTextContent(userName);

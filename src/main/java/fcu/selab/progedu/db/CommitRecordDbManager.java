@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.deser.std.DateDeserializers;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -37,8 +36,7 @@ public class CommitRecordDbManager {
    *          commit time
    * @return check
    */
-  public boolean insertCommitRecord(int stuId, String hw, String color,
-      String date, String time) {
+  public boolean insertCommitRecord(int stuId, String hw, String color, String date, String time) {
     Connection conn = database.getConnection();
     PreparedStatement preStmt = null;
     String sql = "INSERT INTO Commit_Record" + "(stuId, hw, color, date, time) "
@@ -148,11 +146,9 @@ public class CommitRecordDbManager {
    *          commit time
    * @return boolean
    */
-  public boolean checkRecord(int stuId, String hw, String color, String date,
-      String time) {
+  public boolean checkRecord(int stuId, String hw, String color, String date, String time) {
     Connection conn = database.getConnection();
-    String query = "SELECT * FROM Commit_Record where stuId=? "
-        + "and hw=? and color=? and date=? and time=?";
+    String query = "SELECT * FROM Commit_Record where stuId=? and hw=? and date=? and time=?";
     PreparedStatement preStmt = null;
     boolean check = false;
 
@@ -160,9 +156,8 @@ public class CommitRecordDbManager {
       preStmt = conn.prepareStatement(query);
       preStmt.setInt(1, stuId);
       preStmt.setString(2, hw);
-      preStmt.setString(3, color);
-      preStmt.setString(4, date);
-      preStmt.setString(5, time);
+      preStmt.setString(3, date);
+      preStmt.setString(4, time);
       ResultSet rs = preStmt.executeQuery();
       while (rs.next()) {
         check = true;
@@ -178,6 +173,46 @@ public class CommitRecordDbManager {
       }
     }
     return check;
+  }
+
+  /**
+   * update record color
+   * 
+   * @param stuId
+   *          student
+   * @param hw
+   *          hw
+   * @param color
+   *          color
+   * @param date
+   *          date
+   * @param time
+   *          time
+   */
+  public void updateRecordStatus(int stuId, String hw, String color, String date, String time) {
+    Connection conn = database.getConnection();
+    String sql = "UPDATE Commit_Record SET color=? where stuId=? and hw=? and date=? and time=?";
+    PreparedStatement preStmt = null;
+
+    try {
+      preStmt = conn.prepareStatement(sql);
+      preStmt.setString(1, color);
+      preStmt.setInt(2, stuId);
+      preStmt.setString(3, hw);
+      preStmt.setString(4, date);
+      preStmt.setString(5, time);
+
+      preStmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        preStmt.close();
+        conn.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   /**
