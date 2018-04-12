@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -196,12 +200,14 @@ public class CommitResultService {
   @POST
   @Path("update")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public void updateCommitResult(@FormParam("user") String userName,
+  public Response updateCommitResult(@FormParam("user") String userName,
       @FormParam("proName") String proName) {
+    JSONObject ob = new JSONObject();
 
     if (!userName.equals("root")) {
 
-      System.out.println(userName + ", " + proName);
+      ob.put("userName", userName);
+      ob.put("proName", proName);
       JenkinsService jenkinsService = new JenkinsService();
       JenkinsApi jenkinsApi = new JenkinsApi();
       StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
@@ -210,15 +216,18 @@ public class CommitResultService {
       String[] result = jenkinsService.getColor(proName, userName).split(",");
 
       String color = result[0].replace("circle ", "");
+      if (color.contains("_anime")) {
+        color = color.replaceAll("_anime", "");
+      }
       int commit = Integer.valueOf(result[1]) - 1;
-      System.out.println("commit: " + commit);
+      ob.put("commit", commit);
 
       List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(userName, proName);
       int num = 0;
       if (buildNum.size() > 1) {
         num = buildNum.size() - 1;
       }
-      System.out.println("color, " + color);
+      ob.put("color", color);
       if (color.equals("red")) {
         String consoleText = checkErrorStyle(jenkinsData, userName, proName, buildNum.get(num));
         boolean isCheckStyle = jenkinsApi.checkIsCheckstyleError(consoleText);
@@ -229,14 +238,11 @@ public class CommitResultService {
         if (isJunitError) {
           color = "CTF";
         }
-        System.out.println("isCheckStyle, " + isCheckStyle);
-        System.out.println("isJunitError, " + isJunitError);
+        ob.put("isCheckStyle", isCheckStyle);
+        ob.put("isJunitError", isJunitError);
       }
-      System.out.println("num, " + num);
-      System.out.println("color, " + color);
-      if (color.contains("_anime")) {
-        color = color.replaceAll("_anime", "");
-      }
+      ob.put("num", num);
+      ob.put("color", color);
 
       switch (color) {
         case "blue":
@@ -252,14 +258,14 @@ public class CommitResultService {
         default:
           break;
       }
-      System.out.println("color, " + color);
+      ob.put("color1", color);
 
       String buildApiJson = stuDashChoPro.getBuildApiJson(buildNum.get(num), userName, proName);
       String strDate = stuDashChoPro.getCommitTime(buildApiJson);
       String[] dates = strDate.split(" ");
       int id = userDb.getUser(userName).getId();
-      System.out.println("dates, " + dates[0]);
-      System.out.println("dates, " + dates[1]);
+      ob.put("dates", dates[0]);
+      ob.put("dates1", dates[1]);
 
       boolean check = db.checkJenkinsJobTimestamp(id, proName);
       if (check) {
@@ -279,6 +285,17 @@ public class CommitResultService {
 
       updateCommitRecordState();
     }
+    Logger log = Logger.getLogger("my.logger");
+    log.setLevel(Level.ALL);
+    ConsoleHandler handler = new ConsoleHandler();
+    handler.setFormatter(new SimpleFormatter());
+    handler.setLevel(Level.ALL);
+    log.addHandler(handler);
+    log.fine(ob.toString());
+
+    // updateCommitResult(userName, proName);
+    Response response = Response.ok().entity(ob.toString()).build();
+    return response;
   }
 
   /**
