@@ -19,8 +19,6 @@ import java.util.Properties;
 import java.util.TimeZone;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -630,27 +628,24 @@ public class ProjectService {
   private String getChecksum(String zipFilePath) {
     String strChecksum = "";
 
-    FileInputStream fileInputStream = null;
-    CheckedInputStream checksum = null;
-    ZipInputStream zipIn = null;
+    CheckedInputStream cis = null;
     try {
-      fileInputStream = new FileInputStream(zipFilePath);
-      checksum = new CheckedInputStream(fileInputStream, new CRC32());
-
-      zipIn = new ZipInputStream(checksum);
-      ZipEntry entry = zipIn.getNextEntry();
-
-      strChecksum = String.valueOf(checksum.getChecksum().getValue());
-
+      cis = new CheckedInputStream(new FileInputStream(zipFilePath), new CRC32());
+      byte[] buf = new byte[1024];
+      // noinspection StatementWithEmptyBody
+      while (cis.read(buf) >= 0) {
+      }
+      System.out.println(cis.getChecksum().getValue());
+      strChecksum = String.valueOf(cis.getChecksum().getValue());
     } catch (IOException e) {
       e.printStackTrace();
     } finally {
-      try {
-        checksum.close();
-        fileInputStream.close();
-        zipIn.close();
-      } catch (IOException e) {
-        e.printStackTrace();
+      if (cis != null) {
+        try {
+          cis.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
     }
 
