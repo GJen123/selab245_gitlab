@@ -114,6 +114,21 @@
 			color: #fff;
 			line-height: 30px;
 		}
+        .CPF {
+            background: #e52424;
+        }
+        .S {
+            background: #5fa7e8;
+        }
+        .NB {
+            background: #878787;
+        }
+        .CSF {
+            background: gold;
+        }
+        .CTF {
+            background: #32CD32;
+        }
 	</style>
 	
 	<link rel="shortcut icon" href="img/favicon.ico"/>
@@ -244,6 +259,8 @@
 											color = obj.color;
 											message = obj.message;
 											num = obj.num;
+											
+											console.log(color)
 											
 											td_color = document.getElementById("color" + num);
 											td_date = document.getElementById("date" + num);

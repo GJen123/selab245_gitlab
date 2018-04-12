@@ -155,6 +155,21 @@
 		    color: white;
 		    cursor: pointer;
 		}
+		.CPF {
+			background: #e52424;
+		}
+		.S {
+			background: #5fa7e8;
+		}
+		.NB {
+			background: #878787;
+		}
+		.CSF {
+			background: gold;
+		}
+		.CTF {
+			background: #32CD32;
+		}
 	</style>
 
 	<link rel="shortcut icon" href="img/favicon.ico"/>

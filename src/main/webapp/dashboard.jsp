@@ -156,7 +156,7 @@
         .CSF {
             background: gold;
         }
-        .CJF {
+        .CTF {
             background: #32CD32;
         }
         .circle a {

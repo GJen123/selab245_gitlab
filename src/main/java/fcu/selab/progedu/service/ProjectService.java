@@ -549,7 +549,7 @@ public class ProjectService {
 
     if (!fileDetail.getFileName().isEmpty()) {
       // update test case
-      String filePath = storeFileToTestsFolder(fileDetail.getFileName(), uploadedInputStream);
+      String filePath = storeFileToTestsFolder(name, uploadedInputStream);
       // update database checksum
 
       String checksum = getChecksum(filePath);

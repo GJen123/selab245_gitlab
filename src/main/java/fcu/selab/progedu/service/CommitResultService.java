@@ -199,73 +199,86 @@ public class CommitResultService {
   public void updateCommitResult(@FormParam("user") String userName,
       @FormParam("proName") String proName) {
 
-    JenkinsService jenkinsService = new JenkinsService();
-    JenkinsApi jenkinsApi = new JenkinsApi();
-    StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
-    JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
+    if (!userName.equals("root")) {
 
-    String[] result = jenkinsService.getColor(proName, userName).split(",");
+      System.out.println(userName + ", " + proName);
+      JenkinsService jenkinsService = new JenkinsService();
+      JenkinsApi jenkinsApi = new JenkinsApi();
+      StudentDashChoosePro stuDashChoPro = new StudentDashChoosePro();
+      JenkinsConfig jenkinsData = JenkinsConfig.getInstance();
 
-    String color = result[0].replace("circle ", "");
-    int commit = Integer.valueOf(result[1]) - 1;
+      String[] result = jenkinsService.getColor(proName, userName).split(",");
 
-    List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(userName, proName);
-    int num = 0;
-    if (buildNum.size() > 1) {
-      num = buildNum.size() - 1;
-    }
-    if (color.equals("red")) {
-      String consoleText = checkErrorStyle(jenkinsData, userName, proName, buildNum.get(num));
-      boolean isCheckStyle = jenkinsApi.checkIsCheckstyleError(consoleText);
-      boolean isJunitError = jenkinsApi.checkIsJunitError(consoleText);
-      if (isCheckStyle) {
-        color = "CSF";
+      String color = result[0].replace("circle ", "");
+      int commit = Integer.valueOf(result[1]) - 1;
+      System.out.println("commit: " + commit);
+
+      List<Integer> buildNum = stuDashChoPro.getScmBuildCounts(userName, proName);
+      int num = 0;
+      if (buildNum.size() > 1) {
+        num = buildNum.size() - 1;
       }
-      if (isJunitError) {
-        color = "CTF";
+      System.out.println("color, " + color);
+      if (color.equals("red")) {
+        String consoleText = checkErrorStyle(jenkinsData, userName, proName, buildNum.get(num));
+        boolean isCheckStyle = jenkinsApi.checkIsCheckstyleError(consoleText);
+        boolean isJunitError = jenkinsApi.checkIsJunitError(consoleText);
+        if (isCheckStyle) {
+          color = "CSF";
+        }
+        if (isJunitError) {
+          color = "CTF";
+        }
+        System.out.println("isCheckStyle, " + isCheckStyle);
+        System.out.println("isJunitError, " + isJunitError);
       }
+      System.out.println("num, " + num);
+      System.out.println("color, " + color);
+      if (color.contains("_anime")) {
+        color = color.replaceAll("_anime", "");
+      }
+
+      switch (color) {
+        case "blue":
+          color = "S";
+          break;
+        case "red":
+          color = "CPF";
+          break;
+        case "gray":
+          color = "NB";
+          break;
+
+        default:
+          break;
+      }
+      System.out.println("color, " + color);
+
+      String buildApiJson = stuDashChoPro.getBuildApiJson(buildNum.get(num), userName, proName);
+      String strDate = stuDashChoPro.getCommitTime(buildApiJson);
+      String[] dates = strDate.split(" ");
+      int id = userDb.getUser(userName).getId();
+      System.out.println("dates, " + dates[0]);
+      System.out.println("dates, " + dates[1]);
+
+      boolean check = db.checkJenkinsJobTimestamp(id, proName);
+      if (check) {
+        db.updateJenkinsCommitCount(id, proName, commit, color);
+        db.updateJenkinsJobTimestamp(id, proName, strDate);
+      } else {
+        db.insertJenkinsCommitCount(id, proName, commit, color);
+        db.updateJenkinsJobTimestamp(id, proName, strDate);
+      }
+
+      boolean inDb = commitRecordDb.checkRecord(id, proName, color, dates[0], dates[1]);
+      if (!inDb) {
+        commitRecordDb.insertCommitRecord(id, proName, color, dates[0], dates[1]);
+      } else {
+        commitRecordDb.updateRecordStatus(id, proName, color, dates[0], dates[1]);
+      }
+
+      updateCommitRecordState();
     }
-    if (color.contains("_anime")) {
-      color = color.replaceAll("_anime", "");
-    }
-
-    String buildApiJson = stuDashChoPro.getBuildApiJson(buildNum.get(num), userName, proName);
-    String strDate = stuDashChoPro.getCommitTime(buildApiJson);
-    String[] dates = strDate.split(" ");
-    int id = userDb.getUser(userName).getId();
-
-    switch (color) {
-      case "blue":
-        color = "S";
-        break;
-      case "red":
-        color = "CPF";
-        break;
-      case "gray":
-        color = "NB";
-        break;
-
-      default:
-        break;
-    }
-
-    boolean check = db.checkJenkinsJobTimestamp(id, proName);
-    if (check) {
-      db.updateJenkinsCommitCount(id, proName, commit, color);
-      db.updateJenkinsJobTimestamp(id, proName, strDate);
-    } else {
-      db.insertJenkinsCommitCount(id, proName, commit, color);
-      db.updateJenkinsJobTimestamp(id, proName, strDate);
-    }
-
-    boolean inDb = commitRecordDb.checkRecord(id, proName, color, dates[0], dates[1]);
-    if (!inDb) {
-      commitRecordDb.insertCommitRecord(id, proName, color, dates[0], dates[1]);
-    } else {
-      commitRecordDb.updateRecordStatus(id, proName, color, dates[0], dates[1]);
-    }
-
-    updateCommitRecordState();
   }
 
   /**

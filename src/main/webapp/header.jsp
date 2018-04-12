@@ -37,6 +37,50 @@
 		    color: white;
 		    cursor: pointer;
 		}
+		.circle {
+			border-radius: 30px;
+			height: 30px;
+			font-weight: bold;
+			width: 30px;
+			color: white;
+			text-align: center;
+		}
+		.red {
+			background: #e52424;
+		}
+		.blue {
+			background: #5fa7e8;
+		}
+		.gray {
+			background: #878787;
+		}
+		.orange {
+			background: gold;
+		}
+		.green {
+			background: #32CD32;
+		}
+		.gold{
+			background: #FFD700;
+		}
+		.circle a {
+			color: #fff;
+			line-height: 30px;
+		}
+        .CPF {
+            background: #e52424;
+        }
+        .S {
+            background: #5fa7e8;
+        }
+        .NB {
+            background: #878787;
+        }
+        .CSF {
+            background: gold;
+        }
+        .CTF {
+          
 	</style>
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
 	  		<a class="navbar-brand" href="dashboard.jsp">ProgEdu</a>

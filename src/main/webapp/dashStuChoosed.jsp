@@ -111,6 +111,21 @@
 			color: #fff;
 			line-height: 30px;
 		}
+        .CPF {
+            background: #e52424;
+        }
+        .S {
+            background: #5fa7e8;
+        }
+        .NB {
+            background: #878787;
+        }
+        .CSF {
+            background: gold;
+        }
+        .CTF {
+            background: #32CD32;
+        }
 		
 	</style>
 	
