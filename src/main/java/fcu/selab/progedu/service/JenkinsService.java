@@ -68,16 +68,14 @@ public class JenkinsService {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    jobStatus.setUrl(jobUrl + "/api/json");
+    jobStatus.setUrl(jobUrl + "/api/json?tree=color");
 
     // Get job status
     jobStatus.setJobApiJson();
     String apiJson = jobStatus.getJobApiJson();
-    boolean isMaven = jenkins.checkProjectIsMvn(apiJson);
     int commitCount = getProjectCommitCount(proName, userName);
 
     String color = null;
-    int checkstyleErrorAmount = 0;
     if (null != apiJson) {
       color = jenkins.getJobJsonColor(apiJson);
     }
