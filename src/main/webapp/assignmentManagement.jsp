@@ -162,6 +162,7 @@
 				    var hw_name = document.getElementById('Hw_Name').value;
 				    console.log(hw_name)
 				    if(hw_name !== '' && hw_name !== undefined){
+				    	$('#loadingBackground')[0].style.height = $(document).height() + 'px'; 
                         document.getElementById("loader").style.display = "block";
                         document.getElementById("loadingBackground").style.display = "block";
 					}
@@ -169,11 +170,13 @@
 				case 'delete_btn':
                     var hw_name = document.getElementById('del_Hw_Name').value;
                     if(hw_name !== '' && hw_name !== undefined){
+                    	$('#loadingBackground')[0].style.height = $(document).height() + 'px'; 
                         document.getElementById("loader").style.display = "block";
                         document.getElementById("loadingBackground").style.display = "block";
                     }
 				    break;
 				default:
+					$('#loadingBackground')[0].style.height = $(document).height() + 'px'; 
                     document.getElementById("loader").style.display = "block";
                     document.getElementById("loadingBackground").style.display = "block";
                     break;
@@ -197,6 +200,9 @@
 
             var readMe = document.getElementById(id + '_readMe').innerHTML;
 			nicEditors.findEditor('edit_Hw_README').setContent(readMe);
+			
+			$('#editHw_card')[0].style.display = 'block';
+			$('#edited_name')[0].innerHTML = '<fmt:message key="teacherManageHW_hw_edit_modal_title"/> (' + id + ')';
 		}
 	</script>
 	<script>
@@ -303,7 +309,7 @@
   						<td id=<%=name + "_deadline"%>><%=deadline %></td>
   						<td style="display: none;" id=<%=name + "_readMe"%>><%=readMe %></td>
   						<td class="text-center">
-  							<a id="<%=name %>" data-toggle="modal" data-target="#editModal" onclick="sendEditId(this)">
+  							<a id="<%=name %>" onclick="sendEditId(this)">
   								<i class="fa fa-lg fa-pencil-square-o" aria-hidden="true" style="line-height: 25px"></i>
   							</a>
   						</td>
@@ -322,7 +328,7 @@
 
 		<div class="card" id="new_hw" style="margin-top: 20px; display: none">
 			<div class="card-header">
-				<h4 ><strong><fmt:message key="teacherManageHW_hw_edit_modal_title"/></strong></h4>
+				<h4><strong><fmt:message key="teacherManageHW_hw_edit_modal_title"/></strong></h4>
 			</div>
 			<div class="card-block" style="padding: 20px 20px 20px 20px;">
 				<form id="newHw" style="margin-top: 10px;">
@@ -383,55 +389,38 @@
 				</form>
 			</div>
 		</div>
-	</div>
-	
-	
-  <!-- Edit Modal -->
-  <form id="editHw" style="margin-top: 10px;">
-	<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal" aria-hidden="true">
-	  <div class="modal-dialog" role="document" style="max-width: 850px;">
-	    <div class="modal-content" style="width: 850px">
-	    
-	      <div class="modal-header">
-	        <h4 class="modal-title" id="editModal"><fmt:message key="teacherManageHW_hw_edit_modal_title"/></h4>
-	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-	          <span aria-hidden="true">&times;</span>
-	        </button>
-	      </div>
-	      
-	      <div class="modal-body" style="height: auto;">
-	      	<input type="hidden" id="Edit_Hw_Name" name="Edit_Hw_Name"/>
-		    <div class="form-group" style="width: fit-content">
+		  <!-- Edit Modal -->
+	  <div class="card" id="editHw_card" style="margin-top: 20px; display: none;">
+	  	<div class="card-header">
+	  		<h4 id="edited_name"><strong><fmt:message key="teacherManageHW_hw_edit_modal_title"/></strong></h4>
+	  	</div>
+		      
+	    <div class="card-block"style="padding: 20px 20px 20px 20px;">
+		    <form id="editHw" style="margin-top: 10px;">
+		    	<input type="hidden" id="Edit_Hw_Name" name="Edit_Hw_Name"/>
+		    	<div class="form-group" style="width: fit-content">
 				<label for="Hw_Deadline"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwDeadline"/></h4></label>
 				<input id="edit_Hw_Deadline" type="datetime-local" class="form-control" name="Hw_Deadline"/>
-			</div>
-			<div class="form-group">
-				<label for="Hw_README"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwReadme"/></h4></label>
-				<div class="form-group" style="width: fit-content">
-					<textarea id="edit_Hw_README" cols="100" rows="20" name="Hw_README" style="width: 823px; height: 200px;"></textarea>
 				</div>
-			</div>
-			<div class="form-group" style="width: fit-content">
-				<label for="Hw_TestCase"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwTestCase"/></h4></label>
-				<br>
-				<input id="edit_Hw_TestCase" type="file" accept=".zip" name="Hw_TestCase" size="50" width="48"/>
-			</div>
-		  </div>
-		  
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-				<fmt:message key="teacherManageGroup_button_close"/>
-			</button>
-			<button type="submit" class="btn btn-primary" name="edit_btn" onclick="load(this); nicEditors.findEditor('edit_Hw_README').saveContent();">
-				<fmt:message key="teacherManageGroup_button_send"/>
-			</button>
-	      </div>
-	      
-	    </div>
+				<div class="form-group">
+					<label for="Hw_README"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwReadme"/></h4></label>
+					<div class="form-group" style="width: fit-content">
+						<textarea id="edit_Hw_README" cols="100" rows="20" name="Hw_README" style="width: 823px; height: 200px;"></textarea>
+					</div>
+				</div>
+				<div class="form-group" style="width: fit-content">
+					<label for="Hw_TestCase"><h4><i class="fa fa-minus" aria-hidden="true"></i>&nbsp; <fmt:message key="teacherManageHW_label_hwTestCase"/></h4></label>
+					<br>
+					<input id="edit_Hw_TestCase" type="file" accept=".zip" name="Hw_TestCase" size="50" width="48"/>
+				</div>
+				<button type="submit" class="btn btn-primary" name="edit_btn" onclick="load(this); nicEditors.findEditor('edit_Hw_README').saveContent();">
+					<fmt:message key="teacherManageGroup_button_send"/>
+				</button>
+	  		</form>
+	 	</div>
 	  </div>
 	</div>
-  </form>
-  
+	
   <!-- Delete Modal -->
   <form id="deletetHw" style="margin-top: 10px;">
 	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
