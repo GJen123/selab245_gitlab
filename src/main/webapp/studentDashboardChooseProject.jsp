@@ -355,7 +355,7 @@
 									</script>
 									<%
 										String tableActive = "";
-										if(num == 1){
+										if(num == buildNum.size()){
 										  tableActive = "tableActive";
 										}
 									%>
@@ -386,7 +386,7 @@
 				String lastBuildUrl = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/" +  num + "/consoleText";
 				String url = jenkinsData.getJenkinsHostUrl() + "/job/" + jobName + "/";
 			%>
-			<h4><a id="iFrameTitle" href="<%=jenkinsBuildNumUrl%>">Feedback Information (#1)</a></h4>
+			<h4><a id="iFrameTitle" href="<%=jenkinsBuildNumUrl%>">Feedback Information (#<%=buildNum.size() %>)</a></h4>
 			<div style="margin:10px;">
 				<iframe src="<%=lastBuildUrl %>" width="100%" height="500px" style="background: #fff3cd;" id="jenkinsOutput">
 			  		<p>Your browser does not support iframes.</p>

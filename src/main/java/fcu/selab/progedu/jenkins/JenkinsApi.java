@@ -1086,6 +1086,24 @@ public class JenkinsApi {
   }
 
   /**
+   * get job build result
+   * 
+   * @param consoleText
+   *          build detail
+   * @return is build success or not
+   */
+  public boolean getJobBuildResultByConsoleText(String consoleText) {
+    boolean isSuccess = false;
+    if (consoleText.contains("BUILD FAILURE")) {
+      isSuccess = false;
+    }
+    if (consoleText.contains("BUILD SUCCESS")) {
+      isSuccess = true;
+    }
+    return isSuccess;
+  }
+
+  /**
    * Check is checkstyle error
    * 
    * @param consoleText
