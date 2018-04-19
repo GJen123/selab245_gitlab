@@ -547,7 +547,7 @@ public class ProjectService {
 
     if (!fileDetail.getFileName().isEmpty()) {
       // update test case
-      String filePath = storeFileToTestsFolder(name, uploadedInputStream);
+      String filePath = storeFileToTestsFolder(name + ".zip", uploadedInputStream);
       // update database checksum
 
       String checksum = getChecksum(filePath);
@@ -617,6 +617,10 @@ public class ProjectService {
       System.out.println(se.toString());
     }
     String uploadedFileLocation = testDir + fileName;
+    File uploadedFile = new File(uploadedFileLocation);
+    if (uploadedFile.exists()) {
+      uploadedFile.delete();
+    }
     try {
       saveToFile(uploadedInputStream, uploadedFileLocation);
     } catch (IOException e) {
